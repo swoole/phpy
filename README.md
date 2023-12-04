@@ -6,6 +6,9 @@ phpy
 - 目前仅支持 Linux 平台（理论上可以支持所有操作系统，待实现）
 - 不支持 Python 多线程、`async-io` 特性
 
+![Alt](docs/wxg.png)
+
+
 PHP 调用 Python
 ----
 编译安装 `phpy.so` 作为扩展加载，修改 `php.ini` 追加 `extension=phpy.so` 即可。
