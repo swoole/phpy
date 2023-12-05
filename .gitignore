@@ -6,6 +6,8 @@
 *.dep
 *.lo
 *.o
+*.loT
+/Debug
 /build
 /.libs
 /autom4te.cache
@@ -26,11 +28,9 @@ __pycache__
 /configure
 /configure.ac
 /libtool
-/phpy.dep
-/phpy.la
-/phpy.lo
 /Makefile.objects
 /Makefile.fragments
 /.phpunit.result.cache
 /.php-cs-fixer.cache
 /.phpunit.cache
+config.h.in~

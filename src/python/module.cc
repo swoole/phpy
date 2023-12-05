@@ -16,7 +16,6 @@
  */
 
 #include "phpy.h"
-#include <vector>
 
 static PyObject *phpy_call(PyObject *self, PyObject *args) {
     Py_ssize_t TupleSize = PyTuple_Size(args);
@@ -175,6 +174,7 @@ static struct PyModuleDef php_module = {
 };
 // clang-format on
 
+#ifdef HAVE_PHP_EMBED
 /**
  * Load as a python module and inject the class into ZendVM
  */
@@ -189,7 +189,6 @@ static bool py_module_php_init(PyObject *m) {
     return true;
 }
 
-#ifdef HAVE_PHP_EMBED
 #include <sapi/embed/php_embed.h>
 PyMODINIT_FUNC PyInit_phpy(void) {
     char program_name[] = "phpy";
@@ -197,28 +196,25 @@ PyMODINIT_FUNC PyInit_phpy(void) {
     php_embed_init(1, argv);
     return py_module_create(true);
 }
+
 #endif
 
 PyObject *py_module_create(bool py_module) {
     auto m = PyModule_Create(&php_module);
-
-    std::vector<bool (*)(PyObject * m)> modules = {
+    auto modules = {
         py_module_object_init,
         py_module_reference_init,
         py_module_class_init,
         py_module_resource_init,
         py_module_callable_init,
+#ifdef HAVE_PHP_EMBED
+        py_module_php_init,
+#endif
     };
-
-    if (py_module) {
-        modules.push_back(py_module_php_init);
-    }
-
     for (auto fn : modules) {
         if (!fn(m)) {
             return NULL;
         }
     }
-
     return m;
 }

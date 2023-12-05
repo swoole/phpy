@@ -175,6 +175,19 @@ uint32_t phpy_object_iterator_index(zval *object);
         RETURN_FALSE;                                                                                                  \
     }
 
+#ifndef Py_IsTrue
+#define Py_IsTrue PyObject_IsTrue
+#endif
+
+#ifndef Py_IsNone
+#define Py_IsNone(ob) (Py_TYPE(ob) == Py_TYPE(Py_None))
+#define PyObject_CallNoArgs _PyObject_CallNoArg
+#endif
+
+#ifndef Py_IS_TYPE
+#define Py_IS_TYPE(ob, type) (Py_TYPE(ob) == type)
+#endif
+
 namespace phpy {
 namespace php {
 void new_module(zval *zv, PyObject *pv);
