@@ -83,7 +83,7 @@ static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds) {
 static void Object_destroy(ZendObject *self) {
     zval_ptr_dtor(&self->object);
     ZVAL_NULL(&self->object);
-    Py_TYPE(self)->tp_free((PyObject*) self);
+    Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
 static PyObject *Object_call(ZendObject *self, PyObject *args) {

@@ -222,4 +222,3 @@ PyObject *py_module_create(bool py_module) {
 
     return m;
 }
-

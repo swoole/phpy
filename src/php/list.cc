@@ -44,13 +44,13 @@ void new_list(zval *zv, PyObject *list) {
 }  // namespace phpy
 
 static ssize_t get_key(INTERNAL_FUNCTION_PARAMETERS) {
-    ssize_t k;
+    zend_long k;
 
     ZEND_PARSE_PARAMETERS_START(1, 1)
     Z_PARAM_LONG(k)
     ZEND_PARSE_PARAMETERS_END_EX(return 0);
 
-    return k;
+    return (ssize_t) k;
 }
 
 ZEND_METHOD(PyList, __construct) {

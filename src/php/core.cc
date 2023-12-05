@@ -206,4 +206,3 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     Py_Finalize();
     return SUCCESS;
 }
-
