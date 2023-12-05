@@ -33,3 +33,4 @@ __pycache__
 /Makefile.fragments
 /.phpunit.result.cache
 /.php-cs-fixer.cache
+/.phpunit.cache

@@ -16,7 +16,6 @@
  */
 
 #include "phpy.h"
-#include <sapi/embed/php_embed.h>
 #include <vector>
 
 static PyObject *phpy_call(PyObject *self, PyObject *args) {
@@ -190,6 +189,16 @@ static bool py_module_php_init(PyObject *m) {
     return true;
 }
 
+#ifdef HAVE_PHP_EMBED
+#include <sapi/embed/php_embed.h>
+PyMODINIT_FUNC PyInit_phpy(void) {
+    char program_name[] = "phpy";
+    char *argv[] = {program_name};
+    php_embed_init(1, argv);
+    return py_module_create(true);
+}
+#endif
+
 PyObject *py_module_create(bool py_module) {
     auto m = PyModule_Create(&php_module);
 
@@ -214,9 +223,3 @@ PyObject *py_module_create(bool py_module) {
     return m;
 }
 
-PyMODINIT_FUNC PyInit_phpy(void) {
-    char program_name[] = "phpy";
-    char *argv[] = {program_name};
-    php_embed_init(1, argv);
-    return py_module_create(true);
-}
