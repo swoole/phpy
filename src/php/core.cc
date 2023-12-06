@@ -63,7 +63,7 @@ ZEND_METHOD(PyCore, eval) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     PyObject *globals = PyDict_New(); 
-    PyObject *result = PyRun_StringFlags(code, Py_eval_input, globals, globals, NULL);
+    PyObject *result = PyRun_StringFlags(code, Py_file_input, globals, globals, NULL);
     if (result == NULL) {
         PyErr_Print();
         RETURN_FALSE;
