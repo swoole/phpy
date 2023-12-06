@@ -5,6 +5,10 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_import, 0, 1, IS_MI
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_eval, 0, 1, IS_MIXED, 0)
+	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_dir, 0, 1, IS_MIXED, 0)
 	ZEND_ARG_OBJ_INFO(0, obj, PyObject, 0)
 ZEND_END_ARG_INFO()
@@ -47,6 +51,7 @@ ZEND_END_ARG_INFO()
 
 
 ZEND_METHOD(PyCore, import);
+ZEND_METHOD(PyCore, eval);
 ZEND_METHOD(PyCore, dir);
 ZEND_METHOD(PyCore, str);
 ZEND_METHOD(PyCore, repr);
@@ -65,6 +70,7 @@ ZEND_METHOD(PyCore, scalar);
 
 static const zend_function_entry class_PyCore_methods[] = {
 	ZEND_ME(PyCore, import, arginfo_class_PyCore_import, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, eval, arginfo_class_PyCore_eval, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, dir, arginfo_class_PyCore_dir, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, str, arginfo_class_PyCore_str, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, repr, arginfo_class_PyCore_repr, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

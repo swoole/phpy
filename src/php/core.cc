@@ -55,6 +55,23 @@ ZEND_METHOD(PyCore, str) {
     Py_DECREF(pyobj);
 }
 
+ZEND_METHOD(PyCore, eval) {
+    size_t l_code;
+    char *code;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_STRING(code, l_code)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    PyObject *globals = PyDict_New(); 
+    PyObject *result = PyRun_StringFlags(code, Py_eval_input, globals, globals, NULL);
+    if (result == NULL) {
+        PyErr_Print();
+        RETURN_FALSE;
+    }
+    py2php(result, return_value);
+    Py_DECREF(result);
+}
+
 ZEND_METHOD(PyCore, repr) {
     auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
     CHECK_ARG(pyobj);
