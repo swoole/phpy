@@ -29,14 +29,6 @@ struct ZendCallable {
 
 static PyTypeObject ZendCallableType = {
     .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "zend_callable",
-    .tp_basicsize = sizeof(ZendCallable),
-    .tp_itemsize = 0,
-    .tp_dealloc = (destructor) Callable_dealloc,
-    .tp_call = (ternaryfunc) Callable_call,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = PyDoc_STR("zend_callable"),
-    .tp_new = PyType_GenericNew,
 };
 
 //  clang-format on
@@ -84,6 +76,15 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
 }
 
 bool py_module_callable_init(PyObject *m) {
+    ZendCallableType.tp_name = "zend_callable";
+    ZendCallableType.tp_basicsize = sizeof(ZendCallable);
+    ZendCallableType.tp_itemsize = 0;
+    ZendCallableType.tp_dealloc = (destructor) Callable_dealloc;
+    ZendCallableType.tp_call = (ternaryfunc) Callable_call;
+    ZendCallableType.tp_flags = Py_TPFLAGS_DEFAULT;
+    ZendCallableType.tp_doc = PyDoc_STR("zend_callable");
+    ZendCallableType.tp_new = PyType_GenericNew;
+
     if (PyType_Ready(&ZendCallableType) < 0) {
         return false;
     }

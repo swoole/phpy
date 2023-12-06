@@ -130,14 +130,40 @@ ZEND_METHOD(PyCore, len) {
 
 ZEND_METHOD(PyCore, globals) {
     auto vars = PyEval_GetGlobals();
+    if (vars == NULL) {
+        return;
+    }
     py2php(vars, return_value);
     Py_DECREF(vars);
 }
 
 ZEND_METHOD(PyCore, locals) {
     auto vars = PyEval_GetLocals();
+    if (vars == NULL) {
+        return;
+    }
     py2php(vars, return_value);
     Py_DECREF(vars);
+}
+
+ZEND_METHOD(PyCore, iter) {
+    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
+    CHECK_ARG(pyobj);
+    auto iter = PyObject_GetIter(pyobj);
+    if (iter == NULL) {
+        return;
+    }
+    phpy::php::new_iter(return_value, iter);
+}
+
+ZEND_METHOD(PyCore, next) {
+    auto iter = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_iter_get_ce());
+    CHECK_ARG(iter);
+    auto next = PyIter_Next(iter);
+    if (next == NULL) {
+        return;
+    }
+    py2php(next, return_value);
 }
 
 ZEND_METHOD(PyCore, int) {
@@ -209,6 +235,8 @@ void php_class_init_all(INIT_FUNC_ARGS) {
     php_class_type_init(INIT_FUNC_ARGS_PASSTHRU);
     // Callable
     php_class_fn_init(INIT_FUNC_ARGS_PASSTHRU);
+    // Iter
+    php_class_iter_init(INIT_FUNC_ARGS_PASSTHRU);
 }
 
 PyMODINIT_FUNC php_init_python_module(void) {

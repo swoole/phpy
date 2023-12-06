@@ -28,13 +28,6 @@ struct ZendResource {
 
 static PyTypeObject ZendResourceType = {
     .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "zend_resource",
-    .tp_basicsize = sizeof(ZendResource),
-    .tp_itemsize = 0,
-    .tp_dealloc = (destructor) Resource_destroy,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = PyDoc_STR("zend_resource"),
-    .tp_new = PyType_GenericNew,
 };
 
 //  clang-format on
@@ -60,6 +53,14 @@ static void Resource_destroy(ZendResource *self) {
 }
 
 bool py_module_resource_init(PyObject *m) {
+    ZendResourceType.tp_name = "zend_resource";
+    ZendResourceType.tp_basicsize = sizeof(ZendResource);
+    ZendResourceType.tp_itemsize = 0;
+    ZendResourceType.tp_dealloc = (destructor) Resource_destroy;
+    ZendResourceType.tp_flags = Py_TPFLAGS_DEFAULT;
+    ZendResourceType.tp_doc = PyDoc_STR("zend_resource");
+    ZendResourceType.tp_new = PyType_GenericNew;
+
     if (PyType_Ready(&ZendResourceType) < 0) {
         return false;
     }

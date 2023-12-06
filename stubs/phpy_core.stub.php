@@ -56,12 +56,12 @@ class PyCore
 
     }
 
-    public static function globals(): PyDict
+    public static function globals(): ?PyDict
     {
 
     }
 
-    public static function locals(): PyDict
+    public static function locals(): ?PyDict
     {
 
     }
@@ -82,6 +82,16 @@ class PyCore
     }
 
     public static function scalar(mixed $value): mixed
+    {
+
+    }
+
+    public static function iter(PyObject $value): ?PyObject
+    {
+
+    }
+
+    public static function next(PyObject $iter): ?PyObject
     {
 
     }

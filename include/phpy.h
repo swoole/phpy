@@ -150,11 +150,14 @@ int php_class_list_init(INIT_FUNC_ARGS);
 int php_class_tuple_init(INIT_FUNC_ARGS);
 int php_class_set_init(INIT_FUNC_ARGS);
 int php_class_type_init(INIT_FUNC_ARGS);
+int php_class_iter_init(INIT_FUNC_ARGS);
 int php_class_fn_init(INIT_FUNC_ARGS);
 void php_class_init_all(INIT_FUNC_ARGS);
 
 zend_class_entry *phpy_object_get_ce();
 zend_class_entry *phpy_sequence_get_ce();
+zend_class_entry *phpy_iter_get_ce();
+
 void phpy_object_ctor(zval *zobject, PyObject *object);
 PyObject *phpy_object_get_handle(zval *zobject);
 PyObject *phpy_object_get_handle(zend_object *object);
@@ -200,6 +203,7 @@ void new_set(zval *zv, PyObject *pv);
 void new_str(zval *zv, PyObject *pv);
 void new_type(zval *zv, PyObject *pv);
 void new_fn(zval *zv, PyObject *fn);
+void new_iter(zval *zv, PyObject *type);
 
 static inline bool is_null(zval *zv) {
     return zv == NULL or ZVAL_IS_NULL(zv);

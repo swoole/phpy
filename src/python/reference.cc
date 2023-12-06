@@ -36,15 +36,6 @@ static PyMethodDef Reference_methods[] = {
 
 static PyTypeObject ZendReferenceType = {
     .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "zend_reference",
-    .tp_basicsize = sizeof(ZendReference),
-    .tp_itemsize = 0,
-    .tp_dealloc = (destructor) Reference_destroy,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = PyDoc_STR("zend_reference"),
-    .tp_methods = Reference_methods,
-    .tp_init = (initproc) Reference_init,
-    .tp_new = PyType_GenericNew,
 };
 
 //  clang-format on
@@ -65,6 +56,16 @@ static void Reference_destroy(ZendReference *self) {
 }
 
 bool py_module_reference_init(PyObject *m) {
+    ZendReferenceType.tp_name = "zend_reference";
+    ZendReferenceType.tp_basicsize = sizeof(ZendReference);
+    ZendReferenceType.tp_itemsize = 0;
+    ZendReferenceType.tp_dealloc = (destructor) Reference_destroy;
+    ZendReferenceType.tp_flags = Py_TPFLAGS_DEFAULT;
+    ZendReferenceType.tp_doc = PyDoc_STR("zend_reference");
+    ZendReferenceType.tp_methods = Reference_methods;
+    ZendReferenceType.tp_init = (initproc) Reference_init;
+    ZendReferenceType.tp_new = PyType_GenericNew;
+
     if (PyType_Ready(&ZendReferenceType) < 0) {
         return false;
     }

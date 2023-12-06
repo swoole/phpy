@@ -18,28 +18,32 @@
 #include "phpy.h"
 
 BEGIN_EXTERN_C()
-#include "stubs/phpy_type_arginfo.h"
+#include "stubs/phpy_iter_arginfo.h"
 END_EXTERN_C()
 
-zend_class_entry *PyType_ce;
+zend_class_entry *PyIter_ce;
 
 namespace phpy {
 namespace php {
-void new_type(zval *zv, PyObject *type) {
-    new_object(zv, type, PyType_ce);
+void new_iter(zval *zv, PyObject *type) {
+    new_object(zv, type, PyIter_ce);
 }
 }  // namespace php
 }  // namespace phpy
 
-int php_class_type_init(INIT_FUNC_ARGS) {
+int php_class_iter_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyType", class_PyType_methods);
-    PyType_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PyType_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    INIT_CLASS_ENTRY(ce, "PyIter", class_PyIter_methods);
+    PyIter_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
+    PyIter_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
 
     return SUCCESS;
 }
 
-ZEND_METHOD(PyType, __construct) {
+zend_class_entry *phpy_iter_get_ce() {
+    return PyIter_ce;
+}
+
+ZEND_METHOD(PyIter, __construct) {
 
 }

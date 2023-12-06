@@ -36,7 +36,8 @@ function test3()
     var_dump(strval($i->__pow__(3)));
 }
 
-function test4() {
+function test4()
+{
     $fn = PyCore::fn(function ($o) {
         var_dump($o);
     });
@@ -46,7 +47,8 @@ function test4() {
     $fn('hello');
 }
 
-function test5() {
+function test5()
+{
     $m = PyCore::import('app.user');
     $uuid = uniqid();
     var_dump($uuid);
@@ -57,12 +59,30 @@ function test5() {
     var_dump($rs);
 }
 
-function test6() {
+function test6()
+{
     $m = PyCore::import('app.user');
-    $u = $m->User('rango');
-    echo $u->hello;
+    $list = $m->lazy_square(5);
+    $iter = PyCore::iter($list);
+
+    while ($next = PyCore::next($iter)) {
+        var_dump(PyCore::scalar($next));
+    }
+}
+
+function test7()
+{
+    $sys = PyCore::import('sys');
+    $os = PyCore::import('os');
+    $uname = $os->uname();
+
+    $iter = PyCore::iter($uname);
+    var_dump($iter instanceof PyIter);
+
+    while ($next = PyCore::next($iter)) {
+        var_dump(PyCore::scalar($next));
+    }
 }
 
 PyCore::import('sys')->path->append(__DIR__ . '/tests/lib');
-
 test6();

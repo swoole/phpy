@@ -37,20 +37,19 @@ static PyMethodDef Class_methods[] = {
     {NULL}  /* Sentinel */
 };
 
-static PyTypeObject ZendClassType = {
-    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "zend.Class",
-    .tp_basicsize = sizeof(ZendClass),
-    .tp_itemsize = 0,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = PyDoc_STR("zend_class"),
-    .tp_methods = Class_methods,
-    .tp_init = (initproc) Class_init,
-    .tp_new = PyType_GenericNew,
-};
+static PyTypeObject ZendClassType = {PyVarObject_HEAD_INIT(NULL, 0)};
 // clang-format on
 
 bool py_module_class_init(PyObject *m) {
+    ZendClassType.tp_name = "zend_class";
+    ZendClassType.tp_basicsize = sizeof(ZendClass);
+    ZendClassType.tp_itemsize = 0;
+    ZendClassType.tp_flags = Py_TPFLAGS_DEFAULT;
+    ZendClassType.tp_doc = PyDoc_STR("zend_class");
+    ZendClassType.tp_methods = Class_methods;
+    ZendClassType.tp_init = (initproc) Class_init;
+    ZendClassType.tp_new = PyType_GenericNew;
+
     if (PyType_Ready(&ZendClassType) < 0) {
         return false;
     }
