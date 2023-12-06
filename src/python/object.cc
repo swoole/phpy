@@ -41,15 +41,6 @@ static PyMethodDef Object_methods[] = {
 
 static PyTypeObject ZendObjectType = {
     .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "zend.Object",
-    .tp_basicsize = sizeof(ZendObject),
-    .tp_itemsize = 0,
-    .tp_dealloc = (destructor) Object_destroy,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_doc = PyDoc_STR("zend_object"),
-    .tp_methods = Object_methods,
-    .tp_init = (initproc) Object_init,
-    .tp_new = PyType_GenericNew,
 };
 // clang-format on
 
@@ -206,6 +197,16 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
 }
 
 bool py_module_object_init(PyObject *m) {
+    ZendObjectType.tp_name = "zend_object";
+    ZendObjectType.tp_basicsize = sizeof(ZendObject);
+    ZendObjectType.tp_itemsize = 0;
+    ZendObjectType.tp_dealloc = (destructor) Object_destroy;
+    ZendObjectType.tp_flags = Py_TPFLAGS_DEFAULT;
+    ZendObjectType.tp_doc = PyDoc_STR("zend_object");
+    ZendObjectType.tp_methods = Object_methods;
+    ZendObjectType.tp_init = (initproc) Object_init;
+    ZendObjectType.tp_new = PyType_GenericNew;
+
     if (PyType_Ready(&ZendObjectType) < 0) {
         return false;
     }
