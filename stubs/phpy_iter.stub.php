@@ -4,7 +4,7 @@
  * @generate-function-entries
  */
 
-class PyType extends PyObject
+class PyIter extends PyObject
 {
     private function __construct()
     {

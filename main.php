@@ -63,6 +63,18 @@ function test6() {
     echo $u->hello;
 }
 
-PyCore::import('sys')->path->append(__DIR__ . '/tests/lib');
+function test7() {
+    $sys = PyCore::import('sys');
+    $os = PyCore::import('os');
+    $uname = $os->uname();
 
-test6();
+    $iter = PyCore::iter($uname);
+    var_dump($iter instanceof PyIter);
+
+    while($next = PyCore::next($iter)) {
+        var_dump(PyCore::scalar($next));
+    }
+}
+
+PyCore::import('sys')->path->append(__DIR__ . '/tests/lib');
+test7();

@@ -178,6 +178,7 @@ void sequence2array(PyObject *pv, zval *zv) {
         py2php_fn(next, &item);
         add_next_index_zval(zv, &item);
     }
+    Py_DECREF(iter);
 }
 
 PyObject *array2dict(zend_array *ht) {
@@ -214,6 +215,7 @@ void dict2array(PyObject *pv, zval *zv) {
         const char *key = object2str(next, &len);
         add_assoc_zval_ex(zv, key, len, &item);
     }
+    Py_DECREF(iter);
 }
 
 void set2array(PyObject *pv, zval *zv) {
@@ -228,6 +230,7 @@ void set2array(PyObject *pv, zval *zv) {
         py2php_fn(next, &item);
         add_next_index_zval(zv, &item);
     }
+    Py_DECREF(iter);
 }
 
 static PyObject *array2py(zval *zv) {

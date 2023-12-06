@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: bb27440573fa2364c897b345d390e56942724241 */
+ * Stub hash: 8800b4f312a86e1802e680db151b332f49faa8db */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_import, 0, 1, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
@@ -26,7 +26,7 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_PyCore_len arginfo_class_PyCore_dir
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_globals, 0, 0, PyDict, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_globals, 0, 0, PyDict, 1)
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_PyCore_locals arginfo_class_PyCore_globals
@@ -45,6 +45,14 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_scalar, 0, 1, IS_MI
 	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_iter, 0, 1, PyObject, 1)
+	ZEND_ARG_OBJ_INFO(0, value, PyObject, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_next, 0, 1, PyObject, 1)
+	ZEND_ARG_OBJ_INFO(0, iter, PyObject, 0)
+ZEND_END_ARG_INFO()
+
 
 ZEND_METHOD(PyCore, import);
 ZEND_METHOD(PyCore, dir);
@@ -61,6 +69,8 @@ ZEND_METHOD(PyCore, int);
 ZEND_METHOD(PyCore, float);
 ZEND_METHOD(PyCore, fn);
 ZEND_METHOD(PyCore, scalar);
+ZEND_METHOD(PyCore, iter);
+ZEND_METHOD(PyCore, next);
 
 
 static const zend_function_entry class_PyCore_methods[] = {
@@ -79,5 +89,7 @@ static const zend_function_entry class_PyCore_methods[] = {
 	ZEND_ME(PyCore, float, arginfo_class_PyCore_float, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, fn, arginfo_class_PyCore_fn, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, scalar, arginfo_class_PyCore_scalar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, iter, arginfo_class_PyCore_iter, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, next, arginfo_class_PyCore_next, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END
 };
