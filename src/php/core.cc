@@ -62,14 +62,26 @@ ZEND_METHOD(PyCore, eval) {
     Z_PARAM_STRING(code, l_code)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    PyObject *globals = PyDict_New(); 
+    //给待执行的代码，添加一个模块
+    PyObject *module = PyImport_AddModule("__main__");
+    if (!module) {
+        PyErr_Print();
+        RETURN_FALSE;
+    }
+    PyObject *globals = PyModule_GetDict(module);
+    if (globals == NULL) {
+        PyErr_Print();
+        RETURN_FALSE;
+    }
     PyObject *result = PyRun_StringFlags(code, Py_file_input, globals, globals, NULL);
     if (result == NULL) {
         PyErr_Print();
         RETURN_FALSE;
     }
-    py2php(result, return_value);
+    //代码中产生的变量，会在模块信息中，这里返回 globals，PHP 层就可以拿到
+    py2php(globals, return_value, true);
     Py_DECREF(result);
+    Py_DECREF(globals);
 }
 
 ZEND_METHOD(PyCore, repr) {

@@ -1,18 +1,23 @@
 <?php
 
 $pycode = <<<CODE
-import os
+from datetime import datetime
 
-def printenv():
-    for key, value in os.environ.items():
-        print(f'{key}: {value}')
+name = "phpy"
+version = 0.1
 
+def build_version_info():
+    return f"name:{name} version:{version}"
 
-print("Hello!")
-printenv()
+version_info = build_version_info();
 
+today = datetime.now().strftime("%Y-%m-%d")
 CODE;
 
-PyCore::eval($pycode);
+$result = PyCore::eval($pycode);
+var_dump("PyCore::eval result:", $result);
 
-echo "end";
+printf("python code: \n\n```\npython%s\n```\n\n", $pycode);
+printf("name: %s, version: %s\n", $result['name'], $result['version']);
+printf("version_info: %s\n", $result['version_info']);
+printf("today: %s\n", $result['today']);

@@ -10,6 +10,11 @@ class PyCore
     {
 
     }
+    
+    public static function eval(string $code): mixed
+    {
+
+    }
 
     public static function dir(PyObject $obj): mixed
     {
