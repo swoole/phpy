@@ -36,3 +36,8 @@ class KwargsCtor:
 
 def test_callback(cb):
     return cb(__name__)
+
+
+def lazy_square(limit):
+    for x in range(1, limit + 1):
+        yield x, x ** 2
