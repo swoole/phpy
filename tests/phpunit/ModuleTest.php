@@ -9,7 +9,7 @@ class ModuleTest extends TestCase
     {
         $os = PyLoader::import('os');
         $uname = $os->uname();
-        $this->assertEquals($uname->sysname, 'Linux');
+        $this->assertEquals(php_uname('s'), $uname->sysname);
     }
 
     public function testNewObject()
