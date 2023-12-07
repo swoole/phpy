@@ -29,17 +29,13 @@ echo 'get from dict: ' . (microtime(true) - $s) . ' seconds' . PHP_EOL;
 ```python
 import time
 
-
-def microtime_true():
-    return time.time() * 1000000
-
-
+my_dict = {}
 COUNT = 10000000
 
 n = COUNT
 start_time = time.time()
 
-my_dict = {}
+
 for i in range(n):
     my_dict["key-" + str(i)] = i * 3
 
@@ -48,13 +44,8 @@ elapsed_time = time.time() - start_time
 print(f"set from dict: {elapsed_time:.6f} seconds")
 
 n = COUNT
-start_time = time.time()
 
 total = 0
-my_dict = {}
-for i in range(n):
-    my_dict["key-" + str(i)] = i * 3
-
 start_time_get = time.time()
 for i in range(n):
     total += my_dict["key-" + str(i)]
@@ -68,13 +59,13 @@ print(f"get from dict: {elapsed_time_get:.6f} seconds")
 
 ```shell
 (base) htf@swoole-12:~/workspace/python-php/docs/benchmark$ python dict.py 
-set from dict: 6.034419 seconds
-get from dict: 5.507160 seconds
+set from dict: 5.497841 seconds
+get from dict: 5.247993 seconds
 (base) htf@swoole-12:~/workspace/python-php/docs/benchmark$ php dict.php 
 set from dict: 11.048210859299 seconds
 get from dict: 10.532639026642 seconds
 (base) htf@swoole-12:~/workspace/python-php/docs/benchmark$ 
 ```
 
-`PHP` 的操作方式相比直接使用 `Python` 大约损耗了 `40%` 的性能。这里主要是`zval/PyObject`类型转换、`魔术方法` 产生的开销。
+`PHP` 的操作方式相比直接使用 `Python` 大约损耗了 `50%` 的性能。这里主要是`zval/PyObject`类型转换、`魔术方法` 产生的开销。
 
