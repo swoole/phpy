@@ -195,16 +195,13 @@ ZEND_METHOD(PyObject, __call) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     auto fn = PyObject_GetAttrString(object, name);
     if (!fn || !PyCallable_Check(fn)) {
+        PyErr_Print();
         zend_throw_error(NULL, "PyObject: has no callable attribute '%s'", name);
         return;
     }
     CallObject caller(fn, return_value, arguments);
     caller.call();
     Py_DECREF(fn);
-}
-
-static PyObject *call_method(PyObject *object, char *name, size_t l_name) {
-    return PyObject_CallMethod(object, "__getattr__", "s#", name, l_name);
 }
 
 ZEND_METHOD(PyObject, __get) {
@@ -221,6 +218,7 @@ ZEND_METHOD(PyObject, __get) {
         py2php(value, return_value);
         Py_DECREF(value);
     } else {
+        PyErr_Print();
         zend_throw_error(NULL, "PyObject<%s> has no attribute '%s'", Py_TYPE(object)->tp_name, name);
     }
 }
@@ -238,6 +236,7 @@ ZEND_METHOD(PyObject, __set) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     auto value = PyObject_SetAttrString(object, name, php2py(zvalue));
     if (value < 0) {
+        PyErr_Print();
         zend_throw_error(NULL, "PyObject<%s> cannot write attribute '%s'", Py_TYPE(object)->tp_name, name);
     }
 }
@@ -251,6 +250,7 @@ ZEND_METHOD(PyObject, __toString) {
         ZVAL_STRINGL(return_value, sv, sl);
         Py_DECREF(value);
     } else {
+        PyErr_Print();
         zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TYPE(object)->tp_name);
         return;
     }
@@ -268,6 +268,7 @@ ZEND_METHOD(PyObject, __invoke) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     if (!object || !PyCallable_Check(object)) {
+        PyErr_Print();
         zend_throw_error(NULL, "PyObject<%s>: object is not callable", Py_TYPE(object)->tp_name);
         return;
     }

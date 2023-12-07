@@ -112,7 +112,6 @@ class json{
             self::$JSONDecoder = self::$__module->JSONDecoder;
             self::$JSONEncoder = self::$__module->JSONEncoder;
             self::$__path__ = self::$__module->__path__;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_default_decoder = self::$__module->_default_decoder;
             self::$_default_encoder = self::$__module->_default_encoder;
             self::$codecs = self::$__module->codecs;
@@ -124,8 +123,6 @@ class json{
 
 
     public static $__author__ = "Bob Ippolito <bob@redivi.com>";
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/json/__pycache__/__init__.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/json/__init__.py";
     public static $__name__ = "json";
     public static $__package__ = "json";
     public static $__version__ = "2.0.9";
@@ -134,7 +131,6 @@ class json{
     public static $JSONDecoder = null;
     public static $JSONEncoder = null;
     public static $__path__ = null;
-    public static $__spec__ = null;
     public static $_default_decoder = null;
     public static $_default_encoder = null;
     public static $codecs = null;

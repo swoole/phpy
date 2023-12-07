@@ -47,7 +47,6 @@ class pickle{
             self::$_Stop = self::$__module->_Stop;
             self::$_Unframer = self::$__module->_Unframer;
             self::$_Unpickler = self::$__module->_Unpickler;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_compat_pickle = self::$__module->_compat_pickle;
             self::$_extension_cache = self::$__module->_extension_cache;
             self::$_extension_registry = self::$__module->_extension_registry;
@@ -141,8 +140,6 @@ class pickle{
     public static $TUPLE3 = "‡";
     public static $UNICODE = "V";
     public static $_HAVE_PICKLE_BUFFER = true;
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/pickle.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/pickle.py";
     public static $__name__ = "pickle";
     public static $__package__ = "";
     public static $format_version = "4.0";
@@ -159,7 +156,6 @@ class pickle{
     public static $_Stop = null;
     public static $_Unframer = null;
     public static $_Unpickler = null;
-    public static $__spec__ = null;
     public static $_compat_pickle = null;
     public static $_extension_cache = null;
     public static $_extension_registry = null;

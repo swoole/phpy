@@ -57,7 +57,6 @@ class random{
             self::$SystemRandom = self::$__module->SystemRandom;
             self::$_Sequence = self::$__module->_Sequence;
             self::$_Set = self::$__module->_Set;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_accumulate = self::$__module->_accumulate;
             self::$_inst = self::$__module->_inst;
             self::$_os = self::$__module->_os;
@@ -97,8 +96,6 @@ class random{
     public const _e = 2.718281828459;
     public const _pi = 3.1415926535898;
 
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/random.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/random.py";
     public static $__name__ = "random";
     public static $__package__ = "";
 
@@ -106,7 +103,6 @@ class random{
     public static $SystemRandom = null;
     public static $_Sequence = null;
     public static $_Set = null;
-    public static $__spec__ = null;
     public static $_accumulate = null;
     public static $_inst = null;
     public static $_os = null;

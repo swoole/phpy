@@ -65,7 +65,6 @@ class uuid{
             self::$UUID = self::$__module->UUID;
             self::$_GETTERS = self::$__module->_GETTERS;
             self::$_OS_GETTERS = self::$__module->_OS_GETTERS;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_uuid = self::$__module->_uuid;
             self::$bytes_ = self::$__module->bytes_;
             self::$int_ = self::$__module->int_;
@@ -87,8 +86,6 @@ class uuid{
     public static $_MAC_OMITS_LEADING_ZEROES = false;
     public static $_UuidCreate = null;
     public static $__author__ = "Ka-Ping Yee <ping@zesty.ca>";
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/uuid.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/uuid.py";
     public static $__name__ = "uuid";
     public static $__package__ = "";
     public static $_last_timestamp = null;
@@ -104,7 +101,6 @@ class uuid{
     public static $UUID = null;
     public static $_GETTERS = null;
     public static $_OS_GETTERS = null;
-    public static $__spec__ = null;
     public static $_uuid = null;
     public static $bytes_ = null;
     public static $int_ = null;

@@ -336,6 +336,7 @@ ZEND_METHOD(PyCore, __callStatic) {
     if (fn_iter == builtin_functions.end()) {
         fn = PyObject_GetAttrString(module_builtins, name);
         if (!fn || !PyCallable_Check(fn)) {
+            PyErr_Print();
             zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
             return;
         }

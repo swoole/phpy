@@ -39,7 +39,6 @@ class os{
             self::$MutableMapping = self::$__module->MutableMapping;
             self::$PathLike = self::$__module->PathLike;
             self::$_Environ = self::$__module->_Environ;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_wrap_close = self::$__module->_wrap_close;
             self::$abc = self::$__module->abc;
             self::$confstr_names = self::$__module->confstr_names;
@@ -186,7 +185,6 @@ class os{
     public const XATTR_SIZE_MAX = 65536;
     public const X_OK = 1;
 
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/os.py";
     public static $__name__ = "os";
     public static $__package__ = "";
     public static $altsep = null;
@@ -207,7 +205,6 @@ class os{
     public static $MutableMapping = null;
     public static $PathLike = null;
     public static $_Environ = null;
-    public static $__spec__ = null;
     public static $_wrap_close = null;
     public static $abc = null;
     public static $confstr_names = null;

@@ -80,7 +80,6 @@ class sys{
     public static function __init(): void {
         if (self::$__module == null) {
             self::$__module = PyCore::import('sys');
-            self::$__spec__ = self::$__module->__spec__;
             self::$__stderr__ = self::$__module->__stderr__;
             self::$__stdin__ = self::$__module->__stdin__;
             self::$__stdout__ = self::$__module->__stdout__;
@@ -135,7 +134,6 @@ class sys{
     public static $pycache_prefix = null;
     public static $version = "3.11.5 (main, Sep 11 2023, 14:07:11) [GCC 11.2.0]";
 
-    public static $__spec__ = null;
     public static $__stderr__ = null;
     public static $__stdin__ = null;
     public static $__stdout__ = null;

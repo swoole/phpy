@@ -24,7 +24,6 @@ class calendar{
             self::$LocaleHTMLCalendar = self::$__module->LocaleHTMLCalendar;
             self::$LocaleTextCalendar = self::$__module->LocaleTextCalendar;
             self::$TextCalendar = self::$__module->TextCalendar;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_locale = self::$__module->_locale;
             self::$_localized_day = self::$__module->_localized_day;
             self::$_localized_month = self::$__module->_localized_month;
@@ -65,8 +64,6 @@ class calendar{
     public const _colwidth = 20;
     public const _spacing = 6;
 
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/calendar.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/calendar.py";
     public static $__name__ = "calendar";
     public static $__package__ = "";
 
@@ -77,7 +74,6 @@ class calendar{
     public static $LocaleHTMLCalendar = null;
     public static $LocaleTextCalendar = null;
     public static $TextCalendar = null;
-    public static $__spec__ = null;
     public static $_locale = null;
     public static $_localized_day = null;
     public static $_localized_month = null;

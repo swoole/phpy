@@ -50,7 +50,6 @@ class subprocess{
             self::$SubprocessError = self::$__module->SubprocessError;
             self::$TimeoutExpired = self::$__module->TimeoutExpired;
             self::$_PopenSelector = self::$__module->_PopenSelector;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_active = self::$__module->_active;
             self::$builtins = self::$__module->builtins;
             self::$contextlib = self::$__module->contextlib;
@@ -78,8 +77,6 @@ class subprocess{
 
     public static $_USE_POSIX_SPAWN = true;
     public static $_USE_VFORK = true;
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/subprocess.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/subprocess.py";
     public static $__name__ = "subprocess";
     public static $__package__ = "";
     public static $_can_fork_exec = true;
@@ -91,7 +88,6 @@ class subprocess{
     public static $SubprocessError = null;
     public static $TimeoutExpired = null;
     public static $_PopenSelector = null;
-    public static $__spec__ = null;
     public static $_active = null;
     public static $builtins = null;
     public static $contextlib = null;

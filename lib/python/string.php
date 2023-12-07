@@ -29,7 +29,6 @@ class string{
             self::$Formatter = self::$__module->Formatter;
             self::$Template = self::$__module->Template;
             self::$_ChainMap = self::$__module->_ChainMap;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_re = self::$__module->_re;
             self::$_sentinel_dict = self::$__module->_sentinel_dict;
             self::$_string = self::$__module->_string;
@@ -37,8 +36,6 @@ class string{
     }
 
 
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/string.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/string.py";
     public static $__name__ = "string";
     public static $__package__ = "";
     public static $ascii_letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -54,7 +51,6 @@ class string{
     public static $Formatter = null;
     public static $Template = null;
     public static $_ChainMap = null;
-    public static $__spec__ = null;
     public static $_re = null;
     public static $_sentinel_dict = null;
     public static $_string = null;

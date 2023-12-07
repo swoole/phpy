@@ -68,6 +68,7 @@ ZEND_METHOD(PyDict, offsetGet) {
     auto value = PyDict_GetItem(object, pk);
     if (value == NULL) {
         ssize_t len;
+        PyErr_Print();
         zend_throw_error(NULL, "PyDict: error key [%s]", object2str(pk, &len));
         return;
     }
@@ -92,6 +93,7 @@ ZEND_METHOD(PyDict, offsetSet) {
     };
     auto value = PyDict_SetItem(object, pk, pv);
     if (value < 0) {
+        PyErr_Print();
         zend_throw_error(NULL, "PyDict: cannot write attribute");
     }
 }
