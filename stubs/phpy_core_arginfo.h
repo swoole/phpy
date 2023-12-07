@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: a7b5e72450b962fb71877a2386a780131c46bb0f */
+ * Stub hash: 92ceb788d33cd994ebe64e022000998c2dd95c21 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_import, 0, 1, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
@@ -57,6 +57,11 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_callable, 0, 1, _IS
 	ZEND_ARG_OBJ_INFO(0, object, PyObject, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore___callStatic, 0, 2, IS_MIXED, 0)
+	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, arguments, IS_ARRAY, 0)
+ZEND_END_ARG_INFO()
+
 
 ZEND_METHOD(PyCore, import);
 ZEND_METHOD(PyCore, dir);
@@ -76,6 +81,7 @@ ZEND_METHOD(PyCore, scalar);
 ZEND_METHOD(PyCore, iter);
 ZEND_METHOD(PyCore, next);
 ZEND_METHOD(PyCore, callable);
+ZEND_METHOD(PyCore, __callStatic);
 
 
 static const zend_function_entry class_PyCore_methods[] = {
@@ -97,5 +103,6 @@ static const zend_function_entry class_PyCore_methods[] = {
 	ZEND_ME(PyCore, iter, arginfo_class_PyCore_iter, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, next, arginfo_class_PyCore_next, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, callable, arginfo_class_PyCore_callable, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, __callStatic, arginfo_class_PyCore___callStatic, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END
 };

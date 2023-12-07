@@ -94,4 +94,9 @@ class CoreTest extends TestCase
         $dict['rint'] = $rint;
         $this->assertEquals(PyCore::scalar($dict), ['uuid' => $uuid, 'rint' => $rint]);
     }
+
+    public function testRange()
+    {
+        $this->assertEquals(PyCore::scalar(PyCore::range(3)), range(0, 2));
+    }
 }

@@ -95,4 +95,9 @@ class PyCore
     {
 
     }
+
+    public static function __callStatic(string $name, array $arguments): mixed
+    {
+
+    }
 }
