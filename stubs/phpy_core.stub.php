@@ -10,7 +10,22 @@ class PyCore
     {
 
     }
-    
+
+    public static function storage(string $name, PyObject $object): mixed
+    {
+
+    }
+
+    public static function fetch(string $name): ?PyObject
+    {
+
+    }
+
+    public static function remove(string $name): bool
+    {
+
+    }
+
     public static function eval(string $code): mixed
     {
 

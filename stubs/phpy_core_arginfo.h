@@ -1,7 +1,20 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 92ceb788d33cd994ebe64e022000998c2dd95c21 */
+ * Stub hash: cb7c8c24171567ddc7f4115040b595fd4025d5e1 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_import, 0, 1, IS_MIXED, 0)
+	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_storage, 0, 2, IS_MIXED, 0)
+	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO(0, object, PyObject, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_fetch, 0, 1, PyObject, 1)
+	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_remove, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
@@ -68,6 +81,9 @@ ZEND_END_ARG_INFO()
 
 
 ZEND_METHOD(PyCore, import);
+ZEND_METHOD(PyCore, storage);
+ZEND_METHOD(PyCore, fetch);
+ZEND_METHOD(PyCore, remove);
 ZEND_METHOD(PyCore, eval);
 ZEND_METHOD(PyCore, dir);
 ZEND_METHOD(PyCore, str);
@@ -91,6 +107,9 @@ ZEND_METHOD(PyCore, __callStatic);
 
 static const zend_function_entry class_PyCore_methods[] = {
 	ZEND_ME(PyCore, import, arginfo_class_PyCore_import, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, storage, arginfo_class_PyCore_storage, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, fetch, arginfo_class_PyCore_fetch, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, remove, arginfo_class_PyCore_remove, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, eval, arginfo_class_PyCore_eval, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, dir, arginfo_class_PyCore_dir, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, str, arginfo_class_PyCore_str, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

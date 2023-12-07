@@ -77,7 +77,6 @@ zval *zend_resource_cast(PyObject *pv);
 zval *zend_object_cast(PyObject *pv);
 zval *zend_callable_cast(PyObject *pv);
 
-
 void rand_string(char *str, size_t size);
 
 /**

@@ -26,6 +26,7 @@ static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
 static std::unordered_map<const char *, PyObject *> builtin_functions;
+static std::unordered_map<const char *, PyObject *> global_objects;
 
 using phpy::CallObject;
 using phpy::php::arg_1;
@@ -75,13 +76,14 @@ ZEND_METHOD(PyCore, eval) {
         PyErr_Print();
         RETURN_FALSE;
     }
-    //PyModule_GetDict 是取 module 的一个成员指针 *md_dict，也就是返回 module->md_dict
-    //link: https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Include/internal/pycore_moduleobject.h#L37
+    // PyModule_GetDict 是取 module 的一个成员指针 *md_dict，也就是返回 module->md_dict
+    // link:
+    // https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Include/internal/pycore_moduleobject.h#L37
     PyObject *globals = PyModule_GetDict(module);
-    
-    //globals 最终会形成 PyFrameConstructor.fc_globals 对象传给 _PyEval_Vector 
-    //locals 可以传 NULL，底层会自动赋值成 globals 
-    //link: https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Python/ceval.c#L566
+
+    // globals 最终会形成 PyFrameConstructor.fc_globals 对象传给 _PyEval_Vector
+    // locals 可以传 NULL，底层会自动赋值成 globals
+    // link: https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Python/ceval.c#L566
     PyObject *result = PyRun_StringFlags(code, Py_file_input, globals, NULL, NULL);
     if (result == NULL) {
         PyErr_Print();
@@ -89,7 +91,7 @@ ZEND_METHOD(PyCore, eval) {
         RETURN_FALSE;
     }
     phpy::php::new_module(return_value, module);
-    //globals 是module的一个指针，存放了全局的变量，后面php中可能会访问到，如果释放会出现segmentation fault
+    // globals 是module的一个指针，存放了全局的变量，后面php中可能会访问到，如果释放会出现segmentation fault
     Py_DECREF(module);
     Py_DECREF(result);
 }
@@ -323,4 +325,59 @@ ZEND_METHOD(PyCore, __callStatic) {
 
     CallObject caller(fn, return_value, arguments);
     caller.call();
+}
+
+ZEND_METHOD(PyCore, storage) {
+    char *name;
+    size_t l_name;
+    zval *zobj;
+
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+    Z_PARAM_STRING(name, l_name)
+    Z_PARAM_OBJECT_OF_CLASS(zobj, phpy_object_get_ce())
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    auto pyobj = php2py(zobj);
+    CHECK_ARG(pyobj);
+
+    auto iter = global_objects.find(name);
+    if (iter != global_objects.end()) {
+        phpy::php::new_object(return_value, iter->second);
+        Py_DECREF(iter->second);
+        global_objects.erase(iter);
+    }
+    Py_INCREF(pyobj);
+    global_objects.emplace(name, pyobj);
+}
+
+ZEND_METHOD(PyCore, fetch) {
+    char *name;
+    size_t l_name;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_STRING(name, l_name)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    auto iter = global_objects.find(name);
+    if (iter != global_objects.end()) {
+        py2php(iter->second, return_value);
+    }
+}
+
+ZEND_METHOD(PyCore, remove) {
+    char *name;
+    size_t l_name;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_STRING(name, l_name)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    auto iter = global_objects.find(name);
+    if (iter != global_objects.end()) {
+        Py_DECREF(iter->second);
+        global_objects.erase(iter);
+        RETURN_TRUE;
+    } else {
+        RETURN_FALSE;
+    }
 }

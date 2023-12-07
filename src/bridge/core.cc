@@ -269,9 +269,7 @@ PyObject *php2py(zval *zv) {
     }
 }
 
-
-void rand_string(char *str, size_t size)
-{
+void rand_string(char *str, size_t size) {
     const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if (size) {
         --size;
