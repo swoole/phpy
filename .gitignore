@@ -34,4 +34,3 @@ __pycache__
 /.php-cs-fixer.cache
 /.phpunit.cache
 config.h.in~
-/lib/
