@@ -20,6 +20,6 @@ class StrTest extends TestCase
     {
         $os = PyCore::import('os');
         $bytes = $os->urandom(128);
-        $this->assertEquals(128, strlen(PyCore::scalar($bytes)));
+        $this->assertEquals(128, strlen($bytes));
     }
 }
