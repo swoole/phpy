@@ -40,6 +40,4 @@ int php_class_type_init(INIT_FUNC_ARGS) {
     return SUCCESS;
 }
 
-ZEND_METHOD(PyType, __construct) {
-
-}
+ZEND_METHOD(PyType, __construct) {}

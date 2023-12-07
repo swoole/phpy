@@ -234,3 +234,10 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     Py_Finalize();
     return SUCCESS;
 }
+
+ZEND_METHOD(PyCore, callable) {
+    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
+    CHECK_ARG(pyobj);
+    RETVAL_BOOL(PyCallable_Check(pyobj));
+    Py_DECREF(pyobj);
+}

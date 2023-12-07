@@ -44,6 +44,4 @@ zend_class_entry *phpy_iter_get_ce() {
     return PyIter_ce;
 }
 
-ZEND_METHOD(PyIter, __construct) {
-
-}
+ZEND_METHOD(PyIter, __construct) {}
