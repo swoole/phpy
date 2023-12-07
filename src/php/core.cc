@@ -22,9 +22,12 @@
 #include "stubs/phpy_core_arginfo.h"
 
 static zend_class_entry *PyCore_ce;
+static PyObject *module_builtins = nullptr;
+static PyObject *module_phpy = nullptr;
 
 using phpy::php::arg_1;
 using phpy::php::arg_2;
+using phpy::CallObject;
 
 ZEND_METHOD(PyCore, import) {
     size_t l_module;
@@ -254,11 +257,17 @@ PHP_MINIT_FUNCTION(phpy) {
         return FAILURE;
     }
     srand(time(NULL));
-    Py_Initialize();
-    PyObject *pmodule = PyImport_ImportModule("phpy");
-    if (!pmodule) {
+    Py_InitializeEx(0);
+    module_phpy = PyImport_ImportModule("phpy");
+    if (!module_phpy) {
         PyErr_Print();
         zend_error(E_ERROR, "Error: could not import module 'phpy'");
+        return FAILURE;
+    }
+    module_builtins = PyImport_ImportModule("builtins");
+    if (!module_builtins) {
+        PyErr_Print();
+        zend_error(E_ERROR, "Error: could not import module 'builtins'");
         return FAILURE;
     }
     php_class_init_all(INIT_FUNC_ARGS_PASSTHRU);
@@ -266,6 +275,12 @@ PHP_MINIT_FUNCTION(phpy) {
 }
 
 PHP_MSHUTDOWN_FUNCTION(phpy) {
+    if (module_phpy) {
+        Py_DECREF(module_phpy);
+    }
+    if (module_builtins) {
+        Py_DECREF(module_builtins);
+    }
     Py_Finalize();
     return SUCCESS;
 }
@@ -275,4 +290,24 @@ ZEND_METHOD(PyCore, callable) {
     CHECK_ARG(pyobj);
     RETVAL_BOOL(PyCallable_Check(pyobj));
     Py_DECREF(pyobj);
+}
+
+ZEND_METHOD(PyCore, __callStatic) {
+    char *name;
+    size_t l_name;
+    zval *arguments;
+
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+    Z_PARAM_STRING(name, l_name)
+    Z_PARAM_ARRAY(arguments)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    auto fn = PyObject_GetAttrString(module_builtins, name);
+    if (!fn || !PyCallable_Check(fn)) {
+        zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
+        return;
+    }
+    CallObject caller(fn, return_value, arguments);
+    caller.call();
+    Py_DECREF(fn);
 }

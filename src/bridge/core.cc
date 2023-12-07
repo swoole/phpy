@@ -85,13 +85,17 @@ static bool py2php_base_type(PyObject *pv, zval *zv) {
         long2long(pv, zv);
     } else if (PyFloat_Check(pv)) {
         ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));
+    } else if (PyByteArray_Check(pv)) {
+        ZVAL_STRINGL(zv, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
+    } else if (PyBytes_Check(pv)) {
+        ZVAL_STRINGL(zv, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
     } else if (ZendObject_Check(pv)) {
         ZVAL_ZVAL(zv, zend_object_cast(pv), 1, 0);
     } else if (ZendReference_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
     } else if (ZendResource_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
-    } else {
+    }  else {
         return false;
     }
     return true;
@@ -126,11 +130,7 @@ static void py2php_scalar_impl(PyObject *pv, zval *zv) {
     if (py2php_base_type(pv, zv)) {
         return;
     }
-    if (PyByteArray_Check(pv)) {
-        ZVAL_STRINGL(zv, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
-    } else if (PyBytes_Check(pv)) {
-        ZVAL_STRINGL(zv, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
-    } else if (PyUnicode_Check(pv)) {
+    if (PyUnicode_Check(pv)) {
         ZVAL_STR(zv, zend_string_cast(pv));
     } else if (PySequence_Check(pv)) {
         sequence2array(pv, zv);
