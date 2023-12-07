@@ -18,16 +18,18 @@
 #include "phpy.h"
 
 #include <tuple>
+#include <unordered_map>
 
 #include "stubs/phpy_core_arginfo.h"
 
 static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
+static std::unordered_map<const char *, PyObject *> builtin_functions;
 
+using phpy::CallObject;
 using phpy::php::arg_1;
 using phpy::php::arg_2;
-using phpy::CallObject;
 
 ZEND_METHOD(PyCore, import) {
     size_t l_module;
@@ -223,7 +225,7 @@ PHP_MINIT_FUNCTION(phpy) {
         return FAILURE;
     }
     Py_InitializeEx(0);
-    module_phpy= PyImport_ImportModule("phpy");
+    module_phpy = PyImport_ImportModule("phpy");
     if (!module_phpy) {
         PyErr_Print();
         zend_error(E_ERROR, "Error: could not import module 'phpy'");
@@ -246,6 +248,10 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     if (module_builtins) {
         Py_DECREF(module_builtins);
     }
+    for (auto kv : builtin_functions) {
+        Py_DECREF(kv.second);
+    }
+    builtin_functions.clear();
     Py_Finalize();
     return SUCCESS;
 }
@@ -267,12 +273,19 @@ ZEND_METHOD(PyCore, __callStatic) {
     Z_PARAM_ARRAY(arguments)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    auto fn = PyObject_GetAttrString(module_builtins, name);
-    if (!fn || !PyCallable_Check(fn)) {
-        zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
-        return;
+    auto fn_iter = builtin_functions.find(name);
+    PyObject *fn;
+    if (fn_iter == builtin_functions.end()) {
+        fn = PyObject_GetAttrString(module_builtins, name);
+        if (!fn || !PyCallable_Check(fn)) {
+            zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
+            return;
+        }
+        builtin_functions[name] = fn;
+    } else {
+        fn = fn_iter->second;
     }
+
     CallObject caller(fn, return_value, arguments);
     caller.call();
-    Py_DECREF(fn);
 }
