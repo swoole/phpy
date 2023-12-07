@@ -28,7 +28,6 @@ class threading{
             self::$_MainThread = self::$__module->_MainThread;
             self::$_PyRLock = self::$__module->_PyRLock;
             self::$_RLock = self::$__module->_RLock;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_active = self::$__module->_active;
             self::$_active_limbo_lock = self::$__module->_active_limbo_lock;
             self::$_count = self::$__module->_count;
@@ -52,8 +51,6 @@ class threading{
 
     public static $_HAVE_THREAD_NATIVE_ID = true;
     public static $_SHUTTING_DOWN = false;
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/threading.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/threading.py";
     public static $__name__ = "threading";
     public static $__package__ = "";
     public static $_profile_hook = null;
@@ -75,7 +72,6 @@ class threading{
     public static $_MainThread = null;
     public static $_PyRLock = null;
     public static $_RLock = null;
-    public static $__spec__ = null;
     public static $_active = null;
     public static $_active_limbo_lock = null;
     public static $_count = null;

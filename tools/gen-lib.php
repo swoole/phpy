@@ -20,6 +20,9 @@ $ignoreAttrs = [
     '__builtins__',
     '__all__',
     '__loader__',
+    '__cached__',
+    '__file__',
+    '__spec__',
 ];
 
 $staticProperties = [];

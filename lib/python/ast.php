@@ -158,7 +158,6 @@ class ast{
             self::$_Precedence = self::$__module->_Precedence;
             self::$_SINGLE_QUOTES = self::$__module->_SINGLE_QUOTES;
             self::$_Unparser = self::$__module->_Unparser;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_const_node_type_names = self::$__module->_const_node_type_names;
             self::$_const_types = self::$__module->_const_types;
             self::$_const_types_not = self::$__module->_const_types_not;
@@ -192,8 +191,6 @@ class ast{
     public const PyCF_TYPE_COMMENTS = 4096;
 
     public static $_INFSTR = "1e309";
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/__pycache__/ast.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/ast.py";
     public static $__name__ = "ast";
     public static $__package__ = "";
 
@@ -318,7 +315,6 @@ class ast{
     public static $_Precedence = null;
     public static $_SINGLE_QUOTES = null;
     public static $_Unparser = null;
-    public static $__spec__ = null;
     public static $_const_node_type_names = null;
     public static $_const_types = null;
     public static $_const_types_not = null;

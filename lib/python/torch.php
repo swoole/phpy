@@ -168,7 +168,6 @@ class torch{
             self::$__config__ = self::$__module->__config__;
             self::$__future__ = self::$__module->__future__;
             self::$__path__ = self::$__module->__path__;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_awaits = self::$__module->_awaits;
             self::$_classes = self::$__module->_classes;
             self::$_compile = self::$__module->_compile;
@@ -336,8 +335,6 @@ class torch{
     public static $USE_GLOBAL_DEPS = true;
     public static $USE_RTLD_GLOBAL_WITH_LIBTORCH = false;
     public static $_GLOBAL_DEVICE_CONTEXT = null;
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/site-packages/torch/__pycache__/__init__.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/site-packages/torch/__init__.py";
     public static $__name__ = "torch";
     public static $__package__ = "torch";
     public static $__version__ = "2.1.1+cu121";
@@ -496,7 +493,6 @@ class torch{
     public static $__config__ = null;
     public static $__future__ = null;
     public static $__path__ = null;
-    public static $__spec__ = null;
     public static $_awaits = null;
     public static $_classes = null;
     public static $_compile = null;

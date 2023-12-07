@@ -85,7 +85,6 @@ class tkinter{
             self::$YView = self::$__module->YView;
             self::$_VersionInfoType = self::$__module->_VersionInfoType;
             self::$__path__ = self::$__module->__path__;
-            self::$__spec__ = self::$__module->__spec__;
             self::$_magic_re = self::$__module->_magic_re;
             self::$_setit = self::$__module->_setit;
             self::$_space_re = self::$__module->_space_re;
@@ -187,8 +186,6 @@ class tkinter{
     public static $WORD = "word";
     public static $X = "x";
     public static $Y = "y";
-    public static $__cached__ = "/opt/anaconda3/lib/python3.11/tkinter/__pycache__/__init__.cpython-311.pyc";
-    public static $__file__ = "/opt/anaconda3/lib/python3.11/tkinter/__init__.py";
     public static $__name__ = "tkinter";
     public static $__package__ = "tkinter";
     public static $_default_root = null;
@@ -237,7 +234,6 @@ class tkinter{
     public static $YView = null;
     public static $_VersionInfoType = null;
     public static $__path__ = null;
-    public static $__spec__ = null;
     public static $_magic_re = null;
     public static $_setit = null;
     public static $_space_re = null;
