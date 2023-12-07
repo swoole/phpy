@@ -9,11 +9,10 @@ $torch = PyCore::import('torch.nn');
 $Module = $torch->Module;
 
 $transformers = PyCore::import('transformers');
-$AutoModel = $torch->AutoModel;
+$AutoModel = $transformers->AutoModel;
 
 function auto_configure_device_map($num_gpus): PyDict
 {
-    global $transformer;
     $num_trans_layers = 28;
     $per_gpu_layers = 30 / $num_gpus;
 
@@ -33,7 +32,7 @@ function auto_configure_device_map($num_gpus): PyDict
             $used = 0;
         }
         assert($gpu_target < $num_gpus);
-        $device_map[$transformer->encoder->layers[$i]] = $gpu_target;
+        $device_map['transformer.encoder.layers.' . $i] = $gpu_target;
         $used += 1;
     }
     return new PyDict($device_map);
@@ -44,12 +43,12 @@ function load_model_on_gpus($checkpoint_path, $num_gpus = 2, $device_map = null,
 {
     global $AutoModel;
     if ($num_gpus < 2 and $device_map === null) {
-        $model = $AutoModel->from_pretrained($checkpoint_path, $trust_remote_code = True, ...$args)->half()->cuda();
+        $model = $AutoModel->from_pretrained($checkpoint_path, ...$args, trust_remote_code: true)->half()->cuda();
     } else {
         $accelerate = PyCore::import('accelerate');
         $dispatch_model = $accelerate->dispatch_model;
 
-        $model = $AutoModel->from_pretrained($checkpoint_path, $trust_remote_code = True, ...$args)->half();
+        $model = $AutoModel->from_pretrained($checkpoint_path, ...$args, trust_remote_code: true)->half();
 
         if ($device_map === null) {
             $device_map = auto_configure_device_map($num_gpus);
