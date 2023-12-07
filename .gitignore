@@ -36,3 +36,5 @@ __pycache__
 /.phpunit.cache
 config.h.in~
 configure~
+/lib/
+

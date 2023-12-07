@@ -15,4 +15,11 @@ class StrTest extends TestCase
         $s2 = $str->replace('swoole', 'java');
         $this->assertTrue($s2->endswith('java'));
     }
+
+    public function testBytes()
+    {
+        $os = PyCore::import('os');
+        $bytes = $os->urandom(128);
+        $this->assertEquals(128, strlen(PyCore::scalar($bytes)));
+    }
 }

@@ -95,4 +95,9 @@ class PyCore
     {
 
     }
+
+    public static function callable(PyObject $object): bool
+    {
+
+    }
 }

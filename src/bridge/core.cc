@@ -76,7 +76,7 @@ PyObject *long2long(zval *zv) {
     return pv;
 }
 
-static void py2php_object_impl(PyObject *pv, zval *zv) {
+static bool py2php_base_type(PyObject *pv, zval *zv) {
     if (PyBool_Check(pv)) {
         ZVAL_BOOL(zv, Py_IsTrue(pv));
     } else if (Py_IsNone(pv)) {
@@ -85,15 +85,23 @@ static void py2php_object_impl(PyObject *pv, zval *zv) {
         long2long(pv, zv);
     } else if (PyFloat_Check(pv)) {
         ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));
-    } else if (PyBytes_Check(pv)) {
-        ZVAL_STRINGL(zv, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
     } else if (ZendObject_Check(pv)) {
         ZVAL_ZVAL(zv, zend_object_cast(pv), 1, 0);
     } else if (ZendReference_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
     } else if (ZendResource_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
-    } else if (PyUnicode_Check(pv)) {
+    } else {
+        return false;
+    }
+    return true;
+}
+
+static void py2php_object_impl(PyObject *pv, zval *zv) {
+    if (py2php_base_type(pv, zv)) {
+        return;
+    }
+    if (PyUnicode_Check(pv)) {
         phpy::php::new_str(zv, pv);
     } else if (PyList_Check(pv)) {
         phpy::php::new_list(zv, pv);
@@ -115,16 +123,13 @@ static void py2php_object_impl(PyObject *pv, zval *zv) {
  * Convert to PHP scalar types as much as possible
  */
 static void py2php_scalar_impl(PyObject *pv, zval *zv) {
-    if (PyBool_Check(pv)) {
-        ZVAL_BOOL(zv, Py_IsTrue(pv));
-    } else if (Py_IsNone(pv)) {
-        ZVAL_NULL(zv);
-    } else if (PyLong_Check(pv)) {
-        ZVAL_LONG(zv, PyLong_AsLong(pv));
-    } else if (PyFloat_Check(pv)) {
-        ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));
-    } else if (PyBytes_Check(pv)) {
+    if (py2php_base_type(pv, zv)) {
+        return;
+    }
+    if (PyByteArray_Check(pv)) {
         ZVAL_STRINGL(zv, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
+    } else if (PyBytes_Check(pv)) {
+        ZVAL_STRINGL(zv, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
     } else if (PyUnicode_Check(pv)) {
         ZVAL_STR(zv, zend_string_cast(pv));
     } else if (PySequence_Check(pv)) {
@@ -133,14 +138,6 @@ static void py2php_scalar_impl(PyObject *pv, zval *zv) {
         dict2array(pv, zv);
     } else if (PySet_Check(pv)) {
         set2array(pv, zv);
-    } else if (ZendObject_Check(pv)) {
-        ZVAL_ZVAL(zv, zend_object_cast(pv), 1, 0);
-    } else if (ZendReference_Check(pv)) {
-        ZVAL_COPY(zv, zend_reference_cast(pv));
-    } else if (ZendResource_Check(pv)) {
-        ZVAL_COPY(zv, zend_resource_cast(pv));
-    } else if (ZendCallable_Check(pv)) {
-        ZVAL_COPY(zv, zend_callable_cast(pv));
     } else {
         phpy::php::new_object(zv, pv);
     }
