@@ -60,6 +60,40 @@ ZEND_METHOD(PyCore, str) {
     Py_DECREF(pyobj);
 }
 
+ZEND_METHOD(PyCore, eval) {
+    size_t l_code;
+    char *code;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_STRING(code, l_code)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    size_t length = 64;
+    char module_name[length + 1];
+    rand_string(module_name, length);
+    PyObject *module = PyModule_New(module_name);
+    if (module == NULL) {
+        PyErr_Print();
+        RETURN_FALSE;
+    }
+    //PyModule_GetDict 是取 module 的一个成员指针 *md_dict，也就是返回 module->md_dict
+    //link: https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Include/internal/pycore_moduleobject.h#L37
+    PyObject *globals = PyModule_GetDict(module);
+    
+    //globals 最终会形成 PyFrameConstructor.fc_globals 对象传给 _PyEval_Vector 
+    //locals 可以传 NULL，底层会自动赋值成 globals 
+    //link: https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Python/ceval.c#L566
+    PyObject *result = PyRun_StringFlags(code, Py_file_input, globals, NULL, NULL);
+    if (result == NULL) {
+        PyErr_Print();
+        Py_DECREF(module);
+        RETURN_FALSE;
+    }
+    phpy::php::new_module(return_value, module);
+    //globals 是module的一个指针，存放了全局的变量，后面php中可能会访问到，如果释放会出现segmentation fault
+    Py_DECREF(module);
+    Py_DECREF(result);
+}
+
 ZEND_METHOD(PyCore, repr) {
     auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
     CHECK_ARG(pyobj);
@@ -224,6 +258,7 @@ PHP_MINIT_FUNCTION(phpy) {
         zend_error(E_ERROR, "Error: failed to call PyImport_AppendInittab()");
         return FAILURE;
     }
+    srand(time(NULL));
     Py_InitializeEx(0);
     module_phpy = PyImport_ImportModule("phpy");
     if (!module_phpy) {

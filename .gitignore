@@ -1,3 +1,4 @@
+/.vscode
 /.cproject
 /.idea
 /.project
@@ -34,3 +35,5 @@ __pycache__
 /.php-cs-fixer.cache
 /.phpunit.cache
 config.h.in~
+configure~
+/lib/
