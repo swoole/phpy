@@ -219,7 +219,7 @@ PHP_MINIT_FUNCTION(phpy) {
         zend_error(E_ERROR, "Error: failed to call PyImport_AppendInittab()");
         return FAILURE;
     }
-    Py_Initialize();
+    Py_InitializeEx(0);
     PyObject *pmodule = PyImport_ImportModule("phpy");
     if (!pmodule) {
         PyErr_Print();
