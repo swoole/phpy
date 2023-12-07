@@ -16,6 +16,9 @@ $module = PyCore::import($moduleName);
 $class = $m->$className;
 ```
 
+底层会缓存已加载过的模块，当第二次加载时会自动返回缓存中的模块，不会重复加载。因此在 `PHP-FPM/Apache` 
+等短生命周期环境下也可使用，不会有性能问题。
+
 ## 加载路径
 可使用 `PyCore::import('sys')->path->append()` 将一些目录加入到加载路径列表中。
 例如：`/workspace/app/user.py` 自定义的包，可以通过下面的步骤实现加载：
@@ -50,26 +53,3 @@ $class = $m->$className;
 
 > `PyCore` 实现了 `__callStatic()` 魔术方法，对于 `PyCore` 静态方法调用会自动调用 `Python` 的 `builtins` 模块对应的方法 ，
 > 可参考 [Built-in Functions](https://docs.python.org/3/library/functions.html) 了解更多内置方法的使用
-
-
-## 在 `Apache/PHP-FPM` 短生命周期环境下使用
-
-短生命周期运行环境下使用，需要将 `import` 的模块缓存起来，否则频繁地导入/销毁模块的开销会消耗大量资源。
-
-```php
-function import_with_cache($module_name) {
-    $module = PyCore::fetch('module_' . $module_name);
-    if (!$module) {
-        $module = PyCore::import($module_name);
-        PyCore::storage('module_' . $module_name, $module);
-    }
-    return $module;
-}
-
-$os = import_with_cache('os');
-```
-
-此函数使用了 `PyCore::fetch/storage` 方法，获取和保存 `PyObject`，它将不受 `ZendVM` 的生命周期控制。
-保存到全局缓存中的对象不会在请求结束后销毁，而是在进程的整个生命周期内持久存在。这可能会导致内存泄露，请务必要谨慎使用。
-
-**请勿将 `PHP 对象` 保存到全局缓存，否则将会造成内存错误，导致进程崩溃。**

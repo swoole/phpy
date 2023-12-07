@@ -26,7 +26,7 @@ static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
 static std::unordered_map<const char *, PyObject *> builtin_functions;
-static std::unordered_map<const char *, PyObject *> global_objects;
+static std::unordered_map<const char *, PyObject *> modules;
 
 using phpy::CallObject;
 using phpy::php::arg_1;
@@ -39,10 +39,19 @@ ZEND_METHOD(PyCore, import) {
     Z_PARAM_STRING(module, l_module)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    auto m = PyImport_ImportModule(module);
-    if (m == NULL) {
-        PyErr_Print();
-        RETURN_FALSE;
+    auto iter = modules.find(module);
+    PyObject *m;
+    if (iter != modules.end()) {
+        m = iter->second;
+    } else {
+        m = PyImport_ImportModule(module);
+        if (m == NULL) {
+            PyErr_Print();
+            zend_throw_error(NULL, "PyCore: could not import module '%s'", module);
+            return;
+        }
+        Py_INCREF(m);
+        modules.emplace(module, m);
     }
     phpy::php::new_module(return_value, m);
 }
@@ -288,7 +297,11 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     for (auto kv : builtin_functions) {
         Py_DECREF(kv.second);
     }
+    for (auto kv : modules) {
+        Py_DECREF(kv.second);
+    }
     builtin_functions.clear();
+    modules.clear();
     Py_Finalize();
     return SUCCESS;
 }
@@ -326,59 +339,4 @@ ZEND_METHOD(PyCore, __callStatic) {
 
     CallObject caller(fn, return_value, arguments);
     caller.call();
-}
-
-ZEND_METHOD(PyCore, storage) {
-    char *name;
-    size_t l_name;
-    zval *zobj;
-
-    ZEND_PARSE_PARAMETERS_START(2, 2)
-    Z_PARAM_STRING(name, l_name)
-    Z_PARAM_OBJECT_OF_CLASS(zobj, phpy_object_get_ce())
-    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-
-    auto pyobj = php2py(zobj);
-    CHECK_ARG(pyobj);
-
-    auto iter = global_objects.find(name);
-    if (iter != global_objects.end()) {
-        phpy::php::new_object(return_value, iter->second);
-        Py_DECREF(iter->second);
-        global_objects.erase(iter);
-    }
-    Py_INCREF(pyobj);
-    global_objects.emplace(name, pyobj);
-}
-
-ZEND_METHOD(PyCore, fetch) {
-    char *name;
-    size_t l_name;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-    Z_PARAM_STRING(name, l_name)
-    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-
-    auto iter = global_objects.find(name);
-    if (iter != global_objects.end()) {
-        py2php(iter->second, return_value);
-    }
-}
-
-ZEND_METHOD(PyCore, remove) {
-    char *name;
-    size_t l_name;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-    Z_PARAM_STRING(name, l_name)
-    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
-
-    auto iter = global_objects.find(name);
-    if (iter != global_objects.end()) {
-        Py_DECREF(iter->second);
-        global_objects.erase(iter);
-        RETURN_TRUE;
-    } else {
-        RETURN_FALSE;
-    }
 }

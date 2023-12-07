@@ -37,3 +37,10 @@ rdata = phpy.call('uniqid')
 assert o.call('set', 'key', rdata)
 assert o.call('get', 'key') == rdata
 ```
+
+
+实现原理
+----
+在进程内同时创建了 `ZendVM` 和 `CPython VM`，直接在进程堆栈空间内使用 `C` 函数互相调用，
+开销只有 `zval <-> PyObject` 结构体转换，因此性能是非常高的。
+
