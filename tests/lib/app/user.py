@@ -1,6 +1,7 @@
 def test():
     print("app.user.main.test()")
 
+storage = {}
 
 class User:
     def __init__(self, name):

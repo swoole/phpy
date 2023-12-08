@@ -12,10 +12,7 @@ date_default_timezone_set('Asia/Shanghai');
 
 require BASE_PATH . '/vendor/autoload.php';
 
-// python test module
 PyCore::import('sys')->path->append(__DIR__ . '/lib');
-// phpy.so
-PyCore::import('sys')->path->append(dirname(__DIR__) . '/modules');
 
 class PyLoader
 {
