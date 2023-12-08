@@ -58,20 +58,6 @@ ZEND_METHOD(PyCore, import) {
     phpy::php::new_module(return_value, m);
 }
 
-ZEND_METHOD(PyCore, dir) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    py2php(PyObject_Dir(pyobj), return_value);
-    Py_DECREF(pyobj);
-}
-
-ZEND_METHOD(PyCore, str) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    py2php(PyObject_Str(pyobj), return_value);
-    Py_DECREF(pyobj);
-}
-
 ZEND_METHOD(PyCore, eval) {
     size_t l_code;
     char *code;
@@ -105,68 +91,6 @@ ZEND_METHOD(PyCore, eval) {
     // globals 是module的一个指针，存放了全局的变量，后面php中可能会访问到，如果释放会出现segmentation fault
     Py_DECREF(module);
     Py_DECREF(result);
-}
-
-ZEND_METHOD(PyCore, repr) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    py2php(PyObject_Repr(pyobj), return_value);
-    Py_DECREF(pyobj);
-}
-
-ZEND_METHOD(PyCore, type) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    py2php(PyObject_Type(pyobj), return_value);
-    Py_DECREF(pyobj);
-}
-
-ZEND_METHOD(PyCore, hash) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    RETVAL_LONG(PyObject_Hash(pyobj));
-    Py_DECREF(pyobj);
-}
-
-ZEND_METHOD(PyCore, hasattr) {
-    auto objs = arg_2(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    CHECK_ARG(std::get<0>(objs));
-    CHECK_ARG(std::get<1>(objs));
-    RETVAL_BOOL(PyObject_HasAttr(std::get<0>(objs), std::get<1>(objs)));
-    Py_DECREF(std::get<0>(objs));
-    Py_DECREF(std::get<1>(objs));
-}
-
-ZEND_METHOD(PyCore, id) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    RETVAL_LONG((intptr_t) pyobj);
-    Py_DECREF(pyobj);
-}
-
-ZEND_METHOD(PyCore, len) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    RETVAL_LONG(PyObject_Size(pyobj));
-    Py_DECREF(pyobj);
-}
-
-ZEND_METHOD(PyCore, globals) {
-    auto vars = PyEval_GetGlobals();
-    if (vars == NULL) {
-        return;
-    }
-    py2php(vars, return_value);
-    Py_DECREF(vars);
-}
-
-ZEND_METHOD(PyCore, locals) {
-    auto vars = PyEval_GetLocals();
-    if (vars == NULL) {
-        return;
-    }
-    py2php(vars, return_value);
-    Py_DECREF(vars);
 }
 
 ZEND_METHOD(PyCore, iter) {
@@ -325,13 +249,6 @@ PHP_RSHUTDOWN_FUNCTION(phpy) {
     }
     zend_objects.clear();
     return SUCCESS;
-}
-
-ZEND_METHOD(PyCore, callable) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    RETVAL_BOOL(PyCallable_Check(pyobj));
-    Py_DECREF(pyobj);
 }
 
 ZEND_METHOD(PyCore, __callStatic) {

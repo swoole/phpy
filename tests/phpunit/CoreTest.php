@@ -50,7 +50,7 @@ class CoreTest extends TestCase
 
     function testHash()
     {
-        $dict = new PyDict();
+        $dict = new PyStr(uniqid());
         $this->assertIsNumeric(PyCore::hash($dict));
     }
 
