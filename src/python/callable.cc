@@ -72,8 +72,7 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     };
 
     zval retval;
-    zend_result result = call_user_function(NULL, NULL, &self->callable, &retval, argc, argv);
-
+    zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv);
     if (result == FAILURE) {
         PyErr_Format(PyExc_NameError, "Function  call failed");
         Py_INCREF(Py_None);

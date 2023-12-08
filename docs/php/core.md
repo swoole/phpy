@@ -26,12 +26,8 @@ $class = $m->$className;
 1. `PyCore::import('sys')->path->append('/workspace')` 将 `/workspace` 添加到 `sys.path` 中
 2. `PyCore::import('app.user')` 将自动搜索 `sys.path` 找到对应的 `app/user.py` 包并载入
 
-
 ## 内置方法
 - `PyCore::import($module)` 导入模块
-- `PyCore::storage($key, $pyobject)` 持久化存储 `Python` 对象
-- `PyCore::fetch($key)` 从全局缓存中获取持久化存储的 `Python` 对象
-- `PyCore::remove($key)` 从全局缓存中删除 `Python` 对象
 - `PyCore::str()` 将对象转为字符串
 - `PyCore::repr()` 
 - `PyCore::type()` 获取对象的类型
@@ -53,3 +49,15 @@ $class = $m->$className;
 
 > `PyCore` 实现了 `__callStatic()` 魔术方法，对于 `PyCore` 静态方法调用会自动调用 `Python` 的 `builtins` 模块对应的方法 ，
 > 可参考 [Built-in Functions](https://docs.python.org/3/library/functions.html) 了解更多内置方法的使用
+
+## 动态链接库问题
+导入库是发生动态链接库错误，原因可能是 `LD` 路径错误导致，可设置环境变量指定 `Python C 模块` 动态库路径。
+
+```shell
+export LD_LIBRARY_PATH=/opt/anaconda3/lib
+php plot.php
+```
+
+这种方式仅对当前的 `bash` 会话有效，不会影响全局。不要直接修改 `/etc/ld.so.conf.d/*.conf` 增加 `/opt/anaconda3/lib`，这可能会导致
+`libc` 库冲突，可能会影响操作系统其他程序的正常运行。
+

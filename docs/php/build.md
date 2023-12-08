@@ -30,3 +30,16 @@ phpy
 [Zend Modules]
 Zend OPcache
 ```
+
+编译参数
+----
+### `--with-python-dir`
+
+指定 `Python` 的安装路径，例如 `/usr/bin/python` 应该设置为 `--with-python-dir=/usr`。
+若使用 `conda` 安装 `Python`，应设置为 `/opt/anaconda3`
+
+### `--with-python-version`
+指定 `Python` 的版本，例如 `3.10`、`3.11`、`3.12`，默认将使用 `$python-dir/bin/python -V` 来获取版本。
+
+
+

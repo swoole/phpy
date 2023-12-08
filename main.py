@@ -4,12 +4,11 @@ sys.path.append("./tests/lib")
 
 import phpy
 
-s = {1, 3, 5, 2023, 7, 9}
-
-phpy.call('var_dump', s)
-rs = phpy.call('array_search', 2023, s)
-print(rs)
-
+o = phpy.Object('redis')
+assert o.call('connect', '127.0.0.1', 6379)
+# rdata = phpy.call('uniqid')
+# assert o.call('set', 'key', rdata)
+# assert o.call('get', 'key') == rdata
 
 # phpy.include("main.php")
 #

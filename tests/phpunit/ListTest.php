@@ -55,4 +55,12 @@ class ListTest extends TestCase
         $this->assertSame($iter_values, $values);
         $this->assertSame($iter_keys, array_keys($values));
     }
+
+    public function testCtor()
+    {
+        $list = new PyList([1, 3, 5, 7, 9]);
+
+        $this->assertEquals($list->count(), 5);
+        $this->assertEquals($list->index(9), 4);
+    }
 }

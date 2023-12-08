@@ -105,7 +105,7 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
     zval retval;
     zval zfn;
     py2php(fn, &zfn, true);
-    zend_result result = call_user_function(NULL, &self->object, &zfn, &retval, argc, argv);
+    zend_result result = phpy::php::call_fn(&self->object, &zfn, &retval, argc, argv);
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
         release_argv(argc, argv);
@@ -191,7 +191,7 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
         ZVAL_STRINGL(&zfn, CTOR_NAME, sizeof(CTOR_NAME) - 1);
         zval argv[argc];
         tuple2argv(argv, args, argc, begin);
-        zend_result result = call_user_function(NULL, &obj->object, &zfn, &retval, argc, argv);
+        zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
         ON_SCOPE_EXIT {
             zval_ptr_dtor(&zfn);
             zval_ptr_dtor(&retval);

@@ -6,7 +6,7 @@
 
 class PyList extends PySequence
 {
-    public function __construct()
+    public function __construct(array $value = null)
     {
 
     }
