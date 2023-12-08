@@ -3,13 +3,12 @@ phpy
 `Python` 与 `PHP` 互调用库，可以在 `PHP` 中使用 `Python` 语言的函数和类库，或者在 `Python` 中使用 `PHP` 的包。
 但不是语言内嵌。编码依然使用各自的原生语法。
 
-> 本项目授权协议为 `Apache2`
+> 查看 [中文文档](docs/index.md)  
 
 - 目前仅支持 Linux 平台（理论上可以支持所有操作系统，待实现）
 - 不支持 Python 多线程、`async-io` 特性
 
 ![Alt](docs/wxg.png)
-
 
 PHP 调用 Python
 ----
