@@ -19,6 +19,7 @@
 
 #include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "stubs/phpy_core_arginfo.h"
 
@@ -27,6 +28,7 @@ static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
 static std::unordered_map<const char *, PyObject *> builtin_functions;
 static std::unordered_map<const char *, PyObject *> modules;
+static std::unordered_map<PyObject *, void (*)(PyObject *)> zend_objects;
 
 using phpy::CallObject;
 using phpy::php::arg_1;
@@ -303,6 +305,25 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     builtin_functions.clear();
     modules.clear();
     Py_Finalize();
+    return SUCCESS;
+}
+
+namespace phpy {
+namespace php {
+void add_object(PyObject *pv, void (*dtor)(PyObject *)) {
+    zend_objects.emplace(pv, dtor);
+}
+void del_object(PyObject *pv) {
+    zend_objects.erase(pv);
+}
+}  // namespace php
+}  // namespace phpy
+
+PHP_RSHUTDOWN_FUNCTION(phpy) {
+    for (auto kv : zend_objects) {
+        kv.second(kv.first);
+    }
+    zend_objects.clear();
     return SUCCESS;
 }
 

@@ -46,6 +46,13 @@ static int Reference_init(ZendReference *self, PyObject *args, PyObject *kwds) {
     return 0;
 }
 
+static void Reference_dtor(PyObject *pv) {
+    ZendReference *self = (ZendReference *) pv;
+    phpy::php::del_object(pv);
+    zval_ptr_dtor(&self->reference);
+    ZVAL_NULL(&self->reference);
+}
+
 static PyObject *Reference_get(ZendReference *self, PyObject *args) {
     return php2py(&self->reference);
 }
@@ -88,5 +95,7 @@ zval *zend_reference_cast(PyObject *pv) {
 }
 
 PyObject *reference2py(zval *zv) {
-    return php2py(Z_REFVAL_P(zv));
+    auto pyobj = php2py(Z_REFVAL_P(zv));
+    phpy::php::add_object((PyObject *)pyobj, Reference_dtor);
+    return pyobj;
 }

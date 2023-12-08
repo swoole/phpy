@@ -33,10 +33,17 @@ static PyTypeObject ZendCallableType = {
 
 //  clang-format on
 
+static void Callable_dtor(PyObject *pv) {
+    ZendCallable *self = (ZendCallable *) pv;
+    zval_ptr_dtor(&self->callable);
+    ZVAL_NULL(&self->callable);
+}
+
 PyObject* callable2py(zval *zv) {
     ZendCallable *cb = PyObject_New(ZendCallable, &ZendCallableType);
     cb->callable = *zv;
     zval_add_ref(&cb->callable);
+    phpy::php::add_object((PyObject *)cb, Callable_dtor);
     return (PyObject *)cb;
 }
 
@@ -51,6 +58,7 @@ bool ZendCallable_Check(PyObject *pv) {
 
 static void Callable_dealloc(ZendCallable *self) {
     zval_ptr_dtor(&self->callable);
+    phpy::php::del_object((PyObject *)self);
     Py_TYPE(self)->tp_free((PyObject*) self);
 }
 

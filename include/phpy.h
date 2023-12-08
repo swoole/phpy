@@ -207,6 +207,9 @@ void new_type(zval *zv, PyObject *pv);
 void new_fn(zval *zv, PyObject *fn);
 void new_iter(zval *zv, PyObject *type);
 
+void add_object(PyObject *pv, void (*)(PyObject *));
+void del_object(PyObject *pv);
+
 static inline bool is_null(zval *zv) {
     return zv == NULL or ZVAL_IS_NULL(zv);
 }

@@ -71,9 +71,15 @@ static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds) {
     return 0;
 }
 
-static void Object_destroy(ZendObject *self) {
+static void Object_dtor(PyObject *pv) {
+    ZendObject *self = (ZendObject *) pv;
     zval_ptr_dtor(&self->object);
     ZVAL_NULL(&self->object);
+}
+
+static void Object_destroy(ZendObject *self) {
+    Object_dtor((PyObject *) self);
+    phpy::php::del_object((PyObject *) self);
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
@@ -157,6 +163,7 @@ PyObject *object2py(zval *zv) {
     } else {
         ZendObject *obj = PyObject_New(ZendObject, &ZendObjectType);
         obj->object = *zv;
+        phpy::php::add_object((PyObject *) obj, Object_dtor);
         zval_add_ref(&obj->object);
         return (PyObject *) obj;
     }
@@ -177,6 +184,7 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
         PyErr_SetString(PyExc_TypeError, "failed to init object");
         return NULL;
     }
+    phpy::php::add_object((PyObject *) obj, Object_dtor);
     if (ce->constructor) {
         zval retval;
         zval zfn;

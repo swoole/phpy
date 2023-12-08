@@ -21,6 +21,7 @@ PHP_RINIT_FUNCTION(phpy)
 
 extern PHP_MINIT_FUNCTION(phpy);
 extern PHP_MSHUTDOWN_FUNCTION(phpy);
+extern PHP_RSHUTDOWN_FUNCTION(phpy);
 
 /* {{{ PHP_MINFO_FUNCTION */
 PHP_MINFO_FUNCTION(phpy)
@@ -37,14 +38,14 @@ PHP_MINFO_FUNCTION(phpy)
 /* {{{ phpy_module_entry */
 zend_module_entry phpy_module_entry = {
 	STANDARD_MODULE_HEADER,
-	"phpy",					/* Extension name */
-	NULL,					/* zend_function_entry */
-	PHP_MINIT(phpy),							/* PHP_MINIT - Module initialization */
-	PHP_MSHUTDOWN(phpy),							/* PHP_MSHUTDOWN - Module shutdown */
+	"phpy",					    /* Extension name */
+	NULL,					    /* zend_function_entry */
+	PHP_MINIT(phpy),		    /* PHP_MINIT - Module initialization */
+	PHP_MSHUTDOWN(phpy),		/* PHP_MSHUTDOWN - Module shutdown */
 	PHP_RINIT(phpy),			/* PHP_RINIT - Request initialization */
-	NULL,							/* PHP_RSHUTDOWN - Request shutdown */
+	PHP_RSHUTDOWN(phpy),    	/* PHP_RSHUTDOWN - Request shutdown */
 	PHP_MINFO(phpy),			/* PHP_MINFO - Module info */
-	PHP_PHPY_VERSION,		/* Version */
+	PHP_PHPY_VERSION,		    /* Version */
 	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */

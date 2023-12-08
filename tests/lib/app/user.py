@@ -41,3 +41,7 @@ def test_callback(cb):
 def lazy_square(limit):
     for x in range(1, limit + 1):
         yield x, x ** 2
+
+
+def get_type(d, k):
+    return repr(d[k])

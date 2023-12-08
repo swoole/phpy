@@ -20,6 +20,7 @@
 struct ZendClass;
 
 static int Class_init(ZendClass *self, PyObject *args, PyObject *kwds);
+static void Class_dealloc(ZendClass *self);
 static PyObject *Class_new(ZendClass *self, PyObject *args);
 static PyObject *Class_get(ZendClass *self, PyObject *args);
 static PyObject *Class_set(ZendClass *self, PyObject *args);
@@ -44,6 +45,7 @@ bool py_module_class_init(PyObject *m) {
     ZendClassType.tp_name = "zend_class";
     ZendClassType.tp_basicsize = sizeof(ZendClass);
     ZendClassType.tp_itemsize = 0;
+    ZendClassType.tp_dealloc = (destructor) Class_dealloc;
     ZendClassType.tp_flags = Py_TPFLAGS_DEFAULT;
     ZendClassType.tp_doc = PyDoc_STR("zend_class");
     ZendClassType.tp_methods = Class_methods;
@@ -62,6 +64,11 @@ bool py_module_class_init(PyObject *m) {
     return true;
 }
 
+static void Class_dtor(PyObject *pv) {
+    ZendClass *self = (ZendClass *) pv;
+    self->ce = NULL;
+}
+
 static int Class_init(ZendClass *self, PyObject *args, PyObject *kwds) {
     const char *name = 0;
     size_t l_name;
@@ -78,14 +85,30 @@ static int Class_init(ZendClass *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
     self->ce = ce;
+    phpy::php::add_object((PyObject *) self, Class_dtor);
     return 0;
 }
 
 static PyObject *Class_new(ZendClass *self, PyObject *args) {
+    if (self->ce == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "not initialized or life cycle has ended");
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
     return object_create(self->ce, args, PyTuple_Size(args), 0);
 }
 
+static void Class_dealloc(ZendClass *self) {
+    phpy::php::del_object((PyObject *) self);
+    Py_TYPE(self)->tp_free((PyObject *) self);
+}
+
 static PyObject *Class_get(ZendClass *self, PyObject *args) {
+    if (self->ce == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "not initialized or life cycle has ended");
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
     char *name;
     size_t l_name;
     if (!PyArg_ParseTuple(args, "s#", &name, &l_name)) {
@@ -106,6 +129,11 @@ static PyObject *Class_get(ZendClass *self, PyObject *args) {
 }
 
 static PyObject *Class_set(ZendClass *self, PyObject *args) {
+    if (self->ce == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "not initialized or life cycle has ended");
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
     char *name;
     size_t l_name;
     PyObject *value;

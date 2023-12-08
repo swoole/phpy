@@ -32,11 +32,20 @@ static PyTypeObject ZendResourceType = {
 
 //  clang-format on
 
+
+static void Resource_dtor(PyObject *pv) {
+    ZendResource *self = (ZendResource *) pv;
+    phpy::php::del_object(pv);
+    zval_ptr_dtor(&self->resource);
+    ZVAL_NULL(&self->resource);
+}
+
 PyObject* resource2py(zval *zv) {
-    ZendResource *res = PyObject_New(ZendResource, &ZendResourceType);
-    res->resource = *zv;
-    zval_add_ref(&res->resource);
-    return (PyObject*) res;
+    ZendResource *pyobj = PyObject_New(ZendResource, &ZendResourceType);
+    pyobj->resource = *zv;
+    phpy::php::add_object((PyObject *)pyobj, Resource_dtor);
+    zval_add_ref(&pyobj->resource);
+    return (PyObject*) pyobj;
 }
 
 zval *zend_resource_cast(PyObject *pv) {
@@ -50,6 +59,7 @@ bool ZendResource_Check(PyObject *pv) {
 
 static void Resource_destroy(ZendResource *self) {
     zval_ptr_dtor(&self->resource);
+    phpy::php::del_object((PyObject *)self);
 }
 
 bool py_module_resource_init(PyObject *m) {
