@@ -59,18 +59,25 @@ ZEND_METHOD(PyCore, import) {
 }
 
 ZEND_METHOD(PyCore, eval) {
-    size_t l_code;
-    char *code;
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-    Z_PARAM_STRING(code, l_code)
+    size_t l_input_code;
+    char *input_code;
+    zval *global_params = NULL;
+    //第一个参数是要执行的代码，第二个参数是传入的变量（可选）
+    ZEND_PARSE_PARAMETERS_START(1, 2)
+    Z_PARAM_STRING(input_code, l_input_code)
+    Z_PARAM_OPTIONAL
+    Z_PARAM_ARRAY(global_params)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+    
 
-    size_t length = 64;
-    char module_name[length + 1];
-    rand_string(module_name, length);
+    size_t module_name_length = 64;
+    char module_name[module_name_length + 1];
+    rand_string(module_name, module_name_length);
+
     PyObject *module = PyModule_New(module_name);
     if (module == NULL) {
         PyErr_Print();
+        Py_DECREF(input_code);
         RETURN_FALSE;
     }
     // PyModule_GetDict 是取 module 的一个成员指针 *md_dict，也就是返回 module->md_dict
@@ -78,19 +85,33 @@ ZEND_METHOD(PyCore, eval) {
     // https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Include/internal/pycore_moduleobject.h#L37
     PyObject *globals = PyModule_GetDict(module);
 
+    //如果传入了global_params，则把他合并到 globals 中（非覆盖的方式合并）
+    if (!phpy::php::is_null(global_params)) {
+        auto status = PyDict_Merge(globals, array2dict(global_params), 0);
+        Py_DECREF(global_params);
+        if (status != 0) {
+            PyErr_Print();
+            Py_DECREF(module);
+            Py_DECREF(input_code);
+            RETURN_FALSE;
+        }
+    }
     // globals 最终会形成 PyFrameConstructor.fc_globals 对象传给 _PyEval_Vector
     // locals 可以传 NULL，底层会自动赋值成 globals
-    // link: https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Python/ceval.c#L566
-    PyObject *result = PyRun_StringFlags(code, Py_file_input, globals, NULL, NULL);
+    // link: 
+    // https://github.com/python/cpython/blob/16448cab44e23d350824e9ac75e699f5bcc48a14/Python/ceval.c#L566
+    PyObject *result = PyRun_StringFlags(input_code, Py_file_input, globals, NULL, NULL);
     if (result == NULL) {
         PyErr_Print();
         Py_DECREF(module);
+        Py_DECREF(input_code);
         RETURN_FALSE;
     }
     phpy::php::new_module(return_value, module);
     // globals 是module的一个指针，存放了全局的变量，后面php中可能会访问到，如果释放会出现segmentation fault
     Py_DECREF(module);
     Py_DECREF(result);
+    Py_DECREF(input_code);
 }
 
 ZEND_METHOD(PyCore, iter) {
