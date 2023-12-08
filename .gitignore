@@ -37,3 +37,4 @@ __pycache__
 config.h.in~
 configure~
 /lib/
+run-tests.php

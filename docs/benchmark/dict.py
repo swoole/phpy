@@ -12,7 +12,7 @@ for i in range(n):
 
 elapsed_time = time.time() - start_time
 
-print(f"set from dict: {elapsed_time:.6f} seconds")
+print(f"dict set: {elapsed_time:.6f} seconds")
 
 n = COUNT
 
@@ -23,4 +23,4 @@ for i in range(n):
 
 elapsed_time_get = time.time() - start_time_get
 
-print(f"get from dict: {elapsed_time_get:.6f} seconds")
+print(f"dict get: {elapsed_time_get:.6f} seconds")
