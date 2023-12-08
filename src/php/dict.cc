@@ -43,6 +43,10 @@ void new_dict(zval *zv, PyObject *dict) {
 
 using phpy::php::arg_1;
 
+zend_class_entry *phpy_dict_get_ce() {
+    return PyDict_ce;
+}
+
 ZEND_METHOD(PyDict, __construct) {
     zval *zdict = NULL;
     ZEND_PARSE_PARAMETERS_START(0, 1)

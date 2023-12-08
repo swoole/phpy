@@ -42,4 +42,17 @@ PYCODE;
         $this->assertEquals(64, $mod->square['square_8']);
         $this->assertEquals(16, $mod->square['square_4']);
     }
+
+    public function testEvalErrorCode()
+    {
+        $pycode = <<<PYCODE
+xx tt xx \t 
+PYCODE;
+
+        $mod = PyCore::eval($pycode, [
+            'n' => 10,
+            'prefix' => 'square_',
+        ]);
+        $this->assertFalse($mod);
+    }
 }

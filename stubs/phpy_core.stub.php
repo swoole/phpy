@@ -11,7 +11,7 @@ class PyCore
 
     }
 
-    public static function eval(string $code): mixed
+    public static function eval(string $code, ?array $globals = null): mixed
     {
 
     }
