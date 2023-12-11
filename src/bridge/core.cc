@@ -337,14 +337,7 @@ void CallObject::call() {
     } else {
         auto error = PyErr_Occurred();
         if (error != NULL) {
-            PyObject *ptype, *pvalue, *ptraceback;
-            PyErr_Fetch(&ptype, &pvalue, &ptraceback);
-            if (pvalue) {
-                PyObject *pstr = PyObject_Str(pvalue);
-                if (pstr) {
-                    zend_throw_error(NULL, "PyError: %s", PyUnicode_AsUTF8(pstr));
-                }
-            }
+            phpy::php::throw_error(error);
         }
         RETVAL_NULL();
     }

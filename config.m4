@@ -49,7 +49,7 @@ if test "$PHP_PHPY" != "no"; then
 
   phpy_source_file="phpy.cc \
         src/bridge/core.cc \
-		src/php/object.cc src/php/type.cc src/php/iter.cc src/php/dict.cc  src/php/core.cc src/php/fn.cc src/php/str.cc src/php/sequence.cc src/php/list.cc  src/php/set.cc src/php/tuple.cc src/php/module.cc \
+		src/php/object.cc src/php/type.cc src/php/error.cc src/php/iter.cc src/php/dict.cc  src/php/core.cc src/php/fn.cc src/php/str.cc src/php/sequence.cc src/php/list.cc  src/php/set.cc src/php/tuple.cc src/php/module.cc \
         src/python/class.cc src/python/module.cc src/python/object.cc src/python/reference.cc src/python/resource.cc src/python/callable.cc \
         "
 

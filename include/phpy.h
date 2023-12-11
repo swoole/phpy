@@ -154,6 +154,7 @@ int php_class_set_init(INIT_FUNC_ARGS);
 int php_class_type_init(INIT_FUNC_ARGS);
 int php_class_iter_init(INIT_FUNC_ARGS);
 int php_class_fn_init(INIT_FUNC_ARGS);
+int php_class_error_init(INIT_FUNC_ARGS);
 void php_class_init_all(INIT_FUNC_ARGS);
 
 zend_class_entry *phpy_object_get_ce();
@@ -181,6 +182,8 @@ uint32_t phpy_object_iterator_index(zval *object);
         RETURN_FALSE;                                                                                                  \
     }
 
+#define STR_AND_LEN(str) str, sizeof(str) - 1
+
 #ifndef Py_IsTrue
 #define Py_IsTrue PyObject_IsTrue
 #endif
@@ -207,9 +210,12 @@ void new_str(zval *zv, PyObject *pv);
 void new_type(zval *zv, PyObject *pv);
 void new_fn(zval *zv, PyObject *fn);
 void new_iter(zval *zv, PyObject *type);
+void new_error(zval *zv, PyObject *error);
 
 void add_object(PyObject *pv, void (*)(PyObject *));
 void del_object(PyObject *pv);
+
+void throw_error(PyObject *error);
 
 static inline bool is_null(zval *zv) {
     return zv == NULL or ZVAL_IS_NULL(zv);

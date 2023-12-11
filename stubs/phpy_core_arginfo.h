@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 72af81eeb7ac5d372e4215159955191820ceb84e */
+ * Stub hash: 19a05b79b79fd96426f7051b48c9e2faad76ecd3 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_import, 0, 1, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
@@ -24,6 +24,10 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_scalar, 0, 1, IS_MI
 	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_next, 0, 1, PyObject, 1)
+	ZEND_ARG_OBJ_INFO(0, iter, PyObject, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore___callStatic, 0, 2, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, arguments, IS_ARRAY, 0)
@@ -36,6 +40,7 @@ ZEND_METHOD(PyCore, int);
 ZEND_METHOD(PyCore, float);
 ZEND_METHOD(PyCore, fn);
 ZEND_METHOD(PyCore, scalar);
+ZEND_METHOD(PyCore, next);
 ZEND_METHOD(PyCore, __callStatic);
 
 
@@ -46,6 +51,7 @@ static const zend_function_entry class_PyCore_methods[] = {
 	ZEND_ME(PyCore, float, arginfo_class_PyCore_float, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, fn, arginfo_class_PyCore_fn, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, scalar, arginfo_class_PyCore_scalar, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(PyCore, next, arginfo_class_PyCore_next, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(PyCore, __callStatic, arginfo_class_PyCore___callStatic, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END
 };
