@@ -43,11 +43,10 @@ ZEND_METHOD(PyCore, import) {
 
     PyObject *m = PyImport_ImportModule(module);
     if (m == NULL) {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyCore: could not import module '%s'", module);
-        return;
+        phpy::php::throw_error_if_occurred();
+    } else {
+        phpy::php::new_module(return_value, m);
     }
-    phpy::php::new_module(return_value, m);
 }
 
 ZEND_METHOD(PyCore, eval) {

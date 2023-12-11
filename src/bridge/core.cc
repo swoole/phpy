@@ -335,10 +335,7 @@ void CallObject::call() {
         py2php(value, return_value);
         Py_DECREF(value);
     } else {
-        auto error = PyErr_Occurred();
-        if (error != NULL) {
-            phpy::php::throw_error(error);
-        }
+        phpy::php::throw_error_if_occurred();
         RETVAL_NULL();
     }
 }

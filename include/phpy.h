@@ -217,6 +217,13 @@ void del_object(PyObject *pv);
 
 void throw_error(PyObject *error);
 
+static inline void throw_error_if_occurred() {
+    auto error = PyErr_Occurred();
+    if (error != NULL) {
+        phpy::php::throw_error(error);
+    }
+}
+
 static inline bool is_null(zval *zv) {
     return zv == NULL or ZVAL_IS_NULL(zv);
 }
