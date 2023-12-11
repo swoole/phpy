@@ -1,9 +1,6 @@
 <?php
 namespace python;
 
-use \PyModule;
-use \PyCore;
-
 /**
 JSON (JavaScript Object Notation) <https://json.org> is a subset of
 JavaScript syntax (ECMA-262 3rd edition) used as a lightweight data
@@ -103,61 +100,48 @@ Using json.tool from the shell to validate and pretty-print::
     Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
 */
 class json{
-    private static ?PyModule $__module = null;
-
-    public static function __init(): void {
-        if (self::$__module == null) {
-            self::$__module = PyCore::import('json');
-            self::$JSONDecodeError = self::$__module->JSONDecodeError;
-            self::$JSONDecoder = self::$__module->JSONDecoder;
-            self::$JSONEncoder = self::$__module->JSONEncoder;
-            self::$__path__ = self::$__module->__path__;
-            self::$_default_decoder = self::$__module->_default_decoder;
-            self::$_default_encoder = self::$__module->_default_encoder;
-            self::$codecs = self::$__module->codecs;
-            self::$decoder = self::$__module->decoder;
-            self::$encoder = self::$__module->encoder;
-            self::$scanner = self::$__module->scanner;
-        }
+    /**
+    * @return json 
+    */
+    public static function import()
+    {
+        return \PyCore::import('json');
     }
 
+    public $__author__ = "Bob Ippolito <bob@redivi.com>";
+    public $__name__ = "json";
+    public $__package__ = "json";
+    public $__version__ = "2.0.9";
 
-    public static $__author__ = "Bob Ippolito <bob@redivi.com>";
-    public static $__name__ = "json";
-    public static $__package__ = "json";
-    public static $__version__ = "2.0.9";
+    public $JSONDecodeError = null;
+    public $JSONDecoder = null;
+    public $JSONEncoder = null;
+    public $__path__ = null;
+    public $_default_decoder = null;
+    public $_default_encoder = null;
+    public $codecs = null;
+    public $decoder = null;
+    public $encoder = null;
+    public $scanner = null;
 
-    public static $JSONDecodeError = null;
-    public static $JSONDecoder = null;
-    public static $JSONEncoder = null;
-    public static $__path__ = null;
-    public static $_default_decoder = null;
-    public static $_default_encoder = null;
-    public static $codecs = null;
-    public static $decoder = null;
-    public static $encoder = null;
-    public static $scanner = null;
+    public function detect_encoding($b)
+    {
+    }
 
-    public static function detect_encoding($b)
+    public function dump($obj, $fp)
     {
-        return self::$__module->detect_encoding($b);
     }
-    public static function dump($obj, $fp)
+
+    public function dumps($obj)
     {
-        return self::$__module->dump($obj, $fp);
     }
-    public static function dumps($obj)
+
+    public function load($fp)
     {
-        return self::$__module->dumps($obj);
     }
-    public static function load($fp)
+
+    public function loads($s)
     {
-        return self::$__module->load($fp);
     }
-    public static function loads($s)
-    {
-        return self::$__module->loads($s);
-    }
+
 }
-
-json::__init();

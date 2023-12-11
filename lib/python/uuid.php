@@ -1,9 +1,6 @@
 <?php
 namespace python;
 
-use \PyModule;
-use \PyCore;
-
 /**
 UUID objects (universally unique identifiers) according to RFC 4122.
 
@@ -51,152 +48,134 @@ Typical usage:
     UUID('00010203-0405-0607-0809-0a0b0c0d0e0f')
 */
 class uuid{
-    private static ?PyModule $__module = null;
+    /**
+    * @return uuid 
+    */
+    public static function import()
+    {
+        return \PyCore::import('uuid');
+    }
+    public $_has_uuid_generate_time_safe = 1;
 
-    public static function __init(): void {
-        if (self::$__module == null) {
-            self::$__module = PyCore::import('uuid');
-            self::$Enum = self::$__module->Enum;
-            self::$NAMESPACE_DNS = self::$__module->NAMESPACE_DNS;
-            self::$NAMESPACE_OID = self::$__module->NAMESPACE_OID;
-            self::$NAMESPACE_URL = self::$__module->NAMESPACE_URL;
-            self::$NAMESPACE_X500 = self::$__module->NAMESPACE_X500;
-            self::$SafeUUID = self::$__module->SafeUUID;
-            self::$UUID = self::$__module->UUID;
-            self::$_GETTERS = self::$__module->_GETTERS;
-            self::$_OS_GETTERS = self::$__module->_OS_GETTERS;
-            self::$_uuid = self::$__module->_uuid;
-            self::$bytes_ = self::$__module->bytes_;
-            self::$int_ = self::$__module->int_;
-            self::$os = self::$__module->os;
-            self::$platform = self::$__module->platform;
-            self::$sys = self::$__module->sys;
-        }
+    public $RESERVED_FUTURE = "reserved for future definition";
+    public $RESERVED_MICROSOFT = "reserved for Microsoft compatibility";
+    public $RESERVED_NCS = "reserved for NCS compatibility";
+    public $RFC_4122 = "specified in RFC 4122";
+    public $_AIX = false;
+    public $_LINUX = true;
+    public $_MAC_DELIM = ":";
+    public $_MAC_OMITS_LEADING_ZEROES = false;
+    public $_UuidCreate = null;
+    public $__author__ = "Ka-Ping Yee <ping@zesty.ca>";
+    public $__name__ = "uuid";
+    public $__package__ = "";
+    public $_last_timestamp = null;
+    public $_node = null;
+    public $_platform_system = "Linux";
+
+    public $Enum = null;
+    public $NAMESPACE_DNS = null;
+    public $NAMESPACE_OID = null;
+    public $NAMESPACE_URL = null;
+    public $NAMESPACE_X500 = null;
+    public $SafeUUID = null;
+    public $UUID = null;
+    public $_GETTERS = null;
+    public $_OS_GETTERS = null;
+    public $_uuid = null;
+    public $bytes_ = null;
+    public $int_ = null;
+    public $os = null;
+    public $platform = null;
+    public $sys = null;
+
+    public function _arp_getnode()
+    {
     }
 
-    public const _has_uuid_generate_time_safe = 1;
+    public function _find_mac_near_keyword($command, $args, $keywords, $get_word_index)
+    {
+    }
 
-    public static $RESERVED_FUTURE = "reserved for future definition";
-    public static $RESERVED_MICROSOFT = "reserved for Microsoft compatibility";
-    public static $RESERVED_NCS = "reserved for NCS compatibility";
-    public static $RFC_4122 = "specified in RFC 4122";
-    public static $_AIX = false;
-    public static $_LINUX = true;
-    public static $_MAC_DELIM = ":";
-    public static $_MAC_OMITS_LEADING_ZEROES = false;
-    public static $_UuidCreate = null;
-    public static $__author__ = "Ka-Ping Yee <ping@zesty.ca>";
-    public static $__name__ = "uuid";
-    public static $__package__ = "";
-    public static $_last_timestamp = null;
-    public static $_node = null;
-    public static $_platform_system = "Linux";
+    public function _find_mac_under_heading($command, $args, $heading)
+    {
+    }
 
-    public static $Enum = null;
-    public static $NAMESPACE_DNS = null;
-    public static $NAMESPACE_OID = null;
-    public static $NAMESPACE_URL = null;
-    public static $NAMESPACE_X500 = null;
-    public static $SafeUUID = null;
-    public static $UUID = null;
-    public static $_GETTERS = null;
-    public static $_OS_GETTERS = null;
-    public static $_uuid = null;
-    public static $bytes_ = null;
-    public static $int_ = null;
-    public static $os = null;
-    public static $platform = null;
-    public static $sys = null;
+    public function _get_command_stdout($command)
+    {
+    }
 
-    public static function _arp_getnode()
+    public function _ifconfig_getnode()
     {
-        return self::$__module->_arp_getnode();
     }
-    public static function _find_mac_near_keyword($command, $args, $keywords, $get_word_index)
+
+    public function _ip_getnode()
     {
-        return self::$__module->_find_mac_near_keyword($command, $args, $keywords, $get_word_index);
     }
-    public static function _find_mac_under_heading($command, $args, $heading)
+
+    public function _ipconfig_getnode()
     {
-        return self::$__module->_find_mac_under_heading($command, $args, $heading);
     }
-    public static function _get_command_stdout($command)
+
+    public function _is_universal($mac)
     {
-        return self::$__module->_get_command_stdout($command);
     }
-    public static function _ifconfig_getnode()
+
+    public function _lanscan_getnode()
     {
-        return self::$__module->_ifconfig_getnode();
     }
-    public static function _ip_getnode()
+
+    public function _load_system_functions()
     {
-        return self::$__module->_ip_getnode();
     }
-    public static function _ipconfig_getnode()
+
+    public function _netbios_getnode()
     {
-        return self::$__module->_ipconfig_getnode();
     }
-    public static function _is_universal($mac)
+
+    public function _netstat_getnode()
     {
-        return self::$__module->_is_universal($mac);
     }
-    public static function _lanscan_getnode()
+
+    public function _parse_mac($word)
     {
-        return self::$__module->_lanscan_getnode();
     }
-    public static function _load_system_functions()
+
+    public function _random_getnode()
     {
-        return self::$__module->_load_system_functions();
     }
-    public static function _netbios_getnode()
-    {
-        return self::$__module->_netbios_getnode();
-    }
-    public static function _netstat_getnode()
-    {
-        return self::$__module->_netstat_getnode();
-    }
-    public static function _parse_mac($word)
-    {
-        return self::$__module->_parse_mac($word);
-    }
-    public static function _random_getnode()
-    {
-        return self::$__module->_random_getnode();
-    }
-    public static function _simple_enum($etype=array (
+
+    public function _simple_enum($etype = array (
 ))
     {
-        return self::$__module->_simple_enum($etype);
     }
-    public static function _unix_getnode()
-    {
-        return self::$__module->_unix_getnode();
-    }
-    public static function _windll_getnode()
-    {
-        return self::$__module->_windll_getnode();
-    }
-    public static function getnode()
-    {
-        return self::$__module->getnode();
-    }
-    public static function uuid1($node=null, $clock_seq=null)
-    {
-        return self::$__module->uuid1($node, $clock_seq);
-    }
-    public static function uuid3($namespace, $name)
-    {
-        return self::$__module->uuid3($namespace, $name);
-    }
-    public static function uuid4()
-    {
-        return self::$__module->uuid4();
-    }
-    public static function uuid5($namespace, $name)
-    {
-        return self::$__module->uuid5($namespace, $name);
-    }
-}
 
-uuid::__init();
+    public function _unix_getnode()
+    {
+    }
+
+    public function _windll_getnode()
+    {
+    }
+
+    public function getnode()
+    {
+    }
+
+    public function uuid1($node = null, $clock_seq = null)
+    {
+    }
+
+    public function uuid3($namespace, $name)
+    {
+    }
+
+    public function uuid4()
+    {
+    }
+
+    public function uuid5($namespace, $name)
+    {
+    }
+
+}

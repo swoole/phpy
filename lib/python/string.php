@@ -1,9 +1,6 @@
 <?php
 namespace python;
 
-use \PyModule;
-use \PyCore;
-
 /**
 A collection of string constants.
 
@@ -21,44 +18,35 @@ printable -- a string containing all ASCII characters considered printable
 
 */
 class string{
-    private static ?PyModule $__module = null;
-
-    public static function __init(): void {
-        if (self::$__module == null) {
-            self::$__module = PyCore::import('string');
-            self::$Formatter = self::$__module->Formatter;
-            self::$Template = self::$__module->Template;
-            self::$_ChainMap = self::$__module->_ChainMap;
-            self::$_re = self::$__module->_re;
-            self::$_sentinel_dict = self::$__module->_sentinel_dict;
-            self::$_string = self::$__module->_string;
-        }
-    }
-
-
-    public static $__name__ = "string";
-    public static $__package__ = "";
-    public static $ascii_letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static $ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
-    public static $ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static $digits = "0123456789";
-    public static $hexdigits = "0123456789abcdefABCDEF";
-    public static $octdigits = "01234567";
-    public static $printable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 	\n";
-    public static $punctuation = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
-    public static $whitespace = " 	\n";
-
-    public static $Formatter = null;
-    public static $Template = null;
-    public static $_ChainMap = null;
-    public static $_re = null;
-    public static $_sentinel_dict = null;
-    public static $_string = null;
-
-    public static function capwords($s, $sep=null)
+    /**
+    * @return string 
+    */
+    public static function import()
     {
-        return self::$__module->capwords($s, $sep);
+        return \PyCore::import('string');
     }
-}
 
-string::__init();
+    public $__name__ = "string";
+    public $__package__ = "";
+    public $ascii_letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public $ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
+    public $ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public $digits = "0123456789";
+    public $hexdigits = "0123456789abcdefABCDEF";
+    public $octdigits = "01234567";
+    public $printable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 	\n";
+    public $punctuation = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
+    public $whitespace = " 	\n";
+
+    public $Formatter = null;
+    public $Template = null;
+    public $_ChainMap = null;
+    public $_re = null;
+    public $_sentinel_dict = null;
+    public $_string = null;
+
+    public function capwords($s, $sep = null)
+    {
+    }
+
+}

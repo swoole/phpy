@@ -1,9 +1,6 @@
 <?php
 namespace python;
 
-use \PyModule;
-use \PyCore;
-
 /**
 Subprocesses with accessible I/O streams
 
@@ -39,136 +36,111 @@ getstatusoutput(...): Runs a command in the shell, waits for it to complete,
     then returns a (exitcode, output) tuple
 */
 class subprocess{
-    private static ?PyModule $__module = null;
+    /**
+    * @return subprocess 
+    */
+    public static function import()
+    {
+        return \PyCore::import('subprocess');
+    }
+    public $DEVNULL = -3;
+    public $PIPE = -1;
+    public $STDOUT = -2;
+    public $_PIPE_BUF = 4096;
+    public $_WNOHANG = 1;
 
-    public static function __init(): void {
-        if (self::$__module == null) {
-            self::$__module = PyCore::import('subprocess');
-            self::$CalledProcessError = self::$__module->CalledProcessError;
-            self::$CompletedProcess = self::$__module->CompletedProcess;
-            self::$Popen = self::$__module->Popen;
-            self::$SubprocessError = self::$__module->SubprocessError;
-            self::$TimeoutExpired = self::$__module->TimeoutExpired;
-            self::$_PopenSelector = self::$__module->_PopenSelector;
-            self::$_active = self::$__module->_active;
-            self::$builtins = self::$__module->builtins;
-            self::$contextlib = self::$__module->contextlib;
-            self::$errno = self::$__module->errno;
-            self::$fcntl = self::$__module->fcntl;
-            self::$io = self::$__module->io;
-            self::$locale = self::$__module->locale;
-            self::$os = self::$__module->os;
-            self::$select = self::$__module->select;
-            self::$selectors = self::$__module->selectors;
-            self::$signal = self::$__module->signal;
-            self::$sys = self::$__module->sys;
-            self::$threading = self::$__module->threading;
-            self::$time = self::$__module->time;
-            self::$types = self::$__module->types;
-            self::$warnings = self::$__module->warnings;
-        }
+    public $_USE_POSIX_SPAWN = true;
+    public $_USE_VFORK = true;
+    public $__name__ = "subprocess";
+    public $__package__ = "";
+    public $_can_fork_exec = true;
+    public $_mswindows = false;
+
+    public $CalledProcessError = null;
+    public $CompletedProcess = null;
+    public $Popen = null;
+    public $SubprocessError = null;
+    public $TimeoutExpired = null;
+    public $_PopenSelector = null;
+    public $_active = null;
+    public $builtins = null;
+    public $contextlib = null;
+    public $errno = null;
+    public $fcntl = null;
+    public $io = null;
+    public $locale = null;
+    public $os = null;
+    public $select = null;
+    public $selectors = null;
+    public $signal = null;
+    public $sys = null;
+    public $threading = null;
+    public $time = null;
+    public $types = null;
+    public $warnings = null;
+
+    public function _WIFSTOPPED($status)
+    {
     }
 
-    public const DEVNULL = -3;
-    public const PIPE = -1;
-    public const STDOUT = -2;
-    public const _PIPE_BUF = 4096;
-    public const _WNOHANG = 1;
+    public function _WSTOPSIG($status)
+    {
+    }
 
-    public static $_USE_POSIX_SPAWN = true;
-    public static $_USE_VFORK = true;
-    public static $__name__ = "subprocess";
-    public static $__package__ = "";
-    public static $_can_fork_exec = true;
-    public static $_mswindows = false;
+    public function _args_from_interpreter_flags()
+    {
+    }
 
-    public static $CalledProcessError = null;
-    public static $CompletedProcess = null;
-    public static $Popen = null;
-    public static $SubprocessError = null;
-    public static $TimeoutExpired = null;
-    public static $_PopenSelector = null;
-    public static $_active = null;
-    public static $builtins = null;
-    public static $contextlib = null;
-    public static $errno = null;
-    public static $fcntl = null;
-    public static $io = null;
-    public static $locale = null;
-    public static $os = null;
-    public static $select = null;
-    public static $selectors = null;
-    public static $signal = null;
-    public static $sys = null;
-    public static $threading = null;
-    public static $time = null;
-    public static $types = null;
-    public static $warnings = null;
+    public function _cleanup()
+    {
+    }
 
-    public static function _WIFSTOPPED($status)
+    public function _optim_args_from_interpreter_flags()
     {
-        return self::$__module->_WIFSTOPPED($status);
     }
-    public static function _WSTOPSIG($status)
+
+    public function _text_encoding()
     {
-        return self::$__module->_WSTOPSIG($status);
     }
-    public static function _args_from_interpreter_flags()
+
+    public function _use_posix_spawn()
     {
-        return self::$__module->_args_from_interpreter_flags();
     }
-    public static function _cleanup()
+
+    public function _waitpid($pid, $options)
     {
-        return self::$__module->_cleanup();
     }
-    public static function _optim_args_from_interpreter_flags()
+
+    public function _waitstatus_to_exitcode($status)
     {
-        return self::$__module->_optim_args_from_interpreter_flags();
     }
-    public static function _text_encoding()
+
+    public function call()
     {
-        return self::$__module->_text_encoding();
     }
-    public static function _use_posix_spawn()
+
+    public function check_call()
     {
-        return self::$__module->_use_posix_spawn();
     }
-    public static function _waitpid($pid, $options)
+
+    public function check_output()
     {
-        return self::$__module->_waitpid($pid, $options);
     }
-    public static function _waitstatus_to_exitcode($status)
+
+    public function getoutput($cmd)
     {
-        return self::$__module->_waitstatus_to_exitcode($status);
     }
-    public static function call()
+
+    public function getstatusoutput($cmd)
     {
-        return self::$__module->call();
     }
-    public static function check_call()
+
+    public function list2cmdline($seq)
     {
-        return self::$__module->check_call();
     }
-    public static function check_output()
+
+    public function run()
     {
-        return self::$__module->check_output();
     }
-    public static function getoutput($cmd)
-    {
-        return self::$__module->getoutput($cmd);
-    }
-    public static function getstatusoutput($cmd)
-    {
-        return self::$__module->getstatusoutput($cmd);
-    }
-    public static function list2cmdline($seq)
-    {
-        return self::$__module->list2cmdline($seq);
-    }
-    public static function run()
-    {
-        return self::$__module->run();
-    }
+
 }
-
-subprocess::__init();

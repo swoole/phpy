@@ -1,9 +1,6 @@
 <?php
 namespace python;
 
-use \PyModule;
-use \PyCore;
-
 /**
 This module provides access to some objects used or maintained by the
 interpreter and to functions that interact strongly with the interpreter.
@@ -75,243 +72,215 @@ setrecursionlimit() -- set the max recursion depth for the interpreter
 settrace() -- set the global debug tracing function
 */
 class sys{
-    private static ?PyModule $__module = null;
+    /**
+    * @return sys 
+    */
+    public static function import()
+    {
+        return \PyCore::import('sys');
+    }
+    public $api_version = 1013;
+    public $hexversion = 51054064;
+    public $maxsize = 9223372036854775807;
+    public $maxunicode = 1114111;
 
-    public static function __init(): void {
-        if (self::$__module == null) {
-            self::$__module = PyCore::import('sys');
-            self::$__stderr__ = self::$__module->__stderr__;
-            self::$__stdin__ = self::$__module->__stdin__;
-            self::$__stdout__ = self::$__module->__stdout__;
-            self::$_git = self::$__module->_git;
-            self::$_xoptions = self::$__module->_xoptions;
-            self::$argv = self::$__module->argv;
-            self::$builtin_module_names = self::$__module->builtin_module_names;
-            self::$flags = self::$__module->flags;
-            self::$float_info = self::$__module->float_info;
-            self::$hash_info = self::$__module->hash_info;
-            self::$implementation = self::$__module->implementation;
-            self::$int_info = self::$__module->int_info;
-            self::$meta_path = self::$__module->meta_path;
-            self::$modules = self::$__module->modules;
-            self::$orig_argv = self::$__module->orig_argv;
-            self::$path = self::$__module->path;
-            self::$path_hooks = self::$__module->path_hooks;
-            self::$path_importer_cache = self::$__module->path_importer_cache;
-            self::$stderr = self::$__module->stderr;
-            self::$stdin = self::$__module->stdin;
-            self::$stdlib_module_names = self::$__module->stdlib_module_names;
-            self::$stdout = self::$__module->stdout;
-            self::$thread_info = self::$__module->thread_info;
-            self::$version_info = self::$__module->version_info;
-            self::$warnoptions = self::$__module->warnoptions;
-        }
+    public $__name__ = "sys";
+    public $__package__ = "";
+    public $_base_executable = "/opt/anaconda3/bin/python3";
+    public $_framework = "";
+    public $_home = null;
+    public $_stdlib_dir = "/opt/anaconda3/lib/python3.11";
+    public $abiflags = "";
+    public $base_exec_prefix = "/opt/anaconda3";
+    public $base_prefix = "/opt/anaconda3";
+    public $byteorder = "little";
+    public $copyright = "Copyright (c) 2001-2023 Python Software Foundation.\nAll Rights Reserved.\n\nCopyright (c) 2000 BeOpen.com.\nAll Rights Reserved.\n\nCopyright (c) 1995-2001 Corporation for National Research Initiatives.\nAll Rights Reserved.\n\nCopyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.\nAll Rights Reserved.";
+    public $dont_write_bytecode = false;
+    public $exec_prefix = "/opt/anaconda3";
+    public $executable = "/opt/anaconda3/bin/python3";
+    public $float_repr_style = "short";
+    public $platform = "linux";
+    public $platlibdir = "lib";
+    public $prefix = "/opt/anaconda3";
+    public $pycache_prefix = null;
+    public $version = "3.11.5 (main, Sep 11 2023, 14:07:11) [GCC 11.2.0]";
+
+    public $__stderr__ = null;
+    public $__stdin__ = null;
+    public $__stdout__ = null;
+    public $_git = null;
+    public $_xoptions = null;
+    public $argv = null;
+    public $builtin_module_names = null;
+    public $flags = null;
+    public $float_info = null;
+    public $hash_info = null;
+    public $implementation = null;
+    public $int_info = null;
+    public $meta_path = null;
+    public $modules = null;
+    public $orig_argv = null;
+    public $path = null;
+    public $path_hooks = null;
+    public $path_importer_cache = null;
+    public $stderr = null;
+    public $stdin = null;
+    public $stdlib_module_names = null;
+    public $stdout = null;
+    public $thread_info = null;
+    public $version_info = null;
+    public $warnoptions = null;
+
+    public function __displayhook__($object)
+    {
     }
 
-    public const api_version = 1013;
-    public const hexversion = 51054064;
-    public const maxsize = 9223372036854775807;
-    public const maxunicode = 1114111;
+    public function __excepthook__($exctype, $value, $traceback)
+    {
+    }
 
-    public static $__name__ = "sys";
-    public static $__package__ = "";
-    public static $_base_executable = "/opt/anaconda3/bin/python3";
-    public static $_framework = "";
-    public static $_home = null;
-    public static $_stdlib_dir = "/opt/anaconda3/lib/python3.11";
-    public static $abiflags = "";
-    public static $base_exec_prefix = "/opt/anaconda3";
-    public static $base_prefix = "/opt/anaconda3";
-    public static $byteorder = "little";
-    public static $copyright = "Copyright (c) 2001-2023 Python Software Foundation.\nAll Rights Reserved.\n\nCopyright (c) 2000 BeOpen.com.\nAll Rights Reserved.\n\nCopyright (c) 1995-2001 Corporation for National Research Initiatives.\nAll Rights Reserved.\n\nCopyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.\nAll Rights Reserved.";
-    public static $dont_write_bytecode = false;
-    public static $exec_prefix = "/opt/anaconda3";
-    public static $executable = "/opt/anaconda3/bin/python3";
-    public static $float_repr_style = "short";
-    public static $platform = "linux";
-    public static $platlibdir = "lib";
-    public static $prefix = "/opt/anaconda3";
-    public static $pycache_prefix = null;
-    public static $version = "3.11.5 (main, Sep 11 2023, 14:07:11) [GCC 11.2.0]";
+    public function __interactivehook__()
+    {
+    }
 
-    public static $__stderr__ = null;
-    public static $__stdin__ = null;
-    public static $__stdout__ = null;
-    public static $_git = null;
-    public static $_xoptions = null;
-    public static $argv = null;
-    public static $builtin_module_names = null;
-    public static $flags = null;
-    public static $float_info = null;
-    public static $hash_info = null;
-    public static $implementation = null;
-    public static $int_info = null;
-    public static $meta_path = null;
-    public static $modules = null;
-    public static $orig_argv = null;
-    public static $path = null;
-    public static $path_hooks = null;
-    public static $path_importer_cache = null;
-    public static $stderr = null;
-    public static $stdin = null;
-    public static $stdlib_module_names = null;
-    public static $stdout = null;
-    public static $thread_info = null;
-    public static $version_info = null;
-    public static $warnoptions = null;
+    public function __unraisablehook__($unraisable)
+    {
+    }
 
-    public static function __displayhook__($object)
+    public function _clear_type_cache()
     {
-        return self::$__module->__displayhook__($object);
     }
-    public static function __excepthook__($exctype, $value, $traceback)
+
+    public function _current_exceptions()
     {
-        return self::$__module->__excepthook__($exctype, $value, $traceback);
     }
-    public static function __interactivehook__()
+
+    public function _current_frames()
     {
-        return self::$__module->__interactivehook__();
     }
-    public static function __unraisablehook__($unraisable)
+
+    public function _debugmallocstats()
     {
-        return self::$__module->__unraisablehook__($unraisable);
     }
-    public static function _clear_type_cache()
+
+    public function _getframe($depth = 0)
     {
-        return self::$__module->_clear_type_cache();
     }
-    public static function _current_exceptions()
+
+    public function _getquickenedcount()
     {
-        return self::$__module->_current_exceptions();
     }
-    public static function _current_frames()
+
+    public function addaudithook($hook)
     {
-        return self::$__module->_current_frames();
     }
-    public static function _debugmallocstats()
+
+    public function call_tracing($func, $args)
     {
-        return self::$__module->_debugmallocstats();
     }
-    public static function _getframe($depth=0)
+
+    public function displayhook($object)
     {
-        return self::$__module->_getframe($depth);
     }
-    public static function _getquickenedcount()
+
+    public function exc_info()
     {
-        return self::$__module->_getquickenedcount();
     }
-    public static function addaudithook($hook)
+
+    public function excepthook($exctype, $value, $traceback)
     {
-        return self::$__module->addaudithook($hook);
     }
-    public static function call_tracing($func, $args)
+
+    public function exception()
     {
-        return self::$__module->call_tracing($func, $args);
     }
-    public static function displayhook($object)
+
+    public function exit($status = null)
     {
-        return self::$__module->displayhook($object);
     }
-    public static function exc_info()
+
+    public function get_asyncgen_hooks()
     {
-        return self::$__module->exc_info();
     }
-    public static function excepthook($exctype, $value, $traceback)
+
+    public function get_coroutine_origin_tracking_depth()
     {
-        return self::$__module->excepthook($exctype, $value, $traceback);
     }
-    public static function exception()
+
+    public function get_int_max_str_digits()
     {
-        return self::$__module->exception();
     }
-    public static function exit($status=null)
+
+    public function getallocatedblocks()
     {
-        return self::$__module->exit($status);
     }
-    public static function get_asyncgen_hooks()
+
+    public function getdefaultencoding()
     {
-        return self::$__module->get_asyncgen_hooks();
     }
-    public static function get_coroutine_origin_tracking_depth()
+
+    public function getdlopenflags()
     {
-        return self::$__module->get_coroutine_origin_tracking_depth();
     }
-    public static function get_int_max_str_digits()
+
+    public function getfilesystemencodeerrors()
     {
-        return self::$__module->get_int_max_str_digits();
     }
-    public static function getallocatedblocks()
+
+    public function getfilesystemencoding()
     {
-        return self::$__module->getallocatedblocks();
     }
-    public static function getdefaultencoding()
+
+    public function getprofile()
     {
-        return self::$__module->getdefaultencoding();
     }
-    public static function getdlopenflags()
+
+    public function getrecursionlimit()
     {
-        return self::$__module->getdlopenflags();
     }
-    public static function getfilesystemencodeerrors()
+
+    public function getrefcount($object)
     {
-        return self::$__module->getfilesystemencodeerrors();
     }
-    public static function getfilesystemencoding()
+
+    public function getswitchinterval()
     {
-        return self::$__module->getfilesystemencoding();
     }
-    public static function getprofile()
+
+    public function gettrace()
     {
-        return self::$__module->getprofile();
     }
-    public static function getrecursionlimit()
+
+    public function intern($string)
     {
-        return self::$__module->getrecursionlimit();
     }
-    public static function getrefcount($object)
+
+    public function is_finalizing()
     {
-        return self::$__module->getrefcount($object);
     }
-    public static function getswitchinterval()
+
+    public function set_coroutine_origin_tracking_depth($depth)
     {
-        return self::$__module->getswitchinterval();
     }
-    public static function gettrace()
+
+    public function set_int_max_str_digits($maxdigits)
     {
-        return self::$__module->gettrace();
     }
-    public static function intern($string)
+
+    public function setdlopenflags($flags)
     {
-        return self::$__module->intern($string);
     }
-    public static function is_finalizing()
+
+    public function setrecursionlimit($limit)
     {
-        return self::$__module->is_finalizing();
     }
-    public static function set_coroutine_origin_tracking_depth($depth)
+
+    public function setswitchinterval($interval)
     {
-        return self::$__module->set_coroutine_origin_tracking_depth($depth);
     }
-    public static function set_int_max_str_digits($maxdigits)
+
+    public function unraisablehook($unraisable)
     {
-        return self::$__module->set_int_max_str_digits($maxdigits);
     }
-    public static function setdlopenflags($flags)
-    {
-        return self::$__module->setdlopenflags($flags);
-    }
-    public static function setrecursionlimit($limit)
-    {
-        return self::$__module->setrecursionlimit($limit);
-    }
-    public static function setswitchinterval($interval)
-    {
-        return self::$__module->setswitchinterval($interval);
-    }
-    public static function unraisablehook($unraisable)
-    {
-        return self::$__module->unraisablehook($unraisable);
-    }
+
 }
-
-sys::__init();

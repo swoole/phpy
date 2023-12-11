@@ -100,7 +100,7 @@ function gen_args($args, $default = null)
         $pos = $n - count($values);
         for ($i = $pos; $i < $n; $i++) {
             $v = $values[$i - $pos];
-            $list[$i] = $list[$i] . '=' . value_to_repr($v);
+            $list[$i] = $list[$i] . ' = ' . value_to_repr($v);
         }
     }
     return implode(', ', $list);
