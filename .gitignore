@@ -2,6 +2,7 @@
 /.cproject
 /.idea
 /.project
+*.iml
 *.so
 *.la
 *.dep
@@ -37,3 +38,4 @@ __pycache__
 config.h.in~
 configure~
 run-tests.php
+
