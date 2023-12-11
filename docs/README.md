@@ -12,3 +12,4 @@ PHP 扩展
 * [整型数字](php/int.md)
 * [回调函数](php/fn.md)
 * [性能测试](benchmark.md)
+* [IDE 提示](php/composer.md)
