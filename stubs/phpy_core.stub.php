@@ -36,16 +36,6 @@ class PyCore
 
     }
 
-    public static function iter(PyObject $value): ?PyObject
-    {
-
-    }
-
-    public static function next(PyObject $iter): ?PyObject
-    {
-
-    }
-
     public static function __callStatic(string $name, array $arguments): mixed
     {
 

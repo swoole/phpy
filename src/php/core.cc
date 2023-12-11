@@ -27,7 +27,6 @@ static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
 static std::unordered_map<const char *, PyObject *> builtin_functions;
-static std::unordered_map<const char *, PyObject *> modules;
 static std::unordered_map<PyObject *, void (*)(PyObject *)> zend_objects;
 static long eval_code_id = 0;
 
@@ -42,19 +41,11 @@ ZEND_METHOD(PyCore, import) {
     Z_PARAM_STRING(module, l_module)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    auto iter = modules.find(module);
-    PyObject *m;
-    if (iter != modules.end()) {
-        m = iter->second;
-    } else {
-        m = PyImport_ImportModule(module);
-        if (m == NULL) {
-            PyErr_Print();
-            zend_throw_error(NULL, "PyCore: could not import module '%s'", module);
-            return;
-        }
-        Py_INCREF(m);
-        modules.emplace(module, m);
+    PyObject *m = PyImport_ImportModule(module);
+    if (m == NULL) {
+        PyErr_Print();
+        zend_throw_error(NULL, "PyCore: could not import module '%s'", module);
+        return;
     }
     phpy::php::new_module(return_value, m);
 }
@@ -100,26 +91,6 @@ ZEND_METHOD(PyCore, eval) {
         Py_DECREF(result);
     }
     Py_DECREF(module);
-}
-
-ZEND_METHOD(PyCore, iter) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
-    auto iter = PyObject_GetIter(pyobj);
-    if (iter == NULL) {
-        return;
-    }
-    phpy::php::new_iter(return_value, iter);
-}
-
-ZEND_METHOD(PyCore, next) {
-    auto iter = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_iter_get_ce());
-    CHECK_ARG(iter);
-    auto next = PyIter_Next(iter);
-    if (next == NULL) {
-        return;
-    }
-    py2php(next, return_value);
 }
 
 ZEND_METHOD(PyCore, int) {
@@ -232,11 +203,7 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     for (auto kv : builtin_functions) {
         Py_DECREF(kv.second);
     }
-    for (auto kv : modules) {
-        Py_DECREF(kv.second);
-    }
     builtin_functions.clear();
-    modules.clear();
     Py_Finalize();
     return SUCCESS;
 }

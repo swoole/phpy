@@ -119,6 +119,8 @@ static void py2php_object_impl(PyObject *pv, zval *zv) {
         phpy::php::new_module(zv, pv);
     } else if (PyType_Check(pv)) {
         phpy::php::new_type(zv, pv);
+    } else if (PyIter_Check(pv)) {
+        phpy::php::new_iter(zv, pv);
     } else {
         phpy::php::new_object(zv, pv);
     }
