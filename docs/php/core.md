@@ -16,7 +16,7 @@ $module = PyCore::import($moduleName);
 $class = $m->$className;
 ```
 
-底层会缓存已加载过的模块，当第二次加载时会自动返回缓存中的模块，不会重复加载。因此在 `PHP-FPM/Apache` 
+`Python` 底层会缓存已加载过的模块，当第二次加载时会自动返回缓存中的模块，不会重复加载。因此在 `PHP-FPM/Apache` 
 等短生命周期环境下也可使用，不会有性能问题。
 
 ## 加载路径
