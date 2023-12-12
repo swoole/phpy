@@ -41,5 +41,20 @@ Zend OPcache
 ### `--with-python-version`
 指定 `Python` 的版本，例如 `3.10`、`3.11`、`3.12`，默认将使用 `$python-dir/bin/python -V` 来获取版本。
 
+### `--with-python-config`
+设置 `python-config` 可执行文件的路径， 此选项的优先级高于 `--with-python-dir` 和 `--with-python-version`
 
-
+```shell
+(base) htf@swoole-12:~/workspace/python-php$ which python3.11-config
+/opt/anaconda3/bin/python3.11-config
+(base) htf@swoole-12:~/workspace/python-php$ python3.11-config
+Usage: /opt/anaconda3/bin/python3.11-config --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--help|--abiflags|--configdir|--embed
+(base) htf@swoole-12:~/workspace/python-php$ ./configure --wi
+--with-gnu-ld          --with-libdir=         --without-PACKAGE      --with-PACKAGE         --with-php-config=     --with-pic             --with-python-config   --with-python-dir      --with-python-version  --with-tags=
+(base) htf@swoole-12:~/workspace/python-php$ ./configure --with-python-config=python3.11-config
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+```
