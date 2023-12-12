@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 define("EXT_SRC_DIR", dirname(__DIR__) . '/src/php');

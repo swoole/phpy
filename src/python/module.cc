@@ -16,6 +16,7 @@
  */
 
 #include "phpy.h"
+#include "zend_exceptions.h"
 
 static PyObject *phpy_call(PyObject *self, PyObject *args) {
     Py_ssize_t TupleSize = PyTuple_Size(args);

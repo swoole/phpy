@@ -6,7 +6,7 @@ namespace <?= $namespace ?>;
 class <?= $class ?>
 {
     /**
-    * @return <?= $class ?>
+    * @return <?= $class . ' ' . PHP_EOL ?>
     */
     public static function import()
     {

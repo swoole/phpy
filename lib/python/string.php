@@ -34,9 +34,9 @@ class string{
     public $digits = "0123456789";
     public $hexdigits = "0123456789abcdefABCDEF";
     public $octdigits = "01234567";
-    public $printable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 	\n";
-    public $punctuation = "!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
-    public $whitespace = " 	\n";
+    public $printable = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\v";
+    public $punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+    public $whitespace = " \t\n\r\v";
 
     public $Formatter = null;
     public $Template = null;
