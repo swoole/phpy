@@ -507,15 +507,23 @@ def imageresolution(_image, _resolution_x=None, _resolution_y=None):
 
 class GdImage():
 
-
     def __init__(self):
         self.__this = phpy.Object(f'GdImage')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class GdFont():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'GdFont')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

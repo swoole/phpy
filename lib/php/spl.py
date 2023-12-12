@@ -66,7 +66,6 @@ def iterator_to_array(_iterator, _preserve_keys=True):
 
 class LogicException():
 
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'LogicException', _message, _code, _previous)
 
@@ -97,9 +96,13 @@ class LogicException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class BadFunctionCallException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'BadFunctionCallException', _message, _code, _previous)
@@ -131,9 +134,13 @@ class BadFunctionCallException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class BadMethodCallException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'BadMethodCallException', _message, _code, _previous)
@@ -165,9 +172,13 @@ class BadMethodCallException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DomainException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'DomainException', _message, _code, _previous)
@@ -199,9 +210,13 @@ class DomainException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class InvalidArgumentException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'InvalidArgumentException', _message, _code, _previous)
@@ -233,9 +248,13 @@ class InvalidArgumentException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class LengthException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'LengthException', _message, _code, _previous)
@@ -267,9 +286,13 @@ class LengthException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class OutOfRangeException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'OutOfRangeException', _message, _code, _previous)
@@ -301,9 +324,13 @@ class OutOfRangeException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RuntimeException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'RuntimeException', _message, _code, _previous)
@@ -335,9 +362,13 @@ class RuntimeException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class OutOfBoundsException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'OutOfBoundsException', _message, _code, _previous)
@@ -369,9 +400,13 @@ class OutOfBoundsException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class OverflowException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'OverflowException', _message, _code, _previous)
@@ -403,9 +438,13 @@ class OverflowException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RangeException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'RangeException', _message, _code, _previous)
@@ -437,9 +476,13 @@ class RangeException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class UnderflowException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'UnderflowException', _message, _code, _previous)
@@ -471,9 +514,13 @@ class UnderflowException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class UnexpectedValueException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'UnexpectedValueException', _message, _code, _previous)
@@ -505,9 +552,13 @@ class UnexpectedValueException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveIterator():
-
 
     def hasChildren(self):
         return self.__this.call(f"hasChildren", )
@@ -533,9 +584,13 @@ class RecursiveIterator():
     def __init__(self):
         self.__this = phpy.Object(f'RecursiveIterator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class OuterIterator():
-
 
     def getInnerIterator(self):
         return self.__this.call(f"getInnerIterator", )
@@ -558,13 +613,17 @@ class OuterIterator():
     def __init__(self):
         self.__this = phpy.Object(f'OuterIterator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveIteratorIterator():
     LEAVES_ONLY = 0
     SELF_FIRST = 1
     CHILD_FIRST = 2
     CATCH_GET_CHILD = 16
-
 
     def __init__(self, _iterator, _mode=0, _flags=0):
         self.__this = phpy.Object(f'RecursiveIteratorIterator', _iterator, _mode, _flags)
@@ -620,9 +679,13 @@ class RecursiveIteratorIterator():
     def getMaxDepth(self):
         return self.__this.call(f"getMaxDepth", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class IteratorIterator():
-
 
     def __init__(self, _iterator, _class=None):
         self.__this = phpy.Object(f'IteratorIterator', _iterator, _class)
@@ -645,9 +708,13 @@ class IteratorIterator():
     def next(self):
         return self.__this.call(f"next", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class FilterIterator():
-
 
     def accept(self):
         return self.__this.call(f"accept", )
@@ -673,9 +740,13 @@ class FilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveFilterIterator():
-
 
     def __init__(self, _iterator):
         self.__this = phpy.Object(f'RecursiveFilterIterator', _iterator)
@@ -707,9 +778,13 @@ class RecursiveFilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CallbackFilterIterator():
-
 
     def __init__(self, _iterator, _callback):
         self.__this = phpy.Object(f'CallbackFilterIterator', _iterator, _callback)
@@ -735,9 +810,13 @@ class CallbackFilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveCallbackFilterIterator():
-
 
     def __init__(self, _iterator, _callback):
         self.__this = phpy.Object(f'RecursiveCallbackFilterIterator', _iterator, _callback)
@@ -769,9 +848,13 @@ class RecursiveCallbackFilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ParentIterator():
-
 
     def __init__(self, _iterator):
         self.__this = phpy.Object(f'ParentIterator', _iterator)
@@ -803,9 +886,13 @@ class ParentIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SeekableIterator():
-
 
     def seek(self, _offset):
         return self.__this.call(f"seek", _offset)
@@ -828,9 +915,13 @@ class SeekableIterator():
     def __init__(self):
         self.__this = phpy.Object(f'SeekableIterator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class LimitIterator():
-
 
     def __init__(self, _iterator, _offset=0, _limit=-1):
         self.__this = phpy.Object(f'LimitIterator', _iterator, _offset, _limit)
@@ -859,6 +950,11 @@ class LimitIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CachingIterator():
     CALL_TOSTRING = 1
@@ -867,7 +963,6 @@ class CachingIterator():
     TOSTRING_USE_CURRENT = 4
     TOSTRING_USE_INNER = 8
     FULL_CACHE = 256
-
 
     def __init__(self, _iterator, _flags=1):
         self.__this = phpy.Object(f'CachingIterator', _iterator, _flags)
@@ -920,6 +1015,11 @@ class CachingIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveCachingIterator():
     CALL_TOSTRING = 1
@@ -928,7 +1028,6 @@ class RecursiveCachingIterator():
     TOSTRING_USE_CURRENT = 4
     TOSTRING_USE_INNER = 8
     FULL_CACHE = 256
-
 
     def __init__(self, _iterator, _flags=1):
         self.__this = phpy.Object(f'RecursiveCachingIterator', _iterator, _flags)
@@ -987,9 +1086,13 @@ class RecursiveCachingIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class NoRewindIterator():
-
 
     def __init__(self, _iterator):
         self.__this = phpy.Object(f'NoRewindIterator', _iterator)
@@ -1012,9 +1115,13 @@ class NoRewindIterator():
     def getInnerIterator(self):
         return self.__this.call(f"getInnerIterator", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class AppendIterator():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'AppendIterator', )
@@ -1046,9 +1153,13 @@ class AppendIterator():
     def key(self):
         return self.__this.call(f"key", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class InfiniteIterator():
-
 
     def __init__(self, _iterator):
         self.__this = phpy.Object(f'InfiniteIterator', _iterator)
@@ -1071,6 +1182,11 @@ class InfiniteIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RegexIterator():
     USE_KEY = 1
@@ -1080,8 +1196,6 @@ class RegexIterator():
     ALL_MATCHES = 2
     SPLIT = 3
     REPLACE = 4
-
-    replacement = None
 
     def __init__(self, _iterator, _pattern, _mode=0, _flags=0, _preg_flags=0):
         self.__this = phpy.Object(f'RegexIterator', _iterator, _pattern, _mode, _flags, _preg_flags)
@@ -1128,6 +1242,11 @@ class RegexIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveRegexIterator():
     USE_KEY = 1
@@ -1137,8 +1256,6 @@ class RecursiveRegexIterator():
     ALL_MATCHES = 2
     SPLIT = 3
     REPLACE = 4
-
-    replacement = None
 
     def __init__(self, _iterator, _pattern, _mode=0, _flags=0, _preg_flags=0):
         self.__this = phpy.Object(f'RecursiveRegexIterator', _iterator, _pattern, _mode, _flags, _preg_flags)
@@ -1191,9 +1308,13 @@ class RecursiveRegexIterator():
     def current(self):
         return self.__this.call(f"current", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class EmptyIterator():
-
 
     def current(self):
         return self.__this.call(f"current", )
@@ -1213,6 +1334,11 @@ class EmptyIterator():
     def __init__(self):
         self.__this = phpy.Object(f'EmptyIterator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveTreeIterator():
     LEAVES_ONLY = 0
@@ -1227,7 +1353,6 @@ class RecursiveTreeIterator():
     PREFIX_END_HAS_NEXT = 3
     PREFIX_END_LAST = 4
     PREFIX_RIGHT = 5
-
 
     def __init__(self, _iterator, _flags=8, _caching_iterator_flags=16, _mode=1):
         self.__this = phpy.Object(f'RecursiveTreeIterator', _iterator, _flags, _caching_iterator_flags, _mode)
@@ -1298,11 +1423,15 @@ class RecursiveTreeIterator():
     def getMaxDepth(self):
         return self.__this.call(f"getMaxDepth", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ArrayObject():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0, _iterator_class="ArrayIterator"):
         self.__this = phpy.Object(f'ArrayObject', _array, _flags, _iterator_class)
@@ -1379,11 +1508,15 @@ class ArrayObject():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ArrayIterator():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0):
         self.__this = phpy.Object(f'ArrayIterator', _array, _flags)
@@ -1466,12 +1599,16 @@ class ArrayIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveArrayIterator():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
     CHILD_ARRAYS_ONLY = 4
-
 
     def hasChildren(self):
         return self.__this.call(f"hasChildren", )
@@ -1560,9 +1697,13 @@ class RecursiveArrayIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplFileInfo():
-
 
     def __init__(self, _filename):
         self.__this = phpy.Object(f'SplFileInfo', _filename)
@@ -1657,9 +1798,13 @@ class SplFileInfo():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DirectoryIterator():
-
 
     def __init__(self, _directory):
         self.__this = phpy.Object(f'DirectoryIterator', _directory)
@@ -1775,6 +1920,11 @@ class DirectoryIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class FilesystemIterator():
     CURRENT_MODE_MASK = 240
@@ -1789,7 +1939,6 @@ class FilesystemIterator():
     OTHER_MODE_MASK = 28672
     SKIP_DOTS = 4096
     UNIX_PATHS = 8192
-
 
     def __init__(self, _directory, _flags=4096):
         self.__this = phpy.Object(f'FilesystemIterator', _directory, _flags)
@@ -1911,6 +2060,11 @@ class FilesystemIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RecursiveDirectoryIterator():
     CURRENT_MODE_MASK = 240
@@ -1925,7 +2079,6 @@ class RecursiveDirectoryIterator():
     OTHER_MODE_MASK = 28672
     SKIP_DOTS = 4096
     UNIX_PATHS = 8192
-
 
     def __init__(self, _directory, _flags=0):
         self.__this = phpy.Object(f'RecursiveDirectoryIterator', _directory, _flags)
@@ -2059,6 +2212,11 @@ class RecursiveDirectoryIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class GlobIterator():
     CURRENT_MODE_MASK = 240
@@ -2073,7 +2231,6 @@ class GlobIterator():
     OTHER_MODE_MASK = 28672
     SKIP_DOTS = 4096
     UNIX_PATHS = 8192
-
 
     def __init__(self, _pattern, _flags=0):
         self.__this = phpy.Object(f'GlobIterator', _pattern, _flags)
@@ -2198,13 +2355,17 @@ class GlobIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplFileObject():
     DROP_NEW_LINE = 1
     READ_AHEAD = 2
     SKIP_EMPTY = 4
     READ_CSV = 8
-
 
     def __init__(self, _filename, _mode="r", _use_include_path=False, _context=None):
         self.__this = phpy.Object(f'SplFileObject', _filename, _mode, _use_include_path, _context)
@@ -2389,13 +2550,17 @@ class SplFileObject():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplTempFileObject():
     DROP_NEW_LINE = 1
     READ_AHEAD = 2
     SKIP_EMPTY = 4
     READ_CSV = 8
-
 
     def __init__(self, _max_memory=2097152):
         self.__this = phpy.Object(f'SplTempFileObject', _max_memory)
@@ -2580,13 +2745,17 @@ class SplTempFileObject():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplDoublyLinkedList():
     IT_MODE_LIFO = 2
     IT_MODE_FIFO = 0
     IT_MODE_DELETE = 1
     IT_MODE_KEEP = 0
-
 
     def add(self, _index, _value):
         return self.__this.call(f"add", _index, _value)
@@ -2669,13 +2838,17 @@ class SplDoublyLinkedList():
     def __init__(self):
         self.__this = phpy.Object(f'SplDoublyLinkedList')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplQueue():
     IT_MODE_LIFO = 2
     IT_MODE_FIFO = 0
     IT_MODE_DELETE = 1
     IT_MODE_KEEP = 0
-
 
     def enqueue(self, _value):
         return self.__this.call(f"enqueue", _value)
@@ -2764,13 +2937,17 @@ class SplQueue():
     def __init__(self):
         self.__this = phpy.Object(f'SplQueue')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplStack():
     IT_MODE_LIFO = 2
     IT_MODE_FIFO = 0
     IT_MODE_DELETE = 1
     IT_MODE_KEEP = 0
-
 
     def add(self, _index, _value):
         return self.__this.call(f"add", _index, _value)
@@ -2853,9 +3030,13 @@ class SplStack():
     def __init__(self):
         self.__this = phpy.Object(f'SplStack')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplHeap():
-
 
     def extract(self):
         return self.__this.call(f"extract", )
@@ -2899,9 +3080,13 @@ class SplHeap():
     def __init__(self):
         self.__this = phpy.Object(f'SplHeap')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplMinHeap():
-
 
     def extract(self):
         return self.__this.call(f"extract", )
@@ -2945,9 +3130,13 @@ class SplMinHeap():
     def __init__(self):
         self.__this = phpy.Object(f'SplMinHeap')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplMaxHeap():
-
 
     def extract(self):
         return self.__this.call(f"extract", )
@@ -2991,12 +3180,16 @@ class SplMaxHeap():
     def __init__(self):
         self.__this = phpy.Object(f'SplMaxHeap')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplPriorityQueue():
     EXTR_BOTH = 3
     EXTR_PRIORITY = 2
     EXTR_DATA = 1
-
 
     def compare(self, _priority1, _priority2):
         return self.__this.call(f"compare", _priority1, _priority2)
@@ -3049,9 +3242,13 @@ class SplPriorityQueue():
     def __init__(self):
         self.__this = phpy.Object(f'SplPriorityQueue')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplFixedArray():
-
 
     def __init__(self, _size=0):
         self.__this = phpy.Object(f'SplFixedArray', _size)
@@ -3092,9 +3289,13 @@ class SplFixedArray():
     def jsonSerialize(self):
         return self.__this.call(f"jsonSerialize", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplObserver():
-
 
     def update(self, _subject):
         return self.__this.call(f"update", _subject)
@@ -3102,9 +3303,13 @@ class SplObserver():
     def __init__(self):
         self.__this = phpy.Object(f'SplObserver')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplSubject():
-
 
     def attach(self, _observer):
         return self.__this.call(f"attach", _observer)
@@ -3118,9 +3323,13 @@ class SplSubject():
     def __init__(self):
         self.__this = phpy.Object(f'SplSubject')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SplObjectStorage():
-
 
     def attach(self, _object, _info=None):
         return self.__this.call(f"attach", _object, _info)
@@ -3197,13 +3406,17 @@ class SplObjectStorage():
     def __init__(self):
         self.__this = phpy.Object(f'SplObjectStorage')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class MultipleIterator():
     MIT_NEED_ANY = 0
     MIT_NEED_ALL = 1
     MIT_KEYS_NUMERIC = 0
     MIT_KEYS_ASSOC = 2
-
 
     def __init__(self, _flags=1):
         self.__this = phpy.Object(f'MultipleIterator', _flags)
@@ -3244,4 +3457,9 @@ class MultipleIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

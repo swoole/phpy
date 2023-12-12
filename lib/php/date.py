@@ -227,7 +227,6 @@ class DateTimeInterface():
     RSS = "D, d M Y H:i:s O"
     W3C = "Y-m-d\\TH:i:sP"
 
-
     def format(self, _format):
         return self.__this.call(f"format", _format)
 
@@ -249,6 +248,11 @@ class DateTimeInterface():
     def __init__(self):
         self.__this = phpy.Object(f'DateTimeInterface')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DateTime():
     ATOM = "Y-m-d\\TH:i:sP"
@@ -264,7 +268,6 @@ class DateTime():
     RFC3339_EXTENDED = "Y-m-d\\TH:i:s.vP"
     RSS = "D, d M Y H:i:s O"
     W3C = "Y-m-d\\TH:i:sP"
-
 
     def __init__(self, _datetime="now", _timezone=None):
         self.__this = phpy.Object(f'DateTime', _datetime, _timezone)
@@ -326,6 +329,11 @@ class DateTime():
     def diff(self, _target_object, _absolute=False):
         return self.__this.call(f"diff", _target_object, _absolute)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DateTimeImmutable():
     ATOM = "Y-m-d\\TH:i:sP"
@@ -341,7 +349,6 @@ class DateTimeImmutable():
     RFC3339_EXTENDED = "Y-m-d\\TH:i:s.vP"
     RSS = "D, d M Y H:i:s O"
     W3C = "Y-m-d\\TH:i:sP"
-
 
     def __init__(self, _datetime="now", _timezone=None):
         self.__this = phpy.Object(f'DateTimeImmutable', _datetime, _timezone)
@@ -403,6 +410,11 @@ class DateTimeImmutable():
     def createFromInterface(_object):
         return phpy.call(f"DateTimeImmutable::createFromInterface", _object)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DateTimeZone():
     AFRICA = 1
@@ -419,7 +431,6 @@ class DateTimeZone():
     ALL = 2047
     ALL_WITH_BC = 4095
     PER_COUNTRY = 4096
-
 
     def __init__(self, _timezone):
         self.__this = phpy.Object(f'DateTimeZone', _timezone)
@@ -448,9 +459,13 @@ class DateTimeZone():
     def __set_state(_array):
         return phpy.call(f"DateTimeZone::__set_state", _array)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DateInterval():
-
 
     def __init__(self, _duration):
         self.__this = phpy.Object(f'DateInterval', _duration)
@@ -467,10 +482,14 @@ class DateInterval():
     def __set_state(_array):
         return phpy.call(f"DateInterval::__set_state", _array)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DatePeriod():
     EXCLUDE_START_DATE = 1
-
 
     def __init__(self, _start, _interval=None, _end=None, _options=None):
         self.__this = phpy.Object(f'DatePeriod', _start, _interval, _end, _options)
@@ -496,4 +515,9 @@ class DatePeriod():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

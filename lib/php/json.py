@@ -51,16 +51,19 @@ def last_error_msg():
 
 class JsonSerializable():
 
-
     def jsonSerialize(self):
         return self.__this.call(f"jsonSerialize", )
 
     def __init__(self):
         self.__this = phpy.Object(f'JsonSerializable')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class JsonException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'JsonException', _message, _code, _previous)
@@ -92,4 +95,9 @@ class JsonException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

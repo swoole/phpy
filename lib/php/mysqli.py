@@ -540,7 +540,6 @@ def refresh(_mysql, _flags):
 
 class mysqli_sql_exception():
 
-
     def getSqlState(self):
         return self.__this.call(f"getSqlState", )
 
@@ -574,39 +573,24 @@ class mysqli_sql_exception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqli_driver():
-
-    client_info = None
-    client_version = None
-    driver_version = None
-    reconnect = False
-    report_mode = 0
 
     def __init__(self):
         self.__this = phpy.Object(f'mysqli_driver')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqli():
-
-    affected_rows = None
-    client_info = None
-    client_version = None
-    connect_errno = None
-    connect_error = None
-    errno = None
-    error = None
-    error_list = None
-    field_count = None
-    host_info = None
-    info = None
-    insert_id = None
-    server_info = None
-    server_version = None
-    sqlstate = None
-    protocol_version = None
-    thread_id = None
-    warning_count = None
 
     def __init__(self, _hostname=None, _username=None, _password=None, _database=None, _port=None, _socket=None):
         self.__this = phpy.Object(f'mysqli', _hostname, _username, _password, _database, _port, _socket)
@@ -737,12 +721,13 @@ class mysqli():
     def refresh(self, _flags):
         return self.__this.call(f"refresh", _flags)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqli_warning():
-
-    message = None
-    sqlstate = None
-    errno = None
 
     def next(self):
         return self.__this.call(f"next", )
@@ -750,14 +735,13 @@ class mysqli_warning():
     def __init__(self):
         self.__this = phpy.Object(f'mysqli_warning')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqli_result():
-
-    current_field = None
-    field_count = None
-    lengths = None
-    num_rows = None
-    type = None
 
     def __init__(self, _mysql, _result_mode=0):
         self.__this = phpy.Object(f'mysqli_result', _mysql, _result_mode)
@@ -807,19 +791,13 @@ class mysqli_result():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqli_stmt():
-
-    affected_rows = None
-    insert_id = None
-    num_rows = None
-    param_count = None
-    field_count = None
-    errno = None
-    error = None
-    error_list = None
-    sqlstate = None
-    id = None
 
     def __init__(self, _mysql, _query=None):
         self.__this = phpy.Object(f'mysqli_stmt', _mysql, _query)
@@ -881,4 +859,9 @@ class mysqli_stmt():
     def get_result(self):
         return self.__this.call(f"get_result", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -162,11 +162,6 @@ def token_name(_id):
 
 class PhpToken():
 
-    id = None
-    text = None
-    line = None
-    pos = None
-
     def tokenize(_code, _flags=0):
         return phpy.call(f"PhpToken::tokenize", _code, _flags)
 
@@ -185,4 +180,9 @@ class PhpToken():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

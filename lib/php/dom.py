@@ -55,8 +55,6 @@ def import_simplexml(_node):
 
 class DOMException():
 
-    code = 0
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'DOMException', _message, _code, _previous)
 
@@ -87,9 +85,13 @@ class DOMException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMParentNode():
-
 
     def append(self, _nodes=None):
         return self.__this.call(f"append", _nodes)
@@ -100,9 +102,13 @@ class DOMParentNode():
     def __init__(self):
         self.__this = phpy.Object(f'DOMParentNode')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMChildNode():
-
 
     def remove(self):
         return self.__this.call(f"remove", )
@@ -119,9 +125,13 @@ class DOMChildNode():
     def __init__(self):
         self.__this = phpy.Object(f'DOMChildNode')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMImplementation():
-
 
     def getFeature(self, _feature, _version):
         return self.__this.call(f"getFeature", _feature, _version)
@@ -138,25 +148,13 @@ class DOMImplementation():
     def __init__(self):
         self.__this = phpy.Object(f'DOMImplementation')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMNode():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
 
     def appendChild(self, _node):
         return self.__this.call(f"appendChild", _node)
@@ -212,43 +210,24 @@ class DOMNode():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNode')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMNameSpaceNode():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    prefix = None
-    localName = None
-    namespaceURI = None
-    ownerDocument = None
-    parentNode = None
 
     def __init__(self):
         self.__this = phpy.Object(f'DOMNameSpaceNode')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMDocumentFragment():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    firstElementChild = None
-    lastElementChild = None
-    childElementCount = None
 
     def __init__(self):
         self.__this = phpy.Object(f'DOMDocumentFragment', )
@@ -313,47 +292,13 @@ class DOMDocumentFragment():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMDocument():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    doctype = None
-    implementation = None
-    documentElement = None
-    actualEncoding = None
-    encoding = None
-    xmlEncoding = None
-    standalone = None
-    xmlStandalone = None
-    version = None
-    xmlVersion = None
-    strictErrorChecking = None
-    documentURI = None
-    config = None
-    formatOutput = None
-    validateOnParse = None
-    resolveExternals = None
-    preserveWhiteSpace = None
-    recover = None
-    substituteEntities = None
-    firstElementChild = None
-    lastElementChild = None
-    childElementCount = None
 
     def __init__(self, _version="1.0", _encoding=""):
         self.__this = phpy.Object(f'DOMDocument', _version, _encoding)
@@ -508,10 +453,13 @@ class DOMDocument():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMNodeList():
-
-    length = None
 
     def count(self):
         return self.__this.call(f"count", )
@@ -525,10 +473,13 @@ class DOMNodeList():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNodeList')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMNamedNodeMap():
-
-    length = None
 
     def getNamedItem(self, _qualified_name):
         return self.__this.call(f"getNamedItem", _qualified_name)
@@ -548,29 +499,13 @@ class DOMNamedNodeMap():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNamedNodeMap')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMCharacterData():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    data = None
-    length = None
-    previousElementSibling = None
-    nextElementSibling = None
 
     def appendData(self, _data):
         return self.__this.call(f"appendData", _data)
@@ -653,30 +588,13 @@ class DOMCharacterData():
     def __init__(self):
         self.__this = phpy.Object(f'DOMCharacterData')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMAttr():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    name = None
-    specified = True
-    value = None
-    ownerElement = None
-    schemaTypeInfo = None
 
     def __init__(self, _name, _value=""):
         self.__this = phpy.Object(f'DOMAttr', _name, _value)
@@ -735,32 +653,13 @@ class DOMAttr():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMElement():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    tagName = None
-    schemaTypeInfo = None
-    firstElementChild = None
-    lastElementChild = None
-    childElementCount = None
-    previousElementSibling = None
-    nextElementSibling = None
 
     def __init__(self, _qualified_name, _value=None, _namespace=""):
         self.__this = phpy.Object(f'DOMElement', _qualified_name, _value, _namespace)
@@ -888,30 +787,13 @@ class DOMElement():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMText():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    data = None
-    length = None
-    previousElementSibling = None
-    nextElementSibling = None
-    wholeText = None
 
     def __init__(self, _data=""):
         self.__this = phpy.Object(f'DOMText', _data)
@@ -1003,29 +885,13 @@ class DOMText():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMComment():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    data = None
-    length = None
-    previousElementSibling = None
-    nextElementSibling = None
 
     def __init__(self, _data=""):
         self.__this = phpy.Object(f'DOMComment', _data)
@@ -1108,30 +974,13 @@ class DOMComment():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMCdataSection():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    data = None
-    length = None
-    previousElementSibling = None
-    nextElementSibling = None
-    wholeText = None
 
     def __init__(self, _data):
         self.__this = phpy.Object(f'DOMCdataSection', _data)
@@ -1223,31 +1072,13 @@ class DOMCdataSection():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMDocumentType():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    name = None
-    entities = None
-    notations = None
-    publicId = None
-    systemId = None
-    internalSubset = None
 
     def appendChild(self, _node):
         return self.__this.call(f"appendChild", _node)
@@ -1303,27 +1134,13 @@ class DOMDocumentType():
     def __init__(self):
         self.__this = phpy.Object(f'DOMDocumentType')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMNotation():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    publicId = None
-    systemId = None
 
     def appendChild(self, _node):
         return self.__this.call(f"appendChild", _node)
@@ -1379,31 +1196,13 @@ class DOMNotation():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNotation')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMEntity():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    publicId = None
-    systemId = None
-    notationName = None
-    actualEncoding = None
-    encoding = None
-    version = None
 
     def appendChild(self, _node):
         return self.__this.call(f"appendChild", _node)
@@ -1459,25 +1258,13 @@ class DOMEntity():
     def __init__(self):
         self.__this = phpy.Object(f'DOMEntity')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMEntityReference():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
 
     def __init__(self, _name):
         self.__this = phpy.Object(f'DOMEntityReference', _name)
@@ -1533,27 +1320,13 @@ class DOMEntityReference():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMProcessingInstruction():
-
-    nodeName = None
-    nodeValue = None
-    nodeType = None
-    parentNode = None
-    childNodes = None
-    firstChild = None
-    lastChild = None
-    previousSibling = None
-    nextSibling = None
-    attributes = None
-    ownerDocument = None
-    namespaceURI = None
-    prefix = None
-    localName = None
-    baseURI = None
-    textContent = None
-    target = None
-    data = None
 
     def __init__(self, _name, _value=""):
         self.__this = phpy.Object(f'DOMProcessingInstruction', _name, _value)
@@ -1609,11 +1382,13 @@ class DOMProcessingInstruction():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DOMXPath():
-
-    document = None
-    registerNodeNamespaces = None
 
     def __init__(self, _document, _register_node_n_s=True):
         self.__this = phpy.Object(f'DOMXPath', _document, _register_node_n_s)
@@ -1630,4 +1405,9 @@ class DOMXPath():
     def registerPhpFunctions(self, _restrict=None):
         return self.__this.call(f"registerPhpFunctions", _restrict)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

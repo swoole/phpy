@@ -319,20 +319,27 @@ def gc_status():
 
 class stdClass():
 
-
     def __init__(self):
         self.__this = phpy.Object(f'stdClass')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Traversable():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'Traversable')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class IteratorAggregate():
-
 
     def getIterator(self):
         return self.__this.call(f"getIterator", )
@@ -340,9 +347,13 @@ class IteratorAggregate():
     def __init__(self):
         self.__this = phpy.Object(f'IteratorAggregate')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Iterator():
-
 
     def current(self):
         return self.__this.call(f"current", )
@@ -362,9 +373,13 @@ class Iterator():
     def __init__(self):
         self.__this = phpy.Object(f'Iterator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Serializable():
-
 
     def serialize(self):
         return self.__this.call(f"serialize", )
@@ -375,9 +390,13 @@ class Serializable():
     def __init__(self):
         self.__this = phpy.Object(f'Serializable')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ArrayAccess():
-
 
     def offsetExists(self, _offset):
         return self.__this.call(f"offsetExists", _offset)
@@ -394,9 +413,13 @@ class ArrayAccess():
     def __init__(self):
         self.__this = phpy.Object(f'ArrayAccess')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Countable():
-
 
     def count(self):
         return self.__this.call(f"count", )
@@ -404,9 +427,13 @@ class Countable():
     def __init__(self):
         self.__this = phpy.Object(f'Countable')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Stringable():
-
 
     def __str__(self):
         return self.__this.call(f"__toString", )
@@ -414,9 +441,13 @@ class Stringable():
     def __init__(self):
         self.__this = phpy.Object(f'Stringable')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class InternalIterator():
-
 
     def current(self):
         return self.__this.call(f"current", )
@@ -436,9 +467,13 @@ class InternalIterator():
     def __init__(self):
         self.__this = phpy.Object(f'InternalIterator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Throwable():
-
 
     def getMessage(self):
         return self.__this.call(f"getMessage", )
@@ -467,9 +502,13 @@ class Throwable():
     def __init__(self):
         self.__this = phpy.Object(f'Throwable')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Exception():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Exception', _message, _code, _previous)
@@ -501,9 +540,13 @@ class Exception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ErrorException():
-
 
     def __init__(self, _message="", _code=0, _severity=1, _filename=None, _line=None, _previous=None):
         self.__this = phpy.Object(f'ErrorException', _message, _code, _severity, _filename, _line, _previous)
@@ -538,9 +581,13 @@ class ErrorException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Error():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Error', _message, _code, _previous)
@@ -572,9 +619,13 @@ class Error():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CompileError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'CompileError', _message, _code, _previous)
@@ -606,9 +657,13 @@ class CompileError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ParseError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ParseError', _message, _code, _previous)
@@ -640,9 +695,13 @@ class ParseError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class TypeError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'TypeError', _message, _code, _previous)
@@ -674,9 +733,13 @@ class TypeError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ArgumentCountError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ArgumentCountError', _message, _code, _previous)
@@ -708,9 +771,13 @@ class ArgumentCountError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ValueError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ValueError', _message, _code, _previous)
@@ -742,9 +809,13 @@ class ValueError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ArithmeticError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ArithmeticError', _message, _code, _previous)
@@ -776,9 +847,13 @@ class ArithmeticError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class DivisionByZeroError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'DivisionByZeroError', _message, _code, _previous)
@@ -810,9 +885,13 @@ class DivisionByZeroError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class UnhandledMatchError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'UnhandledMatchError', _message, _code, _previous)
@@ -844,9 +923,13 @@ class UnhandledMatchError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Closure():
-
 
     def bind(_closure, _new_this, _new_scope="static"):
         return phpy.call(f"Closure::bind", _closure, _new_this, _new_scope)
@@ -866,9 +949,13 @@ class Closure():
     def __init__(self):
         self.__this = phpy.Object(f'Closure')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Generator():
-
 
     def rewind(self):
         return self.__this.call(f"rewind", )
@@ -897,9 +984,13 @@ class Generator():
     def __init__(self):
         self.__this = phpy.Object(f'Generator')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ClosedGeneratorException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ClosedGeneratorException', _message, _code, _previous)
@@ -931,9 +1022,13 @@ class ClosedGeneratorException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class WeakReference():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'WeakReference', )
@@ -944,9 +1039,13 @@ class WeakReference():
     def get(self):
         return self.__this.call(f"get", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class WeakMap():
-
 
     def offsetGet(self, _object):
         return self.__this.call(f"offsetGet", _object)
@@ -969,6 +1068,11 @@ class WeakMap():
     def __init__(self):
         self.__this = phpy.Object(f'WeakMap')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Attribute():
     TARGET_CLASS = 1
@@ -980,21 +1084,27 @@ class Attribute():
     TARGET_ALL = 63
     IS_REPEATABLE = 64
 
-    flags = None
-
     def __init__(self, _flags=63):
         self.__this = phpy.Object(f'Attribute', _flags)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ReturnTypeWillChange():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'ReturnTypeWillChange', )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class UnitEnum():
-
 
     def cases():
         return phpy.call(f"UnitEnum::cases", )
@@ -1002,9 +1112,13 @@ class UnitEnum():
     def __init__(self):
         self.__this = phpy.Object(f'UnitEnum')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class BackedEnum():
-
 
     def _from(_value):
         return phpy.call(f"BackedEnum::from", _value)
@@ -1018,9 +1132,13 @@ class BackedEnum():
     def __init__(self):
         self.__this = phpy.Object(f'BackedEnum')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Fiber():
-
 
     def __init__(self, _callback):
         self.__this = phpy.Object(f'Fiber', _callback)
@@ -1055,9 +1173,13 @@ class Fiber():
     def suspend(_value=None):
         return phpy.call(f"Fiber::suspend", _value)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class FiberError():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'FiberError', )
@@ -1089,4 +1211,9 @@ class FiberError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

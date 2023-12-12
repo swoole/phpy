@@ -10,8 +10,6 @@ def pdo_drivers():
 
 class PDOException():
 
-    errorInfo = None
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'PDOException', _message, _code, _previous)
 
@@ -42,6 +40,11 @@ class PDOException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class PDO():
     PARAM_BOOL = 5
@@ -148,7 +151,6 @@ class PDO():
     PGSQL_TRANSACTION_INERROR = 3
     PGSQL_TRANSACTION_UNKNOWN = 4
 
-
     def __init__(self, _dsn, _username=None, _password=None, _options=None):
         self.__this = phpy.Object(f'PDO', _dsn, _username, _password, _options)
 
@@ -194,10 +196,13 @@ class PDO():
     def setAttribute(self, _attribute, _value):
         return self.__this.call(f"setAttribute", _attribute, _value)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class PDOStatement():
-
-    queryString = None
 
     def bindColumn(self, _column, _var, _type=2, _max_length=0, _driver_options=None):
         return self.__this.call(f"bindColumn", _column, _var, _type, _max_length, _driver_options)
@@ -262,12 +267,20 @@ class PDOStatement():
     def __init__(self):
         self.__this = phpy.Object(f'PDOStatement')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class PDORow():
-
-    queryString = None
 
     def __init__(self):
         self.__this = phpy.Object(f'PDORow')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

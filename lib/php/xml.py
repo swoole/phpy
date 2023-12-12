@@ -121,8 +121,12 @@ def parser_get_option(_parser, _option):
 
 class XMLParser():
 
-
     def __init__(self):
         self.__this = phpy.Object(f'XMLParser')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

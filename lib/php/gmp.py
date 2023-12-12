@@ -219,7 +219,6 @@ def binomial(_n, _k):
 
 class GMP():
 
-
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
@@ -229,4 +228,9 @@ class GMP():
     def __init__(self):
         self.__this = phpy.Object(f'GMP')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -6,7 +6,6 @@ import phpy
 
 class PharException():
 
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'PharException', _message, _code, _previous)
 
@@ -37,6 +36,11 @@ class PharException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Phar():
     CURRENT_MODE_MASK = 240
@@ -67,7 +71,6 @@ class Phar():
     SHA1 = 2
     SHA256 = 3
     SHA512 = 4
-
 
     def __init__(self, _filename, _flags=12288, _alias=None):
         self.__this = phpy.Object(f'Phar', _filename, _flags, _alias)
@@ -357,6 +360,11 @@ class Phar():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class PharData():
     CURRENT_MODE_MASK = 240
@@ -371,7 +379,6 @@ class PharData():
     OTHER_MODE_MASK = 28672
     SKIP_DOTS = 4096
     UNIX_PATHS = 8192
-
 
     def __init__(self, _filename, _flags=12288, _alias=None, _format=0):
         self.__this = phpy.Object(f'PharData', _filename, _flags, _alias, _format)
@@ -661,9 +668,13 @@ class PharData():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class PharFileInfo():
-
 
     def __init__(self, _filename):
         self.__this = phpy.Object(f'PharFileInfo', _filename)
@@ -797,4 +808,9 @@ class PharFileInfo():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -2532,13 +2532,16 @@ def cli_get_process_title():
 
 class __PHP_Incomplete_Class():
 
-
     def __init__(self):
         self.__this = phpy.Object(f'__PHP_Incomplete_Class')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class AssertionError():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'AssertionError', _message, _code, _previous)
@@ -2570,12 +2573,13 @@ class AssertionError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class php_user_filter():
-
-    filtername = ""
-    params = ""
-    stream = None
 
     def filter(self, _in, _out, _consumed, _closing):
         return self.__this.call(f"filter", _in, _out, _consumed, _closing)
@@ -2589,11 +2593,13 @@ class php_user_filter():
     def __init__(self):
         self.__this = phpy.Object(f'php_user_filter')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Directory():
-
-    path = None
-    handle = None
 
     def close(self):
         return self.__this.call(f"close", )
@@ -2607,4 +2613,9 @@ class Directory():
     def __init__(self):
         self.__this = phpy.Object(f'Directory')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

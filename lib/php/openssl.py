@@ -315,22 +315,34 @@ def get_cert_locations():
 
 class OpenSSLCertificate():
 
-
     def __init__(self):
         self.__this = phpy.Object(f'OpenSSLCertificate')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class OpenSSLCertificateSigningRequest():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'OpenSSLCertificateSigningRequest')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class OpenSSLAsymmetricKey():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'OpenSSLAsymmetricKey')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

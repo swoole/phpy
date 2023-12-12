@@ -61,14 +61,12 @@ def set_external_entity_loader(_resolver_function):
 
 class LibXMLError():
 
-    level = None
-    code = None
-    column = None
-    message = None
-    file = None
-    line = None
-
     def __init__(self):
         self.__this = phpy.Object(f'LibXMLError')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -723,7 +723,6 @@ def native_curl_multi_remove_handle(_multi_handle, _handle):
 
 class Exception():
 
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Exception', _message, _code, _previous)
 
@@ -754,9 +753,13 @@ class Exception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Error():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Error', _message, _code, _previous)
@@ -788,9 +791,13 @@ class Error():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Event():
-
 
     def add(_fd, _read_callback=None, _write_callback=None, _events=512):
         return phpy.call(f"Swoole\\Event::add", _fd, _read_callback, _write_callback, _events)
@@ -828,9 +835,13 @@ class Event():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Event')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Atomic():
-
 
     def __init__(self, _value=0):
         self.__this = phpy.Object(f'Swoole\\Atomic', _value)
@@ -856,9 +867,13 @@ class Atomic():
     def cmpset(self, _cmp_value, _new_value):
         return self.__this.call(f"cmpset", _cmp_value, _new_value)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class AtomicLong():
-
 
     def __init__(self, _value=0):
         self.__this = phpy.Object(f'Swoole\\Atomic\\Long', _value)
@@ -878,6 +893,11 @@ class AtomicLong():
     def cmpset(self, _cmp_value, _new_value):
         return self.__this.call(f"cmpset", _cmp_value, _new_value)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Lock():
     FILELOCK = 2
@@ -885,8 +905,6 @@ class Lock():
     SEM = 4
     RWLOCK = 1
     SPINLOCK = 5
-
-    errCode = 0
 
     def __init__(self, _type=3, _filename=""):
         self.__this = phpy.Object(f'Swoole\\Lock', _type, _filename)
@@ -912,6 +930,11 @@ class Lock():
     def destroy(self):
         return self.__this.call(f"destroy", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Process():
     IPC_NOWAIT = 256
@@ -919,12 +942,6 @@ class Process():
     PIPE_WORKER = 2
     PIPE_READ = 3
     PIPE_WRITE = 4
-
-    pipe = None
-    msgQueueId = None
-    msgQueueKey = None
-    pid = None
-    id = None
 
     def __init__(self, _callback, _redirect_stdin_and_stdout=False, _pipe_type=2, _enable_coroutine=False):
         self.__this = phpy.Object(f'Swoole\\Process', _callback, _redirect_stdin_and_stdout, _pipe_type, _enable_coroutine)
@@ -1001,11 +1018,13 @@ class Process():
     def name(self, _process_name):
         return self.__this.call(f"name", _process_name)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ProcessPool():
-
-    master_pid = -1
-    workers = None
 
     def __init__(self, _worker_num, _ipc_type=0, _msgqueue_key=0, _enable_coroutine=False):
         self.__this = phpy.Object(f'Swoole\\Process\\Pool', _worker_num, _ipc_type, _msgqueue_key, _enable_coroutine)
@@ -1040,14 +1059,16 @@ class ProcessPool():
     def shutdown(self):
         return self.__this.call(f"shutdown", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Table():
     TYPE_INT = 1
     TYPE_STRING = 3
     TYPE_FLOAT = 2
-
-    size = None
-    memorySize = None
 
     def __init__(self, _table_size, _conflict_proportion=0.2):
         self.__this = phpy.Object(f'Swoole\\Table', _table_size, _conflict_proportion)
@@ -1112,9 +1133,13 @@ class Table():
     def key(self):
         return self.__this.call(f"key", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Timer():
-
 
     def set(_settings):
         return phpy.call(f"Swoole\\Timer::set", _settings)
@@ -1146,11 +1171,15 @@ class Timer():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Timer')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class TimerIterator():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0):
         self.__this = phpy.Object(f'Swoole\\Timer\\Iterator', _array, _flags)
@@ -1233,9 +1262,13 @@ class TimerIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Coroutine():
-
 
     def create(_func, _param=None):
         return phpy.call(f"Swoole\\Coroutine::create", _func, _param)
@@ -1357,9 +1390,13 @@ class Coroutine():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class co():
-
 
     def create(_func, _param=None):
         return phpy.call(f"co::create", _func, _param)
@@ -1481,11 +1518,15 @@ class co():
     def __init__(self):
         self.__this = phpy.Object(f'co')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineIterator():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Iterator', _array, _flags)
@@ -1568,11 +1609,15 @@ class CoroutineIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class iterator():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0):
         self.__this = phpy.Object(f'co\\iterator', _array, _flags)
@@ -1655,11 +1700,15 @@ class iterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineContext():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0, _iterator_class="ArrayIterator"):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Context', _array, _flags, _iterator_class)
@@ -1736,11 +1785,15 @@ class CoroutineContext():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class context():
     STD_PROP_LIST = 1
     ARRAY_AS_PROPS = 2
-
 
     def __init__(self, _array=[], _flags=0, _iterator_class="ArrayIterator"):
         self.__this = phpy.Object(f'co\\context', _array, _flags, _iterator_class)
@@ -1817,9 +1870,13 @@ class context():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ExitException():
-
 
     def getFlags(self):
         return self.__this.call(f"getFlags", )
@@ -1857,9 +1914,13 @@ class ExitException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineSystem():
-
 
     def gethostbyname(_domain_name, _type=2, _timeout=-1):
         return phpy.call(f"Swoole\\Coroutine\\System::gethostbyname", _domain_name, _type, _timeout)
@@ -1909,9 +1970,13 @@ class CoroutineSystem():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\System')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class system():
-
 
     def gethostbyname(_domain_name, _type=2, _timeout=-1):
         return phpy.call(f"co\\system::gethostbyname", _domain_name, _type, _timeout)
@@ -1961,9 +2026,13 @@ class system():
     def __init__(self):
         self.__this = phpy.Object(f'co\\system')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineScheduler():
-
 
     def add(self, _func, _param=None):
         return self.__this.call(f"add", _func, _param)
@@ -1983,9 +2052,13 @@ class CoroutineScheduler():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Scheduler')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class scheduler():
-
 
     def add(self, _func, _param=None):
         return self.__this.call(f"add", _func, _param)
@@ -2005,11 +2078,13 @@ class scheduler():
     def __init__(self):
         self.__this = phpy.Object(f'co\\scheduler')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineChannel():
-
-    capacity = 0
-    errCode = 0
 
     def __init__(self, _size=1):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Channel', _size)
@@ -2035,11 +2110,13 @@ class CoroutineChannel():
     def length(self):
         return self.__this.call(f"length", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class channel():
-
-    capacity = 0
-    errCode = 0
 
     def __init__(self, _size=1):
         self.__this = phpy.Object(f'co\\channel', _size)
@@ -2065,11 +2142,13 @@ class channel():
     def length(self):
         return self.__this.call(f"length", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class chan():
-
-    capacity = 0
-    errCode = 0
 
     def __init__(self, _size=1):
         self.__this = phpy.Object(f'chan', _size)
@@ -2095,9 +2174,13 @@ class chan():
     def length(self):
         return self.__this.call(f"length", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Runtime():
-
 
     def enableCoroutine(_enable=2147481599, _flags=2147481599):
         return phpy.call(f"Swoole\\Runtime::enableCoroutine", _enable, _flags)
@@ -2111,9 +2194,13 @@ class Runtime():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Runtime')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineCurlException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Curl\\Exception', _message, _code, _previous)
@@ -2145,9 +2232,13 @@ class CoroutineCurlException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class coroutinecurlexception():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'co\\coroutine\\curl\\exception', _message, _code, _previous)
@@ -2179,17 +2270,13 @@ class coroutinecurlexception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineSocket():
-
-    fd = -1
-    domain = 0
-    type = 0
-    protocol = 0
-    errCode = 0
-    errMsg = ""
-    __ext_sockets_nonblock = False
-    __ext_sockets_timeout = 0
 
     def __init__(self, _domain, _type, _protocol=0):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Socket', _domain, _type, _protocol)
@@ -2290,17 +2377,13 @@ class CoroutineSocket():
     def _import(_stream):
         return phpy.call(f"Swoole\\Coroutine\\Socket::import", _stream)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class socket():
-
-    fd = -1
-    domain = 0
-    type = 0
-    protocol = 0
-    errCode = 0
-    errMsg = ""
-    __ext_sockets_nonblock = False
-    __ext_sockets_timeout = 0
 
     def __init__(self, _domain, _type, _protocol=0):
         self.__this = phpy.Object(f'co\\socket', _domain, _type, _protocol)
@@ -2401,9 +2484,13 @@ class socket():
     def _import(_stream):
         return phpy.call(f"co\\socket::import", _stream)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineSocketException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Socket\\Exception', _message, _code, _previous)
@@ -2435,9 +2522,13 @@ class CoroutineSocketException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class socketexception():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'co\\socket\\exception', _message, _code, _previous)
@@ -2469,6 +2560,11 @@ class socketexception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Client():
     MSG_OOB = 1
@@ -2478,14 +2574,6 @@ class Client():
     SHUT_RDWR = 2
     SHUT_RD = 0
     SHUT_WR = 1
-
-    errCode = 0
-    sock = -1
-    reuse = False
-    reuseCount = 0
-    type = 0
-    id = None
-    setting = None
 
     def __init__(self, _type, _async=False, _id=""):
         self.__this = phpy.Object(f'Swoole\\Client', _type, _async, _id)
@@ -2535,9 +2623,13 @@ class Client():
     def getSocket(self):
         return self.__this.call(f"getSocket", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ClientException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Client\\Exception', _message, _code, _previous)
@@ -2569,20 +2661,17 @@ class ClientException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineClient():
     MSG_OOB = 1
     MSG_PEEK = 2
     MSG_DONTWAIT = 64
     MSG_WAITALL = 256
-
-    errCode = 0
-    errMsg = ""
-    fd = -1
-    socket = None
-    type = 1
-    setting = None
-    connected = False
 
     def __init__(self, _type):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Client', _type)
@@ -2635,20 +2724,17 @@ class CoroutineClient():
     def exportSocket(self):
         return self.__this.call(f"exportSocket", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class client():
     MSG_OOB = 1
     MSG_PEEK = 2
     MSG_DONTWAIT = 64
     MSG_WAITALL = 256
-
-    errCode = 0
-    errMsg = ""
-    fd = -1
-    socket = None
-    type = 1
-    setting = None
-    connected = False
 
     def __init__(self, _type):
         self.__this = phpy.Object(f'co\\client', _type)
@@ -2701,28 +2787,13 @@ class client():
     def exportSocket(self):
         return self.__this.call(f"exportSocket", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineHttpClient():
-
-    socket = None
-    errCode = 0
-    errMsg = ""
-    connected = False
-    host = ""
-    port = 0
-    ssl = False
-    setting = None
-    requestMethod = None
-    requestHeaders = None
-    requestBody = None
-    uploadFiles = None
-    downloadFile = None
-    downloadOffset = 0
-    statusCode = 0
-    headers = None
-    set_cookie_headers = None
-    cookies = None
-    body = ""
 
     def __init__(self, _host, _port=0, _ssl=False):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Http\\Client', _host, _port, _ssl)
@@ -2805,28 +2876,13 @@ class CoroutineHttpClient():
     def close(self):
         return self.__this.call(f"close", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class httpclient():
-
-    socket = None
-    errCode = 0
-    errMsg = ""
-    connected = False
-    host = ""
-    port = 0
-    ssl = False
-    setting = None
-    requestMethod = None
-    requestHeaders = None
-    requestBody = None
-    uploadFiles = None
-    downloadFile = None
-    downloadOffset = 0
-    statusCode = 0
-    headers = None
-    set_cookie_headers = None
-    cookies = None
-    body = ""
 
     def __init__(self, _host, _port=0, _ssl=False):
         self.__this = phpy.Object(f'co\\http\\client', _host, _port, _ssl)
@@ -2909,9 +2965,13 @@ class httpclient():
     def close(self):
         return self.__this.call(f"close", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineHttpClientException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Http\\Client\\Exception', _message, _code, _previous)
@@ -2943,9 +3003,13 @@ class CoroutineHttpClientException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class httpclientexception():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'co\\http\\client\\exception', _message, _code, _previous)
@@ -2977,19 +3041,13 @@ class httpclientexception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineHttp2Client():
-
-    errCode = 0
-    errMsg = ""
-    sock = -1
-    type = 0
-    setting = None
-    socket = None
-    connected = False
-    host = None
-    port = 0
-    ssl = False
 
     def __init__(self, _host, _port=80, _open_ssl=False):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Http2\\Client', _host, _port, _open_ssl)
@@ -3027,19 +3085,13 @@ class CoroutineHttp2Client():
     def close(self):
         return self.__this.call(f"close", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class http2client():
-
-    errCode = 0
-    errMsg = ""
-    sock = -1
-    type = 0
-    setting = None
-    socket = None
-    connected = False
-    host = None
-    port = 0
-    ssl = False
 
     def __init__(self, _host, _port=80, _open_ssl=False):
         self.__this = phpy.Object(f'co\\http2\\client', _host, _port, _open_ssl)
@@ -3077,9 +3129,13 @@ class http2client():
     def close(self):
         return self.__this.call(f"close", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineHttp2ClientException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Http2\\Client\\Exception', _message, _code, _previous)
@@ -3111,9 +3167,13 @@ class CoroutineHttp2ClientException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class http2clientexception():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'co\\http2\\client\\exception', _message, _code, _previous)
@@ -3145,47 +3205,35 @@ class http2clientexception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Http2Request():
-
-    path = "/"
-    method = "GET"
-    headers = None
-    cookies = None
-    data = ""
-    pipeline = False
-    usePipelineRead = False
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Http2\\Request')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Http2Response():
-
-    streamId = 0
-    errCode = 0
-    statusCode = 0
-    pipeline = False
-    headers = None
-    set_cookie_headers = None
-    cookies = None
-    data = None
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Http2\\Response')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineMySQL():
-
-    serverInfo = None
-    sock = -1
-    connected = False
-    connect_errno = 0
-    connect_error = ""
-    affected_rows = 0
-    insert_id = 0
-    error = ""
-    errno = 0
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\MySQL', )
@@ -3232,18 +3280,13 @@ class CoroutineMySQL():
     def close(self):
         return self.__this.call(f"close", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysql():
-
-    serverInfo = None
-    sock = -1
-    connected = False
-    connect_errno = 0
-    connect_error = ""
-    affected_rows = 0
-    insert_id = 0
-    error = ""
-    errno = 0
 
     def __init__(self):
         self.__this = phpy.Object(f'co\\mysql', )
@@ -3290,14 +3333,13 @@ class mysql():
     def close(self):
         return self.__this.call(f"close", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineMySQLStatement():
-
-    id = 0
-    affected_rows = 0
-    insert_id = 0
-    error = ""
-    errno = 0
 
     def execute(self, _params=None, _timeout=None):
         return self.__this.call(f"execute", _params, _timeout)
@@ -3320,14 +3362,13 @@ class CoroutineMySQLStatement():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\MySQL\\Statement')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqlstatement():
-
-    id = 0
-    affected_rows = 0
-    insert_id = 0
-    error = ""
-    errno = 0
 
     def execute(self, _params=None, _timeout=None):
         return self.__this.call(f"execute", _params, _timeout)
@@ -3350,9 +3391,13 @@ class mysqlstatement():
     def __init__(self):
         self.__this = phpy.Object(f'co\\mysql\\statement')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineMySQLException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\MySQL\\Exception', _message, _code, _previous)
@@ -3384,9 +3429,13 @@ class CoroutineMySQLException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class mysqlexception():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'co\\mysql\\exception', _message, _code, _previous)
@@ -3418,17 +3467,13 @@ class mysqlexception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineRedis():
-
-    host = ""
-    port = 0
-    setting = None
-    sock = -1
-    connected = False
-    errType = 0
-    errCode = 0
-    errMsg = ""
 
     def __init__(self, _config=None):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Redis', _config)
@@ -3982,17 +4027,13 @@ class CoroutineRedis():
     def xInfoStream(self, _key):
         return self.__this.call(f"xInfoStream", _key)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class redis():
-
-    host = ""
-    port = 0
-    setting = None
-    sock = -1
-    connected = False
-    errType = 0
-    errCode = 0
-    errMsg = ""
 
     def __init__(self, _config=None):
         self.__this = phpy.Object(f'co\\redis', _config)
@@ -4546,24 +4587,13 @@ class redis():
     def xInfoStream(self, _key):
         return self.__this.call(f"xInfoStream", _key)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Server():
-
-    setting = None
-    connections = None
-    host = ""
-    port = 0
-    type = 0
-    ssl = False
-    mode = 0
-    ports = None
-    master_pid = 0
-    manager_pid = 0
-    worker_id = -1
-    taskworker = False
-    worker_pid = 0
-    stats_timer = None
-    admin_server = None
 
     def __init__(self, _host="0.0.0.0", _port=0, _mode=1, _sock_type=1):
         self.__this = phpy.Object(f'Swoole\\Server', _host, _port, _mode, _sock_type)
@@ -4697,14 +4727,13 @@ class Server():
     def bind(self, _fd, _uid):
         return self.__this.call(f"bind", _fd, _uid)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerTask():
-
-    data = None
-    dispatch_time = 0
-    id = -1
-    worker_id = -1
-    flags = 0
 
     def finish(self, _data):
         return self.__this.call(f"finish", _data)
@@ -4718,65 +4747,68 @@ class ServerTask():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\Task')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerEvent():
-
-    reactor_id = 0
-    fd = 0
-    dispatch_time = 0
-    data = None
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\Event')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerPacket():
-
-    server_socket = 0
-    server_port = 0
-    dispatch_time = 0
-    address = None
-    port = 0
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\Packet')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerPipeMessage():
-
-    source_worker_id = 0
-    dispatch_time = 0
-    data = None
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\PipeMessage')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerStatusInfo():
-
-    worker_id = 0
-    worker_pid = 0
-    status = 0
-    exit_code = 0
-    signal = 0
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\StatusInfo')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerTaskResult():
-
-    task_id = 0
-    task_worker_id = 0
-    dispatch_time = 0
-    data = None
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\TaskResult')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ConnectionIterator():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Connection\\Iterator', )
@@ -4811,16 +4843,13 @@ class ConnectionIterator():
     def offsetUnset(self, _fd):
         return self.__this.call(f"offsetUnset", _fd)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ServerPort():
-
-    host = None
-    port = 0
-    type = 0
-    sock = -1
-    ssl = False
-    setting = None
-    connections = None
 
     def set(self, _settings):
         return self.__this.call(f"set", _settings)
@@ -4837,18 +4866,13 @@ class ServerPort():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Server\\Port')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class HttpRequest():
-
-    fd = 0
-    streamId = 0
-    header = None
-    server = None
-    cookie = None
-    get = None
-    files = None
-    post = None
-    tmpfiles = None
 
     def getContent(self):
         return self.__this.call(f"getContent", )
@@ -4874,14 +4898,13 @@ class HttpRequest():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Http\\Request')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class HttpResponse():
-
-    fd = 0
-    socket = None
-    header = None
-    cookie = None
-    trailer = None
 
     def initHeader(self):
         return self.__this.call(f"initHeader", )
@@ -4952,24 +4975,13 @@ class HttpResponse():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Http\\Response')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class HttpServer():
-
-    setting = None
-    connections = None
-    host = ""
-    port = 0
-    type = 0
-    ssl = False
-    mode = 0
-    ports = None
-    master_pid = 0
-    manager_pid = 0
-    worker_id = -1
-    taskworker = False
-    worker_pid = 0
-    stats_timer = None
-    admin_server = None
 
     def __init__(self, _host="0.0.0.0", _port=0, _mode=1, _sock_type=1):
         self.__this = phpy.Object(f'Swoole\\Http\\Server', _host, _port, _mode, _sock_type)
@@ -5103,16 +5115,13 @@ class HttpServer():
     def bind(self, _fd, _uid):
         return self.__this.call(f"bind", _fd, _uid)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutineHttpServer():
-
-    fd = -1
-    host = None
-    port = -1
-    ssl = False
-    settings = None
-    errCode = 0
-    errMsg = ""
 
     def __init__(self, _host, _port=0, _ssl=False, _reuse_port=False):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\Http\\Server', _host, _port, _ssl, _reuse_port)
@@ -5129,16 +5138,13 @@ class CoroutineHttpServer():
     def shutdown(self):
         return self.__this.call(f"shutdown", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class httpserver():
-
-    fd = -1
-    host = None
-    port = -1
-    ssl = False
-    settings = None
-    errCode = 0
-    errMsg = ""
 
     def __init__(self, _host, _port=0, _ssl=False, _reuse_port=False):
         self.__this = phpy.Object(f'co\\http\\server', _host, _port, _ssl, _reuse_port)
@@ -5155,24 +5161,13 @@ class httpserver():
     def shutdown(self):
         return self.__this.call(f"shutdown", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class WebSocketServer():
-
-    setting = None
-    connections = None
-    host = ""
-    port = 0
-    type = 0
-    ssl = False
-    mode = 0
-    ports = None
-    master_pid = 0
-    manager_pid = 0
-    worker_id = -1
-    taskworker = False
-    worker_pid = 0
-    stats_timer = None
-    admin_server = None
 
     def push(self, _fd, _data, _opcode=1, _flags=1):
         return self.__this.call(f"push", _fd, _data, _opcode, _flags)
@@ -5321,14 +5316,13 @@ class WebSocketServer():
     def bind(self, _fd, _uid):
         return self.__this.call(f"bind", _fd, _uid)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class WebSocketFrame():
-
-    fd = 0
-    data = ""
-    opcode = 1
-    flags = 1
-    finish = None
 
     def __str__(self):
         return self.__this.call(f"__toString", )
@@ -5342,16 +5336,13 @@ class WebSocketFrame():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\WebSocket\\Frame')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class WebSocketCloseFrame():
-
-    fd = 0
-    data = ""
-    flags = 1
-    finish = None
-    opcode = 8
-    code = 1000
-    reason = ""
 
     def __str__(self):
         return self.__this.call(f"__toString", )
@@ -5365,6 +5356,11 @@ class WebSocketCloseFrame():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\WebSocket\\CloseFrame')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RedisServer():
     NIL = 1
@@ -5374,22 +5370,6 @@ class RedisServer():
     STRING = 4
     SET = 5
     MAP = 6
-
-    setting = None
-    connections = None
-    host = ""
-    port = 0
-    type = 0
-    ssl = False
-    mode = 0
-    ports = None
-    master_pid = 0
-    manager_pid = 0
-    worker_id = -1
-    taskworker = False
-    worker_pid = 0
-    stats_timer = None
-    admin_server = None
 
     def setHandler(self, _command, _callback):
         return self.__this.call(f"setHandler", _command, _callback)
@@ -5532,21 +5512,24 @@ class RedisServer():
     def bind(self, _fd, _uid):
         return self.__this.call(f"bind", _fd, _uid)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class NameResolverContext():
-
 
     def __init__(self, _family=2, _with_port=False):
         self.__this = phpy.Object(f'Swoole\\NameResolver\\Context', _family, _with_port)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutinePostgreSQL():
-
-    error = None
-    errCode = 0
-    resultStatus = 0
-    resultDiag = None
-    notices = None
 
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\PostgreSQL', )
@@ -5581,14 +5564,13 @@ class CoroutinePostgreSQL():
     def unlinkLOB(self, _oid):
         return self.__this.call(f"unlinkLOB", _oid)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class postgresql():
-
-    error = None
-    errCode = 0
-    resultStatus = 0
-    resultDiag = None
-    notices = None
 
     def __init__(self):
         self.__this = phpy.Object(f'co\\postgresql', )
@@ -5623,14 +5605,13 @@ class postgresql():
     def unlinkLOB(self, _oid):
         return self.__this.call(f"unlinkLOB", _oid)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CoroutinePostgreSQLStatement():
-
-    error = None
-    errCode = 0
-    resultStatus = 0
-    resultDiag = None
-    notices = None
 
     def execute(self, _params=[]):
         return self.__this.call(f"execute", _params)
@@ -5662,4 +5643,9 @@ class CoroutinePostgreSQLStatement():
     def __init__(self):
         self.__this = phpy.Object(f'Swoole\\Coroutine\\PostgreSQLStatement')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -28,21 +28,6 @@ class XMLReader():
     VALIDATE = 3
     SUBST_ENTITIES = 4
 
-    attributeCount = None
-    baseURI = None
-    depth = None
-    hasAttributes = None
-    hasValue = None
-    isDefault = None
-    isEmptyElement = None
-    localName = None
-    name = None
-    namespaceURI = None
-    nodeType = None
-    prefix = None
-    value = None
-    xmlLang = None
-
     def close(self):
         return self.__this.call(f"close", )
 
@@ -121,4 +106,9 @@ class XMLReader():
     def __init__(self):
         self.__this = phpy.Object(f'XMLReader')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

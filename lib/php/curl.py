@@ -705,32 +705,38 @@ def version():
 
 class CurlHandle():
 
-    private_data = None
-
     def __init__(self):
         self.__this = phpy.Object(f'CurlHandle')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CurlMultiHandle():
-
-    in_coroutine = False
 
     def __init__(self):
         self.__this = phpy.Object(f'CurlMultiHandle')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CurlShareHandle():
-
 
     def __init__(self):
         self.__this = phpy.Object(f'CurlShareHandle')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CURLFile():
-
-    name = ""
-    mime = ""
-    postname = ""
 
     def __init__(self, _filename, _mime_type=None, _posted_filename=None):
         self.__this = phpy.Object(f'CURLFile', _filename, _mime_type, _posted_filename)
@@ -750,14 +756,20 @@ class CURLFile():
     def setPostFilename(self, _posted_filename):
         return self.__this.call(f"setPostFilename", _posted_filename)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class CURLStringFile():
-
-    data = None
-    postname = None
-    mime = None
 
     def __init__(self, _data, _postname, _mime="application/octet-stream"):
         self.__this = phpy.Object(f'CURLStringFile', _data, _postname, _mime)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

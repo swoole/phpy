@@ -40,7 +40,6 @@ def mime_content_type(_filename):
 
 class finfo():
 
-
     def __init__(self, _flags=0, _magic_database=None):
         self.__this = phpy.Object(f'finfo', _flags, _magic_database)
 
@@ -53,4 +52,9 @@ class finfo():
     def set_flags(self, _flags):
         return self.__this.call(f"set_flags", _flags)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

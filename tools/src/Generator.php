@@ -225,8 +225,6 @@ class Generator
                 $className = implode('', array_slice($ns, 1));
             }
 
-            $properties = $this->getProperties($ref);
-
             if (empty($constants) and empty($methods)) {
                 continue;
             }
@@ -234,7 +232,6 @@ class Generator
             $classes[$className] = [
                 'constants' => $constants,
                 'methods' => $methods,
-                'properties' => $properties,
             ];
         }
         return $classes;

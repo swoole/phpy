@@ -46,7 +46,6 @@ class Redis():
     OPT_BACKOFF_BASE = 13
     OPT_BACKOFF_CAP = 14
 
-
     def __init__(self):
         self.__this = phpy.Object(f'Redis', )
 
@@ -764,9 +763,13 @@ class Redis():
     def zUnion(self, _key, _keys, _weights=None, _aggregate=None):
         return self.__this.call(f"zUnion", _key, _keys, _weights, _aggregate)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RedisArray():
-
 
     def __call(self, _function_name, _arguments):
         return self.__this.call(f"__call", _function_name, _arguments)
@@ -867,6 +870,11 @@ class RedisArray():
     def getMultiple(self, _keys):
         return self.__this.call(f"getMultiple", _keys)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RedisCluster():
     REDIS_NOT_FOUND = 0
@@ -913,7 +921,6 @@ class RedisCluster():
     BACKOFF_ALGORITHM_DECORRELATED_JITTER = 1
     OPT_BACKOFF_BASE = 13
     OPT_BACKOFF_CAP = 14
-
 
     def __init__(self, _name, _seeds=None, _timeout=None, _read_timeout=None, _persistent=None, _auth=None):
         self.__this = phpy.Object(f'RedisCluster', _name, _seeds, _timeout, _read_timeout, _persistent, _auth)
@@ -1485,9 +1492,13 @@ class RedisCluster():
     def zunionstore(self, _key, _keys, _weights=None, _aggregate=None):
         return self.__this.call(f"zunionstore", _key, _keys, _weights, _aggregate)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RedisSentinel():
-
 
     def __init__(self, _host, _port=None, _timeout=None, _persistent=None, _retry_interval=None, _read_timeout=None):
         self.__this = phpy.Object(f'RedisSentinel', _host, _port, _timeout, _persistent, _retry_interval, _read_timeout)
@@ -1522,9 +1533,13 @@ class RedisSentinel():
     def slaves(self, _value):
         return self.__this.call(f"slaves", _value)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RedisException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'RedisException', _message, _code, _previous)
@@ -1556,9 +1571,13 @@ class RedisException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class RedisClusterException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'RedisClusterException', _message, _code, _previous)
@@ -1590,4 +1609,9 @@ class RedisClusterException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -6,7 +6,6 @@ import phpy
 
 class ImagickException():
 
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickException', _message, _code, _previous)
 
@@ -37,9 +36,13 @@ class ImagickException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickDrawException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickDrawException', _message, _code, _previous)
@@ -71,9 +74,13 @@ class ImagickDrawException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickPixelIteratorException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickPixelIteratorException', _message, _code, _previous)
@@ -105,9 +112,13 @@ class ImagickPixelIteratorException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickPixelException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickPixelException', _message, _code, _previous)
@@ -139,9 +150,13 @@ class ImagickPixelException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickKernelException():
-
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickKernelException', _message, _code, _previous)
@@ -173,6 +188,11 @@ class ImagickKernelException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class Imagick():
     COLOR_BLACK = 11
@@ -790,7 +810,6 @@ class Imagick():
     COMPLEX_OPERATOR_MULTIPLY = 5
     COMPLEX_OPERATOR_REALIMAGINARY = 6
     COMPLEX_OPERATOR_SUBTRACT = 7
-
 
     def optimizeImageLayers(self):
         return self.__this.call(f"optimizeImageLayers", )
@@ -1917,9 +1936,13 @@ class Imagick():
     def whiteBalanceImage(self):
         return self.__this.call(f"whiteBalanceImage", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickDraw():
-
 
     def resetVectorGraphics(self):
         return self.__this.call(f"resetVectorGraphics", )
@@ -2323,9 +2346,13 @@ class ImagickDraw():
     def setTextDirection(self, _direction):
         return self.__this.call(f"setTextDirection", _direction)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickPixelIterator():
-
 
     def __init__(self, _imagick):
         self.__this = phpy.Object(f'ImagickPixelIterator', _imagick)
@@ -2390,9 +2417,13 @@ class ImagickPixelIterator():
     def valid(self):
         return self.__this.call(f"valid", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickPixel():
-
 
     def __init__(self, _color=None):
         self.__this = phpy.Object(f'ImagickPixel', _color)
@@ -2457,9 +2488,13 @@ class ImagickPixel():
     def setColorFromPixel(self, _pixel):
         return self.__this.call(f"setColorFromPixel", _pixel)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class ImagickKernel():
-
 
     def addKernel(self, _kernel):
         return self.__this.call(f"addKernel", _kernel)
@@ -2485,4 +2520,9 @@ class ImagickKernel():
     def __init__(self):
         self.__this = phpy.Object(f'ImagickKernel')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

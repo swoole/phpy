@@ -55,7 +55,6 @@ class SQLite3():
     COPY = 0
     RECURSIVE = 33
 
-
     def __init__(self, _filename, _flags=6, _encryption_key=""):
         self.__this = phpy.Object(f'SQLite3', _filename, _flags, _encryption_key)
 
@@ -128,9 +127,13 @@ class SQLite3():
     def setAuthorizer(self, _callback):
         return self.__this.call(f"setAuthorizer", _callback)
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SQLite3Stmt():
-
 
     def bindParam(self, _param, _var, _type=3):
         return self.__this.call(f"bindParam", _param, _var, _type)
@@ -162,9 +165,13 @@ class SQLite3Stmt():
     def __init__(self):
         self.__this = phpy.Object(f'SQLite3Stmt')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SQLite3Result():
-
 
     def numColumns(self):
         return self.__this.call(f"numColumns", )
@@ -187,4 +194,9 @@ class SQLite3Result():
     def __init__(self):
         self.__this = phpy.Object(f'SQLite3Result')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

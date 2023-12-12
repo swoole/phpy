@@ -146,13 +146,6 @@ class ZipArchive():
     EM_UNKNOWN = 65535
     LIBZIP_VERSION = "1.9.2"
 
-    lastId = None
-    status = None
-    statusSys = None
-    numFiles = None
-    filename = None
-    comment = None
-
     def open(self, _filename, _flags=0):
         return self.__this.call(f"open", _filename, _flags)
 
@@ -297,4 +290,9 @@ class ZipArchive():
     def __init__(self):
         self.__this = phpy.Object(f'ZipArchive')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

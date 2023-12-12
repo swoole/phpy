@@ -20,7 +20,6 @@ LIBEXSLT_DOTTED_VERSION = "1.1.34"
 
 class XSLTProcessor():
 
-
     def importStylesheet(self, _stylesheet):
         return self.__this.call(f"importStylesheet", _stylesheet)
 
@@ -60,4 +59,9 @@ class XSLTProcessor():
     def __init__(self):
         self.__this = phpy.Object(f'XSLTProcessor')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

@@ -101,7 +101,6 @@ def start(_options=[]):
 
 class SessionHandlerInterface():
 
-
     def open(self, _path, _name):
         return self.__this.call(f"open", _path, _name)
 
@@ -123,9 +122,13 @@ class SessionHandlerInterface():
     def __init__(self):
         self.__this = phpy.Object(f'SessionHandlerInterface')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SessionIdInterface():
-
 
     def create_sid(self):
         return self.__this.call(f"create_sid", )
@@ -133,9 +136,13 @@ class SessionIdInterface():
     def __init__(self):
         self.__this = phpy.Object(f'SessionIdInterface')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SessionUpdateTimestampHandlerInterface():
-
 
     def validateId(self, _id):
         return self.__this.call(f"validateId", _id)
@@ -146,9 +153,13 @@ class SessionUpdateTimestampHandlerInterface():
     def __init__(self):
         self.__this = phpy.Object(f'SessionUpdateTimestampHandlerInterface')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
 class SessionHandler():
-
 
     def open(self, _path, _name):
         return self.__this.call(f"open", _path, _name)
@@ -174,4 +185,9 @@ class SessionHandler():
     def __init__(self):
         self.__this = phpy.Object(f'SessionHandler')
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 

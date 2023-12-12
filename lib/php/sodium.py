@@ -518,7 +518,6 @@ def crypto_scalarmult_base(_secret_key):
 
 class SodiumException():
 
-
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'SodiumException', _message, _code, _previous)
 
@@ -549,4 +548,9 @@ class SodiumException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __getattr__(self, name):
+        return self.__this.get(name)
+
+    def __setattr__(self, name, value):
+        return self.__this.set(name, value)
 
