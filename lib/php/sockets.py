@@ -330,3 +330,17 @@ def socket_addrinfo_explain(_address):
 
 
 
+class Socket():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'Socket')
+
+
+class AddressInfo():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'AddressInfo')
+
+

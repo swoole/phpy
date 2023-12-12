@@ -898,7 +898,7 @@ def transliterator_get_error_message(_transliterator):
 
 
 
-def Collator():
+class Collator():
     DEFAULT_VALUE = -1
     PRIMARY = 0
     SECONDARY = 1
@@ -923,6 +923,7 @@ def Collator():
     SORT_REGULAR = 0
     SORT_STRING = 1
     SORT_NUMERIC = 2
+
 
     def __init__(self, _locale):
         self.__this = phpy.Object(f'Collator', _locale)
@@ -967,7 +968,7 @@ def Collator():
         return self.__this.call(f"getSortKey", _string)
 
 
-def NumberFormatter():
+class NumberFormatter():
     PATTERN_DECIMAL = 0
     DECIMAL = 1
     CURRENCY = 2
@@ -1043,6 +1044,7 @@ def NumberFormatter():
     TYPE_DOUBLE = 3
     TYPE_CURRENCY = 4
 
+
     def __init__(self, _locale, _style, _pattern=None):
         self.__this = phpy.Object(f'NumberFormatter', _locale, _style, _pattern)
 
@@ -1095,7 +1097,7 @@ def NumberFormatter():
         return self.__this.call(f"getErrorMessage", )
 
 
-def Normalizer():
+class Normalizer():
     FORM_D = 4
     NFD = 4
     FORM_KD = 8
@@ -1107,6 +1109,7 @@ def Normalizer():
     FORM_KC_CF = 48
     NFKC_CF = 48
 
+
     def normalize(_string, _form=16):
         return phpy.call(f"Normalizer::normalize", _string, _form)
 
@@ -1116,8 +1119,11 @@ def Normalizer():
     def getRawDecomposition(_string, _form=16):
         return phpy.call(f"Normalizer::getRawDecomposition", _string, _form)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Normalizer')
 
-def Locale():
+
+class Locale():
     ACTUAL_LOCALE = 0
     VALID_LOCALE = 1
     DEFAULT_LOCALE = None
@@ -1128,6 +1134,7 @@ def Locale():
     VARIANT_TAG = "variant"
     GRANDFATHERED_LANG_TAG = "grandfathered"
     PRIVATE_TAG = "private"
+
 
     def getDefault():
         return phpy.call(f"Locale::getDefault", )
@@ -1183,8 +1190,12 @@ def Locale():
     def acceptFromHttp(_header):
         return phpy.call(f"Locale::acceptFromHttp", _header)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Locale')
 
-def MessageFormatter():
+
+class MessageFormatter():
+
 
     def __init__(self, _locale, _pattern):
         self.__this = phpy.Object(f'MessageFormatter', _locale, _pattern)
@@ -1220,7 +1231,7 @@ def MessageFormatter():
         return self.__this.call(f"getErrorMessage", )
 
 
-def IntlDateFormatter():
+class IntlDateFormatter():
     FULL = 0
     LONG = 1
     MEDIUM = 2
@@ -1232,6 +1243,7 @@ def IntlDateFormatter():
     RELATIVE_SHORT = 131
     GREGORIAN = 1
     TRADITIONAL = 0
+
 
     def __init__(self, _locale, _date_type=0, _time_type=0, _timezone=None, _calendar=None, _pattern=None):
         self.__this = phpy.Object(f'IntlDateFormatter', _locale, _date_type, _time_type, _timezone, _calendar, _pattern)
@@ -1297,7 +1309,8 @@ def IntlDateFormatter():
         return self.__this.call(f"getErrorMessage", )
 
 
-def IntlDatePatternGenerator():
+class IntlDatePatternGenerator():
+
 
     def __init__(self, _locale=None):
         self.__this = phpy.Object(f'IntlDatePatternGenerator', _locale)
@@ -1309,7 +1322,8 @@ def IntlDatePatternGenerator():
         return self.__this.call(f"getBestPattern", _skeleton)
 
 
-def ResourceBundle():
+class ResourceBundle():
+
 
     def __init__(self, _locale, _bundle, _fallback=True):
         self.__this = phpy.Object(f'ResourceBundle', _locale, _bundle, _fallback)
@@ -1336,9 +1350,11 @@ def ResourceBundle():
         return self.__this.call(f"getIterator", )
 
 
-def Transliterator():
+class Transliterator():
     FORWARD = 0
     REVERSE = 1
+
+    id = None
 
     def create(_id, _direction=0):
         return phpy.call(f"Transliterator::create", _id, _direction)
@@ -1361,8 +1377,11 @@ def Transliterator():
     def getErrorMessage(self):
         return self.__this.call(f"getErrorMessage", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Transliterator')
 
-def IntlTimeZone():
+
+class IntlTimeZone():
     DISPLAY_SHORT = 1
     DISPLAY_LONG = 2
     DISPLAY_SHORT_GENERIC = 3
@@ -1374,6 +1393,7 @@ def IntlTimeZone():
     TYPE_ANY = 0
     TYPE_CANONICAL = 1
     TYPE_CANONICAL_LOCATION = 2
+
 
     def countEquivalentIDs(_timezone_id):
         return phpy.call(f"IntlTimeZone::countEquivalentIDs", _timezone_id)
@@ -1447,8 +1467,11 @@ def IntlTimeZone():
     def useDaylightTime(self):
         return self.__this.call(f"useDaylightTime", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlTimeZone')
 
-def IntlCalendar():
+
+class IntlCalendar():
     FIELD_ERA = 0
     FIELD_YEAR = 1
     FIELD_MONTH = 2
@@ -1488,6 +1511,7 @@ def IntlCalendar():
     WALLTIME_FIRST = 1
     WALLTIME_LAST = 0
     WALLTIME_NEXT_VALID = 2
+
 
     def createInstance(_timezone=None, _locale=None):
         return phpy.call(f"IntlCalendar::createInstance", _timezone, _locale)
@@ -1624,8 +1648,11 @@ def IntlCalendar():
     def toDateTime(self):
         return self.__this.call(f"toDateTime", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlCalendar')
 
-def IntlGregorianCalendar():
+
+class IntlGregorianCalendar():
     FIELD_ERA = 0
     FIELD_YEAR = 1
     FIELD_MONTH = 2
@@ -1665,6 +1692,7 @@ def IntlGregorianCalendar():
     WALLTIME_FIRST = 1
     WALLTIME_LAST = 0
     WALLTIME_NEXT_VALID = 2
+
 
     def __init__(self, _timezone_or_year=None, _locale_or_month=None, _day=None, _hour=None, _minute=None, _second=None):
         self.__this = phpy.Object(f'IntlGregorianCalendar', _timezone_or_year, _locale_or_month, _day, _hour, _minute, _second)
@@ -1814,7 +1842,7 @@ def IntlGregorianCalendar():
         return self.__this.call(f"toDateTime", )
 
 
-def Spoofchecker():
+class Spoofchecker():
     SINGLE_SCRIPT_CONFUSABLE = 1
     MIXED_SCRIPT_CONFUSABLE = 2
     WHOLE_SCRIPT_CONFUSABLE = 4
@@ -1828,6 +1856,7 @@ def Spoofchecker():
     MINIMALLY_RESTRICTIVE = 1342177280
     UNRESTRICTIVE = 1610612736
     SINGLE_SCRIPT_RESTRICTIVE = 536870912
+
 
     def __init__(self):
         self.__this = phpy.Object(f'Spoofchecker', )
@@ -1848,7 +1877,8 @@ def Spoofchecker():
         return self.__this.call(f"setRestrictionLevel", _level)
 
 
-def IntlException():
+class IntlException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'IntlException', _message, _code, _previous)
@@ -1877,11 +1907,12 @@ def IntlException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def IntlIterator():
+class IntlIterator():
+
 
     def current(self):
         return self.__this.call(f"current", )
@@ -1898,8 +1929,11 @@ def IntlIterator():
     def valid(self):
         return self.__this.call(f"valid", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlIterator')
 
-def IntlBreakIterator():
+
+class IntlBreakIterator():
     DONE = -1
     WORD_NONE = 0
     WORD_NONE_LIMIT = 100
@@ -1919,6 +1953,7 @@ def IntlBreakIterator():
     SENTENCE_TERM_LIMIT = 100
     SENTENCE_SEP = 100
     SENTENCE_SEP_LIMIT = 200
+
 
     def createCharacterInstance(_locale=None):
         return phpy.call(f"IntlBreakIterator::createCharacterInstance", _locale)
@@ -1983,8 +2018,11 @@ def IntlBreakIterator():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlBreakIterator')
 
-def IntlRuleBasedBreakIterator():
+
+class IntlRuleBasedBreakIterator():
     DONE = -1
     WORD_NONE = 0
     WORD_NONE_LIMIT = 100
@@ -2004,6 +2042,7 @@ def IntlRuleBasedBreakIterator():
     SENTENCE_TERM_LIMIT = 100
     SENTENCE_SEP = 100
     SENTENCE_SEP_LIMIT = 200
+
 
     def __init__(self, _rules, _compiled=False):
         self.__this = phpy.Object(f'IntlRuleBasedBreakIterator', _rules, _compiled)
@@ -2084,7 +2123,7 @@ def IntlRuleBasedBreakIterator():
         return self.__this.call(f"getIterator", )
 
 
-def IntlCodePointBreakIterator():
+class IntlCodePointBreakIterator():
     DONE = -1
     WORD_NONE = 0
     WORD_NONE_LIMIT = 100
@@ -2104,6 +2143,7 @@ def IntlCodePointBreakIterator():
     SENTENCE_TERM_LIMIT = 100
     SENTENCE_SEP = 100
     SENTENCE_SEP_LIMIT = 200
+
 
     def getLastCodePoint(self):
         return self.__this.call(f"getLastCodePoint", )
@@ -2171,11 +2211,15 @@ def IntlCodePointBreakIterator():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlCodePointBreakIterator')
 
-def IntlPartsIterator():
+
+class IntlPartsIterator():
     KEY_SEQUENTIAL = 0
     KEY_LEFT = 1
     KEY_RIGHT = 2
+
 
     def getBreakIterator(self):
         return self.__this.call(f"getBreakIterator", )
@@ -2198,8 +2242,11 @@ def IntlPartsIterator():
     def valid(self):
         return self.__this.call(f"valid", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlPartsIterator')
 
-def UConverter():
+
+class UConverter():
     REASON_UNASSIGNED = 0
     REASON_ILLEGAL = 1
     REASON_IRREGULAR = 2
@@ -2241,6 +2288,7 @@ def UConverter():
     UTF32 = 30
     CESU8 = 31
     IMAP_MAILBOX = 32
+
 
     def __init__(self, _destination_encoding=None, _source_encoding=None):
         self.__this = phpy.Object(f'UConverter', _destination_encoding, _source_encoding)
@@ -2300,7 +2348,7 @@ def UConverter():
         return phpy.call(f"UConverter::transcode", _str, _to_encoding, _from_encoding, _options)
 
 
-def IntlChar():
+class IntlChar():
     UNICODE_VERSION = "10.0"
     CODEPOINT_MIN = 0
     CODEPOINT_MAX = 1114111
@@ -2965,6 +3013,7 @@ def IntlChar():
     FOLD_CASE_DEFAULT = 0
     FOLD_CASE_EXCLUDE_SPECIAL_I = 1
 
+
     def hasBinaryProperty(_codepoint, _property):
         return phpy.call(f"IntlChar::hasBinaryProperty", _codepoint, _property)
 
@@ -3141,5 +3190,8 @@ def IntlChar():
 
     def toupper(_codepoint):
         return phpy.call(f"IntlChar::toupper", _codepoint)
+
+    def __init__(self):
+        self.__this = phpy.Object(f'IntlChar')
 
 

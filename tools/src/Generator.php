@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PhpyTool;
 
+use ReflectionClass;
 use ReflectionException;
 use ReflectionExtension;
 use ReflectionMethod;
 use ReflectionParameter;
+use RuntimeException;
 
 class Generator
 {
@@ -21,6 +23,7 @@ class Generator
         'from' => 1,
         'and' => 1,
         'or' => 1,
+        'is' => 1,
     ];
 
     public static string $rootDir = '';
@@ -28,7 +31,7 @@ class Generator
     /**
      * @param $extension
      * @return void
-     * @throws Exception
+     * @throws RuntimeException
      * @throws ReflectionException
      */
     static function make($extension): void
@@ -43,13 +46,13 @@ class Generator
     /**
      * AbstractStubGenerator constructor.
      *
-     * @throws Exception
+     * @throws RuntimeException
      * @throws ReflectionException
      */
     private function __construct($extension)
     {
         if (!extension_loaded($extension)) {
-            throw new Exception("Extension $extension not enabled or not installed.");
+            throw new RuntimeException("Extension $extension not enabled or not installed.");
         }
 
         $this->extension = $extension;
@@ -86,10 +89,15 @@ class Generator
         if ($this->rf_ext->getConstants()) {
             foreach ($this->rf_ext->getConstants() as $name => $value) {
                 // Duplicates the module name and should be deleted.
-                if (str_starts_with(strtolower($name), $this->extension . '_')) {
-                    $name = substr($name, strlen($this->extension) + 1);
+                $py_name = $name;
+                if (str_starts_with(strtolower($py_name), $this->extension . '_')) {
+                    $py_name = substr($py_name, strlen($this->extension) + 1);
+                    // After replacement, it starts with a number, which is not a valid symbol name. Abandon replacement.
+                    if (is_numeric($py_name[0])) {
+                        $py_name = $name;
+                    }
                 }
-                $constants[$name] = Tool::valueToRepr($value, true);
+                $constants[$py_name] = Tool::valueToRepr($value, true);
             }
         }
         return $constants;
@@ -144,6 +152,12 @@ class Generator
             if (str_starts_with($fn_name_safe, $this->extension . '_')) {
                 $fn_name_safe = substr($fn_name_safe, strlen($this->extension) + 1);
             }
+            // namespace function
+            if (str_contains($fn_name_safe, '\\')) {
+                $ns = explode('\\', strtolower($fn_name_safe));
+                $fn_name_safe = implode('_', array_slice($ns, 1));
+                $fn_name = str_replace('\\', '\\\\', $fn_name);
+            }
             if (array_key_exists($fn_name_safe, self::KEYWORDS)) {
                 $fn_name_safe = '_' . $fn_name_safe;
             }
@@ -171,9 +185,9 @@ class Generator
                 $params = $method->getParameters();
                 $fn_name = $method->getName();
                 if (array_key_exists($fn_name, self::KEYWORDS)) {
-                    $fn_name_safe = '_' . $fn_name;
+                    $py_name = '_' . $fn_name;
                 } else {
-                    $fn_name_safe = $fn_name;
+                    $py_name = $fn_name;
                 }
                 [$args, $call] = $this->getArgs($params);
                 if (!$method->isStatic()) {
@@ -181,19 +195,28 @@ class Generator
                 }
                 $args_call = implode(', ', $call);
                 if ($fn_name == '__construct') {
-                    $fn_name_safe = '__init__';
+                    $py_name = '__init__';
                     $call = "self.__this = phpy.Object(f'$classNameSafe', $args_call)";
                 } elseif ($fn_name == '__destruct') {
-                    $fn_name_safe = '__del__';
-                    $call = "self.__this = None";
+                    continue;
                 } elseif ($method->isStatic()) {
                     $call = 'return phpy.call(f"' . $classNameSafe . '::' . $fn_name . '", ' . $args_call . ")";
                 } else {
+                    if ($fn_name == '__toString') {
+                        $py_name = '__str__';
+                    }
                     $call = 'return self.__this.call(f"' . $fn_name . '", ' . $args_call . ")";
                 }
-                $methods[$fn_name_safe] = [
+                $methods[$py_name] = [
                     'args' => implode(', ', $args),
                     'call' => $call,
+                ];
+            }
+            // default ctor
+            if (!isset($methods['__init__'])) {
+                $methods['__init__'] = [
+                    'args' => 'self',
+                    'call' => "self.__this = phpy.Object(f'$classNameSafe')",
                 ];
             }
 
@@ -202,6 +225,8 @@ class Generator
                 $className = implode('', array_slice($ns, 1));
             }
 
+            $properties = $this->getProperties($ref);
+
             if (empty($constants) and empty($methods)) {
                 continue;
             }
@@ -209,8 +234,24 @@ class Generator
             $classes[$className] = [
                 'constants' => $constants,
                 'methods' => $methods,
+                'properties' => $properties,
             ];
         }
         return $classes;
+    }
+
+    protected function getProperties(ReflectionClass $class): array
+    {
+        $properties = [];
+        foreach ($class->getProperties(ReflectionMethod::IS_PUBLIC) as $property) {
+            $name = $property->getName();
+            if ($property->hasDefaultValue()) {
+                $default_value = Tool::valueToRepr($property->getDefaultValue(), true);
+            } else {
+                $default_value = 'None';
+            }
+            $properties[$name] = $default_value;
+        }
+        return $properties;
     }
 }

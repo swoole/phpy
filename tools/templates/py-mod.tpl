@@ -14,8 +14,12 @@ def <?= $name ?>(<?= $info['args'] ?>):
 
 
 <?php foreach ($classes as $name => $info): ?>
-def <?= $name ?>():
+class <?= $name ?>():
 <?php foreach ($info['constants'] as $name => $value): ?>
+    <?= $name ?> = <?= $value . PHP_EOL ?>
+<?php endforeach; ?>
+
+<?php foreach ($info['properties'] as $name => $value): ?>
     <?= $name ?> = <?= $value . PHP_EOL ?>
 <?php endforeach; ?>
 

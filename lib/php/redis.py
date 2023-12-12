@@ -4,7 +4,7 @@ import phpy
 
 
 
-def Redis():
+class Redis():
     REDIS_NOT_FOUND = 0
     REDIS_STRING = 1
     REDIS_SET = 2
@@ -46,11 +46,9 @@ def Redis():
     OPT_BACKOFF_BASE = 13
     OPT_BACKOFF_CAP = 14
 
+
     def __init__(self):
         self.__this = phpy.Object(f'Redis', )
-
-    def __del__(self):
-        self.__this = None
 
     def _prefix(self, _key):
         return self.__this.call(f"_prefix", _key)
@@ -767,7 +765,8 @@ def Redis():
         return self.__this.call(f"zUnion", _key, _keys, _weights, _aggregate)
 
 
-def RedisArray():
+class RedisArray():
+
 
     def __call(self, _function_name, _arguments):
         return self.__this.call(f"__call", _function_name, _arguments)
@@ -869,7 +868,7 @@ def RedisArray():
         return self.__this.call(f"getMultiple", _keys)
 
 
-def RedisCluster():
+class RedisCluster():
     REDIS_NOT_FOUND = 0
     REDIS_STRING = 1
     REDIS_SET = 2
@@ -914,6 +913,7 @@ def RedisCluster():
     BACKOFF_ALGORITHM_DECORRELATED_JITTER = 1
     OPT_BACKOFF_BASE = 13
     OPT_BACKOFF_CAP = 14
+
 
     def __init__(self, _name, _seeds=None, _timeout=None, _read_timeout=None, _persistent=None, _auth=None):
         self.__this = phpy.Object(f'RedisCluster', _name, _seeds, _timeout, _read_timeout, _persistent, _auth)
@@ -1486,7 +1486,8 @@ def RedisCluster():
         return self.__this.call(f"zunionstore", _key, _keys, _weights, _aggregate)
 
 
-def RedisSentinel():
+class RedisSentinel():
+
 
     def __init__(self, _host, _port=None, _timeout=None, _persistent=None, _retry_interval=None, _read_timeout=None):
         self.__this = phpy.Object(f'RedisSentinel', _host, _port, _timeout, _persistent, _retry_interval, _read_timeout)
@@ -1522,7 +1523,8 @@ def RedisSentinel():
         return self.__this.call(f"slaves", _value)
 
 
-def RedisException():
+class RedisException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'RedisException', _message, _code, _previous)
@@ -1551,11 +1553,12 @@ def RedisException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def RedisClusterException():
+class RedisClusterException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'RedisClusterException', _message, _code, _previous)
@@ -1584,7 +1587,7 @@ def RedisClusterException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 

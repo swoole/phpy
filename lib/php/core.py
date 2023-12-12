@@ -317,13 +317,32 @@ def gc_status():
 
 
 
-def IteratorAggregate():
+class stdClass():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'stdClass')
+
+
+class Traversable():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'Traversable')
+
+
+class IteratorAggregate():
+
 
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'IteratorAggregate')
 
-def Iterator():
+
+class Iterator():
+
 
     def current(self):
         return self.__this.call(f"current", )
@@ -340,8 +359,12 @@ def Iterator():
     def rewind(self):
         return self.__this.call(f"rewind", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Iterator')
 
-def Serializable():
+
+class Serializable():
+
 
     def serialize(self):
         return self.__this.call(f"serialize", )
@@ -349,8 +372,12 @@ def Serializable():
     def unserialize(self, _data):
         return self.__this.call(f"unserialize", _data)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Serializable')
 
-def ArrayAccess():
+
+class ArrayAccess():
+
 
     def offsetExists(self, _offset):
         return self.__this.call(f"offsetExists", _offset)
@@ -364,20 +391,32 @@ def ArrayAccess():
     def offsetUnset(self, _offset):
         return self.__this.call(f"offsetUnset", _offset)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ArrayAccess')
 
-def Countable():
+
+class Countable():
+
 
     def count(self):
         return self.__this.call(f"count", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Countable')
 
-def Stringable():
 
-    def __toString(self):
+class Stringable():
+
+
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Stringable')
 
-def InternalIterator():
+
+class InternalIterator():
+
 
     def current(self):
         return self.__this.call(f"current", )
@@ -394,8 +433,12 @@ def InternalIterator():
     def rewind(self):
         return self.__this.call(f"rewind", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'InternalIterator')
 
-def Throwable():
+
+class Throwable():
+
 
     def getMessage(self):
         return self.__this.call(f"getMessage", )
@@ -418,11 +461,15 @@ def Throwable():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Throwable')
 
-def Exception():
+
+class Exception():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Exception', _message, _code, _previous)
@@ -451,11 +498,12 @@ def Exception():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ErrorException():
+class ErrorException():
+
 
     def __init__(self, _message="", _code=0, _severity=1, _filename=None, _line=None, _previous=None):
         self.__this = phpy.Object(f'ErrorException', _message, _code, _severity, _filename, _line, _previous)
@@ -487,11 +535,12 @@ def ErrorException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def Error():
+class Error():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'Error', _message, _code, _previous)
@@ -520,11 +569,12 @@ def Error():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def CompileError():
+class CompileError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'CompileError', _message, _code, _previous)
@@ -553,11 +603,12 @@ def CompileError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ParseError():
+class ParseError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ParseError', _message, _code, _previous)
@@ -586,11 +637,12 @@ def ParseError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def TypeError():
+class TypeError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'TypeError', _message, _code, _previous)
@@ -619,11 +671,12 @@ def TypeError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ArgumentCountError():
+class ArgumentCountError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ArgumentCountError', _message, _code, _previous)
@@ -652,11 +705,12 @@ def ArgumentCountError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ValueError():
+class ValueError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ValueError', _message, _code, _previous)
@@ -685,11 +739,12 @@ def ValueError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ArithmeticError():
+class ArithmeticError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ArithmeticError', _message, _code, _previous)
@@ -718,11 +773,12 @@ def ArithmeticError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DivisionByZeroError():
+class DivisionByZeroError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'DivisionByZeroError', _message, _code, _previous)
@@ -751,11 +807,12 @@ def DivisionByZeroError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def UnhandledMatchError():
+class UnhandledMatchError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'UnhandledMatchError', _message, _code, _previous)
@@ -784,11 +841,12 @@ def UnhandledMatchError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def Closure():
+class Closure():
+
 
     def bind(_closure, _new_this, _new_scope="static"):
         return phpy.call(f"Closure::bind", _closure, _new_this, _new_scope)
@@ -805,8 +863,12 @@ def Closure():
     def __invoke(self):
         return self.__this.call(f"__invoke", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Closure')
 
-def Generator():
+
+class Generator():
+
 
     def rewind(self):
         return self.__this.call(f"rewind", )
@@ -832,8 +894,12 @@ def Generator():
     def getReturn(self):
         return self.__this.call(f"getReturn", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Generator')
 
-def ClosedGeneratorException():
+
+class ClosedGeneratorException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ClosedGeneratorException', _message, _code, _previous)
@@ -862,11 +928,12 @@ def ClosedGeneratorException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def WeakReference():
+class WeakReference():
+
 
     def __init__(self):
         self.__this = phpy.Object(f'WeakReference', )
@@ -878,7 +945,8 @@ def WeakReference():
         return self.__this.call(f"get", )
 
 
-def WeakMap():
+class WeakMap():
+
 
     def offsetGet(self, _object):
         return self.__this.call(f"offsetGet", _object)
@@ -898,8 +966,11 @@ def WeakMap():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'WeakMap')
 
-def Attribute():
+
+class Attribute():
     TARGET_CLASS = 1
     TARGET_FUNCTION = 2
     TARGET_METHOD = 4
@@ -909,23 +980,31 @@ def Attribute():
     TARGET_ALL = 63
     IS_REPEATABLE = 64
 
+    flags = None
+
     def __init__(self, _flags=63):
         self.__this = phpy.Object(f'Attribute', _flags)
 
 
-def ReturnTypeWillChange():
+class ReturnTypeWillChange():
+
 
     def __init__(self):
         self.__this = phpy.Object(f'ReturnTypeWillChange', )
 
 
-def UnitEnum():
+class UnitEnum():
+
 
     def cases():
         return phpy.call(f"UnitEnum::cases", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'UnitEnum')
 
-def BackedEnum():
+
+class BackedEnum():
+
 
     def _from(_value):
         return phpy.call(f"BackedEnum::from", _value)
@@ -936,8 +1015,12 @@ def BackedEnum():
     def cases():
         return phpy.call(f"BackedEnum::cases", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'BackedEnum')
 
-def Fiber():
+
+class Fiber():
+
 
     def __init__(self, _callback):
         self.__this = phpy.Object(f'Fiber', _callback)
@@ -973,7 +1056,8 @@ def Fiber():
         return phpy.call(f"Fiber::suspend", _value)
 
 
-def FiberError():
+class FiberError():
+
 
     def __init__(self):
         self.__this = phpy.Object(f'FiberError', )
@@ -1002,7 +1086,7 @@ def FiberError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 

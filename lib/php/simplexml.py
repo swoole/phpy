@@ -16,7 +16,8 @@ def simplexml_import_dom(_node, _class_name="SimpleXMLElement"):
 
 
 
-def SimpleXMLElement():
+class SimpleXMLElement():
+
 
     def xpath(self, _expression):
         return self.__this.call(f"xpath", _expression)
@@ -54,7 +55,7 @@ def SimpleXMLElement():
     def getName(self):
         return self.__this.call(f"getName", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def count(self):
@@ -82,7 +83,8 @@ def SimpleXMLElement():
         return self.__this.call(f"getChildren", )
 
 
-def SimpleXMLIterator():
+class SimpleXMLIterator():
+
 
     def xpath(self, _expression):
         return self.__this.call(f"xpath", _expression)
@@ -120,7 +122,7 @@ def SimpleXMLIterator():
     def getName(self):
         return self.__this.call(f"getName", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def count(self):

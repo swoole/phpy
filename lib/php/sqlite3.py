@@ -16,7 +16,7 @@ DETERMINISTIC = 2048
 
 
 
-def SQLite3():
+class SQLite3():
     OK = 0
     DENY = 1
     IGNORE = 2
@@ -54,6 +54,7 @@ def SQLite3():
     SAVEPOINT = 32
     COPY = 0
     RECURSIVE = 33
+
 
     def __init__(self, _filename, _flags=6, _encryption_key=""):
         self.__this = phpy.Object(f'SQLite3', _filename, _flags, _encryption_key)
@@ -128,7 +129,8 @@ def SQLite3():
         return self.__this.call(f"setAuthorizer", _callback)
 
 
-def SQLite3Stmt():
+class SQLite3Stmt():
+
 
     def bindParam(self, _param, _var, _type=3):
         return self.__this.call(f"bindParam", _param, _var, _type)
@@ -157,8 +159,12 @@ def SQLite3Stmt():
     def reset(self):
         return self.__this.call(f"reset", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'SQLite3Stmt')
 
-def SQLite3Result():
+
+class SQLite3Result():
+
 
     def numColumns(self):
         return self.__this.call(f"numColumns", )
@@ -177,5 +183,8 @@ def SQLite3Result():
 
     def finalize(self):
         return self.__this.call(f"finalize", )
+
+    def __init__(self):
+        self.__this = phpy.Object(f'SQLite3Result')
 
 

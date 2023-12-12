@@ -212,7 +212,7 @@ def sun_info(_timestamp, _latitude, _longitude):
 
 
 
-def DateTimeInterface():
+class DateTimeInterface():
     ATOM = "Y-m-d\\TH:i:sP"
     COOKIE = "l, d-M-Y H:i:s T"
     ISO8601 = "Y-m-d\\TH:i:sO"
@@ -226,6 +226,7 @@ def DateTimeInterface():
     RFC3339_EXTENDED = "Y-m-d\\TH:i:s.vP"
     RSS = "D, d M Y H:i:s O"
     W3C = "Y-m-d\\TH:i:sP"
+
 
     def format(self, _format):
         return self.__this.call(f"format", _format)
@@ -245,8 +246,11 @@ def DateTimeInterface():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'DateTimeInterface')
 
-def DateTime():
+
+class DateTime():
     ATOM = "Y-m-d\\TH:i:sP"
     COOKIE = "l, d-M-Y H:i:s T"
     ISO8601 = "Y-m-d\\TH:i:sO"
@@ -260,6 +264,7 @@ def DateTime():
     RFC3339_EXTENDED = "Y-m-d\\TH:i:s.vP"
     RSS = "D, d M Y H:i:s O"
     W3C = "Y-m-d\\TH:i:sP"
+
 
     def __init__(self, _datetime="now", _timezone=None):
         self.__this = phpy.Object(f'DateTime', _datetime, _timezone)
@@ -322,7 +327,7 @@ def DateTime():
         return self.__this.call(f"diff", _target_object, _absolute)
 
 
-def DateTimeImmutable():
+class DateTimeImmutable():
     ATOM = "Y-m-d\\TH:i:sP"
     COOKIE = "l, d-M-Y H:i:s T"
     ISO8601 = "Y-m-d\\TH:i:sO"
@@ -336,6 +341,7 @@ def DateTimeImmutable():
     RFC3339_EXTENDED = "Y-m-d\\TH:i:s.vP"
     RSS = "D, d M Y H:i:s O"
     W3C = "Y-m-d\\TH:i:sP"
+
 
     def __init__(self, _datetime="now", _timezone=None):
         self.__this = phpy.Object(f'DateTimeImmutable', _datetime, _timezone)
@@ -398,7 +404,7 @@ def DateTimeImmutable():
         return phpy.call(f"DateTimeImmutable::createFromInterface", _object)
 
 
-def DateTimeZone():
+class DateTimeZone():
     AFRICA = 1
     AMERICA = 2
     ANTARCTICA = 4
@@ -413,6 +419,7 @@ def DateTimeZone():
     ALL = 2047
     ALL_WITH_BC = 4095
     PER_COUNTRY = 4096
+
 
     def __init__(self, _timezone):
         self.__this = phpy.Object(f'DateTimeZone', _timezone)
@@ -442,7 +449,8 @@ def DateTimeZone():
         return phpy.call(f"DateTimeZone::__set_state", _array)
 
 
-def DateInterval():
+class DateInterval():
+
 
     def __init__(self, _duration):
         self.__this = phpy.Object(f'DateInterval', _duration)
@@ -460,8 +468,9 @@ def DateInterval():
         return phpy.call(f"DateInterval::__set_state", _array)
 
 
-def DatePeriod():
+class DatePeriod():
     EXCLUDE_START_DATE = 1
+
 
     def __init__(self, _start, _interval=None, _end=None, _options=None):
         self.__this = phpy.Object(f'DatePeriod', _start, _interval, _end, _options)

@@ -1,7 +1,7 @@
 import phpy
 
-1_1 = 1
-1_2 = 2
+SOAP_1_1 = 1
+SOAP_1_2 = 2
 PERSISTENCE_SESSION = 1
 PERSISTENCE_REQUEST = 2
 FUNCTIONS_ALL = 999
@@ -93,7 +93,8 @@ def is_soap_fault(_object):
 
 
 
-def SoapClient():
+class SoapClient():
+
 
     def __init__(self, _wsdl, _options=[]):
         self.__this = phpy.Object(f'SoapClient', _wsdl, _options)
@@ -138,13 +139,21 @@ def SoapClient():
         return self.__this.call(f"__setLocation", _location)
 
 
-def SoapVar():
+class SoapVar():
+
+    enc_type = None
+    enc_value = None
+    enc_stype = None
+    enc_ns = None
+    enc_name = None
+    enc_namens = None
 
     def __init__(self, _data, _encoding, _type_name=None, _type_namespace=None, _node_name=None, _node_namespace=None):
         self.__this = phpy.Object(f'SoapVar', _data, _encoding, _type_name, _type_namespace, _node_name, _node_namespace)
 
 
-def SoapServer():
+class SoapServer():
+
 
     def __init__(self, _wsdl, _options=[]):
         self.__this = phpy.Object(f'SoapServer', _wsdl, _options)
@@ -174,12 +183,20 @@ def SoapServer():
         return self.__this.call(f"handle", _request)
 
 
-def SoapFault():
+class SoapFault():
+
+    faultstring = None
+    faultcode = None
+    faultcodens = None
+    faultactor = None
+    detail = None
+    _name = None
+    headerfault = None
 
     def __init__(self, _code, _string, _actor=None, _details=None, _name=None, _header_fault=None):
         self.__this = phpy.Object(f'SoapFault', _code, _string, _actor, _details, _name, _header_fault)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __wakeup(self):
@@ -207,13 +224,22 @@ def SoapFault():
         return self.__this.call(f"getTraceAsString", )
 
 
-def SoapParam():
+class SoapParam():
+
+    param_name = None
+    param_data = None
 
     def __init__(self, _data, _name):
         self.__this = phpy.Object(f'SoapParam', _data, _name)
 
 
-def SoapHeader():
+class SoapHeader():
+
+    namespace = None
+    name = None
+    data = None
+    mustUnderstand = None
+    actor = None
 
     def __init__(self, _namespace, _name, _data=None, _must_understand=False, _actor=None):
         self.__this = phpy.Object(f'SoapHeader', _namespace, _name, _data, _must_understand, _actor)

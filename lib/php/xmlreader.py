@@ -4,7 +4,7 @@ import phpy
 
 
 
-def XMLReader():
+class XMLReader():
     NONE = 0
     ELEMENT = 1
     ATTRIBUTE = 2
@@ -27,6 +27,21 @@ def XMLReader():
     DEFAULTATTRS = 2
     VALIDATE = 3
     SUBST_ENTITIES = 4
+
+    attributeCount = None
+    baseURI = None
+    depth = None
+    hasAttributes = None
+    hasValue = None
+    isDefault = None
+    isEmptyElement = None
+    localName = None
+    name = None
+    namespaceURI = None
+    nodeType = None
+    prefix = None
+    value = None
+    xmlLang = None
 
     def close(self):
         return self.__this.call(f"close", )
@@ -102,5 +117,8 @@ def XMLReader():
 
     def expand(self, _base_node=None):
         return self.__this.call(f"expand", _base_node)
+
+    def __init__(self):
+        self.__this = phpy.Object(f'XMLReader')
 
 

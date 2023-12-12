@@ -172,7 +172,8 @@ def flush(_writer, _empty=True):
 
 
 
-def XMLWriter():
+class XMLWriter():
+
 
     def openUri(self, _uri):
         return self.__this.call(f"openUri", _uri)
@@ -299,5 +300,8 @@ def XMLWriter():
 
     def flush(self, _empty=True):
         return self.__this.call(f"flush", _empty)
+
+    def __init__(self):
+        self.__this = phpy.Object(f'XMLWriter')
 
 

@@ -151,3 +151,17 @@ def inflate_get_read_len(_context):
 
 
 
+class InflateContext():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'InflateContext')
+
+
+class DeflateContext():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'DeflateContext')
+
+

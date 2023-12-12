@@ -4,53 +4,69 @@ VERSION = "1.14.2"
 STABILITY = "stable"
 
 
-def MongoDB\BSON\fromPHP(_value):
-    return phpy.call('MongoDB\BSON\fromPHP', _value)
+def bson_fromphp(_value):
+    return phpy.call('MongoDB\\BSON\\fromPHP', _value)
 
 
-def MongoDB\BSON\toPHP(_bson, _typemap=None):
-    return phpy.call('MongoDB\BSON\toPHP', _bson, _typemap)
+def bson_tophp(_bson, _typemap=None):
+    return phpy.call('MongoDB\\BSON\\toPHP', _bson, _typemap)
 
 
-def MongoDB\BSON\toJSON(_bson):
-    return phpy.call('MongoDB\BSON\toJSON', _bson)
+def bson_tojson(_bson):
+    return phpy.call('MongoDB\\BSON\\toJSON', _bson)
 
 
-def MongoDB\BSON\toCanonicalExtendedJSON(_bson):
-    return phpy.call('MongoDB\BSON\toCanonicalExtendedJSON', _bson)
+def bson_tocanonicalextendedjson(_bson):
+    return phpy.call('MongoDB\\BSON\\toCanonicalExtendedJSON', _bson)
 
 
-def MongoDB\BSON\toRelaxedExtendedJSON(_bson):
-    return phpy.call('MongoDB\BSON\toRelaxedExtendedJSON', _bson)
+def bson_torelaxedextendedjson(_bson):
+    return phpy.call('MongoDB\\BSON\\toRelaxedExtendedJSON', _bson)
 
 
-def MongoDB\BSON\fromJSON(_json):
-    return phpy.call('MongoDB\BSON\fromJSON', _json)
+def bson_fromjson(_json):
+    return phpy.call('MongoDB\\BSON\\fromJSON', _json)
 
 
-def MongoDB\Driver\Monitoring\addSubscriber(_subscriber):
-    return phpy.call('MongoDB\Driver\Monitoring\addSubscriber', _subscriber)
+def driver_monitoring_addsubscriber(_subscriber):
+    return phpy.call('MongoDB\\Driver\\Monitoring\\addSubscriber', _subscriber)
 
 
-def MongoDB\Driver\Monitoring\removeSubscriber(_subscriber):
-    return phpy.call('MongoDB\Driver\Monitoring\removeSubscriber', _subscriber)
+def driver_monitoring_removesubscriber(_subscriber):
+    return phpy.call('MongoDB\\Driver\\Monitoring\\removeSubscriber', _subscriber)
 
 
 
 
-def BSONSerializable():
+class BSONType():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Type')
+
+
+class BSONSerializable():
+
 
     def bsonSerialize(self):
         return self.__this.call(f"bsonSerialize", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Serializable')
 
-def BSONUnserializable():
+
+class BSONUnserializable():
+
 
     def bsonUnserialize(self, _data):
         return self.__this.call(f"bsonUnserialize", _data)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Unserializable')
 
-def BSONBinaryInterface():
+
+class BSONBinaryInterface():
+
 
     def getData(self):
         return self.__this.call(f"getData", )
@@ -58,17 +74,25 @@ def BSONBinaryInterface():
     def getType(self):
         return self.__this.call(f"getType", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\BinaryInterface')
 
-def BSONDecimal128Interface():
 
-    def __toString(self):
+class BSONDecimal128Interface():
+
+
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Decimal128Interface')
 
-def BSONJavascriptInterface():
+
+class BSONJavascriptInterface():
+
 
     def getCode(self):
         return self.__this.call(f"getCode", )
@@ -76,20 +100,42 @@ def BSONJavascriptInterface():
     def getScope(self):
         return self.__this.call(f"getScope", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\JavascriptInterface')
 
-def BSONObjectIdInterface():
+
+class BSONMaxKeyInterface():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\MaxKeyInterface')
+
+
+class BSONMinKeyInterface():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\MinKeyInterface')
+
+
+class BSONObjectIdInterface():
+
 
     def getTimestamp(self):
         return self.__this.call(f"getTimestamp", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\ObjectIdInterface')
 
-def BSONRegexInterface():
+
+class BSONRegexInterface():
+
 
     def getFlags(self):
         return self.__this.call(f"getFlags", )
@@ -97,11 +143,15 @@ def BSONRegexInterface():
     def getPattern(self):
         return self.__this.call(f"getPattern", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\RegexInterface')
 
-def BSONTimestampInterface():
+
+class BSONTimestampInterface():
+
 
     def getIncrement(self):
         return self.__this.call(f"getIncrement", )
@@ -109,20 +159,27 @@ def BSONTimestampInterface():
     def getTimestamp(self):
         return self.__this.call(f"getTimestamp", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\TimestampInterface')
 
-def BSONUTCDateTimeInterface():
+
+class BSONUTCDateTimeInterface():
+
 
     def toDateTime(self):
         return self.__this.call(f"toDateTime", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\UTCDateTimeInterface')
 
-def BSONBinary():
+
+class BSONBinary():
     TYPE_GENERIC = 0
     TYPE_FUNCTION = 1
     TYPE_OLD_BINARY = 2
@@ -133,6 +190,7 @@ def BSONBinary():
     TYPE_COLUMN = 7
     TYPE_USER_DEFINED = 128
 
+
     def __init__(self, _data, _type):
         self.__this = phpy.Object(f'MongoDB\\BSON\\Binary', _data, _type)
 
@@ -142,7 +200,7 @@ def BSONBinary():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\Binary::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -164,12 +222,13 @@ def BSONBinary():
         return self.__this.call(f"getType", )
 
 
-def BSONDBPointer():
+class BSONDBPointer():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -184,8 +243,12 @@ def BSONDBPointer():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\DBPointer')
 
-def BSONDecimal128():
+
+class BSONDecimal128():
+
 
     def __init__(self, _value):
         self.__this = phpy.Object(f'MongoDB\\BSON\\Decimal128', _value)
@@ -196,7 +259,7 @@ def BSONDecimal128():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\Decimal128::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -212,12 +275,13 @@ def BSONDecimal128():
         return self.__this.call(f"unserialize", _serialized)
 
 
-def BSONInt64():
+class BSONInt64():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -232,8 +296,12 @@ def BSONInt64():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Int64')
 
-def BSONJavascript():
+
+class BSONJavascript():
+
 
     def __init__(self, _javascript, _scope=None):
         self.__this = phpy.Object(f'MongoDB\\BSON\\Javascript', _javascript, _scope)
@@ -244,7 +312,7 @@ def BSONJavascript():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\Javascript::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -266,7 +334,8 @@ def BSONJavascript():
         return self.__this.call(f"getScope", )
 
 
-def BSONMaxKey():
+class BSONMaxKey():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
@@ -286,8 +355,12 @@ def BSONMaxKey():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\MaxKey')
 
-def BSONMinKey():
+
+class BSONMinKey():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
@@ -307,8 +380,12 @@ def BSONMinKey():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\MinKey')
 
-def BSONObjectId():
+
+class BSONObjectId():
+
 
     def __init__(self, _id=None):
         self.__this = phpy.Object(f'MongoDB\\BSON\\ObjectId', _id)
@@ -322,7 +399,7 @@ def BSONObjectId():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\ObjectId::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -338,7 +415,8 @@ def BSONObjectId():
         return self.__this.call(f"unserialize", _serialized)
 
 
-def BSONPersistable():
+class BSONPersistable():
+
 
     def bsonUnserialize(self, _data):
         return self.__this.call(f"bsonUnserialize", _data)
@@ -346,8 +424,12 @@ def BSONPersistable():
     def bsonSerialize(self):
         return self.__this.call(f"bsonSerialize", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Persistable')
 
-def BSONRegex():
+
+class BSONRegex():
+
 
     def __init__(self, _pattern, _flags=None):
         self.__this = phpy.Object(f'MongoDB\\BSON\\Regex', _pattern, _flags)
@@ -358,7 +440,7 @@ def BSONRegex():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\Regex::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -380,12 +462,13 @@ def BSONRegex():
         return self.__this.call(f"getFlags", )
 
 
-def BSONSymbol():
+class BSONSymbol():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -400,8 +483,12 @@ def BSONSymbol():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Symbol')
 
-def BSONTimestamp():
+
+class BSONTimestamp():
+
 
     def __init__(self, _increment, _timestamp):
         self.__this = phpy.Object(f'MongoDB\\BSON\\Timestamp', _increment, _timestamp)
@@ -412,7 +499,7 @@ def BSONTimestamp():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\Timestamp::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -434,12 +521,13 @@ def BSONTimestamp():
         return self.__this.call(f"getTimestamp", )
 
 
-def BSONUndefined():
+class BSONUndefined():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -454,8 +542,12 @@ def BSONUndefined():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\BSON\\Undefined')
 
-def BSONUTCDateTime():
+
+class BSONUTCDateTime():
+
 
     def __init__(self, _milliseconds=None):
         self.__this = phpy.Object(f'MongoDB\\BSON\\UTCDateTime', _milliseconds)
@@ -466,7 +558,7 @@ def BSONUTCDateTime():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\BSON\\UTCDateTime::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -485,7 +577,8 @@ def BSONUTCDateTime():
         return self.__this.call(f"toDateTime", )
 
 
-def DriverCursorInterface():
+class DriverCursorInterface():
+
 
     def getId(self):
         return self.__this.call(f"getId", )
@@ -502,8 +595,12 @@ def DriverCursorInterface():
     def toArray(self):
         return self.__this.call(f"toArray", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\CursorInterface')
 
-def DriverBulkWrite():
+
+class DriverBulkWrite():
+
 
     def __init__(self, _options=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\BulkWrite', _options)
@@ -524,12 +621,13 @@ def DriverBulkWrite():
         return self.__this.call(f"__wakeup", )
 
 
-def DriverClientEncryption():
+class DriverClientEncryption():
     AEAD_AES_256_CBC_HMAC_SHA_512_DETERMINISTIC = "AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic"
     AEAD_AES_256_CBC_HMAC_SHA_512_RANDOM = "AEAD_AES_256_CBC_HMAC_SHA_512-Random"
     ALGORITHM_INDEXED = "Indexed"
     ALGORITHM_UNINDEXED = "Unindexed"
     QUERY_TYPE_EQUALITY = "equality"
+
 
     def __init__(self, _options=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\ClientEncryption', _options)
@@ -547,7 +645,8 @@ def DriverClientEncryption():
         return self.__this.call(f"__wakeup", )
 
 
-def DriverCommand():
+class DriverCommand():
+
 
     def __init__(self, _document, _options=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\Command', _document, _options)
@@ -556,7 +655,8 @@ def DriverCommand():
         return self.__this.call(f"__wakeup", )
 
 
-def DriverCursor():
+class DriverCursor():
+
 
     def setTypeMap(self, _typemap):
         return self.__this.call(f"setTypeMap", _typemap)
@@ -591,8 +691,12 @@ def DriverCursor():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Cursor')
 
-def DriverCursorId():
+
+class DriverCursorId():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
@@ -600,7 +704,7 @@ def DriverCursorId():
     def __set_state(_properties):
         return phpy.call(f"MongoDB\\Driver\\CursorId::__set_state", _properties)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __unserialize(self, _data):
@@ -612,8 +716,12 @@ def DriverCursorId():
     def unserialize(self, _serialized):
         return self.__this.call(f"unserialize", _serialized)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\CursorId')
 
-def DriverManager():
+
+class DriverManager():
+
 
     def __init__(self, _uri=None, _options=None, _driver_options=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\Manager', _uri, _options, _driver_options)
@@ -670,7 +778,8 @@ def DriverManager():
         return self.__this.call(f"__wakeup", )
 
 
-def DriverQuery():
+class DriverQuery():
+
 
     def __init__(self, _filter, _options=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\Query', _filter, _options)
@@ -679,12 +788,13 @@ def DriverQuery():
         return self.__this.call(f"__wakeup", )
 
 
-def DriverReadConcern():
+class DriverReadConcern():
     LOCAL = "local"
     MAJORITY = "majority"
     LINEARIZABLE = "linearizable"
     AVAILABLE = "available"
     SNAPSHOT = "snapshot"
+
 
     def __init__(self, _level=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\ReadConcern', _level)
@@ -714,7 +824,7 @@ def DriverReadConcern():
         return self.__this.call(f"unserialize", _serialized)
 
 
-def DriverReadPreference():
+class DriverReadPreference():
     RP_PRIMARY = 1
     RP_PRIMARY_PREFERRED = 5
     RP_SECONDARY = 2
@@ -727,6 +837,7 @@ def DriverReadPreference():
     SECONDARY = "secondary"
     SECONDARY_PREFERRED = "secondaryPreferred"
     NEAREST = "nearest"
+
 
     def __init__(self, _mode, _tag_sets=None, _options=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\ReadPreference', _mode, _tag_sets, _options)
@@ -765,7 +876,7 @@ def DriverReadPreference():
         return self.__this.call(f"unserialize", _serialized)
 
 
-def DriverServer():
+class DriverServer():
     TYPE_UNKNOWN = 0
     TYPE_STANDALONE = 1
     TYPE_MONGOS = 2
@@ -776,6 +887,7 @@ def DriverServer():
     TYPE_RS_OTHER = 7
     TYPE_RS_GHOST = 8
     TYPE_LOAD_BALANCER = 9
+
 
     def executeCommand(self, _db, _command, _options=None):
         return self.__this.call(f"executeCommand", _db, _command, _options)
@@ -834,9 +946,13 @@ def DriverServer():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Server')
 
-def DriverServerApi():
+
+class DriverServerApi():
     V1 = "1"
+
 
     def __init__(self, _version, _strict=None, _deprecation_errors=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\ServerApi', _version, _strict, _deprecation_errors)
@@ -860,7 +976,7 @@ def DriverServerApi():
         return self.__this.call(f"unserialize", _serialized)
 
 
-def DriverServerDescription():
+class DriverServerDescription():
     TYPE_UNKNOWN = "Unknown"
     TYPE_STANDALONE = "Standalone"
     TYPE_MONGOS = "Mongos"
@@ -871,6 +987,7 @@ def DriverServerDescription():
     TYPE_RS_OTHER = "RSOther"
     TYPE_RS_GHOST = "RSGhost"
     TYPE_LOAD_BALANCER = "LoadBalancer"
+
 
     def getHelloResponse(self):
         return self.__this.call(f"getHelloResponse", )
@@ -890,14 +1007,18 @@ def DriverServerDescription():
     def getType(self):
         return self.__this.call(f"getType", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\ServerDescription')
 
-def DriverTopologyDescription():
+
+class DriverTopologyDescription():
     TYPE_UNKNOWN = "Unknown"
     TYPE_SINGLE = "Single"
     TYPE_SHARDED = "Sharded"
     TYPE_REPLICA_SET_NO_PRIMARY = "ReplicaSetNoPrimary"
     TYPE_REPLICA_SET_WITH_PRIMARY = "ReplicaSetWithPrimary"
     TYPE_LOAD_BALANCED = "LoadBalanced"
+
 
     def getServers(self):
         return self.__this.call(f"getServers", )
@@ -911,13 +1032,17 @@ def DriverTopologyDescription():
     def getType(self):
         return self.__this.call(f"getType", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\TopologyDescription')
 
-def DriverSession():
+
+class DriverSession():
     TRANSACTION_NONE = "none"
     TRANSACTION_STARTING = "starting"
     TRANSACTION_IN_PROGRESS = "in_progress"
     TRANSACTION_COMMITTED = "committed"
     TRANSACTION_ABORTED = "aborted"
+
 
     def abortTransaction(self):
         return self.__this.call(f"abortTransaction", )
@@ -964,9 +1089,13 @@ def DriverSession():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Session')
 
-def DriverWriteConcern():
+
+class DriverWriteConcern():
     MAJORITY = "majority"
+
 
     def __init__(self, _w, _wtimeout=None, _journal=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\WriteConcern', _w, _wtimeout, _journal)
@@ -1002,7 +1131,8 @@ def DriverWriteConcern():
         return self.__this.call(f"unserialize", _serialized)
 
 
-def DriverWriteConcernError():
+class DriverWriteConcernError():
+
 
     def getCode(self):
         return self.__this.call(f"getCode", )
@@ -1016,8 +1146,12 @@ def DriverWriteConcernError():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\WriteConcernError')
 
-def DriverWriteError():
+
+class DriverWriteError():
+
 
     def getCode(self):
         return self.__this.call(f"getCode", )
@@ -1034,8 +1168,12 @@ def DriverWriteError():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\WriteError')
 
-def DriverWriteResult():
+
+class DriverWriteResult():
+
 
     def getInsertedCount(self):
         return self.__this.call(f"getInsertedCount", )
@@ -1070,8 +1208,12 @@ def DriverWriteResult():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\WriteResult')
 
-def DriverExceptionException():
+
+class DriverExceptionException():
+
 
     def getMessage(self):
         return self.__this.call(f"getMessage", )
@@ -1094,11 +1236,15 @@ def DriverExceptionException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Exception\\Exception')
 
-def DriverExceptionRuntimeException():
+
+class DriverExceptionRuntimeException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1130,11 +1276,12 @@ def DriverExceptionRuntimeException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionServerException():
+class DriverExceptionServerException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1166,11 +1313,12 @@ def DriverExceptionServerException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionConnectionException():
+class DriverExceptionConnectionException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1202,11 +1350,12 @@ def DriverExceptionConnectionException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionWriteException():
+class DriverExceptionWriteException():
+
 
     def getWriteResult(self):
         return self.__this.call(f"getWriteResult", )
@@ -1241,11 +1390,12 @@ def DriverExceptionWriteException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionAuthenticationException():
+class DriverExceptionAuthenticationException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1277,11 +1427,12 @@ def DriverExceptionAuthenticationException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionBulkWriteException():
+class DriverExceptionBulkWriteException():
+
 
     def getWriteResult(self):
         return self.__this.call(f"getWriteResult", )
@@ -1316,11 +1467,12 @@ def DriverExceptionBulkWriteException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionCommandException():
+class DriverExceptionCommandException():
+
 
     def getResultDocument(self):
         return self.__this.call(f"getResultDocument", )
@@ -1355,11 +1507,12 @@ def DriverExceptionCommandException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionConnectionTimeoutException():
+class DriverExceptionConnectionTimeoutException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1391,11 +1544,12 @@ def DriverExceptionConnectionTimeoutException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionEncryptionException():
+class DriverExceptionEncryptionException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1427,11 +1581,12 @@ def DriverExceptionEncryptionException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionExecutionTimeoutException():
+class DriverExceptionExecutionTimeoutException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1463,11 +1618,12 @@ def DriverExceptionExecutionTimeoutException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionInvalidArgumentException():
+class DriverExceptionInvalidArgumentException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\Exception\\InvalidArgumentException', _message, _code, _previous)
@@ -1496,11 +1652,12 @@ def DriverExceptionInvalidArgumentException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionLogicException():
+class DriverExceptionLogicException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\Exception\\LogicException', _message, _code, _previous)
@@ -1529,11 +1686,12 @@ def DriverExceptionLogicException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionSSLConnectionException():
+class DriverExceptionSSLConnectionException():
+
 
     def hasErrorLabel(self, _label):
         return self.__this.call(f"hasErrorLabel", _label)
@@ -1565,11 +1723,12 @@ def DriverExceptionSSLConnectionException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverExceptionUnexpectedValueException():
+class DriverExceptionUnexpectedValueException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'MongoDB\\Driver\\Exception\\UnexpectedValueException', _message, _code, _previous)
@@ -1598,11 +1757,19 @@ def DriverExceptionUnexpectedValueException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def DriverMonitoringCommandSubscriber():
+class DriverMonitoringSubscriber():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\Subscriber')
+
+
+class DriverMonitoringCommandSubscriber():
+
 
     def commandStarted(self, _event):
         return self.__this.call(f"commandStarted", _event)
@@ -1613,8 +1780,12 @@ def DriverMonitoringCommandSubscriber():
     def commandFailed(self, _event):
         return self.__this.call(f"commandFailed", _event)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\CommandSubscriber')
 
-def DriverMonitoringCommandFailedEvent():
+
+class DriverMonitoringCommandFailedEvent():
+
 
     def getCommandName(self):
         return self.__this.call(f"getCommandName", )
@@ -1646,8 +1817,12 @@ def DriverMonitoringCommandFailedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\CommandFailedEvent')
 
-def DriverMonitoringCommandStartedEvent():
+
+class DriverMonitoringCommandStartedEvent():
+
 
     def getCommand(self):
         return self.__this.call(f"getCommand", )
@@ -1676,8 +1851,12 @@ def DriverMonitoringCommandStartedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\CommandStartedEvent')
 
-def DriverMonitoringCommandSucceededEvent():
+
+class DriverMonitoringCommandSucceededEvent():
+
 
     def getCommandName(self):
         return self.__this.call(f"getCommandName", )
@@ -1706,8 +1885,12 @@ def DriverMonitoringCommandSucceededEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\CommandSucceededEvent')
 
-def DriverMonitoringSDAMSubscriber():
+
+class DriverMonitoringSDAMSubscriber():
+
 
     def serverChanged(self, _event):
         return self.__this.call(f"serverChanged", _event)
@@ -1736,8 +1919,12 @@ def DriverMonitoringSDAMSubscriber():
     def topologyOpening(self, _event):
         return self.__this.call(f"topologyOpening", _event)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\SDAMSubscriber')
 
-def DriverMonitoringServerChangedEvent():
+
+class DriverMonitoringServerChangedEvent():
+
 
     def getHost(self):
         return self.__this.call(f"getHost", )
@@ -1757,8 +1944,12 @@ def DriverMonitoringServerChangedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\ServerChangedEvent')
 
-def DriverMonitoringServerClosedEvent():
+
+class DriverMonitoringServerClosedEvent():
+
 
     def getHost(self):
         return self.__this.call(f"getHost", )
@@ -1772,8 +1963,12 @@ def DriverMonitoringServerClosedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\ServerClosedEvent')
 
-def DriverMonitoringServerHeartbeatFailedEvent():
+
+class DriverMonitoringServerHeartbeatFailedEvent():
+
 
     def getDurationMicros(self):
         return self.__this.call(f"getDurationMicros", )
@@ -1793,8 +1988,12 @@ def DriverMonitoringServerHeartbeatFailedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\ServerHeartbeatFailedEvent')
 
-def DriverMonitoringServerHeartbeatStartedEvent():
+
+class DriverMonitoringServerHeartbeatStartedEvent():
+
 
     def getHost(self):
         return self.__this.call(f"getHost", )
@@ -1808,8 +2007,12 @@ def DriverMonitoringServerHeartbeatStartedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\ServerHeartbeatStartedEvent')
 
-def DriverMonitoringServerHeartbeatSucceededEvent():
+
+class DriverMonitoringServerHeartbeatSucceededEvent():
+
 
     def getDurationMicros(self):
         return self.__this.call(f"getDurationMicros", )
@@ -1829,8 +2032,12 @@ def DriverMonitoringServerHeartbeatSucceededEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\ServerHeartbeatSucceededEvent')
 
-def DriverMonitoringServerOpeningEvent():
+
+class DriverMonitoringServerOpeningEvent():
+
 
     def getHost(self):
         return self.__this.call(f"getHost", )
@@ -1844,8 +2051,12 @@ def DriverMonitoringServerOpeningEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\ServerOpeningEvent')
 
-def DriverMonitoringTopologyChangedEvent():
+
+class DriverMonitoringTopologyChangedEvent():
+
 
     def getNewDescription(self):
         return self.__this.call(f"getNewDescription", )
@@ -1859,8 +2070,12 @@ def DriverMonitoringTopologyChangedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\TopologyChangedEvent')
 
-def DriverMonitoringTopologyClosedEvent():
+
+class DriverMonitoringTopologyClosedEvent():
+
 
     def getTopologyId(self):
         return self.__this.call(f"getTopologyId", )
@@ -1868,13 +2083,20 @@ def DriverMonitoringTopologyClosedEvent():
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\TopologyClosedEvent')
 
-def DriverMonitoringTopologyOpeningEvent():
+
+class DriverMonitoringTopologyOpeningEvent():
+
 
     def getTopologyId(self):
         return self.__this.call(f"getTopologyId", )
 
     def __wakeup(self):
         return self.__this.call(f"__wakeup", )
+
+    def __init__(self):
+        self.__this = phpy.Object(f'MongoDB\\Driver\\Monitoring\\TopologyOpeningEvent')
 
 

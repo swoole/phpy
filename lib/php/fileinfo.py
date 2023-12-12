@@ -38,7 +38,8 @@ def mime_content_type(_filename):
 
 
 
-def finfo():
+class finfo():
+
 
     def __init__(self, _flags=0, _magic_database=None):
         self.__this = phpy.Object(f'finfo', _flags, _magic_database)

@@ -4,7 +4,8 @@ import phpy
 
 
 
-def PharException():
+class PharException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'PharException', _message, _code, _previous)
@@ -33,11 +34,11 @@ def PharException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def Phar():
+class Phar():
     CURRENT_MODE_MASK = 240
     CURRENT_AS_PATHNAME = 32
     CURRENT_AS_FILEINFO = 0
@@ -67,11 +68,9 @@ def Phar():
     SHA256 = 3
     SHA512 = 4
 
+
     def __init__(self, _filename, _flags=12288, _alias=None):
         self.__this = phpy.Object(f'Phar', _filename, _flags, _alias)
-
-    def __del__(self):
-        self.__this = None
 
     def addEmptyDir(self, _directory):
         return self.__this.call(f"addEmptyDir", _directory)
@@ -283,7 +282,7 @@ def Phar():
     def seek(self, _offset):
         return self.__this.call(f"seek", _offset)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getPathname(self):
@@ -359,7 +358,7 @@ def Phar():
         return self.__this.call(f"_bad_state_ex", )
 
 
-def PharData():
+class PharData():
     CURRENT_MODE_MASK = 240
     CURRENT_AS_PATHNAME = 32
     CURRENT_AS_FILEINFO = 0
@@ -373,11 +372,9 @@ def PharData():
     SKIP_DOTS = 4096
     UNIX_PATHS = 8192
 
+
     def __init__(self, _filename, _flags=12288, _alias=None, _format=0):
         self.__this = phpy.Object(f'PharData', _filename, _flags, _alias, _format)
-
-    def __del__(self):
-        self.__this = None
 
     def addEmptyDir(self, _directory):
         return self.__this.call(f"addEmptyDir", _directory)
@@ -589,7 +586,7 @@ def PharData():
     def seek(self, _offset):
         return self.__this.call(f"seek", _offset)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getPathname(self):
@@ -665,13 +662,11 @@ def PharData():
         return self.__this.call(f"_bad_state_ex", )
 
 
-def PharFileInfo():
+class PharFileInfo():
+
 
     def __init__(self, _filename):
         self.__this = phpy.Object(f'PharFileInfo', _filename)
-
-    def __del__(self):
-        self.__this = None
 
     def chmod(self, _perms):
         return self.__this.call(f"chmod", _perms)
@@ -793,7 +788,7 @@ def PharFileInfo():
     def setInfoClass(self, _class="SplFileInfo"):
         return self.__this.call(f"setInfoClass", _class)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def __debugInfo(self):

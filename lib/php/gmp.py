@@ -217,12 +217,16 @@ def binomial(_n, _k):
 
 
 
-def GMP():
+class GMP():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
     def __unserialize(self, _data):
         return self.__this.call(f"__unserialize", _data)
+
+    def __init__(self):
+        self.__this = phpy.Object(f'GMP')
 
 

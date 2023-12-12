@@ -703,7 +703,34 @@ def version():
 
 
 
-def CURLFile():
+class CurlHandle():
+
+    private_data = None
+
+    def __init__(self):
+        self.__this = phpy.Object(f'CurlHandle')
+
+
+class CurlMultiHandle():
+
+    in_coroutine = False
+
+    def __init__(self):
+        self.__this = phpy.Object(f'CurlMultiHandle')
+
+
+class CurlShareHandle():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'CurlShareHandle')
+
+
+class CURLFile():
+
+    name = ""
+    mime = ""
+    postname = ""
 
     def __init__(self, _filename, _mime_type=None, _posted_filename=None):
         self.__this = phpy.Object(f'CURLFile', _filename, _mime_type, _posted_filename)
@@ -724,7 +751,11 @@ def CURLFile():
         return self.__this.call(f"setPostFilename", _posted_filename)
 
 
-def CURLStringFile():
+class CURLStringFile():
+
+    data = None
+    postname = None
+    mime = None
 
     def __init__(self, _data, _postname, _mime="application/octet-stream"):
         self.__this = phpy.Object(f'CURLStringFile', _data, _postname, _mime)

@@ -160,7 +160,12 @@ def token_name(_id):
 
 
 
-def PhpToken():
+class PhpToken():
+
+    id = None
+    text = None
+    line = None
+    pos = None
 
     def tokenize(_code, _flags=0):
         return phpy.call(f"PhpToken::tokenize", _code, _flags)
@@ -168,7 +173,7 @@ def PhpToken():
     def __init__(self, _id, _text, _line=-1, _pos=-1):
         self.__this = phpy.Object(f'PhpToken', _id, _text, _line, _pos)
 
-    def is(self, _kind):
+    def _is(self, _kind):
         return self.__this.call(f"is", _kind)
 
     def isIgnorable(self):
@@ -177,7 +182,7 @@ def PhpToken():
     def getTokenName(self):
         return self.__this.call(f"getTokenName", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 

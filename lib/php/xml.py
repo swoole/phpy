@@ -119,3 +119,10 @@ def parser_get_option(_parser, _option):
 
 
 
+class XMLParser():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'XMLParser')
+
+

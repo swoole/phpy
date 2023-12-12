@@ -505,3 +505,17 @@ def imageresolution(_image, _resolution_x=None, _resolution_y=None):
 
 
 
+class GdImage():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'GdImage')
+
+
+class GdFont():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'GdFont')
+
+

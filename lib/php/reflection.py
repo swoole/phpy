@@ -4,7 +4,8 @@ import phpy
 
 
 
-def ReflectionException():
+class ReflectionException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ReflectionException', _message, _code, _previous)
@@ -33,23 +34,33 @@ def ReflectionException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def Reflection():
+class Reflection():
+
 
     def getModifierNames(_modifiers):
         return phpy.call(f"Reflection::getModifierNames", _modifiers)
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Reflection')
 
-def Reflector():
 
-    def __toString(self):
+class Reflector():
+
+
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'Reflector')
 
-def ReflectionFunctionAbstract():
+
+class ReflectionFunctionAbstract():
+
+    name = None
 
     def inNamespace(self):
         return self.__this.call(f"inNamespace", )
@@ -144,17 +155,22 @@ def ReflectionFunctionAbstract():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionFunctionAbstract')
 
-def ReflectionFunction():
+
+class ReflectionFunction():
     IS_DEPRECATED = 2048
+
+    name = None
 
     def __init__(self, _function):
         self.__this = phpy.Object(f'ReflectionFunction', _function)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def isDisabled(self):
@@ -263,7 +279,8 @@ def ReflectionFunction():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionGenerator():
+class ReflectionGenerator():
+
 
     def __init__(self, _generator):
         self.__this = phpy.Object(f'ReflectionGenerator', _generator)
@@ -287,12 +304,14 @@ def ReflectionGenerator():
         return self.__this.call(f"getExecutingGenerator", )
 
 
-def ReflectionParameter():
+class ReflectionParameter():
+
+    name = None
 
     def __init__(self, _function, _param):
         self.__this = phpy.Object(f'ReflectionParameter', _function, _param)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -356,16 +375,21 @@ def ReflectionParameter():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionType():
+class ReflectionType():
+
 
     def allowsNull(self):
         return self.__this.call(f"allowsNull", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionType')
 
-def ReflectionNamedType():
+
+class ReflectionNamedType():
+
 
     def getName(self):
         return self.__this.call(f"getName", )
@@ -376,11 +400,15 @@ def ReflectionNamedType():
     def allowsNull(self):
         return self.__this.call(f"allowsNull", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionNamedType')
 
-def ReflectionUnionType():
+
+class ReflectionUnionType():
+
 
     def getTypes(self):
         return self.__this.call(f"getTypes", )
@@ -388,11 +416,15 @@ def ReflectionUnionType():
     def allowsNull(self):
         return self.__this.call(f"allowsNull", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionUnionType')
 
-def ReflectionIntersectionType():
+
+class ReflectionIntersectionType():
+
 
     def getTypes(self):
         return self.__this.call(f"getTypes", )
@@ -400,11 +432,14 @@ def ReflectionIntersectionType():
     def allowsNull(self):
         return self.__this.call(f"allowsNull", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionIntersectionType')
 
-def ReflectionMethod():
+
+class ReflectionMethod():
     IS_STATIC = 16
     IS_PUBLIC = 1
     IS_PROTECTED = 2
@@ -412,10 +447,13 @@ def ReflectionMethod():
     IS_ABSTRACT = 64
     IS_FINAL = 32
 
+    name = None
+    class = None
+
     def __init__(self, _object_or_method, _method=None):
         self.__this = phpy.Object(f'ReflectionMethod', _object_or_method, _method)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def isPublic(self):
@@ -554,15 +592,17 @@ def ReflectionMethod():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionClass():
+class ReflectionClass():
     IS_IMPLICIT_ABSTRACT = 16
     IS_EXPLICIT_ABSTRACT = 64
     IS_FINAL = 32
+
+    name = None
 
     def __init__(self, _object_or_class):
         self.__this = phpy.Object(f'ReflectionClass', _object_or_class)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -722,15 +762,17 @@ def ReflectionClass():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionObject():
+class ReflectionObject():
     IS_IMPLICIT_ABSTRACT = 16
     IS_EXPLICIT_ABSTRACT = 64
     IS_FINAL = 32
 
+    name = None
+
     def __init__(self, _object):
         self.__this = phpy.Object(f'ReflectionObject', _object)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -890,17 +932,20 @@ def ReflectionObject():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionProperty():
+class ReflectionProperty():
     IS_STATIC = 16
     IS_READONLY = 128
     IS_PUBLIC = 1
     IS_PROTECTED = 2
     IS_PRIVATE = 4
 
+    name = None
+    class = None
+
     def __init__(self, _class, _property):
         self.__this = phpy.Object(f'ReflectionProperty', _class, _property)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -964,16 +1009,19 @@ def ReflectionProperty():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionClassConstant():
+class ReflectionClassConstant():
     IS_PUBLIC = 1
     IS_PROTECTED = 2
     IS_PRIVATE = 4
     IS_FINAL = 32
 
+    name = None
+    class = None
+
     def __init__(self, _class, _constant):
         self.__this = phpy.Object(f'ReflectionClassConstant', _class, _constant)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -1010,12 +1058,14 @@ def ReflectionClassConstant():
         return self.__this.call(f"isEnumCase", )
 
 
-def ReflectionExtension():
+class ReflectionExtension():
+
+    name = None
 
     def __init__(self, _name):
         self.__this = phpy.Object(f'ReflectionExtension', _name)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -1052,12 +1102,14 @@ def ReflectionExtension():
         return self.__this.call(f"isTemporary", )
 
 
-def ReflectionZendExtension():
+class ReflectionZendExtension():
+
+    name = None
 
     def __init__(self, _name):
         self.__this = phpy.Object(f'ReflectionZendExtension', _name)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -1076,7 +1128,8 @@ def ReflectionZendExtension():
         return self.__this.call(f"getCopyright", )
 
 
-def ReflectionReference():
+class ReflectionReference():
+
 
     def fromArrayElement(_array, _key):
         return phpy.call(f"ReflectionReference::fromArrayElement", _array, _key)
@@ -1084,9 +1137,13 @@ def ReflectionReference():
     def getId(self):
         return self.__this.call(f"getId", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionReference')
 
-def ReflectionAttribute():
+
+class ReflectionAttribute():
     IS_INSTANCEOF = 2
+
 
     def getName(self):
         return self.__this.call(f"getName", )
@@ -1103,14 +1160,19 @@ def ReflectionAttribute():
     def newInstance(self):
         return self.__this.call(f"newInstance", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'ReflectionAttribute')
 
-def ReflectionEnum():
+
+class ReflectionEnum():
     IS_IMPLICIT_ABSTRACT = 16
     IS_EXPLICIT_ABSTRACT = 64
     IS_FINAL = 32
+
+    name = None
 
     def __init__(self, _object_or_class):
         self.__this = phpy.Object(f'ReflectionEnum', _object_or_class)
@@ -1130,7 +1192,7 @@ def ReflectionEnum():
     def getBackingType(self):
         return self.__this.call(f"getBackingType", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -1290,11 +1352,14 @@ def ReflectionEnum():
         return self.__this.call(f"getAttributes", _name, _flags)
 
 
-def ReflectionEnumUnitCase():
+class ReflectionEnumUnitCase():
     IS_PUBLIC = 1
     IS_PROTECTED = 2
     IS_PRIVATE = 4
     IS_FINAL = 32
+
+    name = None
+    class = None
 
     def __init__(self, _class, _constant):
         self.__this = phpy.Object(f'ReflectionEnumUnitCase', _class, _constant)
@@ -1305,7 +1370,7 @@ def ReflectionEnumUnitCase():
     def getValue(self):
         return self.__this.call(f"getValue", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -1339,11 +1404,14 @@ def ReflectionEnumUnitCase():
         return self.__this.call(f"isEnumCase", )
 
 
-def ReflectionEnumBackedCase():
+class ReflectionEnumBackedCase():
     IS_PUBLIC = 1
     IS_PROTECTED = 2
     IS_PRIVATE = 4
     IS_FINAL = 32
+
+    name = None
+    class = None
 
     def __init__(self, _class, _constant):
         self.__this = phpy.Object(f'ReflectionEnumBackedCase', _class, _constant)
@@ -1357,7 +1425,7 @@ def ReflectionEnumBackedCase():
     def getValue(self):
         return self.__this.call(f"getValue", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def getName(self):
@@ -1391,7 +1459,8 @@ def ReflectionEnumBackedCase():
         return self.__this.call(f"isEnumCase", )
 
 
-def ReflectionFiber():
+class ReflectionFiber():
+
 
     def __init__(self, _fiber):
         self.__this = phpy.Object(f'ReflectionFiber', _fiber)

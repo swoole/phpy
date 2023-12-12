@@ -1188,19 +1188,19 @@ def strcoll(_string1, _string2):
     return phpy.call('strcoll', _string1, _string2)
 
 
-def trim(_string, _characters=" \n\r\t "):
+def trim(_string, _characters=" \n\r\t\v\x00"):
     return phpy.call('trim', _string, _characters)
 
 
-def rtrim(_string, _characters=" \n\r\t "):
+def rtrim(_string, _characters=" \n\r\t\v\x00"):
     return phpy.call('rtrim', _string, _characters)
 
 
-def chop(_string, _characters=" \n\r\t "):
+def chop(_string, _characters=" \n\r\t\v\x00"):
     return phpy.call('chop', _string, _characters)
 
 
-def ltrim(_string, _characters=" \n\r\t "):
+def ltrim(_string, _characters=" \n\r\t\v\x00"):
     return phpy.call('ltrim', _string, _characters)
 
 
@@ -1320,7 +1320,7 @@ def lcfirst(_string):
     return phpy.call('lcfirst', _string)
 
 
-def ucwords(_string, _separators=" \t\r\n"):
+def ucwords(_string, _separators=" \t\r\n\v"):
     return phpy.call('ucwords', _string, _separators)
 
 
@@ -2530,7 +2530,15 @@ def cli_get_process_title():
 
 
 
-def AssertionError():
+class __PHP_Incomplete_Class():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'__PHP_Incomplete_Class')
+
+
+class AssertionError():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'AssertionError', _message, _code, _previous)
@@ -2559,11 +2567,15 @@ def AssertionError():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def php_user_filter():
+class php_user_filter():
+
+    filtername = ""
+    params = ""
+    stream = None
 
     def filter(self, _in, _out, _consumed, _closing):
         return self.__this.call(f"filter", _in, _out, _consumed, _closing)
@@ -2574,8 +2586,14 @@ def php_user_filter():
     def onClose(self):
         return self.__this.call(f"onClose", )
 
+    def __init__(self):
+        self.__this = phpy.Object(f'php_user_filter')
 
-def Directory():
+
+class Directory():
+
+    path = None
+    handle = None
 
     def close(self):
         return self.__this.call(f"close", )
@@ -2585,5 +2603,8 @@ def Directory():
 
     def read(self):
         return self.__this.call(f"read", )
+
+    def __init__(self):
+        self.__this = phpy.Object(f'Directory')
 
 

@@ -313,3 +313,24 @@ def get_cert_locations():
 
 
 
+class OpenSSLCertificate():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'OpenSSLCertificate')
+
+
+class OpenSSLCertificateSigningRequest():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'OpenSSLCertificateSigningRequest')
+
+
+class OpenSSLAsymmetricKey():
+
+
+    def __init__(self):
+        self.__this = phpy.Object(f'OpenSSLAsymmetricKey')
+
+

@@ -44,7 +44,7 @@ def entry_compressionmethod(_zip_entry):
 
 
 
-def ZipArchive():
+class ZipArchive():
     CREATE = 1
     EXCL = 2
     CHECKCONS = 4
@@ -145,6 +145,13 @@ def ZipArchive():
     EM_AES_256 = 259
     EM_UNKNOWN = 65535
     LIBZIP_VERSION = "1.9.2"
+
+    lastId = None
+    status = None
+    statusSys = None
+    numFiles = None
+    filename = None
+    comment = None
 
     def open(self, _filename, _flags=0):
         return self.__this.call(f"open", _filename, _flags)
@@ -286,5 +293,8 @@ def ZipArchive():
 
     def isEncryptionMethodSupported(_method, _enc=True):
         return phpy.call(f"ZipArchive::isEncryptionMethodSupported", _method, _enc)
+
+    def __init__(self):
+        self.__this = phpy.Object(f'ZipArchive')
 
 

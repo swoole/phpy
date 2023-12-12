@@ -4,7 +4,8 @@ import phpy
 
 
 
-def ImagickException():
+class ImagickException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickException', _message, _code, _previous)
@@ -33,11 +34,12 @@ def ImagickException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ImagickDrawException():
+class ImagickDrawException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickDrawException', _message, _code, _previous)
@@ -66,11 +68,12 @@ def ImagickDrawException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ImagickPixelIteratorException():
+class ImagickPixelIteratorException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickPixelIteratorException', _message, _code, _previous)
@@ -99,11 +102,12 @@ def ImagickPixelIteratorException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ImagickPixelException():
+class ImagickPixelException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickPixelException', _message, _code, _previous)
@@ -132,11 +136,12 @@ def ImagickPixelException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def ImagickKernelException():
+class ImagickKernelException():
+
 
     def __init__(self, _message="", _code=0, _previous=None):
         self.__this = phpy.Object(f'ImagickKernelException', _message, _code, _previous)
@@ -165,11 +170,11 @@ def ImagickKernelException():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
 
-def Imagick():
+class Imagick():
     COLOR_BLACK = 11
     COLOR_BLUE = 12
     COLOR_CYAN = 13
@@ -786,6 +791,7 @@ def Imagick():
     COMPLEX_OPERATOR_REALIMAGINARY = 6
     COMPLEX_OPERATOR_SUBTRACT = 7
 
+
     def optimizeImageLayers(self):
         return self.__this.call(f"optimizeImageLayers", )
 
@@ -1041,7 +1047,7 @@ def Imagick():
     def __init__(self, _files=None):
         self.__this = phpy.Object(f'Imagick', _files)
 
-    def __toString(self):
+    def __str__(self):
         return self.__this.call(f"__toString", )
 
     def count(self, _mode=0):
@@ -1912,7 +1918,8 @@ def Imagick():
         return self.__this.call(f"whiteBalanceImage", )
 
 
-def ImagickDraw():
+class ImagickDraw():
+
 
     def resetVectorGraphics(self):
         return self.__this.call(f"resetVectorGraphics", )
@@ -2317,7 +2324,8 @@ def ImagickDraw():
         return self.__this.call(f"setTextDirection", _direction)
 
 
-def ImagickPixelIterator():
+class ImagickPixelIterator():
+
 
     def __init__(self, _imagick):
         self.__this = phpy.Object(f'ImagickPixelIterator', _imagick)
@@ -2383,7 +2391,8 @@ def ImagickPixelIterator():
         return self.__this.call(f"valid", )
 
 
-def ImagickPixel():
+class ImagickPixel():
+
 
     def __init__(self, _color=None):
         self.__this = phpy.Object(f'ImagickPixel', _color)
@@ -2449,7 +2458,8 @@ def ImagickPixel():
         return self.__this.call(f"setColorFromPixel", _pixel)
 
 
-def ImagickKernel():
+class ImagickKernel():
+
 
     def addKernel(self, _kernel):
         return self.__this.call(f"addKernel", _kernel)
@@ -2471,5 +2481,8 @@ def ImagickKernel():
 
     def separate(self):
         return self.__this.call(f"separate", )
+
+    def __init__(self):
+        self.__this = phpy.Object(f'ImagickKernel')
 
 

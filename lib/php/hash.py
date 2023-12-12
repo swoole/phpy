@@ -65,12 +65,16 @@ def hkdf(_algo, _key, _length=0, _info="", _salt=""):
 
 
 
-def HashContext():
+class HashContext():
+
 
     def __serialize(self):
         return self.__this.call(f"__serialize", )
 
     def __unserialize(self, _data):
         return self.__this.call(f"__unserialize", _data)
+
+    def __init__(self):
+        self.__this = phpy.Object(f'HashContext')
 
 
