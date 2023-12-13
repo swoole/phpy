@@ -27,9 +27,7 @@ struct ZendCallable {
     zval callable;
 };
 
-static PyTypeObject ZendCallableType = {
-    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-};
+static PyTypeObject ZendCallableType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 //  clang-format on
 
@@ -65,10 +63,11 @@ static void Callable_dealloc(ZendCallable *self) {
 static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwds) {
     Py_ssize_t TupleSize = PyTuple_Size(args);
     uint32_t argc = TupleSize;
-    zval argv[argc];
+    zval *argv = new zval[argc];
     tuple2argv(argv, args, TupleSize, 0);
     ON_SCOPE_EXIT {
         release_argv(argc, argv);
+        delete []argv;
     };
 
     zval retval;

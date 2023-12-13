@@ -46,7 +46,7 @@ ZEND_METHOD(PyStr, __construct) {
     Z_PARAM_ZVAL(zstr)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    if (Z_TYPE_P(zstr) == IS_OBJECT and instanceof_function(Z_OBJCE_P(zstr), phpy_object_get_ce())) {
+    if (Z_TYPE_P(zstr) == IS_OBJECT && instanceof_function(Z_OBJCE_P(zstr), phpy_object_get_ce())) {
         PyObject *pyobj = phpy_object_get_handle(zstr);
         PyObject *pStr = PyUnicode_FromObject(pyobj);
         if (pStr == NULL) {

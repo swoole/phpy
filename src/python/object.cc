@@ -39,9 +39,7 @@ static PyMethodDef Object_methods[] = {
     {NULL}  /* Sentinel */
 };
 
-static PyTypeObject ZendObjectType = {
-    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-};
+static PyTypeObject ZendObjectType = { PyVarObject_HEAD_INIT(NULL, 0) };
 // clang-format on
 
 static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds) {
@@ -99,7 +97,7 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
     }
 
     uint32_t argc = TupleSize - 1;
-    zval argv[argc];
+    zval *argv = new zval[argc];
     tuple2argv(argv, args, TupleSize);
 
     zval retval;
@@ -109,6 +107,7 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
         release_argv(argc, argv);
+        delete []argv;
     };
 
     if (result == FAILURE) {
@@ -189,13 +188,14 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
         zval retval;
         zval zfn;
         ZVAL_STRINGL(&zfn, CTOR_NAME, sizeof(CTOR_NAME) - 1);
-        zval argv[argc];
+        zval *argv = new zval[argc];
         tuple2argv(argv, args, argc, begin);
         zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
         ON_SCOPE_EXIT {
             zval_ptr_dtor(&zfn);
             zval_ptr_dtor(&retval);
             release_argv(argc, argv);
+            delete []argv;
         };
         if (result == FAILURE) {
             return NULL;

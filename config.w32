@@ -3,22 +3,18 @@
 ARG_ENABLE("phpy", "enable phpy extension", "yes");
 
 if (PHP_PHPY != "no") {
+	PYTHONHOME = WshShell.Environment("Process").Item("PYTHONHOME")
+	if (PYTHONHOME) {
+		ADD_SOURCES("ext/phpy/src/bridge", "core.cc", "phpy")
+		ADD_SOURCES("ext/phpy/src/php", "object.cc type.cc error.cc iter.cc dict.cc core.cc fn.cc str.cc sequence.cc list.cc set.cc tuple.cc module.cc", "phpy")
+		ADD_SOURCES("ext/phpy/src/python", "class.cc module.cc object.cc reference.cc resource.cc callable.cc", "phpy")
+	
+		EXTENSION("phpy", "phpy.cc", null, '-std=c++14 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -Iext/phpy/include -Iext/phpy /I ' + PYTHONHOME + '/include')
 
-    swoole_source_file="phpy.cc \
-        src/bridge/core.cc \
-        src/php/object.cc src/php/type.cc src/php/dict.cc  src/php/core.cc src/php/fn.cc src/php/str.cc src/php/sequence.cc src/php/list.cc  src/php/set.cc src/php/tuple.cc src/php/module.cc \
-        src/python/class.cc src/python/module.cc src/python/object.cc src/python/reference.cc src/python/resource.cc src/python/callable.cc \
-    "
-
-    PHP_REQUIRE_CXX()
-
-    PHP_ADD_INCLUDE(/opt/anaconda3/include/python3.11)
-    PHP_ADD_LIBRARY_WITH_PATH(python3.11, /opt/anaconda3/lib, PHPY_SHARED_LIBADD)
-    PHP_SUBST(PHPY_SHARED_LIBADD)
-
-    CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now"
-    CXXFLAGS="$CXXFLAGS -std=c++14"
-
-	EXTENSION("phpy", "test.c observer.c fiber.c", PHP_PHPY_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
-	ADD_FLAG("CFLAGS_PHPY", "/D PHP_PHPY_EXPORTS ");
+		ADD_FLAG("CFLAGS", "/D PHP_PHPY_EXPORTS ")
+		ADD_FLAG("LDFLAGS_PHPY", '/libpath:' + PYTHONHOME + '/libs')
+		ADD_FLAG("CXXFLAGS", "-std=c++14 -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now")
+	} else {
+		WARNING("python not found; the python libraries and headers not found");
+	}
 }
