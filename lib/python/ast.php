@@ -215,8 +215,7 @@ class ast{
     {
     }
 
-    public function _simple_enum($etype = array (
-))
+    public function _simple_enum($etype = [])
     {
     }
 

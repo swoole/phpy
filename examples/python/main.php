@@ -84,5 +84,9 @@ function test7()
     }
 }
 
-PyCore::import('sys')->path->append(__DIR__ . '/tests/lib');
-test6();
+
+class Test {
+    static function test() {
+        var_dump(__METHOD__);
+    }
+}
