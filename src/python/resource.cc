@@ -26,9 +26,7 @@ struct ZendResource {
     zval resource;
 };
 
-static PyTypeObject ZendResourceType = {
-    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-};
+static PyTypeObject ZendResourceType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 //  clang-format on
 
