@@ -7,7 +7,7 @@ phpy
 
 > 查看 [中文文档](docs/cn/README.md)  
 
-- 目前仅支持 Linux 平台（理论上可以支持所有操作系统，待实现）
+- 支持 `Linux`/`Windows`/`macOS` 等多种操作和平台
 - 不支持 Python 多线程、`async-io` 特性
 
 PHP 调用 Python
