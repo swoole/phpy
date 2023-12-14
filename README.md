@@ -1,31 +1,35 @@
-phpy
-====
-`Python` 与 `PHP` 互调用库，可以在 `PHP` 中使用 `Python` 语言的函数和类库，或者在 `Python` 中使用 `PHP` 的包。
-但不是语言内嵌。编码依然使用各自的原生语法。
+[简体中文](README-CN.md)
 
-> 查看 [中文文档](docs/README.md)  
+# phpy
 
-- 目前仅支持 Linux 平台（理论上可以支持所有操作系统，待实现）
-- 不支持 Python 多线程、`async-io` 特性
+A library for inter-calling `Python` and `PHP`. 
+You can use Python functions and libraries in PHP, or use PHP packages in Python.
 
-PHP 调用 Python
-----
-编译安装 `phpy.so` 作为扩展加载，修改 `php.ini` 追加 `extension=phpy.so` 即可。
+> See documents: [docs/en/README.md](docs/en/README.md)
 
-例子：
+
+
+> Supports Linux/Windows/macOS
+> Not support Python multithreading or async-io features
+
+## Calling Python from PHP
+
+Compile and install phpy.so as an extension, and append `extension=phpy.so` to `php.ini`.
+
+### PHP Example:
+
 ```php
 $os = PyCore::import("os");
 $un = $os->uname();
 echo strval($un);
 ```
 
-Python 中调用 PHP
-----
-直接作为 `C++ Mudule` ，import 加载即可。
+## Calling PHP from Python
+Simply import it as a C++ Mudule.
 
+### Python Example:
 ```python
 import phpy
-
 content = phpy.call('file_get_contents', 'test.txt')
 
 o = phpy.Object('redis')
@@ -35,16 +39,15 @@ assert o.call('set', 'key', rdata)
 assert o.call('get', 'key') == rdata
 ```
 
-实现原理
-----
-在进程内同时创建了 `ZendVM` 和 `CPython VM`，直接在进程堆栈空间内使用 `C` 函数互相调用，
-开销只有 `zval <-> PyObject` 结构体转换，因此性能是非常高的。
 
-在基准测试中我们创建了一个 `PyDict` ，分别读写 `PHP` 代码和 `Python` 代码执行 `1000万次`。
-`phpy` 以 `PHP` 代码写入 `PyDict` 的性能比原生 `Python` 高 `14%`，读取性能高 `25%`。
+## Implementation
 
-> 详细细节请参考 [压力测试](docs/benchmark.md)
+It creates `ZendVM` and `CPython VM` in the process at the same time, and directly uses C functions to call each other in the process stack space.
 
-微信交流群
-----
-![Alt](docs/images/wxg.png)
+The overhead is only the conversion of `zval <-> PyObject` structures, so the performance is very high.
+
+In the benchmark test, we created a `PyDict` and executed PHP code and Python code to read and write 10 million times respectively.
+
+The performance of phpy writing `PyDict` with PHP code is `14%` higher than the native Python, and the read performance is `25%` higher.
+
+> More details: [docs/en/benchmark.md](docs/en/benchmark.md)

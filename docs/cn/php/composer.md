@@ -34,4 +34,4 @@ $plt->plot($x, $y);
 $plt->show();
 ```
 
-![IDE 自动完成](../images/autocomplete.png)
+![IDE 自动完成](../../images/autocomplete.png)
