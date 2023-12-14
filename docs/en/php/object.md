@@ -1,17 +1,80 @@
+# PyObject
+PyObject is the base class of all types other than PyCore. Objects of non-builtin classes are instances of PyObject. PyObject implements 4 magic methods to map operations to Python objects.
+
+All class methods, parameters, and return values are defined in the files in the `stubs` directory. The documentation does not describe them in detail.
+
+## Built-in classes
+- `PyObject`: The base class of all other types
+- `PyDict`: Dictionary type, equivalent to PHP associative arrays
+- `PyList`: List type, equivalent to PHP indexed arrays
+- `PyTuple`: Tuple, an immutable list
+- `PyStr`: String
+- `PyModule`: Python package, `PyModule` is also a subclass of `PyObject`
+
+## Inheritance
+```
+PyObject -> PyModule
+-> PySequenece -> PyList
+-> PyTuple
+-> PySet
+-> PyStr
+-> PyDict
+-> PyType
+```
+
+## __get($name)
+Reads the attribute of the Python object. 
+
 ```php
-$info = $Info();
+$pyobj->attr;
 ```
 
-```py
-info = Info()
-``````py
-$info = Info('Rango', 2023)
+The following operations are equivalent:
+```python
+pyobj.attr
 ```
 
+## __set($name, $value)
+Sets the attribute of the Python object.
+
+```php
+$pyobj->attr = 'hello';
+```
+
+The following operations are equivalent:
+```python
+pyobj.attr = 'hello'
+```
+
+## __call($name, $args)
+Calls the method of the Python object. 
+
+```php
+$pyobj->fn($a, $b, $c);
+```
+
+The following operations are equivalent:
+```python
+pyobj.fn(a, b, c)
+```
+
+## __invoke(...$args)
+Executes a callable object, usually used to execute functions, construct objects. 
+
+```php
+// Import a py module, name is app.user
+$user = PyCore::import('app.user');
+// Info is a class
+$Info = $user->Info;
+// create an object, it is instance of app.user.Info
+$info = $Info('Rango', 2023);
+```
+
+The following operations are equivalent:
 ```py
 from app.user import Info
 
-# Create an Info object
+# create an Info object
 info = Info('Rango', 2023)
 ```
 
