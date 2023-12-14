@@ -34,9 +34,7 @@ static PyMethodDef Reference_methods[] = {
     {NULL}  /* Sentinel */
 };
 
-static PyTypeObject ZendReferenceType = {
-    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)
-};
+static PyTypeObject ZendReferenceType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 //  clang-format on
 

@@ -98,7 +98,7 @@ ZEND_METHOD(PyList, offsetSet) {
         Py_DECREF(pv);
     };
     int result;
-    if (zk == NULL or ZVAL_IS_NULL(zk)) {
+    if (zk == NULL || ZVAL_IS_NULL(zk)) {
         result = PyList_Append(object, pv);
     } else {
         Py_INCREF(pv);

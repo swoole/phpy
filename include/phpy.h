@@ -225,7 +225,7 @@ static inline void throw_error_if_occurred() {
 }
 
 static inline bool is_null(zval *zv) {
-    return zv == NULL or ZVAL_IS_NULL(zv);
+    return zv == NULL || ZVAL_IS_NULL(zv);
 }
 
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS);

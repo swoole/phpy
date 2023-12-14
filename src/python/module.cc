@@ -34,7 +34,7 @@ static PyObject *phpy_call(PyObject *self, PyObject *args) {
     }
 
     uint32_t argc = TupleSize - 1;
-    zval argv[argc];
+    zval *argv = new zval[argc];
     tuple2argv(argv, args, TupleSize);
 
     zval retval;
@@ -44,6 +44,7 @@ static PyObject *phpy_call(PyObject *self, PyObject *args) {
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
         release_argv(argc, argv);
+        delete []argv;
     };
 
     zend_result result = phpy::php::call_fn(NULL, &zfn, &retval, argc, argv);
