@@ -1,6 +1,6 @@
-# Load Testing
+# Performance Testing
 
-The load testing script creates a `PyDict` in order to read and write code in both `PHP` and `Python` for `10 million` iterations.
+The performance testing script creates a `PyDict` in order to read and write code in both `PHP` and `Python` for `10 million` iterations.
 
 - `PHP Version`: `PHP 8.2.3 (cli) (built: Mar 17 2023 15:06:57) (NTS)`
 - `Python Version`: `Python 3.11.5`
