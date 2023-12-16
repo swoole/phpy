@@ -2535,11 +2535,11 @@ class __PHP_Incomplete_Class():
     def __init__(self):
         self.__this = phpy.Object(f'__PHP_Incomplete_Class')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class AssertionError():
 
@@ -2573,11 +2573,11 @@ class AssertionError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class php_user_filter():
 
@@ -2593,11 +2593,11 @@ class php_user_filter():
     def __init__(self):
         self.__this = phpy.Object(f'php_user_filter')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Directory():
 
@@ -2613,9 +2613,9 @@ class Directory():
     def __init__(self):
         self.__this = phpy.Object(f'Directory')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

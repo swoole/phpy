@@ -335,20 +335,20 @@ class Socket():
     def __init__(self):
         self.__this = phpy.Object(f'Socket')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class AddressInfo():
 
     def __init__(self):
         self.__this = phpy.Object(f'AddressInfo')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

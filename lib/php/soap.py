@@ -137,22 +137,22 @@ class SoapClient():
     def __setLocation(self, _location=None):
         return self.__this.call(f"__setLocation", _location)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SoapVar():
 
     def __init__(self, _data, _encoding, _type_name=None, _type_namespace=None, _node_name=None, _node_namespace=None):
         self.__this = phpy.Object(f'SoapVar', _data, _encoding, _type_name, _type_namespace, _node_name, _node_namespace)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SoapServer():
 
@@ -183,11 +183,11 @@ class SoapServer():
     def handle(self, _request=None):
         return self.__this.call(f"handle", _request)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SoapFault():
 
@@ -221,31 +221,31 @@ class SoapFault():
     def getTraceAsString(self):
         return self.__this.call(f"getTraceAsString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SoapParam():
 
     def __init__(self, _data, _name):
         self.__this = phpy.Object(f'SoapParam', _data, _name)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SoapHeader():
 
     def __init__(self, _namespace, _name, _data=None, _must_understand=False, _actor=None):
         self.__this = phpy.Object(f'SoapHeader', _namespace, _name, _data, _must_understand, _actor)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

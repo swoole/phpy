@@ -85,11 +85,11 @@ class DOMException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMParentNode():
 
@@ -102,11 +102,11 @@ class DOMParentNode():
     def __init__(self):
         self.__this = phpy.Object(f'DOMParentNode')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMChildNode():
 
@@ -125,11 +125,11 @@ class DOMChildNode():
     def __init__(self):
         self.__this = phpy.Object(f'DOMChildNode')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMImplementation():
 
@@ -148,11 +148,11 @@ class DOMImplementation():
     def __init__(self):
         self.__this = phpy.Object(f'DOMImplementation')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMNode():
 
@@ -210,22 +210,22 @@ class DOMNode():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNode')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMNameSpaceNode():
 
     def __init__(self):
         self.__this = phpy.Object(f'DOMNameSpaceNode')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMDocumentFragment():
 
@@ -292,11 +292,11 @@ class DOMDocumentFragment():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMDocument():
 
@@ -453,11 +453,11 @@ class DOMDocument():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMNodeList():
 
@@ -473,11 +473,11 @@ class DOMNodeList():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNodeList')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMNamedNodeMap():
 
@@ -499,11 +499,11 @@ class DOMNamedNodeMap():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNamedNodeMap')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMCharacterData():
 
@@ -588,11 +588,11 @@ class DOMCharacterData():
     def __init__(self):
         self.__this = phpy.Object(f'DOMCharacterData')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMAttr():
 
@@ -653,11 +653,11 @@ class DOMAttr():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMElement():
 
@@ -787,11 +787,11 @@ class DOMElement():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMText():
 
@@ -885,11 +885,11 @@ class DOMText():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMComment():
 
@@ -974,11 +974,11 @@ class DOMComment():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMCdataSection():
 
@@ -1072,11 +1072,11 @@ class DOMCdataSection():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMDocumentType():
 
@@ -1134,11 +1134,11 @@ class DOMDocumentType():
     def __init__(self):
         self.__this = phpy.Object(f'DOMDocumentType')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMNotation():
 
@@ -1196,11 +1196,11 @@ class DOMNotation():
     def __init__(self):
         self.__this = phpy.Object(f'DOMNotation')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMEntity():
 
@@ -1258,11 +1258,11 @@ class DOMEntity():
     def __init__(self):
         self.__this = phpy.Object(f'DOMEntity')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMEntityReference():
 
@@ -1320,11 +1320,11 @@ class DOMEntityReference():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMProcessingInstruction():
 
@@ -1382,11 +1382,11 @@ class DOMProcessingInstruction():
     def replaceChild(self, _node, _child):
         return self.__this.call(f"replaceChild", _node, _child)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DOMXPath():
 
@@ -1405,9 +1405,9 @@ class DOMXPath():
     def registerPhpFunctions(self, _restrict=None):
         return self.__this.call(f"registerPhpFunctions", _restrict)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

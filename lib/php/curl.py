@@ -708,33 +708,33 @@ class CurlHandle():
     def __init__(self):
         self.__this = phpy.Object(f'CurlHandle')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CurlMultiHandle():
 
     def __init__(self):
         self.__this = phpy.Object(f'CurlMultiHandle')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CurlShareHandle():
 
     def __init__(self):
         self.__this = phpy.Object(f'CurlShareHandle')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CURLFile():
 
@@ -756,20 +756,20 @@ class CURLFile():
     def setPostFilename(self, _posted_filename):
         return self.__this.call(f"setPostFilename", _posted_filename)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CURLStringFile():
 
     def __init__(self, _data, _postname, _mime="application/octet-stream"):
         self.__this = phpy.Object(f'CURLStringFile', _data, _postname, _mime)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

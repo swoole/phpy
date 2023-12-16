@@ -36,11 +36,11 @@ class ReflectionException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Reflection():
 
@@ -50,11 +50,11 @@ class Reflection():
     def __init__(self):
         self.__this = phpy.Object(f'Reflection')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Reflector():
 
@@ -64,11 +64,11 @@ class Reflector():
     def __init__(self):
         self.__this = phpy.Object(f'Reflector')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionFunctionAbstract():
 
@@ -171,11 +171,11 @@ class ReflectionFunctionAbstract():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionFunctionAbstract')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionFunction():
     IS_DEPRECATED = 2048
@@ -291,11 +291,11 @@ class ReflectionFunction():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionGenerator():
 
@@ -320,11 +320,11 @@ class ReflectionGenerator():
     def getExecutingGenerator(self):
         return self.__this.call(f"getExecutingGenerator", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionParameter():
 
@@ -394,11 +394,11 @@ class ReflectionParameter():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionType():
 
@@ -411,11 +411,11 @@ class ReflectionType():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionType')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionNamedType():
 
@@ -434,11 +434,11 @@ class ReflectionNamedType():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionNamedType')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionUnionType():
 
@@ -454,11 +454,11 @@ class ReflectionUnionType():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionUnionType')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionIntersectionType():
 
@@ -474,11 +474,11 @@ class ReflectionIntersectionType():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionIntersectionType')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionMethod():
     IS_STATIC = 16
@@ -629,11 +629,11 @@ class ReflectionMethod():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionClass():
     IS_IMPLICIT_ABSTRACT = 16
@@ -802,11 +802,11 @@ class ReflectionClass():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionObject():
     IS_IMPLICIT_ABSTRACT = 16
@@ -975,11 +975,11 @@ class ReflectionObject():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionProperty():
     IS_STATIC = 16
@@ -1054,11 +1054,11 @@ class ReflectionProperty():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionClassConstant():
     IS_PUBLIC = 1
@@ -1105,11 +1105,11 @@ class ReflectionClassConstant():
     def isEnumCase(self):
         return self.__this.call(f"isEnumCase", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionExtension():
 
@@ -1152,11 +1152,11 @@ class ReflectionExtension():
     def isTemporary(self):
         return self.__this.call(f"isTemporary", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionZendExtension():
 
@@ -1181,11 +1181,11 @@ class ReflectionZendExtension():
     def getCopyright(self):
         return self.__this.call(f"getCopyright", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionReference():
 
@@ -1198,11 +1198,11 @@ class ReflectionReference():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionReference')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionAttribute():
     IS_INSTANCEOF = 2
@@ -1228,11 +1228,11 @@ class ReflectionAttribute():
     def __init__(self):
         self.__this = phpy.Object(f'ReflectionAttribute')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionEnum():
     IS_IMPLICIT_ABSTRACT = 16
@@ -1416,11 +1416,11 @@ class ReflectionEnum():
     def getAttributes(self, _name=None, _flags=0):
         return self.__this.call(f"getAttributes", _name, _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionEnumUnitCase():
     IS_PUBLIC = 1
@@ -1470,11 +1470,11 @@ class ReflectionEnumUnitCase():
     def isEnumCase(self):
         return self.__this.call(f"isEnumCase", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionEnumBackedCase():
     IS_PUBLIC = 1
@@ -1527,11 +1527,11 @@ class ReflectionEnumBackedCase():
     def isEnumCase(self):
         return self.__this.call(f"isEnumCase", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReflectionFiber():
 
@@ -1553,9 +1553,9 @@ class ReflectionFiber():
     def getTrace(self, _options=1):
         return self.__this.call(f"getTrace", _options)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

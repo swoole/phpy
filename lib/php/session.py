@@ -122,11 +122,11 @@ class SessionHandlerInterface():
     def __init__(self):
         self.__this = phpy.Object(f'SessionHandlerInterface')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SessionIdInterface():
 
@@ -136,11 +136,11 @@ class SessionIdInterface():
     def __init__(self):
         self.__this = phpy.Object(f'SessionIdInterface')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SessionUpdateTimestampHandlerInterface():
 
@@ -153,11 +153,11 @@ class SessionUpdateTimestampHandlerInterface():
     def __init__(self):
         self.__this = phpy.Object(f'SessionUpdateTimestampHandlerInterface')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SessionHandler():
 
@@ -185,9 +185,9 @@ class SessionHandler():
     def __init__(self):
         self.__this = phpy.Object(f'SessionHandler')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

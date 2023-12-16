@@ -52,9 +52,9 @@ class finfo():
     def set_flags(self, _flags):
         return self.__this.call(f"set_flags", _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

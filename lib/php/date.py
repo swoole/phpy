@@ -248,11 +248,11 @@ class DateTimeInterface():
     def __init__(self):
         self.__this = phpy.Object(f'DateTimeInterface')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DateTime():
     ATOM = "Y-m-d\\TH:i:sP"
@@ -329,11 +329,11 @@ class DateTime():
     def diff(self, _target_object, _absolute=False):
         return self.__this.call(f"diff", _target_object, _absolute)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DateTimeImmutable():
     ATOM = "Y-m-d\\TH:i:sP"
@@ -410,11 +410,11 @@ class DateTimeImmutable():
     def createFromInterface(_object):
         return phpy.call(f"DateTimeImmutable::createFromInterface", _object)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DateTimeZone():
     AFRICA = 1
@@ -459,11 +459,11 @@ class DateTimeZone():
     def __set_state(_array):
         return phpy.call(f"DateTimeZone::__set_state", _array)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DateInterval():
 
@@ -482,11 +482,11 @@ class DateInterval():
     def __set_state(_array):
         return phpy.call(f"DateInterval::__set_state", _array)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DatePeriod():
     EXCLUDE_START_DATE = 1
@@ -515,9 +515,9 @@ class DatePeriod():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

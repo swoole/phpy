@@ -322,22 +322,22 @@ class stdClass():
     def __init__(self):
         self.__this = phpy.Object(f'stdClass')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Traversable():
 
     def __init__(self):
         self.__this = phpy.Object(f'Traversable')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IteratorAggregate():
 
@@ -347,11 +347,11 @@ class IteratorAggregate():
     def __init__(self):
         self.__this = phpy.Object(f'IteratorAggregate')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Iterator():
 
@@ -373,11 +373,11 @@ class Iterator():
     def __init__(self):
         self.__this = phpy.Object(f'Iterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Serializable():
 
@@ -390,11 +390,11 @@ class Serializable():
     def __init__(self):
         self.__this = phpy.Object(f'Serializable')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ArrayAccess():
 
@@ -413,11 +413,11 @@ class ArrayAccess():
     def __init__(self):
         self.__this = phpy.Object(f'ArrayAccess')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Countable():
 
@@ -427,11 +427,11 @@ class Countable():
     def __init__(self):
         self.__this = phpy.Object(f'Countable')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Stringable():
 
@@ -441,11 +441,11 @@ class Stringable():
     def __init__(self):
         self.__this = phpy.Object(f'Stringable')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class InternalIterator():
 
@@ -467,11 +467,11 @@ class InternalIterator():
     def __init__(self):
         self.__this = phpy.Object(f'InternalIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Throwable():
 
@@ -502,11 +502,11 @@ class Throwable():
     def __init__(self):
         self.__this = phpy.Object(f'Throwable')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Exception():
 
@@ -540,11 +540,11 @@ class Exception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ErrorException():
 
@@ -581,11 +581,11 @@ class ErrorException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Error():
 
@@ -619,11 +619,11 @@ class Error():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CompileError():
 
@@ -657,11 +657,11 @@ class CompileError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ParseError():
 
@@ -695,11 +695,11 @@ class ParseError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class TypeError():
 
@@ -733,11 +733,11 @@ class TypeError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ArgumentCountError():
 
@@ -771,11 +771,11 @@ class ArgumentCountError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ValueError():
 
@@ -809,11 +809,11 @@ class ValueError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ArithmeticError():
 
@@ -847,11 +847,11 @@ class ArithmeticError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DivisionByZeroError():
 
@@ -885,11 +885,11 @@ class DivisionByZeroError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class UnhandledMatchError():
 
@@ -923,11 +923,11 @@ class UnhandledMatchError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Closure():
 
@@ -949,11 +949,11 @@ class Closure():
     def __init__(self):
         self.__this = phpy.Object(f'Closure')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Generator():
 
@@ -984,11 +984,11 @@ class Generator():
     def __init__(self):
         self.__this = phpy.Object(f'Generator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ClosedGeneratorException():
 
@@ -1022,11 +1022,11 @@ class ClosedGeneratorException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class WeakReference():
 
@@ -1039,11 +1039,11 @@ class WeakReference():
     def get(self):
         return self.__this.call(f"get", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class WeakMap():
 
@@ -1068,11 +1068,11 @@ class WeakMap():
     def __init__(self):
         self.__this = phpy.Object(f'WeakMap')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Attribute():
     TARGET_CLASS = 1
@@ -1087,22 +1087,22 @@ class Attribute():
     def __init__(self, _flags=63):
         self.__this = phpy.Object(f'Attribute', _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ReturnTypeWillChange():
 
     def __init__(self):
         self.__this = phpy.Object(f'ReturnTypeWillChange', )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class UnitEnum():
 
@@ -1112,11 +1112,11 @@ class UnitEnum():
     def __init__(self):
         self.__this = phpy.Object(f'UnitEnum')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class BackedEnum():
 
@@ -1132,11 +1132,11 @@ class BackedEnum():
     def __init__(self):
         self.__this = phpy.Object(f'BackedEnum')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Fiber():
 
@@ -1173,11 +1173,11 @@ class Fiber():
     def suspend(_value=None):
         return phpy.call(f"Fiber::suspend", _value)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class FiberError():
 
@@ -1211,9 +1211,9 @@ class FiberError():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

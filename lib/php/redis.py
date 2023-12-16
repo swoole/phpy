@@ -763,11 +763,11 @@ class Redis():
     def zUnion(self, _key, _keys, _weights=None, _aggregate=None):
         return self.__this.call(f"zUnion", _key, _keys, _weights, _aggregate)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RedisArray():
 
@@ -870,11 +870,11 @@ class RedisArray():
     def getMultiple(self, _keys):
         return self.__this.call(f"getMultiple", _keys)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RedisCluster():
     REDIS_NOT_FOUND = 0
@@ -1492,11 +1492,11 @@ class RedisCluster():
     def zunionstore(self, _key, _keys, _weights=None, _aggregate=None):
         return self.__this.call(f"zunionstore", _key, _keys, _weights, _aggregate)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RedisSentinel():
 
@@ -1533,11 +1533,11 @@ class RedisSentinel():
     def slaves(self, _value):
         return self.__this.call(f"slaves", _value)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RedisException():
 
@@ -1571,11 +1571,11 @@ class RedisException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RedisClusterException():
 
@@ -1609,9 +1609,9 @@ class RedisClusterException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

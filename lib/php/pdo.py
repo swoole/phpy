@@ -40,11 +40,11 @@ class PDOException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class PDO():
     PARAM_BOOL = 5
@@ -196,11 +196,11 @@ class PDO():
     def setAttribute(self, _attribute, _value):
         return self.__this.call(f"setAttribute", _attribute, _value)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class PDOStatement():
 
@@ -267,20 +267,20 @@ class PDOStatement():
     def __init__(self):
         self.__this = phpy.Object(f'PDOStatement')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class PDORow():
 
     def __init__(self):
         self.__this = phpy.Object(f'PDORow')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

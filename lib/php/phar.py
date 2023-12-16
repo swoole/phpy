@@ -36,11 +36,11 @@ class PharException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Phar():
     CURRENT_MODE_MASK = 240
@@ -360,11 +360,11 @@ class Phar():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class PharData():
     CURRENT_MODE_MASK = 240
@@ -668,11 +668,11 @@ class PharData():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class PharFileInfo():
 
@@ -808,9 +808,9 @@ class PharFileInfo():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

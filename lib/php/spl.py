@@ -96,11 +96,11 @@ class LogicException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class BadFunctionCallException():
 
@@ -134,11 +134,11 @@ class BadFunctionCallException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class BadMethodCallException():
 
@@ -172,11 +172,11 @@ class BadMethodCallException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DomainException():
 
@@ -210,11 +210,11 @@ class DomainException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class InvalidArgumentException():
 
@@ -248,11 +248,11 @@ class InvalidArgumentException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class LengthException():
 
@@ -286,11 +286,11 @@ class LengthException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class OutOfRangeException():
 
@@ -324,11 +324,11 @@ class OutOfRangeException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RuntimeException():
 
@@ -362,11 +362,11 @@ class RuntimeException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class OutOfBoundsException():
 
@@ -400,11 +400,11 @@ class OutOfBoundsException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class OverflowException():
 
@@ -438,11 +438,11 @@ class OverflowException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RangeException():
 
@@ -476,11 +476,11 @@ class RangeException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class UnderflowException():
 
@@ -514,11 +514,11 @@ class UnderflowException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class UnexpectedValueException():
 
@@ -552,11 +552,11 @@ class UnexpectedValueException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveIterator():
 
@@ -584,11 +584,11 @@ class RecursiveIterator():
     def __init__(self):
         self.__this = phpy.Object(f'RecursiveIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class OuterIterator():
 
@@ -613,11 +613,11 @@ class OuterIterator():
     def __init__(self):
         self.__this = phpy.Object(f'OuterIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveIteratorIterator():
     LEAVES_ONLY = 0
@@ -679,11 +679,11 @@ class RecursiveIteratorIterator():
     def getMaxDepth(self):
         return self.__this.call(f"getMaxDepth", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IteratorIterator():
 
@@ -708,11 +708,11 @@ class IteratorIterator():
     def next(self):
         return self.__this.call(f"next", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class FilterIterator():
 
@@ -740,11 +740,11 @@ class FilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveFilterIterator():
 
@@ -778,11 +778,11 @@ class RecursiveFilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CallbackFilterIterator():
 
@@ -810,11 +810,11 @@ class CallbackFilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveCallbackFilterIterator():
 
@@ -848,11 +848,11 @@ class RecursiveCallbackFilterIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ParentIterator():
 
@@ -886,11 +886,11 @@ class ParentIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SeekableIterator():
 
@@ -915,11 +915,11 @@ class SeekableIterator():
     def __init__(self):
         self.__this = phpy.Object(f'SeekableIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class LimitIterator():
 
@@ -950,11 +950,11 @@ class LimitIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class CachingIterator():
     CALL_TOSTRING = 1
@@ -1015,11 +1015,11 @@ class CachingIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveCachingIterator():
     CALL_TOSTRING = 1
@@ -1086,11 +1086,11 @@ class RecursiveCachingIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class NoRewindIterator():
 
@@ -1115,11 +1115,11 @@ class NoRewindIterator():
     def getInnerIterator(self):
         return self.__this.call(f"getInnerIterator", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class AppendIterator():
 
@@ -1153,11 +1153,11 @@ class AppendIterator():
     def key(self):
         return self.__this.call(f"key", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class InfiniteIterator():
 
@@ -1182,11 +1182,11 @@ class InfiniteIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RegexIterator():
     USE_KEY = 1
@@ -1242,11 +1242,11 @@ class RegexIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveRegexIterator():
     USE_KEY = 1
@@ -1308,11 +1308,11 @@ class RecursiveRegexIterator():
     def current(self):
         return self.__this.call(f"current", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class EmptyIterator():
 
@@ -1334,11 +1334,11 @@ class EmptyIterator():
     def __init__(self):
         self.__this = phpy.Object(f'EmptyIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveTreeIterator():
     LEAVES_ONLY = 0
@@ -1423,11 +1423,11 @@ class RecursiveTreeIterator():
     def getMaxDepth(self):
         return self.__this.call(f"getMaxDepth", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ArrayObject():
     STD_PROP_LIST = 1
@@ -1508,11 +1508,11 @@ class ArrayObject():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ArrayIterator():
     STD_PROP_LIST = 1
@@ -1599,11 +1599,11 @@ class ArrayIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveArrayIterator():
     STD_PROP_LIST = 1
@@ -1697,11 +1697,11 @@ class RecursiveArrayIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplFileInfo():
 
@@ -1798,11 +1798,11 @@ class SplFileInfo():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class DirectoryIterator():
 
@@ -1920,11 +1920,11 @@ class DirectoryIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class FilesystemIterator():
     CURRENT_MODE_MASK = 240
@@ -2060,11 +2060,11 @@ class FilesystemIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class RecursiveDirectoryIterator():
     CURRENT_MODE_MASK = 240
@@ -2212,11 +2212,11 @@ class RecursiveDirectoryIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class GlobIterator():
     CURRENT_MODE_MASK = 240
@@ -2355,11 +2355,11 @@ class GlobIterator():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplFileObject():
     DROP_NEW_LINE = 1
@@ -2550,11 +2550,11 @@ class SplFileObject():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplTempFileObject():
     DROP_NEW_LINE = 1
@@ -2745,11 +2745,11 @@ class SplTempFileObject():
     def _bad_state_ex(self):
         return self.__this.call(f"_bad_state_ex", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplDoublyLinkedList():
     IT_MODE_LIFO = 2
@@ -2838,11 +2838,11 @@ class SplDoublyLinkedList():
     def __init__(self):
         self.__this = phpy.Object(f'SplDoublyLinkedList')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplQueue():
     IT_MODE_LIFO = 2
@@ -2937,11 +2937,11 @@ class SplQueue():
     def __init__(self):
         self.__this = phpy.Object(f'SplQueue')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplStack():
     IT_MODE_LIFO = 2
@@ -3030,11 +3030,11 @@ class SplStack():
     def __init__(self):
         self.__this = phpy.Object(f'SplStack')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplHeap():
 
@@ -3080,11 +3080,11 @@ class SplHeap():
     def __init__(self):
         self.__this = phpy.Object(f'SplHeap')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplMinHeap():
 
@@ -3130,11 +3130,11 @@ class SplMinHeap():
     def __init__(self):
         self.__this = phpy.Object(f'SplMinHeap')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplMaxHeap():
 
@@ -3180,11 +3180,11 @@ class SplMaxHeap():
     def __init__(self):
         self.__this = phpy.Object(f'SplMaxHeap')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplPriorityQueue():
     EXTR_BOTH = 3
@@ -3242,11 +3242,11 @@ class SplPriorityQueue():
     def __init__(self):
         self.__this = phpy.Object(f'SplPriorityQueue')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplFixedArray():
 
@@ -3289,11 +3289,11 @@ class SplFixedArray():
     def jsonSerialize(self):
         return self.__this.call(f"jsonSerialize", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplObserver():
 
@@ -3303,11 +3303,11 @@ class SplObserver():
     def __init__(self):
         self.__this = phpy.Object(f'SplObserver')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplSubject():
 
@@ -3323,11 +3323,11 @@ class SplSubject():
     def __init__(self):
         self.__this = phpy.Object(f'SplSubject')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SplObjectStorage():
 
@@ -3406,11 +3406,11 @@ class SplObjectStorage():
     def __init__(self):
         self.__this = phpy.Object(f'SplObjectStorage')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class MultipleIterator():
     MIT_NEED_ANY = 0
@@ -3457,9 +3457,9 @@ class MultipleIterator():
     def __debugInfo(self):
         return self.__this.call(f"__debugInfo", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

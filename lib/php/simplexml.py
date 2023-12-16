@@ -81,11 +81,11 @@ class SimpleXMLElement():
     def getChildren(self):
         return self.__this.call(f"getChildren", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class SimpleXMLIterator():
 
@@ -152,9 +152,9 @@ class SimpleXMLIterator():
     def getChildren(self):
         return self.__this.call(f"getChildren", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

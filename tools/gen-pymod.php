@@ -6,7 +6,7 @@ use PhpyTool\Generator;
 
 $extensions = get_loaded_extensions();
 
-//$extensions = ['Core'];
+//$extensions = ['redis'];
 
 Generator::$rootDir = dirname(__DIR__) . '/lib/php';
 
@@ -18,5 +18,5 @@ foreach ($extensions as $extension) {
         continue;
     }
     Generator::make($extension);
-    echo "IDE help files for {$extension} generated successfully.\n";
+    echo "IDE help files for ext-{$extension} generated successfully.\n";
 }

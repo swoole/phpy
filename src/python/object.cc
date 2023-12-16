@@ -189,7 +189,7 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
         zval zfn;
         ZVAL_STRINGL(&zfn, CTOR_NAME, sizeof(CTOR_NAME) - 1);
         zval *argv = new zval[argc];
-        tuple2argv(argv, args, argc, begin);
+        tuple2argv(argv, args, argc + begin, begin);
         zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
         ON_SCOPE_EXIT {
             zval_ptr_dtor(&zfn);

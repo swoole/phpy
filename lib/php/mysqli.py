@@ -573,22 +573,22 @@ class mysqli_sql_exception():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class mysqli_driver():
 
     def __init__(self):
         self.__this = phpy.Object(f'mysqli_driver')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class mysqli():
 
@@ -721,11 +721,11 @@ class mysqli():
     def refresh(self, _flags):
         return self.__this.call(f"refresh", _flags)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class mysqli_warning():
 
@@ -735,11 +735,11 @@ class mysqli_warning():
     def __init__(self):
         self.__this = phpy.Object(f'mysqli_warning')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class mysqli_result():
 
@@ -791,11 +791,11 @@ class mysqli_result():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class mysqli_stmt():
 
@@ -859,9 +859,9 @@ class mysqli_stmt():
     def get_result(self):
         return self.__this.call(f"get_result", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

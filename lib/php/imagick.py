@@ -36,11 +36,11 @@ class ImagickException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickDrawException():
 
@@ -74,11 +74,11 @@ class ImagickDrawException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickPixelIteratorException():
 
@@ -112,11 +112,11 @@ class ImagickPixelIteratorException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickPixelException():
 
@@ -150,11 +150,11 @@ class ImagickPixelException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickKernelException():
 
@@ -188,11 +188,11 @@ class ImagickKernelException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Imagick():
     COLOR_BLACK = 11
@@ -1936,11 +1936,11 @@ class Imagick():
     def whiteBalanceImage(self):
         return self.__this.call(f"whiteBalanceImage", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickDraw():
 
@@ -2346,11 +2346,11 @@ class ImagickDraw():
     def setTextDirection(self, _direction):
         return self.__this.call(f"setTextDirection", _direction)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickPixelIterator():
 
@@ -2417,11 +2417,11 @@ class ImagickPixelIterator():
     def valid(self):
         return self.__this.call(f"valid", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickPixel():
 
@@ -2488,11 +2488,11 @@ class ImagickPixel():
     def setColorFromPixel(self, _pixel):
         return self.__this.call(f"setColorFromPixel", _pixel)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ImagickKernel():
 
@@ -2520,9 +2520,9 @@ class ImagickKernel():
     def __init__(self):
         self.__this = phpy.Object(f'ImagickKernel')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 

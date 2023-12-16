@@ -966,11 +966,11 @@ class Collator():
     def getSortKey(self, _string):
         return self.__this.call(f"getSortKey", _string)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class NumberFormatter():
     PATTERN_DECIMAL = 0
@@ -1099,11 +1099,11 @@ class NumberFormatter():
     def getErrorMessage(self):
         return self.__this.call(f"getErrorMessage", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Normalizer():
     FORM_D = 4
@@ -1129,11 +1129,11 @@ class Normalizer():
     def __init__(self):
         self.__this = phpy.Object(f'Normalizer')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Locale():
     ACTUAL_LOCALE = 0
@@ -1204,11 +1204,11 @@ class Locale():
     def __init__(self):
         self.__this = phpy.Object(f'Locale')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class MessageFormatter():
 
@@ -1245,11 +1245,11 @@ class MessageFormatter():
     def getErrorMessage(self):
         return self.__this.call(f"getErrorMessage", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlDateFormatter():
     FULL = 0
@@ -1327,11 +1327,11 @@ class IntlDateFormatter():
     def getErrorMessage(self):
         return self.__this.call(f"getErrorMessage", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlDatePatternGenerator():
 
@@ -1344,11 +1344,11 @@ class IntlDatePatternGenerator():
     def getBestPattern(self, _skeleton):
         return self.__this.call(f"getBestPattern", _skeleton)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class ResourceBundle():
 
@@ -1376,11 +1376,11 @@ class ResourceBundle():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Transliterator():
     FORWARD = 0
@@ -1410,11 +1410,11 @@ class Transliterator():
     def __init__(self):
         self.__this = phpy.Object(f'Transliterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlTimeZone():
     DISPLAY_SHORT = 1
@@ -1504,11 +1504,11 @@ class IntlTimeZone():
     def __init__(self):
         self.__this = phpy.Object(f'IntlTimeZone')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlCalendar():
     FIELD_ERA = 0
@@ -1689,11 +1689,11 @@ class IntlCalendar():
     def __init__(self):
         self.__this = phpy.Object(f'IntlCalendar')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlGregorianCalendar():
     FIELD_ERA = 0
@@ -1883,11 +1883,11 @@ class IntlGregorianCalendar():
     def toDateTime(self):
         return self.__this.call(f"toDateTime", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class Spoofchecker():
     SINGLE_SCRIPT_CONFUSABLE = 1
@@ -1922,11 +1922,11 @@ class Spoofchecker():
     def setRestrictionLevel(self, _level):
         return self.__this.call(f"setRestrictionLevel", _level)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlException():
 
@@ -1960,11 +1960,11 @@ class IntlException():
     def __str__(self):
         return self.__this.call(f"__toString", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlIterator():
 
@@ -1986,11 +1986,11 @@ class IntlIterator():
     def __init__(self):
         self.__this = phpy.Object(f'IntlIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlBreakIterator():
     DONE = -1
@@ -2079,11 +2079,11 @@ class IntlBreakIterator():
     def __init__(self):
         self.__this = phpy.Object(f'IntlBreakIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlRuleBasedBreakIterator():
     DONE = -1
@@ -2184,11 +2184,11 @@ class IntlRuleBasedBreakIterator():
     def getIterator(self):
         return self.__this.call(f"getIterator", )
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlCodePointBreakIterator():
     DONE = -1
@@ -2280,11 +2280,11 @@ class IntlCodePointBreakIterator():
     def __init__(self):
         self.__this = phpy.Object(f'IntlCodePointBreakIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlPartsIterator():
     KEY_SEQUENTIAL = 0
@@ -2315,11 +2315,11 @@ class IntlPartsIterator():
     def __init__(self):
         self.__this = phpy.Object(f'IntlPartsIterator')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class UConverter():
     REASON_UNASSIGNED = 0
@@ -2421,11 +2421,11 @@ class UConverter():
     def transcode(_str, _to_encoding, _from_encoding, _options=None):
         return phpy.call(f"UConverter::transcode", _str, _to_encoding, _from_encoding, _options)
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
 class IntlChar():
     UNICODE_VERSION = "10.0"
@@ -3272,9 +3272,9 @@ class IntlChar():
     def __init__(self):
         self.__this = phpy.Object(f'IntlChar')
 
-    def __getattr__(self, name):
+    def getattr(self, name):
         return self.__this.get(name)
 
-    def __setattr__(self, name, value):
-        return self.__this.set(name, value)
+    def setattr(self, name, value):
+        self.__this.set(name, value)
 
