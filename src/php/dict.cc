@@ -73,7 +73,7 @@ ZEND_METHOD(PyDict, offsetGet) {
     if (value == NULL) {
         ssize_t len;
         PyErr_Print();
-        zend_throw_error(NULL, "PyDict: error key [%s]", object2str(pk, &len));
+        zend_throw_error(NULL, "PyDict: error key [%s]", phpy::python::string2utf8(pk, &len));
         return;
     }
     py2php(value, return_value);

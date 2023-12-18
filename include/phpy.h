@@ -71,26 +71,34 @@ inline ScopeGuard<Fun> operator+(ScopeGuardOnExit, Fun &&fn) {
 
 #define ON_SCOPE_EXIT auto __SCOPEGUARD_CONCATENATE(ext_exitBlock_, __LINE__) = detail::ScopeGuardOnExit() + [&]()
 
-zend_string *zend_string_cast(PyObject *pv);
+zval *zend_string_cast(PyObject *pv);
 zval *zend_reference_cast(PyObject *pv);
 zval *zend_resource_cast(PyObject *pv);
 zval *zend_object_cast(PyObject *pv);
 zval *zend_callable_cast(PyObject *pv);
-
-void rand_string(char *str, size_t size);
-
+zval *zend_array_cast(PyObject *pv);
 /**
  * Type conversion, Python to PHP
  */
-void py2php(PyObject *pv, zval *zv, bool scalar = false);
-void py2php_scalar_shallow(PyObject *pv, zval *zv);
+void py2php(PyObject *pv, zval *zv);
+/**
+ * Convert to PHP scalar types as much as possible
+ */
+void py2php_scalar(PyObject *pv, zval *zv);
+zend_string *py2zstr(PyObject *pv);
+void object2array(PyObject *pv, zval *zv);
+void object2string(PyObject *pv, zval *zv);
 
-const char *object2str(PyObject *pv, ssize_t *len);
 void long2long(PyObject *pv, zval *zv);
 /**
  * Type conversion, PHP to Python
  */
 PyObject *php2py(zval *zv);
+/**
+ * Python to Python, Convert actual value to PHP scalar type as much as possible
+ */
+PyObject *py2py_scalar(PyObject *pv);
+
 PyObject *array2list(zend_array *ht);
 static inline PyObject *array2list(zval *zv) {
     return array2list(Z_ARRVAL_P(zv));
@@ -99,7 +107,6 @@ PyObject *array2set(zend_array *ht);
 static inline PyObject *array2set(zval *zv) {
     return array2set(Z_ARRVAL_P(zv));
 }
-PyObject *argv2tuple(uint32_t argc, zval *argv);
 PyObject *resource2py(zval *zres);
 PyObject *object2py(zval *zv);
 PyObject *reference2py(zval *zv);
@@ -112,19 +119,14 @@ static inline PyObject *array2dict(zval *zv) {
     return array2dict(Z_ARRVAL_P(zv));
 }
 
-static inline uint32_t array_count(zval *zv) {
-    return zend_array_count(Z_ARRVAL_P(zv));
-}
-
 static inline PyObject *string2py(zval *zv) {
     return string2py(Z_STR_P(zv));
 }
 
 PyObject *object_create(zend_class_entry *ce, PyObject *args, uint32_t argc, int begin);
 PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint32_t argc, int begin);
-void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
-void release_argv(uint32_t argc, zval *argv);
 
+bool ZendArray_Check(PyObject *pv);
 bool ZendObject_Check(PyObject *pv);
 bool ZendReference_Check(PyObject *pv);
 bool ZendResource_Check(PyObject *pv);
@@ -139,6 +141,7 @@ bool py_module_resource_init(PyObject *m);
 bool py_module_class_init(PyObject *m);
 bool py_module_reference_init(PyObject *m);
 bool py_module_callable_init(PyObject *m);
+bool py_module_array_init(PyObject *m);
 
 PyObject *py_module_create(bool py_module);
 
@@ -233,6 +236,10 @@ PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS);
 std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 
+static inline uint32_t array_count(zval *zv) {
+    return zend_array_count(Z_ARRVAL_P(zv));
+}
+
 static inline zend_result call_fn(
     zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval *params) {
     zend_result result = FAILURE;
@@ -256,4 +263,10 @@ struct CallObject {
     ~CallObject();
     void call();
 };
+namespace python {
+PyObject *new_array(PyObject *pv);
+const char *string2utf8(PyObject *pv, ssize_t *len);
+void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
+void release_argv(uint32_t argc, zval *argv);
+}  // namespace python
 }  // namespace phpy

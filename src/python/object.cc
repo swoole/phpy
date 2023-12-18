@@ -55,9 +55,11 @@ static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
 
-    zend_string *_class_name = zend_string_cast(name);
+    zend_string *_class_name = py2zstr(name);
     zend_class_entry *ce = zend_lookup_class(_class_name);
-    zend_string_release(_class_name);
+    ON_SCOPE_EXIT {
+        zend_string_release(_class_name);
+    };
 
     if (ce == NULL) {
         PyErr_Format(PyExc_TypeError, "Class \"%s\" not found", ZSTR_VAL(_class_name));
@@ -98,16 +100,16 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
 
     uint32_t argc = TupleSize - 1;
     zval *argv = new zval[argc];
-    tuple2argv(argv, args, TupleSize);
+    phpy::python::tuple2argv(argv, args, TupleSize);
 
     zval retval;
     zval zfn;
-    py2php(fn, &zfn, true);
+    py2php_scalar(fn, &zfn);
     zend_result result = phpy::php::call_fn(&self->object, &zfn, &retval, argc, argv);
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
-        release_argv(argc, argv);
-        delete []argv;
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
     };
 
     if (result == FAILURE) {
@@ -168,10 +170,6 @@ PyObject *object2py(zval *zv) {
     }
 }
 
-const char *object2str(PyObject *pv, ssize_t *len) {
-    return PyUnicode_AsUTF8AndSize(pv, len);
-}
-
 PyObject *object_create(zend_class_entry *ce, PyObject *args, uint32_t argc, int begin) {
     ZendObject *obj = PyObject_New(ZendObject, &ZendObjectType);
     return object_create((PyObject *) obj, ce, args, argc, begin);
@@ -189,13 +187,13 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
         zval zfn;
         ZVAL_STRINGL(&zfn, CTOR_NAME, sizeof(CTOR_NAME) - 1);
         zval *argv = new zval[argc];
-        tuple2argv(argv, args, argc + begin, begin);
+        phpy::python::tuple2argv(argv, args, argc + begin, begin);
         zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
         ON_SCOPE_EXIT {
             zval_ptr_dtor(&zfn);
             zval_ptr_dtor(&retval);
-            release_argv(argc, argv);
-            delete []argv;
+            phpy::python::release_argv(argc, argv);
+            delete[] argv;
         };
         if (result == FAILURE) {
             return NULL;

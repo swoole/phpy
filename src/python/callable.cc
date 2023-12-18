@@ -64,9 +64,9 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     Py_ssize_t TupleSize = PyTuple_Size(args);
     uint32_t argc = TupleSize;
     zval *argv = new zval[argc];
-    tuple2argv(argv, args, TupleSize, 0);
+    phpy::python::tuple2argv(argv, args, TupleSize, 0);
     ON_SCOPE_EXIT {
-        release_argv(argc, argv);
+        phpy::python::release_argv(argc, argv);
         delete []argv;
     };
 

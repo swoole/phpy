@@ -56,11 +56,14 @@ if test "$PHP_PHPY" != "no"; then
   CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now"
   CXXFLAGS="$CXXFLAGS -std=c++14"
 
-  phpy_source_file="phpy.cc \
-        src/bridge/core.cc \
-		src/php/object.cc src/php/type.cc src/php/error.cc src/php/iter.cc src/php/dict.cc src/php/core.cc \
-		src/php/fn.cc src/php/str.cc src/php/sequence.cc src/php/list.cc  src/php/set.cc src/php/tuple.cc src/php/module.cc \
-        src/python/class.cc src/python/module.cc src/python/object.cc src/python/reference.cc src/python/resource.cc src/python/callable.cc \
-        "
-  PHP_NEW_EXTENSION(phpy, ${phpy_source_file} , $ext_shared)
+  if test -f "phpy.cc"; then
+      phpy_source_dir=$(pwd)
+  else
+      phpy_source_dir="ext/phpy"
+  fi
+
+  phpy_source_files=$(cd $phpy_source_dir && find src -type f -name "*.cc")
+  phpy_source_files="phpy.cc $phpy_source_files"
+
+  PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared)
 fi

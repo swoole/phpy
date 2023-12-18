@@ -1,0 +1,117 @@
+/*
+  +----------------------------------------------------------------------+
+  | Phpy                                                                 |
+  +----------------------------------------------------------------------+
+  | This source file is subject to version 2.0 of the Apache license,    |
+  | that is bundled with this package in the file LICENSE, and is        |
+  | available through the world-wide-web at the following url:           |
+  | http://www.apache.org/licenses/LICENSE-2.0.html                      |
+  | If you did not receive a copy of the Apache2.0 license and are unable|
+  | to obtain it through the world-wide-web, please send a note to       |
+  | license@swoole.com so we can mail you a copy immediately.            |
+  +----------------------------------------------------------------------+
+  | Author: Tianfeng Han  <rango@swoole.com>                             |
+  | Copyright: 上海识沃网络科技有限公司                                       |
+  +----------------------------------------------------------------------+
+ */
+
+#include "phpy.h"
+
+struct ZendString;
+static int String_init(ZendString *self, PyObject *args, PyObject *kwds);
+static PyObject *String_str(ZendString *self, PyObject *args);
+static void String_destroy(ZendString *self);
+
+// clang-format off
+struct ZendString {
+    PyObject_HEAD
+    zval string;
+};
+
+static PyMethodDef String_methods[] = {
+    {"__str__", (PyCFunction) String_str, METH_VARARGS, "Get string value" },
+    {NULL}  /* Sentinel */
+};
+
+static PyTypeObject ZendStringType = { PyVarObject_HEAD_INIT(NULL, 0) };
+
+//  clang-format on
+
+static int String_init(ZendString *self, PyObject *args, PyObject *kwds) {
+    const char *str;
+    size_t len;
+    if (!PyArg_ParseTuple(args, "s#", &str, &len)) {
+        PyErr_SetString(PyExc_TypeError, "must supply at least 1 parameter.");
+        return NULL;
+    }
+    ZVAL_STRINGL(&self->string, str, len);
+    return 0;
+}
+
+static PyObject *String_str(ZendString *self, PyObject *args) {
+    return string2py(Z_STR(self->string));
+}
+
+static void String_destroy(ZendString *self) {
+    zval_ptr_dtor(&self->string);
+    Py_TYPE(self)->tp_free((PyObject*) self);
+}
+
+bool py_module_string_init(PyObject *m) {
+    ZendStringType.tp_name = "zend_string";
+    ZendStringType.tp_basicsize = sizeof(ZendString);
+    ZendStringType.tp_itemsize = 0;
+    ZendStringType.tp_dealloc = (destructor) String_destroy;
+    ZendStringType.tp_flags = Py_TPFLAGS_DEFAULT;
+    ZendStringType.tp_doc = PyDoc_STR("zend_string");
+    ZendStringType.tp_methods = String_methods;
+    ZendStringType.tp_init = (initproc) String_init;
+    ZendStringType.tp_new = PyType_GenericNew;
+
+    if (PyType_Ready(&ZendStringType) < 0) {
+        return false;
+    }
+    Py_INCREF(&ZendStringType);
+    if (PyModule_AddObject(m, "String", (PyObject *) &ZendStringType) < 0) {
+        Py_DECREF(&ZendStringType);
+        Py_DECREF(m);
+        return false;
+    }
+    return true;
+}
+
+bool ZendString_Check(PyObject *pv) {
+    return Py_IS_TYPE(pv, &ZendStringType);
+}
+
+zval *zend_string_cast(PyObject *pv) {
+    ZendString *obj = (ZendString *) pv;
+    return &obj->string;
+}
+
+namespace phpy {
+namespace python {
+PyObject *new_string(PyObject *pv) {
+    ZendString *self = PyObject_New(ZendString, &ZendStringType);
+    if (PyByteArray_Check(pv)) {
+        ZVAL_STRINGL(&self->string, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
+    } else if (PyBytes_Check(pv)) {
+        ZVAL_STRINGL(&self->string, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
+    } else if (PyUnicode_Check(pv)) {
+        ZVAL_STR(&self->string, py2zstr(pv));
+    } else {
+        auto value = PyObject_Str(pv);
+        if (value != NULL) {
+            Py_ssize_t sl;
+            const char *sv = PyUnicode_AsUTF8AndSize(value, &sl);
+            ZVAL_STRINGL(&self->string, sv, sl);
+            Py_DECREF(value);
+        } else {
+            PyErr_Print();
+            zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TYPE(pv)->tp_name);
+        }
+    }
+    return (PyObject *)self;
+}
+}
+}

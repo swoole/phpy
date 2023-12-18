@@ -24,25 +24,85 @@ END_EXTERN_C()
 
 using phpy::CallObject;
 
-static void py2php_object_impl(PyObject *pv, zval *zv);
-static void py2php_scalar_impl(PyObject *pv, zval *zv);
-static void sequence2array(PyObject *pv, zval *zv);
+static bool py2php_base_type(PyObject *pv, zval *zv);
+static void iterator2array(PyObject *pv, zval *zv);
+
+static inline void sequence2array(PyObject *pv, zval *zv) {
+    iterator2array(pv, zv);
+}
+
+static inline void set2array(PyObject *pv, zval *zv) {
+    iterator2array(pv, zv);
+}
+
 static void dict2array(PyObject *pv, zval *zv);
-static void set2array(PyObject *pv, zval *zv);
 
-void (*py2php_fn)(PyObject *pv, zval *zv);
-
-void py2php(PyObject *pv, zval *zv, bool scalar) {
-    py2php_fn = scalar ? py2php_scalar_impl : py2php_object_impl;
-    py2php_fn(pv, zv);
+void py2php(PyObject *pv, zval *zv) {
+    if (py2php_base_type(pv, zv)) {
+        return;
+    }
+    if (PyUnicode_Check(pv)) {
+        phpy::php::new_str(zv, pv);
+    } else if (PyList_Check(pv)) {
+        phpy::php::new_list(zv, pv);
+    } else if (PyTuple_Check(pv)) {
+        phpy::php::new_tuple(zv, pv);
+    } else if (PySet_Check(pv)) {
+        phpy::php::new_set(zv, pv);
+    } else if (PyDict_Check(pv)) {
+        phpy::php::new_dict(zv, pv);
+    } else if (PyModule_Check(pv)) {
+        phpy::php::new_module(zv, pv);
+    } else if (PyType_Check(pv)) {
+        phpy::php::new_type(zv, pv);
+    } else if (PyIter_Check(pv)) {
+        phpy::php::new_iter(zv, pv);
+    } else {
+        phpy::php::new_object(zv, pv);
+    }
 }
 
-void py2php_scalar_shallow(PyObject *pv, zval *zv) {
-    py2php_fn = py2php_object_impl;
-    py2php_scalar_impl(pv, zv);
+void py2php_scalar(PyObject *pv, zval *zv) {
+    if (py2php_base_type(pv, zv)) {
+        return;
+    }
+    if (PyByteArray_Check(pv)) {
+        ZVAL_STRINGL(zv, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
+    } else if (PyBytes_Check(pv)) {
+        ZVAL_STRINGL(zv, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
+    } else if (PyUnicode_Check(pv)) {
+        ZVAL_STR(zv, py2zstr(pv));
+    } else if (PyList_Check(pv)) {
+        sequence2array(pv, zv);
+    } else if (PyTuple_Check(pv)) {
+        sequence2array(pv, zv);
+    } else if (PyDict_Check(pv)) {
+        dict2array(pv, zv);
+    } else if (PySet_Check(pv)) {
+        set2array(pv, zv);
+    } else {
+        phpy::php::new_object(zv, pv);
+    }
 }
 
-zend_string *zend_string_cast(PyObject *pv) {
+PyObject *py2py_scalar(PyObject *pv) {
+    if (PyDict_Check(pv) || PySet_Check(pv) || PyList_Check(pv) || PyTuple_Check(pv)) {
+        pv = phpy::python::new_array(pv);
+    } else {
+        Py_INCREF(pv);
+    }
+    return pv;
+}
+
+void object2array(PyObject *pv, zval *zv) {
+    if (PyDict_Check(pv)) {
+        dict2array(pv, zv);
+    } else {
+        iterator2array(pv, zv);
+    }
+}
+
+zend_string *py2zstr(PyObject *pv) {
     Py_ssize_t sl;
     const char *sv = PyUnicode_AsUTF8AndSize(pv, &sl);
     return zend_string_init(sv, sl, 0);
@@ -56,7 +116,7 @@ void long2long(PyObject *pv, zval *zv) {
     } else {
         ssize_t len;
         auto s = PyObject_Str(pv);
-        const char *sval = object2str(s, &len);
+        const char *sval = phpy::python::string2utf8(s, &len);
         ZVAL_STRINGL(zv, sval, len);
         Py_DECREF(s);
     }
@@ -85,64 +145,18 @@ static bool py2php_base_type(PyObject *pv, zval *zv) {
         long2long(pv, zv);
     } else if (PyFloat_Check(pv)) {
         ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));
-    } else if (PyByteArray_Check(pv)) {
-        ZVAL_STRINGL(zv, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
-    } else if (PyBytes_Check(pv)) {
-        ZVAL_STRINGL(zv, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
     } else if (ZendObject_Check(pv)) {
         ZVAL_ZVAL(zv, zend_object_cast(pv), 1, 0);
     } else if (ZendReference_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
     } else if (ZendResource_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
+    } else if (ZendArray_Check(pv)) {
+        ZVAL_COPY(zv, zend_array_cast(pv));
     } else {
         return false;
     }
     return true;
-}
-
-static void py2php_object_impl(PyObject *pv, zval *zv) {
-    if (py2php_base_type(pv, zv)) {
-        return;
-    }
-    if (PyUnicode_Check(pv)) {
-        phpy::php::new_str(zv, pv);
-    } else if (PyList_Check(pv)) {
-        phpy::php::new_list(zv, pv);
-    } else if (PyTuple_Check(pv)) {
-        phpy::php::new_tuple(zv, pv);
-    } else if (PySet_Check(pv)) {
-        phpy::php::new_set(zv, pv);
-    } else if (PyDict_Check(pv)) {
-        phpy::php::new_dict(zv, pv);
-    } else if (PyModule_Check(pv)) {
-        phpy::php::new_module(zv, pv);
-    } else if (PyType_Check(pv)) {
-        phpy::php::new_type(zv, pv);
-    } else if (PyIter_Check(pv)) {
-        phpy::php::new_iter(zv, pv);
-    } else {
-        phpy::php::new_object(zv, pv);
-    }
-}
-/**
- * Convert to PHP scalar types as much as possible
- */
-static void py2php_scalar_impl(PyObject *pv, zval *zv) {
-    if (py2php_base_type(pv, zv)) {
-        return;
-    }
-    if (PyUnicode_Check(pv)) {
-        ZVAL_STR(zv, zend_string_cast(pv));
-    } else if (PySequence_Check(pv)) {
-        sequence2array(pv, zv);
-    } else if (PyDict_Check(pv)) {
-        dict2array(pv, zv);
-    } else if (PySet_Check(pv)) {
-        set2array(pv, zv);
-    } else {
-        phpy::php::new_object(zv, pv);
-    }
 }
 
 PyObject *array2list(zend_array *ht) {
@@ -165,7 +179,7 @@ PyObject *array2set(zend_array *ht) {
     return pset;
 }
 
-void sequence2array(PyObject *pv, zval *zv) {
+static void iterator2array(PyObject *pv, zval *zv) {
     PyObject *iter = PyObject_GetIter(pv);
     array_init(zv);
     while (true) {
@@ -174,7 +188,7 @@ void sequence2array(PyObject *pv, zval *zv) {
             break;
         }
         zval item;
-        py2php_fn(next, &item);
+        py2php(next, &item);
         add_next_index_zval(zv, &item);
     }
     Py_DECREF(iter);
@@ -208,26 +222,11 @@ void dict2array(PyObject *pv, zval *zv) {
         }
         auto value = PyDict_GetItem(pv, next);
         zval item;
-        py2php_fn(value, &item);
+        py2php(value, &item);
 
         ssize_t len;
-        const char *key = object2str(next, &len);
+        const char *key = phpy::python::string2utf8(next, &len);
         add_assoc_zval_ex(zv, key, len, &item);
-    }
-    Py_DECREF(iter);
-}
-
-void set2array(PyObject *pv, zval *zv) {
-    PyObject *iter = PyObject_GetIter(pv);
-    array_init(zv);
-    while (true) {
-        PyObject *next = PyIter_Next(iter);
-        if (!next) {
-            break;
-        }
-        zval item;
-        py2php_fn(next, &item);
-        add_next_index_zval(zv, &item);
     }
     Py_DECREF(iter);
 }
@@ -280,33 +279,13 @@ void debug_dump(uint32_t i, PyObject *pObj) {
     printf("[%d] type=%s, str=%s, repr=%s, ptr=%p\n",
            i,
            Py_TYPE(pObj)->tp_name,
-           object2str(PyObject_Str(pObj), &len),
-           object2str(PyObject_Repr(pObj), &len),
+           phpy::python::string2utf8(PyObject_Str(pObj), &len),
+           phpy::python::string2utf8(PyObject_Repr(pObj), &len),
            pObj);
 }
 
 void var_dump(zval *var) {
     php_var_dump(var, 3);
-}
-
-void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
-    Py_ssize_t i;
-    for (i = begin; i < size; i++) {
-        PyObject *arg = PyTuple_GetItem(args, i);
-        if (arg == NULL) {
-            PyErr_SetString(PyExc_TypeError, "wrong parameter");
-            break;
-        }
-        zval item;
-        py2php(arg, &item, true);
-        argv[i - begin] = item;
-    }
-}
-
-void release_argv(uint32_t argc, zval *argv) {
-    for (uint32_t i = 0; i < argc; i++) {
-        zval_ptr_dtor(&argv[i]);
-    }
 }
 
 CallObject::CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval *_argv, zend_array *_kwargs) {
@@ -365,7 +344,7 @@ void CallObject::parse_args(uint32_t _argc, zval *_argv) {
 }
 
 void CallObject::parse_args(zval *array) {
-    argc = array_count(array);
+    argc = phpy::php::array_count(array);
     if (argc == 0) {
         return;
     }
@@ -391,3 +370,30 @@ void CallObject::parse_args(zval *array) {
     args = PyList_AsTuple(arg_list);
     Py_DECREF(arg_list);
 }
+
+namespace phpy {
+namespace python {
+const char *string2utf8(PyObject *pv, ssize_t *len) {
+    return PyUnicode_AsUTF8AndSize(pv, len);
+};
+void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
+    Py_ssize_t i;
+    for (i = begin; i < size; i++) {
+        PyObject *arg = PyTuple_GetItem(args, i);
+        if (arg == NULL) {
+            PyErr_SetString(PyExc_TypeError, "wrong parameter");
+            break;
+        }
+        zval item;
+        py2php_scalar(arg, &item);
+        argv[i - begin] = item;
+    }
+}
+
+void release_argv(uint32_t argc, zval *argv) {
+    for (uint32_t i = 0; i < argc; i++) {
+        zval_ptr_dtor(&argv[i]);
+    }
+}
+}  // namespace python
+}  // namespace phpy

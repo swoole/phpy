@@ -42,7 +42,7 @@ void new_error(zval *zv, PyObject *error) {
         PyObject *pstr = PyObject_Str(pvalue);
         if (pstr) {
             ssize_t len;
-            const char *error_message = object2str(pstr, &len);
+            const char *error_message = phpy::python::string2utf8(pstr, &len);
             zend_update_property_stringl(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("message"), error_message, len);
         }
     }

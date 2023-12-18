@@ -14,6 +14,10 @@ def globals(name):
     pass
 
 
+def scalar(obj):
+    pass
+
+
 class Reference:
     def __init__(self):
         pass
@@ -47,4 +51,21 @@ class Class:
         pass
 
     def new(self, *args):
+        pass
+
+
+class Array:
+    def __init__(self, values=None):
+        pass
+
+    def count(self):
+        pass
+
+    def get(self, key):
+        pass
+
+    def set(self, key, value):
+        pass
+
+    def unset(self, key):
         pass

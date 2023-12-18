@@ -35,18 +35,17 @@ static PyObject *phpy_call(PyObject *self, PyObject *args) {
 
     uint32_t argc = TupleSize - 1;
     zval *argv = new zval[argc];
-    tuple2argv(argv, args, TupleSize);
+
+    phpy::python::tuple2argv(argv, args, TupleSize);
 
     zval retval;
     zval zfn;
-    py2php(fn, &zfn, true);
-
+    py2php_scalar(fn, &zfn);
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
-        release_argv(argc, argv);
-        delete []argv;
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
     };
-
     zend_result result = phpy::php::call_fn(NULL, &zfn, &retval, argc, argv);
 
     if (result == FAILURE) {
@@ -72,6 +71,14 @@ static PyObject *phpy_constant(PyObject *self, PyObject *args) {
         return Py_None;
     }
     return php2py(val);
+}
+
+static PyObject *phpy_scalar(PyObject *self, PyObject *args) {
+    PyObject *pv;
+    if (!PyArg_ParseTuple(args, "O", &pv)) {
+        return NULL;
+    }
+    return py2py_scalar(pv);
 }
 
 static PyObject *phpy_include(PyObject *self, PyObject *args) {
@@ -165,6 +172,7 @@ static PyMethodDef phpy_methods[] = {
     {"include", (PyCFunction) phpy_include, METH_VARARGS, "include a php file"},
     {"globals", (PyCFunction) phpy_globals, METH_VARARGS, "get global variable"},
     {"eval", (PyCFunction) phpy_eval, METH_VARARGS, "execute php code"},
+    {"scalar", (PyCFunction) phpy_scalar, METH_VARARGS, "convert object to php scalar type"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -204,6 +212,7 @@ PyMODINIT_FUNC PyInit_phpy(void) {
 PyObject *py_module_create(bool py_module) {
     auto m = PyModule_Create(&php_module);
     auto modules = {
+        py_module_array_init,
         py_module_object_init,
         py_module_reference_init,
         py_module_class_init,

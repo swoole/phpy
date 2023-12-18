@@ -142,7 +142,7 @@ ZEND_METHOD(PyCore, fn) {
 ZEND_METHOD(PyCore, scalar) {
     auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
     CHECK_ARG(pyobj);
-    py2php(pyobj, return_value, true);
+    py2php_scalar(pyobj, return_value);
     Py_DECREF(pyobj);
 }
 
