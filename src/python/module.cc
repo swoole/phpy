@@ -212,6 +212,7 @@ PyMODINIT_FUNC PyInit_phpy(void) {
 PyObject *py_module_create(bool py_module) {
     auto m = PyModule_Create(&php_module);
     auto modules = {
+        py_module_string_init,
         py_module_array_init,
         py_module_object_init,
         py_module_reference_init,

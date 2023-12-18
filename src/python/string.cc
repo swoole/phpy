@@ -19,7 +19,7 @@
 
 struct ZendString;
 static int String_init(ZendString *self, PyObject *args, PyObject *kwds);
-static PyObject *String_str(ZendString *self, PyObject *args);
+static PyObject *String_len(ZendString *self, PyObject *args);
 static void String_destroy(ZendString *self);
 
 // clang-format off
@@ -29,7 +29,7 @@ struct ZendString {
 };
 
 static PyMethodDef String_methods[] = {
-    {"__str__", (PyCFunction) String_str, METH_VARARGS, "Get string value" },
+    {"len", (PyCFunction) String_len, METH_NOARGS, "Get string length" },
     {NULL}  /* Sentinel */
 };
 
@@ -48,8 +48,8 @@ static int String_init(ZendString *self, PyObject *args, PyObject *kwds) {
     return 0;
 }
 
-static PyObject *String_str(ZendString *self, PyObject *args) {
-    return string2py(Z_STR(self->string));
+static PyObject *String_len(ZendString *self, PyObject *args) {
+    return PyLong_FromLong(Z_STRLEN_P(&self->string));
 }
 
 static void String_destroy(ZendString *self) {

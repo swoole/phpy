@@ -151,6 +151,8 @@ static bool py2php_base_type(PyObject *pv, zval *zv) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
     } else if (ZendResource_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
+    } else if (ZendString_Check(pv)) {
+        ZVAL_COPY(zv, zend_array_cast(pv));
     } else if (ZendArray_Check(pv)) {
         ZVAL_COPY(zv, zend_array_cast(pv));
     } else {

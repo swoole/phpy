@@ -126,6 +126,7 @@ static inline PyObject *string2py(zval *zv) {
 PyObject *object_create(zend_class_entry *ce, PyObject *args, uint32_t argc, int begin);
 PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint32_t argc, int begin);
 
+bool ZendString_Check(PyObject *pv);
 bool ZendArray_Check(PyObject *pv);
 bool ZendObject_Check(PyObject *pv);
 bool ZendReference_Check(PyObject *pv);
@@ -136,6 +137,7 @@ void debug_dump(uint32_t i, zval *item);
 void debug_dump(uint32_t i, PyObject *pObj);
 void var_dump(zval *var);
 
+bool py_module_string_init(PyObject *m);
 bool py_module_object_init(PyObject *m);
 bool py_module_resource_init(PyObject *m);
 bool py_module_class_init(PyObject *m);
