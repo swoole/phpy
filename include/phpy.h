@@ -233,6 +233,26 @@ static inline bool is_null(zval *zv) {
     return zv == NULL || ZVAL_IS_NULL(zv);
 }
 
+/**
+ * Return value: Borrowed reference.
+ */
+static inline zval *array_get(zval *zv, long index) {
+    return zend_hash_index_find(Z_ARR_P(zv), index);
+}
+/**
+ * Return value: Borrowed reference.
+ */
+static inline zval *array_get(zval *zv, const char *key, size_t l_key) {
+    return zend_hash_str_find(Z_ARR_P(zv), key, l_key);
+}
+/**
+ * Return value: Borrowed reference.
+ */
+static inline zval *object_get(zval *zo, const char *name, size_t l_name) {
+    static zval rv;
+    return zend_read_property(Z_OBJCE_P(zo), Z_OBJ_P(zo), name, l_name, 0, &rv);
+}
+
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS);
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS);
@@ -269,6 +289,7 @@ namespace python {
 PyObject *new_array(zval *zv);
 PyObject *new_array(PyObject *pv);
 PyObject *new_string(zval *zv);
+PyObject *new_string(PyObject *pv);
 PyObject *new_object(zval *zv);
 PyObject *new_resource(zval *zv);
 PyObject *new_reference(zval *zv);

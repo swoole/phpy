@@ -127,8 +127,7 @@ static PyObject *Object_get(ZendObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "s#", &name, &l_name)) {
         return NULL;
     }
-    zval rv;
-    RETURN_PYOBJ(zend_read_property(Z_OBJCE(self->object), Z_OBJ(self->object), name, l_name, 0, &rv));
+    return php2py_for_cpython(phpy::php::object_get(&self->object, name, l_name));
 }
 
 static PyObject *Object_set(ZendObject *self, PyObject *args) {

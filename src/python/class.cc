@@ -79,11 +79,12 @@ static int Class_init(ZendClass *self, PyObject *args, PyObject *kwds) {
 
     zend_string *_class_name = zend_string_init(name, l_name, 0);
     zend_class_entry *ce = zend_lookup_class(_class_name);
-    zend_string_release(_class_name);
     if (ce == NULL) {
         PyErr_Format(PyExc_TypeError, "Class \"%s\" not found", ZSTR_VAL(_class_name));
+        zend_string_release(_class_name);
         return -1;
     }
+    zend_string_release(_class_name);
     self->ce = ce;
     phpy::php::add_object((PyObject *) self, Class_dtor);
     return 0;

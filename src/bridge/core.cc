@@ -104,6 +104,8 @@ void py2php(PyObject *pv, zval *zv) {
 PyObject *py2py_scalar(PyObject *pv) {
     if (PyDict_Check(pv) || PySet_Check(pv) || PyList_Check(pv) || PyTuple_Check(pv)) {
         pv = phpy::python::new_array(pv);
+    } else if (PyByteArray_Check(pv) || PyBytes_Check(pv) || PyUnicode_Check(pv)) {
+        pv = phpy::python::new_string(pv);
     } else {
         Py_INCREF(pv);
     }

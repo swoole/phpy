@@ -28,10 +28,10 @@ def test_class_ctor():
     assert items.get(2) == math.pi
 
     d = items.get(3)
-    assert type(d) is dict
-    assert d['swoole'] == 2023
+    assert type(d) is phpy.Array
+    assert d.get('swoole') == 2023
 
     l = items.get(4)
-    assert type(l) is list
-    assert 'swoole' in l
-    assert 2023 in l
+    assert type(l) is phpy.Array
+    assert phpy.call('array_search', 'swoole', l) == 0
+    assert phpy.call('array_search', 2023, l) == 1

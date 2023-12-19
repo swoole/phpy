@@ -4,8 +4,8 @@ import phpy
 
 def test_array():
     rs = phpy.globals('_SERVER')
-    assert type(rs) is dict
-    assert rs['argc'] == 1
+    assert type(rs) is phpy.Array
+    assert rs.get('argc') == 1
 
 
 def test_constant():

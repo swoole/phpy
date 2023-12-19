@@ -70,17 +70,17 @@ static PyObject *Array_get(ZendArray *self, PyObject *args) {
         return NULL;
     }
     if (PyLong_Check(key)) {
-        result = zend_hash_index_find(Z_ARR(self->array), PyLong_AsLong(key));
+        result = phpy::php::array_get(&self->array, PyLong_AsLong(key));
     } else {
         ssize_t l_key;
         auto skey = phpy::python::string2utf8(key, &l_key);
-        result = zend_hash_str_find(Z_ARR(self->array), skey, l_key);
+        result = phpy::php::array_get(&self->array, skey, l_key);
     }
     if (!result) {
         Py_INCREF(Py_None);
         return Py_None;
     }
-    return php2py(result);
+    return php2py_for_cpython(result);
 }
 
 static PyObject *Array_set(ZendArray *self, PyObject *args) {
