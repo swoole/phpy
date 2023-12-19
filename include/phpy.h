@@ -267,6 +267,7 @@ struct CallObject {
 };
 namespace python {
 PyObject *new_array(PyObject *pv);
+PyObject *new_string(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);

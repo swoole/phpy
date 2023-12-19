@@ -20,6 +20,8 @@
 struct ZendString;
 static int String_init(ZendString *self, PyObject *args, PyObject *kwds);
 static PyObject *String_len(ZendString *self, PyObject *args);
+static PyObject *String_bytes(ZendString *self, PyObject *args);
+static PyObject *String_str(ZendString *self);
 static void String_destroy(ZendString *self);
 
 // clang-format off
@@ -30,6 +32,7 @@ struct ZendString {
 
 static PyMethodDef String_methods[] = {
     {"len", (PyCFunction) String_len, METH_NOARGS, "Get string length" },
+    {"__bytes__", (PyCFunction) String_bytes, METH_NOARGS, "Convert to bytes" },
     {NULL}  /* Sentinel */
 };
 
@@ -42,10 +45,18 @@ static int String_init(ZendString *self, PyObject *args, PyObject *kwds) {
     size_t len;
     if (!PyArg_ParseTuple(args, "s#", &str, &len)) {
         PyErr_SetString(PyExc_TypeError, "must supply at least 1 parameter.");
-        return NULL;
+        return -1;
     }
     ZVAL_STRINGL(&self->string, str, len);
     return 0;
+}
+
+static PyObject *String_str(ZendString *self) {
+    return PyUnicode_FromStringAndSize(Z_STRVAL_P(&self->string), Z_STRLEN_P(&self->string));
+}
+
+static PyObject *String_bytes(ZendString *self, PyObject *args) {
+    return PyBytes_FromStringAndSize(Z_STRVAL_P(&self->string), Z_STRLEN_P(&self->string));
 }
 
 static PyObject *String_len(ZendString *self, PyObject *args) {
@@ -62,6 +73,7 @@ bool py_module_string_init(PyObject *m) {
     ZendStringType.tp_basicsize = sizeof(ZendString);
     ZendStringType.tp_itemsize = 0;
     ZendStringType.tp_dealloc = (destructor) String_destroy;
+    ZendStringType.tp_str = (reprfunc) String_str;
     ZendStringType.tp_flags = Py_TPFLAGS_DEFAULT;
     ZendStringType.tp_doc = PyDoc_STR("zend_string");
     ZendStringType.tp_methods = String_methods;
@@ -89,6 +101,12 @@ zval *zend_string_cast(PyObject *pv) {
     return &obj->string;
 }
 
+static void String_dtor(PyObject *pv) {
+    ZendString *self = (ZendString *) pv;
+    zval_ptr_dtor(&self->string);
+    ZVAL_NULL(&self->string);
+}
+
 namespace phpy {
 namespace python {
 PyObject *new_string(PyObject *pv) {
@@ -111,6 +129,13 @@ PyObject *new_string(PyObject *pv) {
             zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TYPE(pv)->tp_name);
         }
     }
+    return (PyObject *)self;
+}
+PyObject *new_string(zval *zv) {
+    ZendString *self = PyObject_New(ZendString, &ZendStringType);
+    self->string = *zv;
+    phpy::php::add_object((PyObject *) self, String_dtor);
+    zval_add_ref(&self->string);
     return (PyObject *)self;
 }
 }

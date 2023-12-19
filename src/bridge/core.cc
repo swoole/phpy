@@ -24,6 +24,10 @@ END_EXTERN_C()
 
 using phpy::CallObject;
 
+static void (*py2php_fn)(PyObject *pv, zval *zv);
+static void py2php_object_impl(PyObject *pv, zval *zv);
+static void py2php_scalar_impl(PyObject *pv, zval *zv);
+
 static bool py2php_base_type(PyObject *pv, zval *zv);
 static void iterator2array(PyObject *pv, zval *zv);
 
@@ -37,7 +41,7 @@ static inline void set2array(PyObject *pv, zval *zv) {
 
 static void dict2array(PyObject *pv, zval *zv);
 
-void py2php(PyObject *pv, zval *zv) {
+static void py2php_object_impl(PyObject *pv, zval *zv) {
     if (py2php_base_type(pv, zv)) {
         return;
     }
@@ -62,7 +66,7 @@ void py2php(PyObject *pv, zval *zv) {
     }
 }
 
-void py2php_scalar(PyObject *pv, zval *zv) {
+static void py2php_scalar_impl(PyObject *pv, zval *zv) {
     if (py2php_base_type(pv, zv)) {
         return;
     }
@@ -73,6 +77,8 @@ void py2php_scalar(PyObject *pv, zval *zv) {
     } else if (PyUnicode_Check(pv)) {
         ZVAL_STR(zv, py2zstr(pv));
     } else if (PyList_Check(pv)) {
+        sequence2array(pv, zv);
+    } else if (PyRange_Check(pv)) {
         sequence2array(pv, zv);
     } else if (PyTuple_Check(pv)) {
         sequence2array(pv, zv);
@@ -85,6 +91,16 @@ void py2php_scalar(PyObject *pv, zval *zv) {
     }
 }
 
+void py2php_scalar(PyObject *pv, zval *zv) {
+    py2php_fn = py2php_scalar_impl;
+    py2php_fn(pv, zv);
+}
+
+void py2php(PyObject *pv, zval *zv) {
+    py2php_fn = py2php_object_impl;
+    py2php_fn(pv, zv);
+}
+
 PyObject *py2py_scalar(PyObject *pv) {
     if (PyDict_Check(pv) || PySet_Check(pv) || PyList_Check(pv) || PyTuple_Check(pv)) {
         pv = phpy::python::new_array(pv);
@@ -95,6 +111,7 @@ PyObject *py2py_scalar(PyObject *pv) {
 }
 
 void object2array(PyObject *pv, zval *zv) {
+    py2php_fn = py2php_object_impl;
     if (PyDict_Check(pv)) {
         dict2array(pv, zv);
     } else {
@@ -152,7 +169,7 @@ static bool py2php_base_type(PyObject *pv, zval *zv) {
     } else if (ZendResource_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
     } else if (ZendString_Check(pv)) {
-        ZVAL_COPY(zv, zend_array_cast(pv));
+        ZVAL_COPY(zv, zend_string_cast(pv));
     } else if (ZendArray_Check(pv)) {
         ZVAL_COPY(zv, zend_array_cast(pv));
     } else {
@@ -190,7 +207,7 @@ static void iterator2array(PyObject *pv, zval *zv) {
             break;
         }
         zval item;
-        py2php(next, &item);
+        py2php_fn(next, &item);
         add_next_index_zval(zv, &item);
     }
     Py_DECREF(iter);
@@ -214,7 +231,7 @@ PyObject *array2dict(zend_array *ht) {
     return dict;
 }
 
-void dict2array(PyObject *pv, zval *zv) {
+static void dict2array(PyObject *pv, zval *zv) {
     PyObject *iter = PyObject_GetIter(pv);
     array_init(zv);
     while (true) {
@@ -224,7 +241,7 @@ void dict2array(PyObject *pv, zval *zv) {
         }
         auto value = PyDict_GetItem(pv, next);
         zval item;
-        py2php(value, &item);
+        py2php_fn(value, &item);
 
         ssize_t len;
         const char *key = phpy::python::string2utf8(next, &len);

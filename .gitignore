@@ -38,4 +38,13 @@ __pycache__
 config.h.in~
 configure~
 run-tests.php
+missing
+mkinstalldirs
+Makefile.global
+ltmain.sh
+install-sh
+configure.in
+acinclude.m4
+config.guess
+config.sub
 
