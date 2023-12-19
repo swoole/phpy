@@ -43,6 +43,12 @@ static PyTypeObject ZendArrayType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 //  clang-format on
 
+static void Array_dtor(PyObject *pv) {
+    ZendArray *self = (ZendArray *) pv;
+    zval_ptr_dtor(&self->array);
+    ZVAL_NULL(&self->array);
+}
+
 static int Array_init(ZendArray *self, PyObject *args, PyObject *kwds) {
     PyObject *pv = NULL;
     if (!PyArg_ParseTuple(args, "|O", &pv)) {
@@ -53,6 +59,7 @@ static int Array_init(ZendArray *self, PyObject *args, PyObject *kwds) {
     } else {
         array_init(&self->array);
     }
+    phpy::php::add_object((PyObject *)self, Array_dtor);
     return 0;
 }
 
@@ -124,6 +131,7 @@ static PyObject *Array_count(ZendArray *self, PyObject *args) {
 static void Array_destroy(ZendArray *self) {
     zval_ptr_dtor(&self->array);
     Py_TYPE(self)->tp_free((PyObject*) self);
+    phpy::php::del_object((PyObject *)self);
 }
 
 bool py_module_array_init(PyObject *m) {

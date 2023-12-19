@@ -40,6 +40,12 @@ static PyTypeObject ZendStringType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 //  clang-format on
 
+static void String_dtor(PyObject *pv) {
+    ZendString *self = (ZendString *) pv;
+    zval_ptr_dtor(&self->string);
+    ZVAL_NULL(&self->string);
+}
+
 static int String_init(ZendString *self, PyObject *args, PyObject *kwds) {
     const char *str;
     size_t len;
@@ -48,6 +54,7 @@ static int String_init(ZendString *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
     ZVAL_STRINGL(&self->string, str, len);
+    phpy::php::add_object((PyObject *)self, String_dtor);
     return 0;
 }
 
@@ -66,6 +73,7 @@ static PyObject *String_len(ZendString *self, PyObject *args) {
 static void String_destroy(ZendString *self) {
     zval_ptr_dtor(&self->string);
     Py_TYPE(self)->tp_free((PyObject*) self);
+    phpy::php::del_object((PyObject *)self);
 }
 
 bool py_module_string_init(PyObject *m) {
@@ -99,12 +107,6 @@ bool ZendString_Check(PyObject *pv) {
 zval *zend_string_cast(PyObject *pv) {
     ZendString *obj = (ZendString *) pv;
     return &obj->string;
-}
-
-static void String_dtor(PyObject *pv) {
-    ZendString *self = (ZendString *) pv;
-    zval_ptr_dtor(&self->string);
-    ZVAL_NULL(&self->string);
 }
 
 namespace phpy {
