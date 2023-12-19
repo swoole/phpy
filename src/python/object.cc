@@ -128,7 +128,7 @@ static PyObject *Object_get(ZendObject *self, PyObject *args) {
         return NULL;
     }
     zval rv;
-    return php2py(zend_read_property(Z_OBJCE(self->object), Z_OBJ(self->object), name, l_name, 0, &rv));
+    RETURN_PYOBJ(zend_read_property(Z_OBJCE(self->object), Z_OBJ(self->object), name, l_name, 0, &rv));
 }
 
 static PyObject *Object_set(ZendObject *self, PyObject *args) {
@@ -156,7 +156,9 @@ zval *zend_object_cast(PyObject *pv) {
     return &obj->object;
 }
 
-PyObject *object2py(zval *zv) {
+namespace phpy {
+namespace python {
+PyObject *new_object(zval *zv) {
     if (instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce())) {
         PyObject *obj = phpy_object_get_handle(zv);
         Py_INCREF(obj);
@@ -169,6 +171,8 @@ PyObject *object2py(zval *zv) {
         return (PyObject *) obj;
     }
 }
+}  // namespace python
+}  // namespace phpy
 
 PyObject *object_create(zend_class_entry *ce, PyObject *args, uint32_t argc, int begin) {
     ZendObject *obj = PyObject_New(ZendObject, &ZendObjectType);

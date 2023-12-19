@@ -94,6 +94,7 @@ void long2long(PyObject *pv, zval *zv);
  * Type conversion, PHP to Python
  */
 PyObject *php2py(zval *zv);
+PyObject *php2py_for_cpython(zval *zv);
 /**
  * Python to Python, Convert actual value to PHP scalar type as much as possible
  */
@@ -108,7 +109,6 @@ static inline PyObject *array2set(zval *zv) {
     return array2set(Z_ARRVAL_P(zv));
 }
 PyObject *resource2py(zval *zres);
-PyObject *object2py(zval *zv);
 PyObject *reference2py(zval *zv);
 PyObject *array2dict(zend_array *ht);
 PyObject *string2py(zend_string *zv);
@@ -178,7 +178,7 @@ bool phpy_object_iterator_valid(zval *object);
 uint32_t phpy_object_iterator_index(zval *object);
 
 #define RETURN_PYOBJ(retval)                                                                                           \
-    PyObject *pyobj = php2py(retval);                                                                                  \
+    PyObject *pyobj = php2py_for_cpython(retval);                                                                      \
     zval_ptr_dtor(retval);                                                                                             \
     return pyobj;
 
@@ -266,8 +266,12 @@ struct CallObject {
     void call();
 };
 namespace python {
+PyObject *new_array(zval *zv);
 PyObject *new_array(PyObject *pv);
 PyObject *new_string(zval *zv);
+PyObject *new_object(zval *zv);
+PyObject *new_resource(zval *zv);
+PyObject *new_reference(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);

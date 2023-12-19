@@ -38,13 +38,18 @@ static void Resource_dtor(PyObject *pv) {
     ZVAL_NULL(&self->resource);
 }
 
-PyObject* resource2py(zval *zv) {
+namespace phpy {
+namespace python {
+PyObject* new_resource(zval *zv) {
     ZendResource *pyobj = PyObject_New(ZendResource, &ZendResourceType);
     pyobj->resource = *zv;
     phpy::php::add_object((PyObject *)pyobj, Resource_dtor);
     zval_add_ref(&pyobj->resource);
     return (PyObject*) pyobj;
 }
+}  // namespace python
+}  // namespace phpy
+
 
 zval *zend_resource_cast(PyObject *pv) {
     ZendResource *obj = (ZendResource *) pv;

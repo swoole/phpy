@@ -21,6 +21,7 @@ struct ZendString;
 static int String_init(ZendString *self, PyObject *args, PyObject *kwds);
 static PyObject *String_len(ZendString *self, PyObject *args);
 static PyObject *String_bytes(ZendString *self, PyObject *args);
+static PyObject *String_compare(PyObject *o1, PyObject *o2, int op);
 static PyObject *String_str(ZendString *self);
 static void String_destroy(ZendString *self);
 
@@ -66,6 +67,37 @@ static PyObject *String_bytes(ZendString *self, PyObject *args) {
     return PyBytes_FromStringAndSize(Z_STRVAL_P(&self->string), Z_STRLEN_P(&self->string));
 }
 
+static PyObject* String_compare(PyObject *o1, PyObject *o2, int op) {
+    if (op != Py_EQ) {
+        Py_RETURN_NOTIMPLEMENTED;
+    }
+    bool equals;
+    zval *z1 = zend_string_cast(o1);
+    if (ZendString_Check(o2)) {
+        zval *z2 = zend_string_cast(o2);
+        equals = zend_string_equal_content(Z_STR_P(z1), Z_STR_P(z2));
+    } else if (PyByteArray_Check(o2)) {
+        const char *val = PyByteArray_AS_STRING(o2);
+        size_t len = PyByteArray_GET_SIZE(o2);
+        equals = (len == Z_STRLEN_P(z1) && memcmp(Z_STRVAL_P(z1), val, len) == 0);
+    } else if (PyBytes_Check(o2)) {
+        const char *val = PyBytes_AS_STRING(o2);
+        size_t len = PyBytes_GET_SIZE(o2);
+        equals = (len == Z_STRLEN_P(z1) && memcmp(Z_STRVAL_P(z1), val, len) == 0);
+    } else if (PyUnicode_Check(o2)) {
+        Py_ssize_t len;
+        const char *val = PyUnicode_AsUTF8AndSize(o2, &len);
+        equals = (len == (Py_ssize_t) Z_STRLEN_P(z1) && memcmp(Z_STRVAL_P(z1), val, len) == 0);
+    } else {
+        Py_RETURN_NOTIMPLEMENTED;
+    }
+    if (equals) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
 static PyObject *String_len(ZendString *self, PyObject *args) {
     return PyLong_FromLong(Z_STRLEN_P(&self->string));
 }
@@ -84,6 +116,7 @@ bool py_module_string_init(PyObject *m) {
     ZendStringType.tp_str = (reprfunc) String_str;
     ZendStringType.tp_flags = Py_TPFLAGS_DEFAULT;
     ZendStringType.tp_doc = PyDoc_STR("zend_string");
+    ZendStringType.tp_richcompare = (richcmpfunc) String_compare;
     ZendStringType.tp_methods = String_methods;
     ZendStringType.tp_init = (initproc) String_init;
     ZendStringType.tp_new = PyType_GenericNew;

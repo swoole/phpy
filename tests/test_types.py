@@ -47,11 +47,13 @@ def test_return_object():
 
 def test_return_string():
     m1 = phpy.call('memory_get_usage')
+    total = 0
     for i in range(1, 20):
         s = phpy.call('str_repeat', 'A', 1024 * i)
+        total += 1024 * i
         assert s == 'A' * (1024 * i)
     m2 = phpy.call('memory_get_usage')
-    assert m2 == m1
+    assert m2 - m1 < total
 
 
 def test_new_object():

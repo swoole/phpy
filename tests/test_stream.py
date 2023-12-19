@@ -20,5 +20,5 @@ def test_stream_client_baidu():
     assert errstr.get() == ''
 
     phpy.call('fwrite', rs, "GET / HTTP/1.0\r\nHost: www.baidu.com\r\nAccept: */*\r\n\r\n")
-    content = phpy.call('fread', rs, 8192)
+    content = str(phpy.call('fread', rs, 8192))
     assert content.find('百度搜索') != -1

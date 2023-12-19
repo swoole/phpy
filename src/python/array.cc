@@ -168,10 +168,18 @@ zval *zend_array_cast(PyObject *pv) {
 
 namespace phpy {
 namespace python {
+PyObject *new_array(zval *zv) {
+    ZendArray *self = PyObject_New(ZendArray, &ZendArrayType);
+    self->array = *zv;
+    phpy::php::add_object((PyObject *) self, Array_dtor);
+    zval_add_ref(&self->array);
+    return (PyObject *)self;
+}
 PyObject *new_array(PyObject *pv) {
-    ZendArray *array = PyObject_New(ZendArray, &ZendArrayType);
-    object2array(pv, &array->array);
-    return (PyObject *)array;
+    ZendArray *self = PyObject_New(ZendArray, &ZendArrayType);
+    object2array(pv, &self->array);
+    phpy::php::add_object((PyObject *) self, Array_dtor);
+    return (PyObject *)self;
 }
 }
 }

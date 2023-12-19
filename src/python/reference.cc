@@ -92,8 +92,11 @@ zval *zend_reference_cast(PyObject *pv) {
     return &obj->reference;
 }
 
-PyObject *reference2py(zval *zv) {
+namespace phpy {
+namespace python {
+PyObject *new_reference(zval *zv) {
     auto pyobj = php2py(Z_REFVAL_P(zv));
     phpy::php::add_object((PyObject *)pyobj, Reference_dtor);
     return pyobj;
 }
+}}

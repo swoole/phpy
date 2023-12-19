@@ -18,7 +18,7 @@ def test_assoc_array():
     uuid = phpy.call("uniqid")
     d = phpy.Array({"hello": "world", "php": "swoole", "uuid": uuid})
     assert d.count() == 3
-    assert d.get("uuid") == uuid
+    assert d.get("uuid") == str(uuid)
     assert d.get("php") == "swoole"
     assert d.unset("php")
     assert d.unset("php") == False
