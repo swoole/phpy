@@ -261,7 +261,9 @@ std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS, zend_clas
 static inline uint32_t array_count(zval *zv) {
     return zend_array_count(Z_ARRVAL_P(zv));
 }
-
+/**
+ * Return value: New reference.
+ */
 static inline zend_result call_fn(
     zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval *params) {
     zend_result result = FAILURE;
