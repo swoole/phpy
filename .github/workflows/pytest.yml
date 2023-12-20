@@ -37,4 +37,5 @@ jobs:
           make -j $(nproc)
       - name: Run pytest tests
         run: |
+          pip install pytest
           pytest -v tests/
