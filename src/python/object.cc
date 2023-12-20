@@ -141,6 +141,7 @@ static PyObject *Object_set(ZendObject *self, PyObject *args) {
     zval rv;
     py2php(value, &rv);
     zend_update_property(Z_OBJCE(self->object), Z_OBJ(self->object), name, l_name, &rv);
+    zval_ptr_dtor(&rv);
 
     Py_INCREF(Py_None);
     return Py_None;
