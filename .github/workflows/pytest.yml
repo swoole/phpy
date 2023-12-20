@@ -37,6 +37,6 @@ jobs:
           make -j $(nproc)
       - name: Run pytest tests
         run: |
-          service redis-server start
+          sudo service redis-server start
           pip install pytest
           pytest -v tests/
