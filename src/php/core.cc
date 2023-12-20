@@ -266,3 +266,28 @@ ZEND_METHOD(PyCore, __callStatic) {
     CallObject caller(fn, return_value, arguments);
     caller.call();
 }
+
+ZEND_METHOD(PyCore, bytes) {
+    zval *zv = NULL;
+
+    ZEND_PARSE_PARAMETERS_START(0, 1)
+    Z_PARAM_OPTIONAL
+    Z_PARAM_ZVAL(zv)
+    ZEND_PARSE_PARAMETERS_END_EX(return );
+
+    PyObject *pv;
+    if (zv == NULL || ZVAL_IS_NULL(zv)) {
+        pv = PyBytes_FromStringAndSize("", 0);
+    } else if (Z_TYPE_P(zv) == IS_STRING) {
+        pv = PyBytes_FromStringAndSize(Z_STRVAL_P(zv), Z_STRLEN_P(zv));
+    } else if (Z_TYPE_P(zv) == IS_OBJECT && instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce())) {
+        auto pyobj = phpy_object_get_handle(zv);
+        pv = PyBytes_FromObject(pyobj);
+    } else {
+        auto s = zval_get_string(zv);
+        pv = PyBytes_FromStringAndSize(Z_STRVAL_P(zv), Z_STRLEN_P(zv));
+        zend_string_release(s);
+    }
+    phpy::php::new_object(return_value, pv);
+    Py_DECREF(pv);
+}

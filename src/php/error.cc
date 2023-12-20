@@ -31,6 +31,7 @@ void new_error(zval *zv, PyObject *error) {
     zval zerror;
     new_object(&zerror, error);
     zend_update_property(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("error"), &zerror);
+    zval_ptr_dtor(&zerror);
 
     PyObject *ptype, *pvalue, *ptraceback;
     PyErr_Fetch(&ptype, &pvalue, &ptraceback);
@@ -38,6 +39,7 @@ void new_error(zval *zv, PyObject *error) {
         zval zvalue;
         new_object(&zvalue, pvalue);
         zend_update_property(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("value"), &zvalue);
+        zval_ptr_dtor(&zvalue);
 
         PyObject *pstr = PyObject_Str(pvalue);
         if (pstr) {
@@ -50,11 +52,13 @@ void new_error(zval *zv, PyObject *error) {
         zval ztype;
         new_object(&ztype, ptype);
         zend_update_property(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("type"), &ztype);
+        zval_ptr_dtor(&ztype);
     }
     if (ptraceback) {
         zval ztraceback;
         new_object(&ztraceback, ptraceback);
         zend_update_property(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("traceback"), &ztraceback);
+        zval_ptr_dtor(&ztraceback);
     }
 }
 

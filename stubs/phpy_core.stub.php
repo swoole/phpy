@@ -26,6 +26,11 @@ class PyCore
 
     }
 
+    public static function bytes(mixed $value = null): PyObject
+    {
+
+    }
+
     public static function fn(callable $cb): PyObject
     {
 

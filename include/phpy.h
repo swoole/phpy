@@ -168,7 +168,13 @@ zend_class_entry *phpy_iter_get_ce();
 zend_class_entry *phpy_dict_get_ce();
 
 void phpy_object_ctor(zval *zobject, PyObject *object);
+/**
+ * Return value: Borrowed reference.
+ */
 PyObject *phpy_object_get_handle(zval *zobject);
+/**
+ * Return value: Borrowed reference.
+ */
 PyObject *phpy_object_get_handle(zend_object *object);
 
 void phpy_object_iterator_reset(zval *object);
