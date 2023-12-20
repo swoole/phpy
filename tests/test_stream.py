@@ -7,7 +7,7 @@ def test_stream_client():
     errstr = phpy.Reference()
     rs = phpy.call("stream_socket_client", 'tcp://127.0.0.1:9999', errno, errstr, 30)
     assert rs is False
-    assert errno.get() == phpy.constant('SOCKET_ECONNREFUSED')
+    assert errno.get() == 111
     assert errstr.get() == 'Connection refused'
 
 
