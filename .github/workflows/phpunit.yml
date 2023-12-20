@@ -5,6 +5,8 @@ on: [ push, pull_request ]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PHP_VERSION: ${{ matrix.php }}
     strategy:
       fail-fast: false
       matrix:
@@ -37,7 +39,7 @@ jobs:
           ./configure --with-python-config=python3-config
           make -j $(nproc)
           sudo make install
-          sudo sh -c "echo 'extension=phpy.so' > /etc/php/8.0/cli/conf.d/90-phpy.ini"
+          sudo sh -c "echo 'extension=phpy.so' > /etc/php/${PHP_VERSION}/cli/conf.d/90-phpy.ini"
           php --ri phpy
       - name: Run phpunit tests
         run: |
