@@ -31,7 +31,6 @@ jobs:
           php --ini
           ls -al
           pwd
-          php-config
       - name: Build
         run: |
           cmake .
