@@ -14,12 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install deps
-        run: sudo apt update -y && sudo apt install -y libcurl4-openssl-dev php-curl libc-ares-dev python3 python3-dev cmake
+        run: sudo apt update -y && sudo apt install -y libcurl4-openssl-dev libc-ares-dev python3 python3-dev cmake redis-server
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php }}"
-          extensions: embed
+          extensions: embed, curl, redis
           coverage: none
       - name: Show machine information
         run: |
@@ -37,5 +37,6 @@ jobs:
           make -j $(nproc)
       - name: Run pytest tests
         run: |
+          service redis-server start
           pip install pytest
           pytest -v tests/
