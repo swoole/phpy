@@ -29,7 +29,7 @@ jobs:
           php -v
           php --ini
           ls -al
-          ldconfig
+          sudo ldconfig
           ldconfig -p
           pwd
           php-config
