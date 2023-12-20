@@ -1,4 +1,4 @@
-name: lib-swoole
+name: phpunit
 
 on: [ push, pull_request ]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '8.0', '8.1', '8.2', '8.3' ]
+        php: [ '8.1', '8.2', '8.3' ]
     steps:
       - uses: actions/checkout@v4
       - name: install-deps
@@ -33,10 +33,11 @@ jobs:
       - name: Build
         run: |
           phpize
-          configure --with-python-config=python3-config
+          ./configure --with-python-config=python3-config
           make -j $(nproc)
           make install
-
+          echo "extension=phpy.so" > /etc/php/8.0/cli/conf.d/90-phpy.ini
+          php --ri phpy
       - name: Run phpunit test
         run: |
           composer install
