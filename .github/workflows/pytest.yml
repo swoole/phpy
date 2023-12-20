@@ -29,8 +29,10 @@ jobs:
           php -v
           php --ini
           ls -al
+          ldconfig
           ldconfig -p
           pwd
+          php-config
           echo "`git log -20 --pretty --oneline`"
           echo "`git log -10 --stat --pretty --oneline`"
       - name: Build
