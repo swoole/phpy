@@ -149,7 +149,7 @@ ZEND_METHOD(PyCore, fn) {
     Z_PARAM_ZVAL(zv)
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
-    PyObject *pv = callable2py(zv);
+    PyObject *pv = phpy::python::new_callable(zv);
     phpy::php::new_fn(return_value, pv);
     Py_DECREF(pv);
 }

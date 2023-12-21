@@ -36,7 +36,7 @@ static PyMethodDef Reference_methods[] = {
 
 static PyTypeObject ZendReferenceType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
-//  clang-format on
+// clang-format on
 
 static int Reference_init(ZendReference *self, PyObject *args, PyObject *kwds) {
     ZVAL_NEW_REF(&self->reference, &self->value);
@@ -57,7 +57,7 @@ static PyObject *Reference_get(ZendReference *self, PyObject *args) {
 
 static void Reference_destroy(ZendReference *self) {
     zval_ptr_dtor(&self->reference);
-    Py_TYPE(self)->tp_free((PyObject*) self);
+    Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
 bool py_module_reference_init(PyObject *m) {
@@ -96,7 +96,8 @@ namespace phpy {
 namespace python {
 PyObject *new_reference(zval *zv) {
     auto pyobj = php2py(Z_REFVAL_P(zv));
-    phpy::php::add_object((PyObject *)pyobj, Reference_dtor);
+    phpy::php::add_object((PyObject *) pyobj, Reference_dtor);
     return pyobj;
 }
-}}
+}  // namespace python
+}  // namespace phpy

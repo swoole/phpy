@@ -39,7 +39,7 @@ static PyMethodDef String_methods[] = {
 
 static PyTypeObject ZendStringType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
-//  clang-format on
+// clang-format on
 
 static void String_dtor(PyObject *pv) {
     ZendString *self = (ZendString *) pv;
@@ -55,7 +55,7 @@ static int String_init(ZendString *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
     ZVAL_STRINGL(&self->string, str, len);
-    phpy::php::add_object((PyObject *)self, String_dtor);
+    phpy::php::add_object((PyObject *) self, String_dtor);
     return 0;
 }
 
@@ -67,7 +67,7 @@ static PyObject *String_bytes(ZendString *self, PyObject *args) {
     return PyBytes_FromStringAndSize(Z_STRVAL_P(&self->string), Z_STRLEN_P(&self->string));
 }
 
-static PyObject* String_compare(PyObject *o1, PyObject *o2, int op) {
+static PyObject *String_compare(PyObject *o1, PyObject *o2, int op) {
     if (op != Py_EQ) {
         Py_RETURN_NOTIMPLEMENTED;
     }
@@ -104,8 +104,8 @@ static PyObject *String_len(ZendString *self, PyObject *args) {
 
 static void String_destroy(ZendString *self) {
     zval_ptr_dtor(&self->string);
-    Py_TYPE(self)->tp_free((PyObject*) self);
-    phpy::php::del_object((PyObject *)self);
+    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::php::del_object((PyObject *) self);
 }
 
 bool py_module_string_init(PyObject *m) {
@@ -164,14 +164,14 @@ PyObject *new_string(PyObject *pv) {
             zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TYPE(pv)->tp_name);
         }
     }
-    return (PyObject *)self;
+    return (PyObject *) self;
 }
 PyObject *new_string(zval *zv) {
     ZendString *self = PyObject_New(ZendString, &ZendStringType);
     self->string = *zv;
     phpy::php::add_object((PyObject *) self, String_dtor);
     zval_add_ref(&self->string);
-    return (PyObject *)self;
+    return (PyObject *) self;
 }
-}
-}
+}  // namespace python
+}  // namespace phpy

@@ -16,6 +16,7 @@
  */
 
 #include "phpy.h"
+#include "zend_closures.h"
 
 #define CTOR_NAME "__construct"
 
@@ -24,6 +25,7 @@ static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds);
 static PyObject *Object_call(ZendObject *self, PyObject *args);
 static PyObject *Object_get(ZendObject *self, PyObject *args);
 static PyObject *Object_set(ZendObject *self, PyObject *args);
+static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds);
 static void Object_destroy(ZendObject *self);
 
 // clang-format off
@@ -121,6 +123,24 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
     RETURN_PYOBJ(&retval);
 }
 
+static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds) {
+    zval retval;
+    Py_ssize_t argc = PyTuple_Size(args);
+    zval *argv = new zval[argc];
+    phpy::python::tuple2argv(argv, args, argc, 0);
+    zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv);
+    ON_SCOPE_EXIT {
+        zval_ptr_dtor(&retval);
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
+    };
+    if (result == FAILURE) {
+        PyErr_Format(PyExc_TypeError, "'%s' zend_object is not callable", ZSTR_VAL(Z_OBJCE(self->object)->name));
+        return NULL;
+    }
+    RETURN_PYOBJ(&retval);
+}
+
 static PyObject *Object_get(ZendObject *self, PyObject *args) {
     char *name;
     size_t l_name;
@@ -159,7 +179,9 @@ zval *zend_object_cast(PyObject *pv) {
 namespace phpy {
 namespace python {
 PyObject *new_object(zval *zv) {
-    if (instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce())) {
+    if (instanceof_function(Z_OBJCE_P(zv), zend_ce_closure)) {
+        return new_callable(zv);
+    } else if (instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce())) {
         PyObject *obj = phpy_object_get_handle(zv);
         Py_INCREF(obj);
         return obj;
@@ -211,6 +233,7 @@ bool py_module_object_init(PyObject *m) {
     ZendObjectType.tp_basicsize = sizeof(ZendObject);
     ZendObjectType.tp_itemsize = 0;
     ZendObjectType.tp_dealloc = (destructor) Object_destroy;
+    ZendObjectType.tp_call = (ternaryfunc) Object_invoke;
     ZendObjectType.tp_flags = Py_TPFLAGS_DEFAULT;
     ZendObjectType.tp_doc = PyDoc_STR("zend_object");
     ZendObjectType.tp_methods = Object_methods;

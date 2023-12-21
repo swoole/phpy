@@ -261,7 +261,7 @@ static PyObject *array2py(zval *zv) {
     }
 }
 
-PyObject *php2py(zval *zv) {
+static inline PyObject *php2py_base_type(zval *zv) {
     switch (Z_TYPE_P(zv)) {
     case IS_NULL:
         Py_INCREF(Py_None);
@@ -276,10 +276,6 @@ PyObject *php2py(zval *zv) {
         return PyLong_FromLong(Z_LVAL_P(zv));
     case IS_DOUBLE:
         return PyFloat_FromDouble(Z_DVAL_P(zv));
-    case IS_STRING:
-        return string2py(zv);
-    case IS_ARRAY:
-        return array2py(zv);
     case IS_OBJECT:
         return phpy::python::new_object(zv);
     case IS_RESOURCE:
@@ -287,35 +283,35 @@ PyObject *php2py(zval *zv) {
     case IS_REFERENCE:
         return phpy::python::new_reference(zv);
     default:
+        return NULL;
+    }
+}
+
+PyObject *php2py(zval *zv) {
+    PyObject *pv = php2py_base_type(zv);
+    if (pv != NULL) {
+        return pv;
+    }
+    switch (Z_TYPE_P(zv)) {
+    case IS_STRING:
+        return string2py(zv);
+    case IS_ARRAY:
+        return array2py(zv);
+    default:
         return PyErr_Format(PyExc_TypeError, "[php2py] Unsupported php type[%d]", Z_TYPE_P(zv));
     }
 }
 
 PyObject *php2py_object(zval *zv) {
+    PyObject *pv = php2py_base_type(zv);
+    if (pv != NULL) {
+        return pv;
+    }
     switch (Z_TYPE_P(zv)) {
-    case IS_NULL:
-        Py_INCREF(Py_None);
-        return Py_None;
-    case IS_TRUE:
-        Py_INCREF(Py_True);
-        return Py_True;
-    case IS_FALSE:
-        Py_INCREF(Py_False);
-        return Py_False;
-    case IS_LONG:
-        return PyLong_FromLong(Z_LVAL_P(zv));
-    case IS_DOUBLE:
-        return PyFloat_FromDouble(Z_DVAL_P(zv));
     case IS_STRING:
         return phpy::python::new_string(zv);
     case IS_ARRAY:
         return phpy::python::new_array(zv);
-    case IS_OBJECT:
-        return phpy::python::new_object(zv);
-    case IS_RESOURCE:
-        return phpy::python::new_resource(zv);
-    case IS_REFERENCE:
-        return phpy::python::new_reference(zv);
     default:
         return PyErr_Format(PyExc_TypeError, "[php2py] Unsupported php type[%d]", Z_TYPE_P(zv));
     }

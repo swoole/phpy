@@ -29,7 +29,7 @@ struct ZendCallable {
 
 static PyTypeObject ZendCallableType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
-//  clang-format on
+// clang-format on
 
 static void Callable_dtor(PyObject *pv) {
     ZendCallable *self = (ZendCallable *) pv;
@@ -37,13 +37,17 @@ static void Callable_dtor(PyObject *pv) {
     ZVAL_NULL(&self->callable);
 }
 
-PyObject* callable2py(zval *zv) {
+namespace phpy {
+namespace python {
+PyObject *new_callable(zval *zv) {
     ZendCallable *cb = PyObject_New(ZendCallable, &ZendCallableType);
     cb->callable = *zv;
     zval_add_ref(&cb->callable);
-    phpy::php::add_object((PyObject *)cb, Callable_dtor);
-    return (PyObject *)cb;
+    phpy::php::add_object((PyObject *) cb, Callable_dtor);
+    return (PyObject *) cb;
 }
+}  // namespace python
+}  // namespace phpy
 
 zval *zend_callable_cast(PyObject *pv) {
     ZendCallable *obj = (ZendCallable *) pv;
@@ -56,8 +60,8 @@ bool ZendCallable_Check(PyObject *pv) {
 
 static void Callable_dealloc(ZendCallable *self) {
     zval_ptr_dtor(&self->callable);
-    phpy::php::del_object((PyObject *)self);
-    Py_TYPE(self)->tp_free((PyObject*) self);
+    phpy::php::del_object((PyObject *) self);
+    Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
 static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwds) {
@@ -67,7 +71,7 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     phpy::python::tuple2argv(argv, args, TupleSize, 0);
     ON_SCOPE_EXIT {
         phpy::python::release_argv(argc, argv);
-        delete []argv;
+        delete[] argv;
     };
 
     zval retval;
