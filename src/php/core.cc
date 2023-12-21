@@ -115,6 +115,21 @@ ZEND_METHOD(PyCore, int) {
     Py_DECREF(pv);
 }
 
+ZEND_METHOD(PyCore, object) {
+    zval *zv = NULL;
+
+    ZEND_PARSE_PARAMETERS_START(0, 1)
+    Z_PARAM_OPTIONAL
+    Z_PARAM_ZVAL(zv)
+    ZEND_PARSE_PARAMETERS_END_EX(return );
+
+    if (zv == NULL || ZVAL_IS_NULL(zv)) {
+        phpy::php::call_builtin_fn(ZEND_STRL("object"), nullptr, return_value);
+    } else {
+        phpy::php::new_object(return_value, php2py_object(zv));
+    }
+}
+
 ZEND_METHOD(PyCore, float) {
     zval *zv;
 
@@ -228,6 +243,24 @@ void add_object(PyObject *pv, void (*dtor)(PyObject *)) {
 void del_object(PyObject *pv) {
     zend_objects.erase(pv);
 }
+void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *return_value) {
+    auto fn_iter = builtin_functions.find(name);
+    PyObject *fn;
+    if (fn_iter == builtin_functions.end()) {
+        fn = PyObject_GetAttrString(module_builtins, name);
+        if (!fn || !PyCallable_Check(fn)) {
+            PyErr_Print();
+            zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
+            return;
+        }
+        builtin_functions[name] = fn;
+    } else {
+        fn = fn_iter->second;
+    }
+
+    CallObject caller(fn, return_value, arguments);
+    caller.call();
+}
 }  // namespace php
 }  // namespace phpy
 
@@ -249,22 +282,7 @@ ZEND_METHOD(PyCore, __callStatic) {
     Z_PARAM_ARRAY(arguments)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    auto fn_iter = builtin_functions.find(name);
-    PyObject *fn;
-    if (fn_iter == builtin_functions.end()) {
-        fn = PyObject_GetAttrString(module_builtins, name);
-        if (!fn || !PyCallable_Check(fn)) {
-            PyErr_Print();
-            zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
-            return;
-        }
-        builtin_functions[name] = fn;
-    } else {
-        fn = fn_iter->second;
-    }
-
-    CallObject caller(fn, return_value, arguments);
-    caller.call();
+    phpy::php::call_builtin_fn(name, l_name, arguments, return_value);
 }
 
 ZEND_METHOD(PyCore, bytes) {

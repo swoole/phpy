@@ -141,7 +141,7 @@ static PyObject *phpy_globals(PyObject *self, PyObject *args) {
         Py_INCREF(Py_None);
         return Py_None;
     }
-    return php2py_for_cpython(var);
+    return php2py_object(var);
 }
 
 static PyObject *phpy_eval(PyObject *self, PyObject *args) {

@@ -4,6 +4,10 @@
  * @generate-function-entries
  */
 
+/**
+ * @method static print(PyObject $o)
+ * @method static exec(string $code, $global=null, $locals=null)
+ */
 class PyCore
 {
     public static function import(string $name): mixed
@@ -27,6 +31,11 @@ class PyCore
     }
 
     public static function bytes(mixed $value = null): PyObject
+    {
+
+    }
+
+    public static function object(mixed $value = null): PyObject
     {
 
     }

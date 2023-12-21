@@ -94,7 +94,10 @@ void long2long(PyObject *pv, zval *zv);
  * Type conversion, PHP to Python
  */
 PyObject *php2py(zval *zv);
-PyObject *php2py_for_cpython(zval *zv);
+/**
+ * PHP to Python, Convert actual value to python object type as much as possible
+ */
+PyObject *php2py_object(zval *zv);
 /**
  * Python to Python, Convert actual value to PHP scalar type as much as possible
  */
@@ -184,7 +187,7 @@ bool phpy_object_iterator_valid(zval *object);
 uint32_t phpy_object_iterator_index(zval *object);
 
 #define RETURN_PYOBJ(retval)                                                                                           \
-    PyObject *pyobj = php2py_for_cpython(retval);                                                                      \
+    PyObject *pyobj = php2py_object(retval);                                                                           \
     zval_ptr_dtor(retval);                                                                                             \
     return pyobj;
 
@@ -225,6 +228,7 @@ void new_error(zval *zv, PyObject *error);
 
 void add_object(PyObject *pv, void (*)(PyObject *));
 void del_object(PyObject *pv);
+void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *return_value);
 
 void throw_error(PyObject *error);
 
@@ -283,7 +287,7 @@ static inline zend_result call_fn(
 struct CallObject {
     PyObject *args = nullptr;
     PyObject *kwargs = nullptr;
-    uint32_t argc;
+    uint32_t argc = 0;
     PyObject *fn;
     zval *return_value;
     CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval *_argv, zend_array *_kwargs);

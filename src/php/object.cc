@@ -178,8 +178,19 @@ void phpy_object_ctor(zval *zobject, PyObject *object) {
 }
 
 ZEND_METHOD(PyObject, __construct) {
-    phpy_object_get_object(ZEND_THIS)->object = Py_None;
-    Py_INCREF(Py_None);
+    zval *zv;
+
+    ZEND_PARSE_PARAMETERS_START(0, 1)
+    Z_PARAM_OPTIONAL
+    Z_PARAM_ZVAL(zv)
+    ZEND_PARSE_PARAMETERS_END_EX(return );
+
+    if (zv == NULL) {
+        phpy_object_get_object(ZEND_THIS)->object = Py_None;
+        Py_INCREF(Py_None);
+    } else {
+        phpy_object_get_object(ZEND_THIS)->object = php2py_object(zv);
+    }
 }
 
 ZEND_METHOD(PyObject, __call) {
@@ -257,7 +268,7 @@ ZEND_METHOD(PyObject, __toString) {
 }
 
 ZEND_METHOD(PyObject, __invoke) {
-    int argc;
+    int argc = 0;
     zval *argv = NULL;
     HashTable *kwargs;
 

@@ -291,7 +291,7 @@ PyObject *php2py(zval *zv) {
     }
 }
 
-PyObject *php2py_for_cpython(zval *zv) {
+PyObject *php2py_object(zval *zv) {
     switch (Z_TYPE_P(zv)) {
     case IS_NULL:
         Py_INCREF(Py_None);
@@ -345,13 +345,17 @@ CallObject::CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval 
     if (_kwargs) {
         kwargs = array2dict(_kwargs);
     }
-    parse_args(_argc, _argv);
+    if (_argv) {
+        parse_args(_argc, _argv);
+    }
 }
 
 CallObject::CallObject(PyObject *_fn, zval *_return_value, zval *_argv) {
     fn = _fn;
     return_value = _return_value;
-    parse_args(_argv);
+    if (_argv) {
+        parse_args(_argv);
+    }
 }
 
 void CallObject::call() {

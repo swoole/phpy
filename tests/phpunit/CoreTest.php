@@ -99,4 +99,13 @@ class CoreTest extends TestCase
     {
         $this->assertEquals(PyCore::scalar(PyCore::range(3)), range(0, 2));
     }
+
+    public function testObject() {
+        $o = PyCore::object("hello world");
+        $this->assertTrue($o instanceof PyObject);
+        $this->assertStringContainsString('zend_string', strval(PyCore::type($o)));
+
+        $o = PyCore::object(123456789);
+        $this->assertStringContainsString('int', strval(PyCore::type($o)));
+    }
 }

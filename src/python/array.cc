@@ -80,7 +80,7 @@ static PyObject *Array_get(ZendArray *self, PyObject *args) {
         Py_INCREF(Py_None);
         return Py_None;
     }
-    return php2py_for_cpython(result);
+    return php2py_object(result);
 }
 
 static PyObject *Array_set(ZendArray *self, PyObject *args) {

@@ -127,7 +127,7 @@ static PyObject *Object_get(ZendObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "s#", &name, &l_name)) {
         return NULL;
     }
-    return php2py_for_cpython(phpy::php::object_get(&self->object, name, l_name));
+    return php2py_object(phpy::php::object_get(&self->object, name, l_name));
 }
 
 static PyObject *Object_set(ZendObject *self, PyObject *args) {

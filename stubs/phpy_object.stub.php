@@ -6,7 +6,7 @@
 
 class PyObject
 {
-    public function __construct()
+    public function __construct(mixed $value = null)
     {
 
     }
