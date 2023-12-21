@@ -18,15 +18,15 @@ $menuBar = $wx->MenuBar();
 $menuBar->Append($fileMenu, "&File");
 $menuBar->Append($helpMenu, "&Help");
 
-$frame->Bind($wx->EVT_MENU, PyCore::fn(function () use ($wx) {
+$frame->Bind($wx->EVT_MENU, function () use ($wx) {
     $wx->MessageBox("Hello again from wxPython");
-}), $helloItem);
-$frame->Bind($wx->EVT_MENU, PyCore::fn(function () use ($frame) {
+}, $helloItem);
+$frame->Bind($wx->EVT_MENU, function () use ($frame) {
     $frame->Close();
-}), $exitItem);
-$frame->Bind($wx->EVT_MENU, PyCore::fn(function () use ($wx) {
+}, $exitItem);
+$frame->Bind($wx->EVT_MENU, function () use ($wx) {
     $wx->MessageBox("This is a wxPython Hello World sample", "About Hello World 2", $wx->OK | $wx->ICON_INFORMATION);
-}), $aboutItem);
+}, $aboutItem);
 
 $frame->SetMenuBar($menuBar);
 

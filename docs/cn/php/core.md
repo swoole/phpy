@@ -53,11 +53,27 @@ $class = $m->$className;
 ## 动态链接库问题
 导入库是发生动态链接库错误，原因可能是 `LD` 路径错误导致，可设置环境变量指定 `Python C 模块` 动态库路径。
 
+> 可使用 `:` 分割设置多个路径
+
 ```shell
+# 仅使用 anaconda3 base 环境
 export LD_LIBRARY_PATH=/opt/anaconda3/lib
+# 使用了特别的环境，名称为 cef
+export LD_LIBRARY_PATH=/opt/anaconda3/envs/cef/lib:/opt/anaconda3/lib
 php plot.php
 ```
 
 这种方式仅对当前的 `bash` 会话有效，不会影响全局。不要直接修改 `/etc/ld.so.conf.d/*.conf` 增加 `/opt/anaconda3/lib`，这可能会导致
 `libc` 库冲突，可能会影响操作系统其他程序的正常运行。
 
+## 大小写敏感
+请注意 `Python` 中所有函数、方法、变量、属性等均命名全部为大小写敏感，调用时必须使用与`Python`大小写完全一致的名称。
+
+例如：
+
+```python
+def TestUser():
+    pass
+```
+
+在 `PHP` 代码中必须使用 `$module->TestUser()` ，其他的方式如 `$module->testUser()` 、`$module->testuser()` 均是错误的写法。
