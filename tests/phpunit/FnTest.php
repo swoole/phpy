@@ -30,22 +30,7 @@ class FnTest extends TestCase
     {
         $m = PyCore::import('app.user');
         $uuid = uniqid();
-        $obj = new class($this, $uuid) {
-            private $phpunit;
-            private $uuid;
-
-            function __construct($phpunit, $uuid)
-            {
-                $this->phpunit = $phpunit;
-                $this->uuid = $uuid;
-            }
-
-            function __invoke($namespace)
-            {
-                $this->phpunit->assertEquals($namespace, 'app.user');
-                return $this->uuid;
-            }
-        };
+        $obj = new FnCallableClass($this, $uuid);
         $rs = $m->test_callback($obj);
         $this->assertEquals($rs, $uuid);
     }
@@ -68,4 +53,19 @@ class FnTest extends TestCase
         $this->assertFalse($success);
     }
 
+    function testObjectErrorArgs()
+    {
+        $m = PyCore::import('app.user');
+        $uuid = uniqid();
+        $success = true;
+        $obj = new FnCallableClass($this, $uuid);
+        try {
+            $rs = $m->test_callback(fn() => [$obj, 'test']());
+        } catch (PyError $error) {
+            $this->assertStringContainsString('Function call failed', $error->getMessage());
+            $this->assertStringContainsString('Too few arguments', $error->getPrevious()->getMessage());
+            $success = false;
+        }
+        $this->assertFalse($success);
+    }
 }

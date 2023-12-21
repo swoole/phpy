@@ -26,3 +26,29 @@ class PyLoader
         return self::$modules[$name];
     }
 }
+
+
+class FnCallableClass
+{
+    private $phpunit;
+    private $uuid;
+
+    function __construct($phpunit, $uuid)
+    {
+        $this->phpunit = $phpunit;
+        $this->uuid = $uuid;
+    }
+
+    function __invoke($namespace)
+    {
+        $this->phpunit->assertEquals($namespace, 'app.user');
+        return $this->uuid;
+    }
+
+    function test($namespace)
+    {
+        $this->phpunit->assertEquals($namespace, 'app.user');
+        return $this->uuid;
+    }
+}
+

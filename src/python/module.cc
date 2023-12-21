@@ -50,8 +50,7 @@ static PyObject *phpy_call(PyObject *self, PyObject *args) {
 
     if (result == FAILURE) {
         PyErr_Format(PyExc_NameError, "Function '%s' call failed", Z_STRVAL(zfn));
-        Py_INCREF(Py_None);
-        return Py_None;
+        return NULL;
     }
     RETURN_PYOBJ(&retval);
 }
