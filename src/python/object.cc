@@ -130,7 +130,6 @@ static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds)
     phpy::python::tuple2argv(argv, args, argc, 0);
     zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv);
     ON_SCOPE_EXIT {
-        zval_ptr_dtor(&retval);
         phpy::python::release_argv(argc, argv);
         delete[] argv;
     };

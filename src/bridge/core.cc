@@ -24,6 +24,8 @@ END_EXTERN_C()
 
 using phpy::CallObject;
 
+const int var_dump_level = 3;
+
 static void (*py2php_fn)(PyObject *pv, zval *zv);
 static void py2php_object_impl(PyObject *pv, zval *zv);
 static void py2php_scalar_impl(PyObject *pv, zval *zv);
@@ -332,7 +334,11 @@ void debug_dump(uint32_t i, PyObject *pObj) {
 }
 
 void var_dump(zval *var) {
-    php_var_dump(var, 3);
+    php_var_dump(var, var_dump_level);
+}
+
+void debug_var_dump(zval *var) {
+    php_debug_zval_dump(var, var_dump_level);
 }
 
 CallObject::CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval *_argv, zend_array *_kwargs) {
