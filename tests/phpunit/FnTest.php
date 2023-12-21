@@ -60,6 +60,9 @@ class FnTest extends TestCase
             $this->assertTrue(false);
         } catch (PyError $error) {
             $this->assertStringContainsString('zend_object is not callable', $error->getMessage());
+            if (PHP_VERSION_ID > 80100) {
+                $this->assertStringContainsString('Invalid callback', $error->getPrevious()->getMessage());
+            }
             $success = false;
         }
         $this->assertFalse($success);

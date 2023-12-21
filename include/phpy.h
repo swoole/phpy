@@ -281,6 +281,9 @@ static inline zend_result call_fn(
         result = call_user_function(NULL, object, function_name, retval_ptr, param_count, params);
     }
     zend_end_try();
+    if (EG(exception) != NULL) {
+        return FAILURE;
+    }
     return result;
 }
 }  // namespace php
