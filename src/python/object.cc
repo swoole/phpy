@@ -221,6 +221,7 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
             delete[] argv;
         };
         if (result == FAILURE) {
+            PyErr_Format(PyExc_TypeError, "'%s' ctor fail", ZSTR_VAL(ce->name));
             return NULL;
         }
     }

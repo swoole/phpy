@@ -178,7 +178,7 @@ void phpy_object_ctor(zval *zobject, PyObject *object) {
 }
 
 ZEND_METHOD(PyObject, __construct) {
-    zval *zv;
+    zval *zv = NULL;
 
     ZEND_PARSE_PARAMETERS_START(0, 1)
     Z_PARAM_OPTIONAL
