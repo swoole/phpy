@@ -10,6 +10,6 @@ file_put_contents($file, file_get_contents('https://business.swoole.com/page/cap
 
 $img_bytes = PyCore::bytes(file_get_contents($file));
 // 参考 https://github.com/sml2h3/ddddocr/blob/master/ddddocr/__init__.py
-$ocr = $ddddocr->DdddOcr(show_ad: false, use_gpu: true);
+$ocr = $ddddocr->DdddOcr(show_ad: false);
 $res = $ocr->classification($img_bytes);
 echo $res, PHP_EOL;
