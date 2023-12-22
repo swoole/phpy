@@ -49,4 +49,4 @@ assert o.call('get', 'key') == rdata
 
 微信交流群
 ----
-![Alt](docs/images/wxg.png)
+![Alt](https://www.swoole.com/static/image/shiwo-tech.png)
