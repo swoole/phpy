@@ -248,7 +248,7 @@ static void dict2array(PyObject *pv, zval *zv) {
         py2php_fn(value, &item);
 
         ssize_t len;
-        const char *key = phpy::python::string2utf8(next, &len);
+        const char *key = phpy::python::string2utf8(PyObject_Str(next), &len);
         add_assoc_zval_ex(zv, key, len, &item);
     }
     Py_DECREF(iter);
