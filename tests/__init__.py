@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("./tests/lib")
+sys.path.append("./lib")
 
 import phpy
 

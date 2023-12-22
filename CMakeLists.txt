@@ -55,5 +55,5 @@ include_directories(BEFORE ${phpy_includes})
 link_directories(${phpy_link_directories})
 add_library(phpy SHARED ${SOURCE_FILES})
 
-set_target_properties(phpy PROPERTIES OUTPUT_NAME "tests/lib/phpy")
+set_target_properties(phpy PROPERTIES OUTPUT_NAME "lib/phpy")
 target_link_libraries(phpy ${phpy_libraries})
