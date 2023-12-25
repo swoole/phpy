@@ -133,10 +133,10 @@ ZEND_METHOD(PyDict, key) {
     zval key_zv;
     py2php(current, &key_zv);
     if (Z_TYPE(key_zv) == IS_LONG || Z_TYPE(key_zv) == IS_STRING) {
-        RETURN_ZVAL(&key_zv, 1, 0);
+        RETURN_ZVAL(&key_zv, 0, 0);
     } else {
         convert_to_string(&key_zv);
-        RETURN_ZVAL(&key_zv, 1, 0);
+        RETURN_ZVAL(&key_zv, 0, 0);
     }
 }
 
