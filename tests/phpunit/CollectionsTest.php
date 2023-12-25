@@ -20,6 +20,6 @@ class CollectionsTest extends TestCase
 
         $words = ['red', 'blue', 'red', 'green', 'blue', 'blue'];
         $word_counts = $Counter($words);
-        $this->assertEquals(PyCore::dict($word_counts), PyCore::dict(['blue' => 3, 'red' => 2, 'green' => 1]));
+        $this->assertEquals(['blue' => 3, 'red' => 2, 'green' => 1], [...PyCore::dict($word_counts)]);
     }
 }
