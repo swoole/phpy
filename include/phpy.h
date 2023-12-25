@@ -304,12 +304,14 @@ namespace python {
 PyObject *new_array(zval *zv);
 PyObject *new_array(PyObject *pv);
 PyObject *new_string(zval *zv);
+PyObject *new_string(size_t len);
 PyObject *new_string(PyObject *pv);
 PyObject *new_object(zval *zv);
 PyObject *new_resource(zval *zv);
 PyObject *new_reference(zval *zv);
 PyObject *new_callable(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
+const char *string2char_ptr(PyObject *pv, ssize_t *len);
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);
 }  // namespace python

@@ -21,5 +21,40 @@ def test_assoc_array():
     assert d.get("uuid") == str(uuid)
     assert d.get("php") == "swoole"
     assert d.unset("php")
-    assert d.unset("php") == False
+    assert d.unset("php") is False
     assert d.get("php") is None
+
+
+def test_mp_protocol():
+    uuid = phpy.call("uniqid")
+    d = phpy.Array({"hello": "world", "php": "swoole", "uuid": uuid})
+
+    uuid2 = phpy.call("uniqid")
+
+    assert d['test'] is None
+
+    assert len(d) == 3
+    assert d['uuid'] == uuid
+    d['test'] = uuid2
+    assert d['test'] == uuid2
+
+    del d['test']
+    assert d['test'] is None
+
+    assert 'uuid' in d
+
+    l = phpy.Array([1, 3, 5, 2023, 7, 9])
+    assert l.is_list()
+    assert l[3] == 2023
+
+
+def test_iter():
+    uuid = phpy.call("uniqid")
+    d = phpy.Array({"hello": "world", "php": "swoole", "uuid": uuid})
+    keys = phpy.call('array_keys', d).collect()
+    keys2 = []
+
+    for k in d:
+        keys2.append(k)
+
+    assert keys == keys2
