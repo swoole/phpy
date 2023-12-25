@@ -433,6 +433,25 @@ namespace python {
 const char *string2utf8(PyObject *pv, ssize_t *len) {
     return PyUnicode_AsUTF8AndSize(pv, len);
 };
+const char *string2char_ptr(PyObject *pv, ssize_t *len) {
+    const char *c_str;
+    if (ZendString_Check(pv)) {
+        zval *z2 = zend_string_cast(pv);
+        *len = Z_STRLEN_P(z2);
+        c_str = Z_STRVAL_P(z2);
+    } else if (PyByteArray_Check(pv)) {
+        c_str = PyByteArray_AS_STRING(pv);
+        *len = PyByteArray_GET_SIZE(pv);
+    } else if (PyBytes_Check(pv)) {
+        c_str = PyBytes_AS_STRING(pv);
+        *len = PyBytes_GET_SIZE(pv);
+    } else if (PyUnicode_Check(pv)) {
+        c_str = PyUnicode_AsUTF8AndSize(pv, len);
+    } else {
+        return NULL;
+    }
+    return c_str;
+}
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
     Py_ssize_t i;
     for (i = begin; i < size; i++) {
