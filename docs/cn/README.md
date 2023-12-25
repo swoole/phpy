@@ -13,6 +13,7 @@ PHP 扩展
 * [异常处理](php/exception.md)
 * [整型数字](php/int.md)
 * [回调函数](php/fn.md)
+* [内存拷贝](php/memory.md)
 * [性能测试](benchmark.md)
 * [IDE 提示](php/composer.md)
 
@@ -20,6 +21,9 @@ Python 模块
 ---
 - [函数列表](python/function.md)
 - [对象操作](python/object.md)
+- [字符串操作](python/string.md)
+- [数组操作](python/array.md)
 - [类操作](python/class.md)
 - [引用类型](python/reference.md)
+- [内存拷贝](python/memory.md)
 - [封装模块](python/module.md)

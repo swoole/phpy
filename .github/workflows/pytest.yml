@@ -3,10 +3,10 @@ name: pytest
 on: [ push, pull_request ]
 
 jobs:
-  build:
+  python:
     runs-on: ubuntu-latest
     env:
-      PHP_VERSION: ${{ matrix.php }}
+      PYTHON_VERSION: ${{ matrix.python }}
       IN_CI: 1
     strategy:
       fail-fast: false

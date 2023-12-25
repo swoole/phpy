@@ -22,8 +22,10 @@ static int Array_init(ZendArray *self, PyObject *args, PyObject *kwds);
 static PyObject *Array_get(ZendArray *self, PyObject *args);
 static PyObject *Array_set(ZendArray *self, PyObject *args);
 static PyObject *Array_unset(ZendArray *self, PyObject *args);
+static PyObject *Array_append(ZendArray *self, PyObject *args);
 static PyObject *Array_count(ZendArray *self);
 static PyObject *Array_collect(ZendArray *self);
+static PyObject *Array_is_list(ZendArray *self);
 static void Array_destroy(ZendArray *self);
 
 // clang-format off
@@ -41,6 +43,8 @@ static PyMethodDef Array_methods[] = {
     {"unset", (PyCFunction) Array_unset, METH_VARARGS, "Set array item value" },
     {"count", (PyCFunction) Array_count, METH_NOARGS, "Get array length" },
     {"collect", (PyCFunction) Array_collect, METH_NOARGS, "Convert array to dict/list" },
+    {"is_list", (PyCFunction) Array_is_list, METH_NOARGS, "Check if the array is list" },
+    {"append", (PyCFunction) Array_append, METH_VARARGS, "Append element to array" },
     {NULL}  /* Sentinel */
 };
 
@@ -134,6 +138,20 @@ static PyObject *Array_set(ZendArray *self, PyObject *args) {
     }
 }
 
+static PyObject *Array_append(ZendArray *self, PyObject *args) {
+    PyObject *value;
+    if (!PyArg_ParseTuple(args, "O", &value)) {
+        return NULL;
+    }
+    zval rv;
+    py2php(value, &rv);
+    if (add_next_index_zval(&self->array, &rv) == SUCCESS) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
 static PyObject *Array_unset(ZendArray *self, PyObject *args) {
     PyObject *key;
     if (!PyArg_ParseTuple(args, "O", &key)) {
@@ -159,6 +177,14 @@ static PyObject *Array_collect(ZendArray *self) {
         return array2list(Z_ARRVAL(self->array));
     } else {
         return array2dict(Z_ARRVAL(self->array));
+    }
+}
+
+static PyObject *Array_is_list(ZendArray *self) {
+    if (zend_array_is_list(Z_ARRVAL(self->array))) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
     }
 }
 

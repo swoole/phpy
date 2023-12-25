@@ -3,7 +3,7 @@ name: phpunit
 on: [ push, pull_request ]
 
 jobs:
-  build:
+  php:
     runs-on: ubuntu-latest
     env:
       PHP_VERSION: ${{ matrix.php }}

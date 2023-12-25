@@ -43,6 +43,10 @@ def test_mp_protocol():
 
     assert 'uuid' in d
 
+    l = phpy.Array([1, 3, 5, 2023, 7, 9])
+    assert l.is_list()
+    assert l[3] == 2023
+
 
 def test_iter():
     uuid = phpy.call("uniqid")
