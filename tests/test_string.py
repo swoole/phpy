@@ -34,5 +34,5 @@ def test_string_concat():
     assert s.__contains__('hello')
     assert s.__contains__('world')
     assert s.__contains__('swoole')
-    assert 'best' in s
+    assert s.__contains__('best')
     assert s[0] == ord('h')
