@@ -30,7 +30,7 @@ cmake . -D PHP_CONFIG=/usr/local/bin/python3-config
 make -j 4
 ```
 
-编译成功后在 `tests/lib` 目录下会生成 `phpy.so`，可以将此文件复制到任意 `Python` 的 `sys.path` 目录中。
+编译成功后在 `lib` 目录下会生成 `phpy.so`，可以将此文件复制到任意 `Python` 的 `sys.path` 目录中。
 
 ## conda 工具
 
