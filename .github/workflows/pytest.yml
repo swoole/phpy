@@ -28,8 +28,7 @@ jobs:
           env
           uname -a
           ulimit -a
-          php -v
-          php --ini
+          python -V
           ls -al
           pwd
       - name: Build
