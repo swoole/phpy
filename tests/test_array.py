@@ -40,3 +40,17 @@ def test_mp_protocol():
 
     del d['test']
     assert d['test'] is None
+
+    assert 'uuid' in d
+
+
+def test_iter():
+    uuid = phpy.call("uniqid")
+    d = phpy.Array({"hello": "world", "php": "swoole", "uuid": uuid})
+    keys = phpy.call('array_keys', d).collect()
+    keys2 = []
+
+    for k in d:
+        keys2.append(k)
+
+    assert keys == keys2

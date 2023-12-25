@@ -22,13 +22,15 @@ static int Array_init(ZendArray *self, PyObject *args, PyObject *kwds);
 static PyObject *Array_get(ZendArray *self, PyObject *args);
 static PyObject *Array_set(ZendArray *self, PyObject *args);
 static PyObject *Array_unset(ZendArray *self, PyObject *args);
-static PyObject *Array_count(ZendArray *self, PyObject *args);
+static PyObject *Array_count(ZendArray *self);
+static PyObject *Array_collect(ZendArray *self);
 static void Array_destroy(ZendArray *self);
 
 // clang-format off
 struct ZendArray {
     PyObject_HEAD
     zval array;
+    HashPosition pos;
 };
 
 static PyMappingMethods Array_mp_methods = {};
@@ -38,6 +40,7 @@ static PyMethodDef Array_methods[] = {
     {"set", (PyCFunction) Array_set, METH_VARARGS, "Set array item value" },
     {"unset", (PyCFunction) Array_unset, METH_VARARGS, "Set array item value" },
     {"count", (PyCFunction) Array_count, METH_NOARGS, "Get array length" },
+    {"collect", (PyCFunction) Array_collect, METH_NOARGS, "Convert array to dict/list" },
     {NULL}  /* Sentinel */
 };
 
@@ -143,12 +146,46 @@ static PyObject *Array_unset(ZendArray *self, PyObject *args) {
     }
 }
 
-static PyObject *Array_count(ZendArray *self, PyObject *args) {
+static PyObject *Array_count(ZendArray *self) {
     return PyLong_FromLong(phpy::php::array_count(&self->array));
 }
 
 static Py_ssize_t Array_len(ZendArray *self) {
     return phpy::php::array_count(&self->array);
+}
+
+static PyObject *Array_collect(ZendArray *self) {
+    if (zend_array_is_list(Z_ARRVAL(self->array))) {
+        return array2list(Z_ARRVAL(self->array));
+    } else {
+        return array2dict(Z_ARRVAL(self->array));
+    }
+}
+
+static PyObject *Array_iter(ZendArray *self) {
+    zend_hash_internal_pointer_reset_ex(Z_ARRVAL(self->array), &self->pos);
+    Py_INCREF(self);
+    return (PyObject *) self;
+}
+
+static PyObject *Array_next(ZendArray *self) {
+    int keytype;
+    zend_string *sval;
+    zend_ulong lval = 0;
+
+    keytype = zend_hash_get_current_key_ex(Z_ARRVAL(self->array), &sval, &lval, &self->pos);
+    zend_hash_move_forward_ex(Z_ARRVAL(self->array),  &self->pos);
+
+    if (HASH_KEY_IS_STRING == keytype) {
+        return PyUnicode_FromStringAndSize(ZSTR_VAL(sval), ZSTR_LEN(sval));
+    } else if (HASH_KEY_IS_LONG == keytype) {
+        return PyLong_FromLong(lval);
+    } else if (HASH_KEY_NON_EXISTENT == keytype) {
+        return NULL;
+    } else {
+        PyErr_SetString(PyExc_RuntimeError, "zend_array iterator error");
+        return NULL;
+    }
 }
 
 static void Array_destroy(ZendArray *self) {
@@ -172,6 +209,8 @@ bool py_module_array_init(PyObject *m) {
     ZendArrayType.tp_methods = Array_methods;
     ZendArrayType.tp_init = (initproc) Array_init;
     ZendArrayType.tp_new = PyType_GenericNew;
+    ZendArrayType.tp_iter = (getiterfunc) Array_iter;
+    ZendArrayType.tp_iternext = (iternextfunc) Array_next;
 
     if (PyType_Ready(&ZendArrayType) < 0) {
         return false;
