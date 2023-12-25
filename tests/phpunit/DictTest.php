@@ -61,4 +61,16 @@ class DictTest extends TestCase
         }
         $this->assertEquals($keys, array_keys($map));
     }
+
+    public function testKeyNotString()
+    {
+        $pycode = <<<CODE
+key1 = ("sum", "数量")
+key2 = ("mean", "数量")
+dict_data = {key1: 1, key2: 2}
+CODE;
+        $json = json_encode(PyCore::scalar(PyCore::eval($pycode)->dict_data));
+        $result = "{\"('sum', '\u6570\u91cf')\":1,\"('mean', '\u6570\u91cf')\":2}";
+        $this->assertEquals($json, $result);
+    }
 }
