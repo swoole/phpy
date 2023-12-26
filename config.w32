@@ -7,13 +7,13 @@ if (PHP_PHPY != "no") {
 	if (PYTHONHOME) {
 		ADD_SOURCES("ext/phpy/src/bridge", "core.cc", "phpy")
 		ADD_SOURCES("ext/phpy/src/php", "object.cc type.cc error.cc iter.cc dict.cc core.cc fn.cc str.cc sequence.cc list.cc set.cc tuple.cc module.cc", "phpy")
-		ADD_SOURCES("ext/phpy/src/python", "class.cc module.cc object.cc reference.cc resource.cc callable.cc", "phpy")
+		ADD_SOURCES("ext/phpy/src/python", "class.cc module.cc object.cc reference.cc resource.cc callable.cc string.cc array.cc", "phpy")
 	
-		EXTENSION("phpy", "phpy.cc", null, '-std=c++14 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -Iext/phpy/include -Iext/phpy /I ' + PYTHONHOME + '/include')
+		EXTENSION("phpy", "phpy.cc", null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -Iext/phpy/include -Iext/phpy /I ' + PYTHONHOME + '/include')
 
 		ADD_FLAG("CFLAGS", "/D PHP_PHPY_EXPORTS ")
 		ADD_FLAG("LDFLAGS_PHPY", '/libpath:' + PYTHONHOME + '/libs')
-		ADD_FLAG("CXXFLAGS", "-std=c++14 -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now")
+		ADD_FLAG("CXXFLAGS", "-Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now")
 	} else {
 		WARNING("python not found; the python libraries and headers not found");
 	}
