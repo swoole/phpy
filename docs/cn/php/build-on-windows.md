@@ -2,7 +2,7 @@
 
 > 仅支持 `PHP-8.1` 或更高版本
 
-## 开发环境
+## PHP 开发环境
 
 参考：[https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2)
 
@@ -11,8 +11,23 @@
 - 下载 `php` 源代码
 - 安装依赖库，地址：[https://windows.php.net/downloads/php-sdk/deps/](https://windows.php.net/downloads/php-sdk/deps/)
 
+> `PHP` 相关的所有文件安装在 `d:\workspace` 目录下  
 
-> 所有文件均安装在 `d:\workspace` 目录下
+## Python 开发环境
+
+- 安装 `Python`，地址：[https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/)
+- 设置 `Path` 环境变量，将 `d:\python` 加入列表，在 `Windows 终端` 中执行 `Python -V`
+- 设置 `PYTHONHOME` 环境变量，指向 `d:\python`
+
+> `Python` 安装在 `d:\python` 目录下
+
+```shell
+C:\WINDOWS\system32>python -V
+Python 3.12.1
+
+echo %Path%
+echo %PYTHONHOME%
+```
 
 
 ## 构建目录
