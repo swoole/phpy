@@ -365,6 +365,7 @@ void CallObject::call() {
     if (argc == 0 && kwargs == nullptr) {
         value = PyObject_CallNoArgs(fn);
     } else {
+        args = args == nullptr ? PyTuple_New(0) : args;
         value = PyObject_Call(fn, args, kwargs);
     }
     if (value != NULL) {
