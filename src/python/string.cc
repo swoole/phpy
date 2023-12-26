@@ -74,7 +74,7 @@ static PyObject *String_iadd(ZendString *self, PyObject *o2) {
     ssize_t s2_len;
     const char *s2 = phpy::python::string2char_ptr(o2, &s2_len);
     if (s2 == NULL) {
-        PyErr_Format(PyExc_TypeError, "can not concat '%s' to zend_string", Py_TYPE(o2)->tp_name);
+        PyErr_Format(PyExc_TypeError, "can not concat '%s' to zend_string", Py_TypeName(o2));
         return NULL;
     }
     zend_string *new_zstr = zend_string_extend(Z_STR(self->string), s1_len + s2_len, 0);
@@ -94,7 +94,7 @@ static PyObject *String_add(ZendString *self, PyObject *o2) {
     ssize_t s2_len;
     const char *s2 = phpy::python::string2char_ptr(o2, &s2_len);
     if (s2 == NULL) {
-        PyErr_Format(PyExc_TypeError, "can not concat '%s' to zend_string", Py_TYPE(o2)->tp_name);
+        PyErr_Format(PyExc_TypeError, "can not concat '%s' to zend_string", Py_TypeName(o2));
         return NULL;
     }
     ZendString *new_str = (ZendString *) phpy::python::new_string(s1_len + (size_t) s2_len);
@@ -211,7 +211,7 @@ PyObject *new_string(PyObject *pv) {
             Py_DECREF(value);
         } else {
             PyErr_Print();
-            zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TYPE(pv)->tp_name);
+            zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TypeName(pv));
         }
     }
     return (PyObject *) self;

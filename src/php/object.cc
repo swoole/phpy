@@ -230,7 +230,7 @@ ZEND_METHOD(PyObject, __get) {
         Py_DECREF(value);
     } else {
         PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s> has no attribute '%s'", Py_TYPE(object)->tp_name, name);
+        zend_throw_error(NULL, "PyObject<%s> has no attribute '%s'", Py_TypeName(object), name);
     }
 }
 
@@ -248,7 +248,7 @@ ZEND_METHOD(PyObject, __set) {
     auto value = PyObject_SetAttrString(object, name, php2py(zvalue));
     if (value < 0) {
         PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s> cannot write attribute '%s'", Py_TYPE(object)->tp_name, name);
+        zend_throw_error(NULL, "PyObject<%s> cannot write attribute '%s'", Py_TypeName(object), name);
     }
 }
 
@@ -262,7 +262,7 @@ ZEND_METHOD(PyObject, __toString) {
         Py_DECREF(value);
     } else {
         PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TYPE(object)->tp_name);
+        zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TypeName(object));
         return;
     }
 }
@@ -280,7 +280,7 @@ ZEND_METHOD(PyObject, __invoke) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     if (!object || !PyCallable_Check(object)) {
         PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s>: object is not callable", Py_TYPE(object)->tp_name);
+        zend_throw_error(NULL, "PyObject<%s>: object is not callable", Py_TypeName(object));
         return;
     }
 

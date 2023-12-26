@@ -77,9 +77,8 @@ static PyObject *Array_getitem(ZendArray *self, PyObject *key) {
     if (PyLong_Check(key)) {
         result = phpy::php::array_get(&self->array, PyLong_AsLong(key));
     } else {
-        ssize_t l_key;
-        auto skey = phpy::python::string2utf8(key, &l_key);
-        result = phpy::php::array_get(&self->array, skey, l_key);
+        phpy::StrObject dkey(key);
+        result = phpy::php::array_get(&self->array, dkey.val(), dkey.len());
     }
     if (!result) {
         Py_RETURN_NONE;
@@ -100,9 +99,8 @@ static bool Array_delitem(ZendArray *self, PyObject *key) {
     if (PyLong_Check(key)) {
         result = zend_hash_index_del(Z_ARR(self->array), PyLong_AsLong(key));
     } else {
-        ssize_t l_key;
-        auto skey = phpy::python::string2utf8(key, &l_key);
-        result = zend_hash_str_del(Z_ARR(self->array), skey, l_key);
+        phpy::StrObject dkey(key);
+        result = zend_hash_str_del(Z_ARR(self->array), dkey.val(), dkey.len());
     }
     return result == SUCCESS;
 }
@@ -118,9 +116,8 @@ static int Array_setitem(ZendArray *self, PyObject *key, PyObject *value) {
     if (PyLong_Check(key)) {
         result = zend_hash_index_update(Z_ARR(self->array), PyLong_AsLong(key), &rv);
     } else {
-        ssize_t l_key;
-        auto skey = phpy::python::string2utf8(key, &l_key);
-        result = zend_hash_str_update(Z_ARR(self->array), skey, l_key, &rv);
+        phpy::StrObject dkey(key);
+        result = zend_hash_str_update(Z_ARR(self->array), dkey.val(), dkey.len(), &rv);
     }
     return result == NULL ? -1 : 0;
 }
@@ -200,7 +197,7 @@ static PyObject *Array_next(ZendArray *self) {
     zend_ulong lval = 0;
 
     keytype = zend_hash_get_current_key_ex(Z_ARRVAL(self->array), &sval, &lval, &self->pos);
-    zend_hash_move_forward_ex(Z_ARRVAL(self->array),  &self->pos);
+    zend_hash_move_forward_ex(Z_ARRVAL(self->array), &self->pos);
 
     if (HASH_KEY_IS_STRING == keytype) {
         return PyUnicode_FromStringAndSize(ZSTR_VAL(sval), ZSTR_LEN(sval));

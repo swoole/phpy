@@ -198,6 +198,8 @@ uint32_t phpy_object_iterator_index(zval *object);
 
 #define STR_AND_LEN(str) str, sizeof(str) - 1
 
+#define Py_TypeName(pv) Py_TYPE(pv)->tp_name
+
 #ifndef Py_IsTrue
 #define Py_IsTrue PyObject_IsTrue
 #endif
@@ -299,6 +301,26 @@ struct CallObject {
     void parse_args(uint32_t _argc, zval *_argv);
     ~CallObject();
     void call();
+};
+class StrObject {
+  private:
+    PyObject *str_ = nullptr;
+    ssize_t len_;
+    const char *val_;
+
+  public:
+    StrObject(PyObject *pv);
+    ~StrObject() {
+        if (str_) {
+            Py_DECREF(str_);
+        }
+    }
+    const char *val() {
+        return val_;
+    }
+    ssize_t len() {
+        return len_;
+    }
 };
 namespace python {
 PyObject *new_array(zval *zv);

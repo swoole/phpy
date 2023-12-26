@@ -23,6 +23,7 @@ END_EXTERN_C()
 #include "zend_exceptions.h"
 
 using phpy::CallObject;
+using phpy::StrObject;
 
 const int var_dump_level = 3;
 
@@ -246,10 +247,8 @@ static void dict2array(PyObject *pv, zval *zv) {
         auto value = PyDict_GetItem(pv, next);
         zval item;
         py2php_fn(value, &item);
-
-        ssize_t len;
-        const char *key = phpy::python::string2utf8(PyObject_Str(next), &len);
-        add_assoc_zval_ex(zv, key, len, &item);
+        StrObject key(next);
+        add_assoc_zval_ex(zv, key.val(), key.len(), &item);
     }
     Py_DECREF(iter);
 }
@@ -323,14 +322,18 @@ void debug_dump(uint32_t i, zval *item) {
     printf("[%d] type=%d, ptr=%p \n", i, item->u1.v.type, item->value.arr);
 }
 
-void debug_dump(uint32_t i, PyObject *pObj) {
+void debug_dump(uint32_t i, PyObject *pv) {
     ssize_t len;
+    PyObject *str = PyObject_Str(pv);
+    PyObject *repr = PyObject_Repr(pv);
     printf("[%d] type=%s, str=%s, repr=%s, ptr=%p\n",
            i,
-           Py_TYPE(pObj)->tp_name,
-           phpy::python::string2utf8(PyObject_Str(pObj), &len),
-           phpy::python::string2utf8(PyObject_Repr(pObj), &len),
-           pObj);
+           Py_TypeName(pv),
+           phpy::python::string2utf8(str, &len),
+           phpy::python::string2utf8(repr, &len),
+           pv);
+    Py_DECREF(str);
+    Py_DECREF(repr);
 }
 
 void var_dump(zval *var) {
@@ -427,6 +430,13 @@ void CallObject::parse_args(zval *array) {
 
     args = PyList_AsTuple(arg_list);
     Py_DECREF(arg_list);
+}
+
+StrObject::StrObject(PyObject *pv) {
+    if (!PyUnicode_Check(pv)) {
+        pv = str_ = PyObject_Str(pv);
+    }
+    val_ = phpy::python::string2utf8(pv, &len_);
 }
 
 namespace phpy {
