@@ -12,6 +12,9 @@ class CollectionsTest extends TestCase
         $this->assertEquals('阮奇桢', $p1->name);
         $this->assertEquals(40, $p1->age);
         $this->assertEquals('男', $p1->gender);
+
+        [$name, $age, $gender] = $p1;
+        $this->assertEquals(['阮奇桢', 40, '男'], [(string)$name, (int)$age, (string)$gender]);
     }
 
     public function testCounter()
