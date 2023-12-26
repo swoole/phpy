@@ -1,4 +1,4 @@
-# 编译
+# Linux/macOS/Unix 编译
 
 > 目前仅支持 `Python 3.10` 或更高版本
 
