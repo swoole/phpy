@@ -98,7 +98,9 @@ static zend_object *phpy_object_create_object(zend_class_entry *ce) {
 
 static void phpy_object_free_object(zend_object *object) {
     Object *object_object = phpy_object_get_object(object);
-    Py_DECREF(object_object->object);
+    if (object_object->object != NULL) {
+        Py_DECREF(object_object->object);
+    }
     zend_object_std_dtor(&object_object->std);
 }
 
