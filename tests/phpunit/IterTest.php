@@ -19,4 +19,15 @@ class IterTest extends TestCase
         $this->assertIsArray($list);
         $this->assertEquals(count($list), 5);
     }
+
+    function testNewIter()
+    {
+        try {
+            new PyIter;
+        } catch (Error $error) {
+            $this->assertStringContainsString('private PyIter::__construct()', $error->getMessage());
+            $success = false;
+        }
+        $this->assertFalse($success);
+    }
 }
