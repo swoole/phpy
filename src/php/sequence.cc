@@ -58,6 +58,9 @@ ZEND_METHOD(PySequence, key) {
 
 ZEND_METHOD(PySequence, current) {
     auto current = phpy_object_iterator_current(ZEND_THIS);
+    if (current == NULL) {
+        return;
+    }
     py2php(current, return_value);
 }
 

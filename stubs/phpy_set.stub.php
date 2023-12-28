@@ -6,7 +6,7 @@
 
 class PySet extends PyObject implements \Iterator, \Countable
 {
-    public function __construct()
+    public function __construct(array $data = null)
     {
 
     }

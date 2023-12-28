@@ -111,6 +111,10 @@ PyObject *array2set(zend_array *ht);
 static inline PyObject *array2set(zval *zv) {
     return array2set(Z_ARRVAL_P(zv));
 }
+PyObject *array2tuple(zend_array *ht);
+static inline PyObject *array2tuple(zval *zv) {
+    return array2tuple(Z_ARRVAL_P(zv));
+}
 PyObject *resource2py(zval *zres);
 PyObject *reference2py(zval *zv);
 PyObject *array2dict(zend_array *ht);
@@ -245,6 +249,22 @@ static inline bool is_null(zval *zv) {
     return zv == NULL || ZVAL_IS_NULL(zv);
 }
 
+static inline bool is_array(zval *zv) {
+    return Z_TYPE_P(zv) == IS_ARRAY;
+}
+
+static inline bool is_string(zval *zv) {
+    return Z_TYPE_P(zv) == IS_STRING;
+}
+
+static inline bool is_object(zval *zv) {
+    return Z_TYPE_P(zv) == IS_OBJECT;
+}
+
+static inline bool is_pyobject(zval *zv) {
+    return is_object(zv) && instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce());
+}
+
 /**
  * Return value: Borrowed reference.
  */
@@ -270,9 +290,14 @@ PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS);
 std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 
+static inline uint32_t array_count(zend_array *ht) {
+    return zend_array_count(ht);
+}
+
 static inline uint32_t array_count(zval *zv) {
     return zend_array_count(Z_ARRVAL_P(zv));
 }
+
 /**
  * Return value: New reference.
  */

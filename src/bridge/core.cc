@@ -193,6 +193,17 @@ PyObject *array2list(zend_array *ht) {
     return list;
 }
 
+PyObject *array2tuple(zend_array *ht) {
+    zval *current;
+    PyObject *tuple = PyTuple_New(phpy::php::array_count(ht));
+    Py_ssize_t index = 0;
+    ZEND_HASH_FOREACH_VAL(ht, current) {
+        PyTuple_SetItem(tuple, index++, php2py(current));
+    }
+    ZEND_HASH_FOREACH_END();
+    return tuple;
+}
+
 PyObject *array2set(zend_array *ht) {
     zval *current;
     PyObject *pset = PySet_New(0);

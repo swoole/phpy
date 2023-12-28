@@ -6,7 +6,7 @@
 
 class PyDict extends PyObject implements \ArrayAccess, \Iterator, \Countable
 {
-    public function __construct(mixed $value = null)
+    public function __construct(array $value = null)
     {
 
     }

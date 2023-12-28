@@ -1,8 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: a56d4e29144a4ebe28a2d287f32e54d21209101b */
+ * Stub hash: 0e78fd074e533c6da7aa9580fd68a38adb1b07d4 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PyDict___construct, 0, 0, 0)
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, value, IS_MIXED, 0, "null")
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, value, IS_ARRAY, 0, "null")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyDict_offsetGet, 0, 1, IS_MIXED, 0)

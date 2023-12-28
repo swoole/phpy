@@ -63,4 +63,22 @@ class ListTest extends TestCase
         $this->assertEquals($list->count(), 5);
         $this->assertEquals($list->index(9), 4);
     }
+
+    function testUb1()
+    {
+        $list = new PyList([1, 2, 3, 4]);
+        $this->assertEmpty($list->current());
+    }
+
+    function testUb2()
+    {
+        $list = new PyList([1, 2, 3, 4]);
+        $this->assertEmpty($list->next());
+
+        foreach ($list as $l) {
+            $this->assertEquals($l, $list->current());
+            $list->next();
+            $this->assertNotEquals($l, $list->current());
+        }
+    }
 }

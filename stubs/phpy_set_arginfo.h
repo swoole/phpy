@@ -1,7 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 27c4e73a924d3fb097336fed9f14b646712a3ce0 */
+ * Stub hash: cf5bf8017d5b71cae005534cc88f718b113589b0 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PySet___construct, 0, 0, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, data, IS_ARRAY, 0, "null")
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PySet_key, 0, 0, IS_MIXED, 0)

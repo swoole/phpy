@@ -54,8 +54,23 @@ static ssize_t get_key(INTERNAL_FUNCTION_PARAMETERS) {
 }
 
 ZEND_METHOD(PyTuple, __construct) {
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    phpy_object_ctor(ZEND_THIS, PySequence_Tuple(pyobj));
+    zval *ztuple;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_ZVAL(ztuple)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    PyObject *ptuple;
+    if (phpy::php::is_null(ztuple)) {
+        ptuple = PyTuple_New(0);
+    } else if (phpy::php::is_array(ztuple)) {
+        ptuple = array2tuple(ztuple);
+    } else if (phpy::php::is_pyobject(ztuple)) {
+        ptuple = PySequence_Tuple(phpy_object_get_handle(ztuple));
+    } else {
+        zend_throw_error(NULL, "PyTuple: unsupported type");
+        return;
+    }
+    phpy_object_ctor(ZEND_THIS, ptuple);
 }
 
 ZEND_METHOD(PyTuple, offsetGet) {

@@ -294,11 +294,11 @@ ZEND_METHOD(PyCore, bytes) {
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
     PyObject *pv;
-    if (zv == NULL || ZVAL_IS_NULL(zv)) {
+    if (phpy::php::is_null(zv)) {
         pv = PyBytes_FromStringAndSize("", 0);
-    } else if (Z_TYPE_P(zv) == IS_STRING) {
+    } else if (phpy::php::is_string(zv)) {
         pv = PyBytes_FromStringAndSize(Z_STRVAL_P(zv), Z_STRLEN_P(zv));
-    } else if (Z_TYPE_P(zv) == IS_OBJECT && instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce())) {
+    } else if (phpy::php::is_pyobject(zv)) {
         auto pyobj = phpy_object_get_handle(zv);
         pv = PyBytes_FromObject(pyobj);
     } else {

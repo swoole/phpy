@@ -5,17 +5,8 @@ use PHPUnit\Framework\TestCase;
 
 class TupleTest extends TestCase
 {
-    public function testList()
+    private function test($list, $v1, $v2)
     {
-        $list = new PyList();
-        $v1 = random_int(1000, 99999);
-        $v2 = random_int(1000, 99999);
-
-        $list[] = 2;
-        $list[] = $v1;
-        $list[] = $v2;
-        $list[] = 12345;
-
         $tuple = new PyTuple($list);
 
         $this->assertEquals($tuple->count(), 4);
@@ -31,5 +22,33 @@ class TupleTest extends TestCase
 
         $slice = $tuple->slice(1, 3);
         $this->assertEquals(PyCore::scalar($slice), [$v1, $v2]);
+    }
+
+    public function testList()
+    {
+        $list = new PyList();
+        $v1 = random_int(1000, 99999);
+        $v2 = random_int(1000, 99999);
+
+        $list[] = 2;
+        $list[] = $v1;
+        $list[] = $v2;
+        $list[] = 12345;
+
+        $this->test($list, $v1, $v2);
+    }
+
+    function testArray()
+    {
+        $list = [];
+        $v1 = random_int(1000, 99999);
+        $v2 = random_int(1000, 99999);
+
+        $list[] = 2;
+        $list[] = $v1;
+        $list[] = $v2;
+        $list[] = 12345;
+
+        $this->test($list, $v1, $v2);
     }
 }

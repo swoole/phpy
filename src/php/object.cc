@@ -61,13 +61,28 @@ PyObject *phpy_object_get_iterator(zval *object) {
 
 void phpy_object_iterator_reset(zval *object) {
     auto oo = phpy_object_get_object(object);
+    // Return value: New reference
+    if (oo->iterator != NULL) {
+        Py_DECREF(oo->iterator);
+    }
     oo->iterator = PyObject_GetIter(oo->object);
+    // Return value: New reference
+    if (oo->current != NULL) {
+        Py_DECREF(oo->current);
+    }
     oo->current = PyIter_Next(oo->iterator);
     oo->index = 0;
 }
 
 PyObject *phpy_object_iterator_next(zval *object) {
     auto oo = phpy_object_get_object(object);
+    if (oo->iterator == NULL) {
+        return NULL;
+    }
+    // Return value: New reference
+    if (oo->current != NULL) {
+        Py_DECREF(oo->current);
+    }
     oo->current = PyIter_Next(oo->iterator);
     oo->index++;
     return oo->current;
@@ -100,6 +115,12 @@ static void phpy_object_free_object(zend_object *object) {
     Object *object_object = phpy_object_get_object(object);
     if (object_object->object != NULL) {
         Py_DECREF(object_object->object);
+    }
+    if (object_object->iterator != NULL) {
+        Py_DECREF(object_object->iterator);
+    }
+    if (object_object->current != NULL) {
+        Py_DECREF(object_object->current);
     }
     zend_object_std_dtor(&object_object->std);
 }
