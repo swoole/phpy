@@ -41,4 +41,14 @@ class SetTest extends TestCase
         $set = new PySet($list);
         $this->test($set, $v1, $v2);
     }
+
+    public function testUb1()
+    {
+        $this->assertEmpty((new PySet)->current());
+    }
+
+    public function testUb2()
+    {
+        $this->assertEmpty((new PySet)->key());
+    }
 }

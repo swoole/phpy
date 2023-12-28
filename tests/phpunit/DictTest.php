@@ -73,4 +73,14 @@ CODE;
         $result = "{\"('sum', '\u6570\u91cf')\":1,\"('mean', '\u6570\u91cf')\":2}";
         $this->assertEquals($json, $result);
     }
+
+    public function testUb1()
+    {
+        $this->assertEmpty((new PyDict)->current());
+    }
+
+    public function testUb2()
+    {
+        $this->assertEmpty((new PyDict)->key());
+    }
 }

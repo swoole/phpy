@@ -130,6 +130,9 @@ ZEND_METHOD(PyDict, valid) {
 
 ZEND_METHOD(PyDict, key) {
     auto current = phpy_object_iterator_current(ZEND_THIS);
+    if (current == NULL) {
+        return;
+    }
     zval key_zv;
     py2php(current, &key_zv);
     if (Z_TYPE(key_zv) == IS_LONG || Z_TYPE(key_zv) == IS_STRING) {
@@ -143,6 +146,9 @@ ZEND_METHOD(PyDict, key) {
 ZEND_METHOD(PyDict, current) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     auto current = phpy_object_iterator_current(ZEND_THIS);
+    if (current == NULL) {
+        return;
+    }
     auto value = PyDict_GetItem(object, current);
     if (value != NULL) {
         py2php(value, return_value);
