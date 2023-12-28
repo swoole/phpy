@@ -13,7 +13,7 @@ You can use Python functions and libraries in PHP, or use PHP packages in Python
 > Not support Python multithreading or async-io features
 
 ## py2php
-[py2php]((https://swoole.com/py2php/)) is online utility that will auto-translate python code into PHP code.
+[py2php](https://swoole.com/py2php/) is online utility that will auto-translate python code into PHP code.
 
 ## Calling Python from PHP
 
