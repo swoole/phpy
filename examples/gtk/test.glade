@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkWindow" id="window1">
+    <property name="can-focus">False</property>
+    <signal name="destroy" handler="onDestroy" swapped="no"/>
+    <child>
+      <object class="GtkButton" id="button1">
+        <property name="label" translatable="yes">button</property>
+        <property name="use-action-appearance">False</property>
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+        <property name="receives-default">True</property>
+        <property name="use-action-appearance">False</property>
+        <signal name="pressed" handler="onButtonPressed" swapped="no"/>
+      </object>
+    </child>
+  </object>
+</interface>

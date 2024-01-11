@@ -87,3 +87,22 @@ foreach($_ENV as $k => $v) {
     $os->environ->__setitem__($k, $v);
 }
 ```
+
+## undefined symbol:ffi_type_uint32, version LIBFFI_BASE_7.0
+动态连接库路径存在冲突问题，可以尝试使用下面的方法解决。
+若依然有问题，建议使用系统自带的 `Python` 环境代替 `conda` 创建的环境。
+
+```shell
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libffi.so.7
+```
+
+## Import 失败
+大部分情况下，`from a import b` 是等价于 `PyCore::import('a')->b` ，
+但有些特殊的库无法通过以上方法正确加载，可替换为以下方法：
+
+```php
+# 无法加载
+$b = PyCore::import('a')->b;
+# 替换为以下代码
+$b = PyCore::import('a.b');
+```
