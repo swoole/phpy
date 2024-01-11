@@ -4,7 +4,6 @@
 - [在 PHP 中调用 Python 模块](php/tutorial.md)
 - [在 Python 中调用 PHP 函数](python/tutorial.md)
 - [开发路径](roadmap.md)
-- [Ubuntu 18.04 下PHP8.3 编译安装phpy]([roadmap.md](https://mp.weixin.qq.com/s/q_-keG3clvs7Hii-oEW3RQ))
 
 PHP 扩展
 ----
@@ -28,3 +27,7 @@ Python 模块
 - [引用类型](python/reference.md)
 - [内存拷贝](python/memory.md)
 - [封装模块](python/module.md)
+
+教程
+---
+- [Ubuntu 18.04 下PHP8.3 编译安装phpy](https://mp.weixin.qq.com/s/q_-keG3clvs7Hii-oEW3RQ)
