@@ -39,7 +39,7 @@ make -j 4
 ### 创建 `Python` 环境
 
 ```shell
-conda env create -n py38 python=3.8
+conda create -n py38 python=3.8
 # 激活
 conda activate py38
 ```

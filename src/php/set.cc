@@ -52,7 +52,7 @@ ZEND_METHOD(PySet, __construct) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     PyObject *pset;
-    if (phpy::php::is_null(zset)) {
+    if (phpy::php::is_null(zset) || phpy::php::is_empty_array(zset)) {
         pset = PySet_New(0);
     } else {
         pset = array2set(zset);

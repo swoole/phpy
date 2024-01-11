@@ -60,7 +60,7 @@ ZEND_METHOD(PyTuple, __construct) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     PyObject *ptuple;
-    if (phpy::php::is_null(ztuple)) {
+    if (phpy::php::is_null(ztuple) || phpy::php::is_empty_array(ztuple)) {
         ptuple = PyTuple_New(0);
     } else if (phpy::php::is_array(ztuple)) {
         ptuple = array2tuple(ztuple);

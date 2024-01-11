@@ -61,7 +61,7 @@ ZEND_METHOD(PyList, __construct) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     PyObject *plist;
-    if (phpy::php::is_null(zlist)) {
+    if (phpy::php::is_null(zlist) || phpy::php::is_empty_array(zlist)) {
         plist = PyList_New(0);
     } else {
         plist = array2list(zlist);

@@ -55,7 +55,7 @@ ZEND_METHOD(PyDict, __construct) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     PyObject *pdict;
-    if (phpy::php::is_null(zdict)) {
+    if (phpy::php::is_null(zdict) || phpy::php::is_empty_array(zdict)) {
         pdict = PyDict_New();
     } else {
         pdict = array2dict(zdict);

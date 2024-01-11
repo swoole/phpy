@@ -67,7 +67,7 @@ php plot.php
 `libc` 库冲突，可能会影响操作系统其他程序的正常运行。
 
 ## 大小写敏感
-请注意 `Python` 中所有函数、方法、变量、属性等均命名全部为大小写敏感，调用时必须使用与`Python`大小写完全一致的名称。
+`Python` 中所有函数、方法、变量、属性等均命名全部为大小写敏感，调用时必须使用与`Python`大小写完全一致的名称。
 
 例如：
 
@@ -77,3 +77,13 @@ def TestUser():
 ```
 
 在 `PHP` 代码中必须使用 `$module->TestUser()` ，其他的方式如 `$module->testUser()` 、`$module->testuser()` 均是错误的写法。
+
+## 环境变量
+在 `phpy` 中 `Python` 的 `os.environ` 未被自动初始化，因此 `environ` 是一个空字典，需要遍历 `$_ENV` 将环境变量注入 `Python` 环境。
+
+```php
+$os = PyCore::import('os');
+foreach($_ENV as $k => $v) {
+    $os->environ->__setitem__($k, $v);
+}
+```

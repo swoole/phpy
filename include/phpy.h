@@ -245,20 +245,24 @@ static inline void throw_error_if_occurred() {
     }
 }
 
+static inline bool is_typeof(zval *zv, int type) {
+    return Z_TYPE_P(zv) == type;
+}
+
 static inline bool is_null(zval *zv) {
     return zv == NULL || ZVAL_IS_NULL(zv);
 }
 
 static inline bool is_array(zval *zv) {
-    return Z_TYPE_P(zv) == IS_ARRAY;
+    return is_typeof(zv, IS_ARRAY);
 }
 
 static inline bool is_string(zval *zv) {
-    return Z_TYPE_P(zv) == IS_STRING;
+    return is_typeof(zv, IS_STRING);
 }
 
 static inline bool is_object(zval *zv) {
-    return Z_TYPE_P(zv) == IS_OBJECT;
+    return is_typeof(zv, IS_OBJECT);
 }
 
 static inline bool is_pyobject(zval *zv) {
@@ -296,6 +300,10 @@ static inline uint32_t array_count(zend_array *ht) {
 
 static inline uint32_t array_count(zval *zv) {
     return zend_array_count(Z_ARRVAL_P(zv));
+}
+
+static inline bool is_empty_array(zval *zv) {
+    return Z_TYPE_P(zv) == IS_ARRAY && array_count(zv) == 0;
 }
 
 /**
