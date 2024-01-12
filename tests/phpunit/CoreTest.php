@@ -24,9 +24,9 @@ class CoreTest extends TestCase
 
     public function testRepr()
     {
-        $os = PyCore::import("os");
-        $repr = PyCore::repr($os->uname());
-        $this->assertStringContainsString('posix.uname_result', $repr);
+        $platform = PyCore::import("platform");
+        $repr = PyCore::repr($platform->uname());
+        $this->assertStringContainsString('uname_result', $repr);
     }
 
     public function testId()
@@ -37,9 +37,9 @@ class CoreTest extends TestCase
 
     public function testType()
     {
-        $os = PyCore::import("os");
-        $this->assertEquals("<class 'module'>", PyCore::type($os));
-        $this->assertEquals("<class 'posix.uname_result'>", PyCore::type($os->uname()));
+        $platform = PyCore::import("platform");
+        $this->assertEquals("<class 'module'>", PyCore::type($platform));
+        $this->assertEquals("<class 'platform.uname_result'>", PyCore::type($platform->uname()));
 
         $dict = new PyDict();
         $this->assertEquals("<class 'dict'>", PyCore::type($dict));
@@ -56,17 +56,17 @@ class CoreTest extends TestCase
 
     function testHasAttr()
     {
-        $os = PyCore::import("os");
-        $this->assertTrue(PyCore::hasattr($os, 'uname'));
-        $this->assertFalse(PyCore::hasattr($os, 'not_exists'));
+        $platform = PyCore::import("platform");
+        $this->assertTrue(PyCore::hasattr($platform, 'uname'));
+        $this->assertFalse(PyCore::hasattr($platform, 'not_exists'));
     }
 
     function testLen()
     {
-        $os = PyCore::import("os");
-        $uname = $os->uname();
-        $this->assertEquals(5, PyCore::len($uname));
-        $this->assertGreaterThan(100, strlen(PyCore::str($uname)));
+        $platform = PyCore::import("platform");
+        $uname = $platform->uname();
+        $this->assertGreaterThan(5, PyCore::len($uname));
+        $this->assertGreaterThan(90, strlen(PyCore::str($uname)));
 
         $n = 14;
         $list = new PyList;

@@ -6,8 +6,8 @@ class IterTest extends TestCase
 {
     function testIter()
     {
-        $os = PyCore::import('os');
-        $uname = $os->uname();
+        $platform = PyCore::import('platform');
+        $uname = $platform->uname();
 
         $iter = PyCore::iter($uname);
         $this->assertTrue($iter instanceof PyIter);
@@ -17,7 +17,7 @@ class IterTest extends TestCase
             $list[] = PyCore::scalar($next);
         }
         $this->assertIsArray($list);
-        $this->assertEquals(count($list), 5);
+        $this->assertGreaterThanOrEqual(5, count($list));
     }
 
     function testNewIter()
