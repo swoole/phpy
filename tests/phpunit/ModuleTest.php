@@ -7,9 +7,9 @@ class ModuleTest extends TestCase
 {
     public function testImport()
     {
-        $os = PyLoader::import('os');
-        $uname = $os->uname();
-        $this->assertEquals($uname->sysname, 'Linux');
+        $platform = PyLoader::import('platform');
+        $uname = $platform->uname();
+        $this->assertStringContainsStringIgnoringCase([PHP_OS, 'WIN'][str_starts_with(PHP_OS, 'WIN')], (string)$uname->system);
     }
 
     public function testNewObject()
