@@ -50,7 +50,7 @@ class PyCore
 
     }
 
-    public static function next(PyObject $iter): ?PyObject
+    public static function next(PyObject $iter): mixed
     {
 
     }

@@ -30,4 +30,15 @@ class IterTest extends TestCase
         }
         $this->assertFalse($success);
     }
+
+    function testNextInt()
+    {
+        $array = [];
+        $__iter = PyCore::iter(PyCore::range(1, 13));
+        while ($current = PyCore::next($__iter)) {
+            $this->assertIsInt($current);
+            $array[] = $current;
+        }
+        $this->assertEquals($array, range(1, 12));
+    }
 }
