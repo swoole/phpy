@@ -10,7 +10,7 @@ COPY . /opt/phpy
 # 编译安装
 RUN cd /opt/phpy && docker-php-source extract && \
     phpize && \
-    ./configure --with-python-dir=/usr && \
+    ./configure --with-python-config=/usr/bin/python3-config && \
     make && make install && \
     docker-php-ext-enable phpy && \
     docker-php-source delete
