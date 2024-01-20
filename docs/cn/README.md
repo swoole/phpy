@@ -33,4 +33,5 @@ Python 模块
 - [phpy：PHP 与 Python 互调用库，为 PHP 引入 Python 生态](https://zhuanlan.zhihu.com/p/670373512)
 - [Ubuntu 18.04 下 PHP-8.3 编译安装 phpy](https://mp.weixin.qq.com/s/q_-keG3clvs7Hii-oEW3RQ)
 - [phpy：连接 PHP 与 Python 生态](https://zhuanlan.zhihu.com/p/671645003)
+- [PHP 如何通过 phpy 调用开源大模型平台魔塔ModelScope](https://mp.weixin.qq.com/s/p5x2XwJgPpodZI_Woa8qPA)
 
