@@ -466,6 +466,17 @@ StrObject::StrObject(PyObject *pv) {
 }
 
 namespace phpy {
+namespace php {
+bool env_equals(const char *name, size_t nlen, const char *val, size_t vlen) {
+    zend_string *res = php_getenv(name, nlen);
+    if (res) {
+        bool result = ZSTR_LEN(res) == vlen && strncasecmp(ZSTR_VAL(res), val, vlen) == 0;
+        zend_string_release(res);
+        return result;
+    }
+    return false;
+}
+}  // namespace php
 namespace python {
 const char *string2utf8(PyObject *pv, ssize_t *len) {
     return PyUnicode_AsUTF8AndSize(pv, len);

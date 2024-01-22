@@ -17,6 +17,7 @@
 
 #include "phpy.h"
 #include "zend_exceptions.h"
+#include "ext/standard/basic_functions.h"
 
 struct ZendCallable;
 static void Callable_dealloc(ZendCallable *self);
@@ -78,7 +79,7 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     zval retval;
     zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv);
     if (result == FAILURE) {
-        if (phpy_get_mode() == PHPY_PYTHON_MODULE && EG(exception)) {
+        if (EG(exception) && phpy::php::env_equals(ZEND_STRL("phpy_display_exception"), ZEND_STRL("on"))) {
             zend_exception_error(EG(exception), E_ERROR);
         }
         PyErr_Format(PyExc_RuntimeError, "Function call failed");
