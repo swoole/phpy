@@ -181,7 +181,6 @@ zend_class_entry *phpy_object_get_ce();
 zend_class_entry *phpy_sequence_get_ce();
 zend_class_entry *phpy_iter_get_ce();
 zend_class_entry *phpy_dict_get_ce();
-zend_class_entry *phpy_mapping_get_ce();
 
 void phpy_object_ctor(zval *zobject, PyObject *object);
 /**
@@ -232,7 +231,6 @@ void new_module(zval *zv, PyObject *pv);
 void new_object(zval *zv, PyObject *pv);
 void new_object(zval *zv, PyObject *pv, zend_class_entry *ce);
 void new_dict(zval *zv, PyObject *pv);
-void new_mapping(zval *zv, PyObject *pv);
 void new_list(zval *zv, PyObject *pv);
 void new_tuple(zval *zv, PyObject *pv);
 void new_set(zval *zv, PyObject *pv);

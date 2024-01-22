@@ -185,7 +185,7 @@ int php_class_object_init(INIT_FUNC_ARGS) {
     INIT_CLASS_ENTRY(ce, "PyObject", class_PyObject_methods);
     PyObject_ce = zend_register_internal_class_ex(&ce, NULL);
     PyObject_ce->ce_flags |= ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
-    zend_class_implements(PyObject_ce, 3, zend_ce_iterator, zend_ce_arrayaccess, zend_ce_countable``);
+    zend_class_implements(PyObject_ce, 3, zend_ce_iterator, zend_ce_arrayaccess, zend_ce_countable);
 
     PyObject_ce->create_object = phpy_object_create_object;
 
