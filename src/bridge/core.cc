@@ -163,7 +163,7 @@ static bool py2php_base_type(PyObject *pv, zval *zv) {
         ZVAL_BOOL(zv, Py_IsTrue(pv));
     } else if (Py_IsNone(pv)) {
         ZVAL_NULL(zv);
-    } else if (PyLong_Check(pv)) {
+    } else if (PyLong_CheckExact(pv)) {
         long2long(pv, zv);
     } else if (PyFloat_Check(pv)) {
         ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));

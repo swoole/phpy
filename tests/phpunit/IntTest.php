@@ -10,4 +10,12 @@ class IntTest extends TestCase
 
         $this->assertEquals(strval($i->__pow__(3)), '1881564851360655187875');
     }
+
+    function testEnum()
+    {
+        $m = PyCore::import('app.user');
+        $v = $m->Color->GREEN;
+        $this->assertIsNotInt($v);
+        $this->assertEquals($v->value, 3);
+    }
 }

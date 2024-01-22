@@ -1,7 +1,18 @@
+from enum import Enum
+
+
 def test():
     print("app.user.main.test()")
 
+
 storage = {}
+
+
+class Color(Enum):
+    RED = 1
+    BLUE = 2
+    GREEN = 3
+
 
 class User:
     def __init__(self, name):
