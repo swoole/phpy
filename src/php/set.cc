@@ -54,8 +54,11 @@ ZEND_METHOD(PySet, __construct) {
     PyObject *pset;
     if (phpy::php::is_null(zset) || phpy::php::is_empty_array(zset)) {
         pset = PySet_New(0);
-    } else {
+    } else if (phpy::php::is_array(zset)) {
         pset = array2set(zset);
+    } else {
+        zend_throw_error(NULL, "PySet: unsupported type");
+        return;
     }
     phpy_object_ctor(ZEND_THIS, pset);
 }

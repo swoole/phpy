@@ -6,7 +6,7 @@
 
 class PyTuple extends PySequence
 {
-    public function __construct(mixed $data)
+    public function __construct(array $data)
     {
 
     }

@@ -1,8 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 815afffaa8deaedd0e553dd377b8945c1328ae47 */
+ * Stub hash: b98daadc02b9f5707b102616630bd559730fe4da */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PyTuple___construct, 0, 0, 1)
-	ZEND_ARG_TYPE_INFO(0, data, IS_MIXED, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_ARRAY, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyTuple_offsetGet, 0, 1, IS_MIXED, 0)

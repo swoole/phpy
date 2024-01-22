@@ -57,8 +57,11 @@ ZEND_METHOD(PyDict, __construct) {
     PyObject *pdict;
     if (phpy::php::is_null(zdict) || phpy::php::is_empty_array(zdict)) {
         pdict = PyDict_New();
-    } else {
+    } else if (phpy::php::is_array(zdict)) {
         pdict = array2dict(zdict);
+    } else {
+        zend_throw_error(NULL, "PyDict: unsupported type");
+        return;
     }
     phpy_object_ctor(ZEND_THIS, pdict);
 }

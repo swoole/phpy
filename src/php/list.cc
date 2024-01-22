@@ -63,10 +63,12 @@ ZEND_METHOD(PyList, __construct) {
     PyObject *plist;
     if (phpy::php::is_null(zlist) || phpy::php::is_empty_array(zlist)) {
         plist = PyList_New(0);
-    } else {
+    } else if (phpy::php::is_array(zlist)) {
         plist = array2list(zlist);
+    } else {
+        zend_throw_error(NULL, "PyList: unsupported type");
+        return;
     }
-
     phpy_object_ctor(ZEND_THIS, plist);
 }
 
