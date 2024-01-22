@@ -105,8 +105,7 @@ ZEND_METHOD(PyList, offsetSet) {
         result = PyList_SetItem(object, zval_get_long(zk), pv);
     }
     if (result < 0) {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyList: cannot write attribute");
+        phpy::php::throw_error_if_occurred();
     }
 }
 

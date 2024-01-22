@@ -52,8 +52,7 @@ ZEND_METHOD(PyStr, __construct) {
         if (pStr == NULL) {
             phpy_object_ctor(ZEND_THIS, Py_None);
             Py_INCREF(Py_None);
-            PyErr_Print();
-            zend_throw_error(NULL, "PyStr: cannot convert to string");
+            phpy::php::throw_error_if_occurred();
             return;
         }
         phpy_object_ctor(ZEND_THIS, pStr);

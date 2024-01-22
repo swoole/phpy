@@ -64,7 +64,7 @@ ZEND_METHOD(PyCore, eval) {
     std::string module_name = "eval_code_" + std::to_string(eval_code_id++);
     PyObject *module = PyModule_New(module_name.c_str());
     if (module == NULL) {
-        PyErr_Print();
+        phpy::php::throw_error_if_occurred();
         RETURN_FALSE;
     }
 
@@ -76,15 +76,15 @@ ZEND_METHOD(PyCore, eval) {
         auto status = PyDict_Merge(globals, pglobal_params, 0);
         Py_DECREF(pglobal_params);
         if (status != 0) {
-            PyErr_Print();
             Py_DECREF(module);
+            phpy::php::throw_error_if_occurred();
             RETURN_FALSE;
         }
     }
 
     PyObject *result = PyRun_StringFlags(input_code, Py_file_input, globals, NULL, NULL);
     if (result == NULL) {
-        PyErr_Print();
+        phpy::php::throw_error_if_occurred();
         RETVAL_FALSE;
     } else {
         phpy::php::new_module(return_value, module);
@@ -253,8 +253,7 @@ void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *ret
     if (fn_iter == builtin_functions.end()) {
         fn = PyObject_GetAttrString(module_builtins, name);
         if (!fn || !PyCallable_Check(fn)) {
-            PyErr_Print();
-            zend_throw_error(NULL, "PyCore: has no builtin function '%s'", name);
+            phpy::php::throw_error_if_occurred();
             return;
         }
         builtin_functions[name] = fn;
