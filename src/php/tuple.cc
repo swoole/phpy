@@ -64,6 +64,8 @@ ZEND_METHOD(PyTuple, __construct) {
         ptuple = PyTuple_New(0);
     } else if (phpy::php::is_array(ztuple)) {
         ptuple = array2tuple(ztuple);
+    } else if (phpy::php::is_pyobject(ztuple)) {
+        ptuple = PySequence_Tuple(phpy_object_get_handle(ztuple));
     } else {
         zend_throw_error(NULL, "PyTuple: unsupported type");
         return;
