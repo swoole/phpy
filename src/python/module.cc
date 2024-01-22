@@ -200,6 +200,10 @@ static bool py_module_php_init(PyObject *m) {
 
 #include <sapi/embed/php_embed.h>
 PyMODINIT_FUNC PyInit_phpy(void) {
+    if (phpy_init(PHPY_PYTHON_MODULE) < 0) {
+        PyErr_SetString(PyExc_SystemError, "Error: phpy has been initialized");
+        return NULL;
+    }
     char program_name[] = "phpy";
     char *argv[] = {program_name};
     php_embed_init(1, argv);

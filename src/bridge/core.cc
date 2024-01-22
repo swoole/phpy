@@ -27,6 +27,21 @@ using phpy::StrObject;
 
 const int var_dump_level = 3;
 
+static int init_mode = 0;
+
+int phpy_init(int mode) {
+    if (init_mode > 0) {
+        return -1;
+    } else {
+        init_mode = mode;
+        return 0;
+    }
+}
+
+int phpy_get_mode(void) {
+    return init_mode;
+}
+
 static void (*py2php_fn)(PyObject *pv, zval *zv);
 static void py2php_object_impl(PyObject *pv, zval *zv);
 static void py2php_scalar_impl(PyObject *pv, zval *zv);

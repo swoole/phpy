@@ -71,6 +71,14 @@ inline ScopeGuard<Fun> operator+(ScopeGuardOnExit, Fun &&fn) {
 
 #define ON_SCOPE_EXIT auto __SCOPEGUARD_CONCATENATE(ext_exitBlock_, __LINE__) = detail::ScopeGuardOnExit() + [&]()
 
+enum {
+    PHPY_PHP_EXTENSION = 1,
+    PHPY_PYTHON_MODULE = 2,
+};
+
+int phpy_init(int mode);
+int phpy_get_mode(void);
+
 zval *zend_string_cast(PyObject *pv);
 zval *zend_reference_cast(PyObject *pv);
 zval *zend_resource_cast(PyObject *pv);

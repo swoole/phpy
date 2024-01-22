@@ -198,6 +198,10 @@ PyMODINIT_FUNC php_init_python_module(void) {
 }
 
 PHP_MINIT_FUNCTION(phpy) {
+    if (phpy_init(PHPY_PHP_EXTENSION) < 0) {
+        zend_error(E_ERROR, "Error: phpy has been initialized");
+        return FAILURE;
+    }
     if (PyImport_AppendInittab("phpy", php_init_python_module) == -1) {
         zend_error(E_ERROR, "Error: failed to call PyImport_AppendInittab()");
         return FAILURE;
