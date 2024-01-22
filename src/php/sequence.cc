@@ -17,8 +17,6 @@
 
 #include "phpy.h"
 
-#include "zend_interfaces.h"
-
 BEGIN_EXTERN_C()
 #include "stubs/phpy_sequence_arginfo.h"
 END_EXTERN_C()
@@ -32,36 +30,11 @@ int php_class_sequence_init(INIT_FUNC_ARGS) {
     INIT_CLASS_ENTRY(ce, "PySequence", class_PySequence_methods);
     PySequence_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
     PySequence_ce->ce_flags |= ZEND_ACC_ABSTRACT | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
-    zend_class_implements(PySequence_ce, 3, zend_ce_iterator, zend_ce_arrayaccess, zend_ce_countable);
     return SUCCESS;
 }
 
 zend_class_entry *phpy_sequence_get_ce() {
     return PySequence_ce;
-}
-
-ZEND_METHOD(PySequence, rewind) {
-    phpy_object_iterator_reset(ZEND_THIS);
-}
-
-ZEND_METHOD(PySequence, next) {
-    phpy_object_iterator_next(ZEND_THIS);
-}
-
-ZEND_METHOD(PySequence, valid) {
-    RETURN_BOOL(phpy_object_iterator_valid(ZEND_THIS));
-}
-
-ZEND_METHOD(PySequence, key) {
-    RETURN_LONG(phpy_object_iterator_index(ZEND_THIS));
-}
-
-ZEND_METHOD(PySequence, current) {
-    auto current = phpy_object_iterator_current(ZEND_THIS);
-    if (current == NULL) {
-        return;
-    }
-    py2php(current, return_value);
 }
 
 ZEND_METHOD(PySequence, count) {

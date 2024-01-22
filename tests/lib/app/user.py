@@ -14,6 +14,29 @@ class Color(Enum):
     GREEN = 3
 
 
+class KvReadonly:
+    def __init__(self, v1, v2):
+        self.v1 = v1
+        self.v2 = v2
+        self.d = {
+            self.v1: 123456,
+            self.v2: "hello",
+        }
+
+    def __getitem__(self, key):
+        return self.d.get(key)
+
+
+class Kv(KvReadonly):
+    def __setitem__(self, key, value):
+        self.d[key] = value
+
+
+class KvCount(KvReadonly):
+    def __len__(self):
+        return len(self.d)
+
+
 class User:
     def __init__(self, name):
         self._name = name

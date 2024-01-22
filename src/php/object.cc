@@ -16,6 +16,7 @@
  */
 
 #include "phpy.h"
+#include "zend_interfaces.h"
 #include <tuple>
 
 BEGIN_EXTERN_C()
@@ -177,11 +178,14 @@ std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS, zend_clas
 }  // namespace php
 }  // namespace phpy
 
+using phpy::php::arg_1;
+
 int php_class_object_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "PyObject", class_PyObject_methods);
     PyObject_ce = zend_register_internal_class_ex(&ce, NULL);
     PyObject_ce->ce_flags |= ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    zend_class_implements(PyObject_ce, 3, zend_ce_iterator, zend_ce_arrayaccess, zend_ce_countable``);
 
     PyObject_ce->create_object = phpy_object_create_object;
 
@@ -229,8 +233,7 @@ ZEND_METHOD(PyObject, __call) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     auto fn = PyObject_GetAttrString(object, name);
     if (!fn || !PyCallable_Check(fn)) {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyObject: has no callable attribute '%s'", name);
+        phpy::php::throw_error_if_occurred();
         return;
     }
     CallObject caller(fn, return_value, arguments);
@@ -252,8 +255,7 @@ ZEND_METHOD(PyObject, __get) {
         py2php(value, return_value);
         Py_DECREF(value);
     } else {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s> has no attribute '%s'", Py_TypeName(object), name);
+        phpy::php::throw_error_if_occurred();
     }
 }
 
@@ -270,8 +272,7 @@ ZEND_METHOD(PyObject, __set) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     auto value = PyObject_SetAttrString(object, name, php2py(zvalue));
     if (value < 0) {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s> cannot write attribute '%s'", Py_TypeName(object), name);
+        phpy::php::throw_error_if_occurred();
     }
 }
 
@@ -284,9 +285,7 @@ ZEND_METHOD(PyObject, __toString) {
         ZVAL_STRINGL(return_value, sv, sl);
         Py_DECREF(value);
     } else {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TypeName(object));
-        return;
+        phpy::php::throw_error_if_occurred();
     }
 }
 
@@ -302,11 +301,87 @@ ZEND_METHOD(PyObject, __invoke) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     if (!object || !PyCallable_Check(object)) {
-        PyErr_Print();
-        zend_throw_error(NULL, "PyObject<%s>: object is not callable", Py_TypeName(object));
+        phpy::php::throw_error_if_occurred();
         return;
     }
 
     CallObject caller(object, return_value, argc, argv, kwargs);
     caller.call();
+}
+
+ZEND_METHOD(PyObject, rewind) {
+    phpy_object_iterator_reset(ZEND_THIS);
+}
+
+ZEND_METHOD(PyObject, next) {
+    phpy_object_iterator_next(ZEND_THIS);
+}
+
+ZEND_METHOD(PyObject, valid) {
+    RETURN_BOOL(phpy_object_iterator_valid(ZEND_THIS));
+}
+
+ZEND_METHOD(PyObject, key) {
+    RETURN_LONG(phpy_object_iterator_index(ZEND_THIS));
+}
+
+ZEND_METHOD(PyObject, current) {
+    auto current = phpy_object_iterator_current(ZEND_THIS);
+    if (current == NULL) {
+        return;
+    }
+    py2php(current, return_value);
+}
+
+ZEND_METHOD(PyObject, count) {
+    auto object = phpy_object_get_handle(ZEND_THIS);
+    RETURN_LONG(PyObject_Size(object));
+}
+
+ZEND_METHOD(PyObject, offsetGet) {
+    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    auto object = phpy_object_get_handle(ZEND_THIS);
+    ON_SCOPE_EXIT {
+        Py_DECREF(pk);
+    };
+    auto value = PyObject_GetItem(object, pk);
+    if (value == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    py2php(value, return_value);
+}
+
+ZEND_METHOD(PyObject, offsetSet) {
+    zval *zv;
+    zval *zk;
+
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+    Z_PARAM_ZVAL(zk)
+    Z_PARAM_ZVAL(zv)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    auto object = phpy_object_get_handle(ZEND_THIS);
+    PyObject *pv = php2py(zv);
+    PyObject *pk = php2py(zk);
+    ON_SCOPE_EXIT {
+        Py_DECREF(pv);
+        Py_DECREF(pk);
+    };
+    auto value = PyObject_SetItem(object, pk, pv);
+    if (value < 0) {
+        phpy::php::throw_error_if_occurred();
+    }
+}
+
+ZEND_METHOD(PyObject, offsetUnset) {
+    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    auto object = phpy_object_get_handle(ZEND_THIS);
+    PyObject_DelItem(object, pk);
+    Py_DECREF(pk);
+}
+
+ZEND_METHOD(PyObject, offsetExists) {
+    // The PyMapping_HasKey function always succeeds
+    RETURN_TRUE;
 }

@@ -4,7 +4,7 @@
  * @generate-function-entries
  */
 
-class PyDict extends PyObject implements \ArrayAccess, \Iterator, \Countable
+class PyDict extends PyObject
 {
     public function __construct(array $value = null)
     {
@@ -32,18 +32,6 @@ class PyDict extends PyObject implements \ArrayAccess, \Iterator, \Countable
     }
 
     public function key(): mixed
-    {
-    }
-
-    public function next(): void
-    {
-    }
-
-    public function rewind(): void
-    {
-    }
-
-    public function valid(): bool
     {
     }
 

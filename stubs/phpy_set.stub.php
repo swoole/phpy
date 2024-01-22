@@ -4,31 +4,11 @@
  * @generate-function-entries
  */
 
-class PySet extends PyObject implements \Iterator, \Countable
+class PySet extends PyObject
 {
     public function __construct(array $data = null)
     {
 
-    }
-
-    public function key(): mixed
-    {
-    }
-
-    public function next(): void
-    {
-    }
-
-    public function rewind(): void
-    {
-    }
-
-    public function valid(): bool
-    {
-    }
-
-    public function current(): mixed
-    {
     }
 
     public function count(): int

@@ -16,7 +16,6 @@
  */
 
 #include "phpy.h"
-#include "zend_interfaces.h"
 
 BEGIN_EXTERN_C()
 #include "stubs/phpy_dict_arginfo.h"
@@ -29,7 +28,6 @@ int php_class_dict_init(INIT_FUNC_ARGS) {
     INIT_CLASS_ENTRY(ce, "PyDict", class_PyDict_methods);
     PyDict_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
     PyDict_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
-    zend_class_implements(PyDict_ce, 3, zend_ce_iterator, zend_ce_arrayaccess, zend_ce_countable);
     return SUCCESS;
 }
 
@@ -117,18 +115,6 @@ ZEND_METHOD(PyDict, offsetExists) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     RETVAL_BOOL(PyDict_Contains(object, pk));
     Py_DECREF(pk);
-}
-
-ZEND_METHOD(PyDict, rewind) {
-    phpy_object_iterator_reset(ZEND_THIS);
-}
-
-ZEND_METHOD(PyDict, next) {
-    phpy_object_iterator_next(ZEND_THIS);
-}
-
-ZEND_METHOD(PyDict, valid) {
-    RETURN_BOOL(phpy_object_iterator_valid(ZEND_THIS));
 }
 
 ZEND_METHOD(PyDict, key) {

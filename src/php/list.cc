@@ -17,8 +17,6 @@
 
 #include "phpy.h"
 
-#include "zend_interfaces.h"
-
 BEGIN_EXTERN_C()
 #include "stubs/phpy_list_arginfo.h"
 END_EXTERN_C()
