@@ -47,11 +47,12 @@ if test "$PHP_PHPY" != "no"; then
     PHP_ADD_LIBRARY_WITH_PATH("python${PHP_PYTHON_VERSION}", "${PHP_PYTHON_DIR}/lib", PHPY_SHARED_LIBADD)
   fi
 
+  PHP_REQUIRE_CXX()
+  PHP_ADD_LIBRARY(stdc++, 1, PHPY_SHARED_LIBADD)
+
   PHP_SUBST(PHPY_SHARED_LIBADD)
 
   AC_DEFINE(HAVE_PHPY, 1, [ Have phpy support ])
-
-  PHP_REQUIRE_CXX()
 
   CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now"
   CXXFLAGS="$CXXFLAGS -std=c++14"
