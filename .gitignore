@@ -11,6 +11,7 @@
 *.loT
 /Debug
 /build
+/out
 /.libs
 /autom4te.cache
 /CMakeCache.txt
