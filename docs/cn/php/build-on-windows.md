@@ -52,7 +52,7 @@ cd D:\workspace\php-sdk\php-sdk-binary-tools-2.2.0\phpdev\vs16\x64\php-8.1.5
 $ buildconf --force
 Rebuilding configure.js
 Now run 'configure --help'
-configure --disable-all --enable-cli --disable-zts --enable-phpy=shared
+configure --with-openssl --with-mysqlnd --with-mysqli --enable-mbstring --enable-pdo --with-pdo-mysql --with-curl --enable-cli --enable-opcache --disable-zts --enable-phpy=shared
 ```
 
 `--enable-phpy=shared` 表示启用 `phpy` 扩展，并且编译为 `.dll` 动态链接库
