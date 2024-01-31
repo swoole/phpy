@@ -5,7 +5,7 @@
 ## 编译依赖
 - `cmake 3.16` 或更高版本
 - `php 8.1 (embed)` 或更高版本，编译 `PHP` 时需要增加 `--enable-embed` 参数
-- `Python 3.8` 或更高版本
+- `Python 3.8` 或更高版本,需要安装 `python3-dev`
 
 ## 编译配置
 
@@ -22,7 +22,7 @@ cmake . -D PHP_CONFIG=/usr/local/php/bin/php-config
 指定 `python-config` 指令的路径，默认为相对路径，例如：
 
 ```shell
-cmake . -D PHP_CONFIG=/usr/local/bin/python3-config
+cmake . -D PYTHON_CONFIG=/usr/local/bin/python3-config
 ```
 
 ## 构建
