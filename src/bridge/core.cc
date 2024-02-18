@@ -481,6 +481,7 @@ namespace python {
 const char *string2utf8(PyObject *pv, ssize_t *len) {
     return PyUnicode_AsUTF8AndSize(pv, len);
 };
+
 const char *string2char_ptr(PyObject *pv, ssize_t *len) {
     const char *c_str;
     if (ZendString_Check(pv)) {
@@ -500,6 +501,24 @@ const char *string2char_ptr(PyObject *pv, ssize_t *len) {
     }
     return c_str;
 }
+
+void string2zval(PyObject *pv, zval *zv) {
+    Py_ssize_t len;
+    auto sval = string2char_ptr(pv, &len);
+    if (sval != NULL) {
+        ZVAL_STRINGL(zv, sval, len);
+        return;
+    }
+    auto value = PyObject_Str(pv);
+    if (value != NULL) {
+        const char *sv = PyUnicode_AsUTF8AndSize(value, &len);
+        ZVAL_STRINGL(zv, sv, len);
+        Py_DECREF(value);
+    } else {
+        phpy::php::throw_error_if_occurred();
+    }
+}
+
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
     Py_ssize_t i;
     for (i = begin; i < size; i++) {

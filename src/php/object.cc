@@ -277,16 +277,7 @@ ZEND_METHOD(PyObject, __set) {
 }
 
 ZEND_METHOD(PyObject, __toString) {
-    auto object = phpy_object_get_handle(ZEND_THIS);
-    auto value = PyObject_Str(object);
-    if (value != NULL) {
-        Py_ssize_t sl;
-        const char *sv = PyUnicode_AsUTF8AndSize(value, &sl);
-        ZVAL_STRINGL(return_value, sv, sl);
-        Py_DECREF(value);
-    } else {
-        phpy::php::throw_error_if_occurred();
-    }
+    phpy::python::string2zval(phpy_object_get_handle(ZEND_THIS), return_value);
 }
 
 ZEND_METHOD(PyObject, __invoke) {

@@ -69,4 +69,11 @@ class ObjectTest extends TestCase
         $data = iterator_to_array($fset);
         $this->assertEquals($data, $arr);
     }
+
+    public function testBytes2Str()
+    {
+        $bytes = random_bytes(128);
+        $data = PyCore::bytes($bytes);
+        $this->assertEquals($bytes, strval($data));
+    }
 }

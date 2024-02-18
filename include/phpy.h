@@ -375,6 +375,7 @@ PyObject *new_reference(zval *zv);
 PyObject *new_callable(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
 const char *string2char_ptr(PyObject *pv, ssize_t *len);
+void string2zval(PyObject *pv, zval *zv);
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);
 }  // namespace python
