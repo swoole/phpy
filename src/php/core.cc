@@ -22,6 +22,10 @@
 #include <unordered_set>
 #include <string>
 
+#include <php_network.h>
+#include <php_streams.h>
+#include <zend_exceptions.h>
+
 #include "stubs/phpy_core_arginfo.h"
 
 static zend_class_entry *PyCore_ce;
@@ -311,4 +315,56 @@ ZEND_METHOD(PyCore, bytes) {
     }
     phpy::php::new_object(return_value, pv);
     Py_DECREF(pv);
+}
+
+ZEND_METHOD(PyCore, fileno) {
+    zval *zfp;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_RESOURCE(zfp)
+    ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    if (Z_TYPE_P(zfp) != IS_RESOURCE) {
+        RETURN_FALSE;
+    }
+
+    php_socket_t fd = -1;
+    php_stream *stream;
+    FILE *fp = NULL;
+
+    php_stream_from_zval_no_verify(stream, zfp);
+    if (stream == NULL) {
+        zend_throw_exception(zend_ce_exception, "Only stream type resource is supported", 0);
+        RETURN_FALSE;
+    }
+
+    if (php_stream_is(stream, PHP_STREAM_IS_MEMORY) || php_stream_is(stream, PHP_STREAM_IS_TEMP)) {
+        zend_throw_exception(zend_ce_exception, "Memory and temporary file stream is not supported", 0);
+        RETURN_FALSE;
+    } else if (php_stream_can_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
+        if (php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL, (void **) &fd, 1) !=
+                SUCCESS ||
+            fd < 0) {
+            RETURN_FALSE;
+        }
+    } else if (php_stream_can_cast(stream, PHP_STREAM_AS_FD | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
+        if (php_stream_cast(stream, PHP_STREAM_AS_FD | PHP_STREAM_CAST_INTERNAL, (void **) &fd, 1) != SUCCESS ||
+            fd < 0) {
+            RETURN_FALSE;
+        }
+    } else if (php_stream_can_cast(stream, PHP_STREAM_AS_STDIO | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
+        if (php_stream_cast(stream, PHP_STREAM_AS_STDIO, (void **) &fp, 1) != SUCCESS) {
+            RETURN_FALSE;
+        }
+        fd = fileno(fp);
+    } else { /* STDIN, STDOUT, STDERR etc. */
+        fd = Z_LVAL_P(zfp);
+    }
+
+    if (!ZEND_VALID_SOCKET(fd)) {
+        zend_throw_exception(zend_ce_exception, "Invalid file descriptor", 0);
+        RETURN_FALSE;
+    } else {
+        RETURN_LONG(fd);
+    }
 }

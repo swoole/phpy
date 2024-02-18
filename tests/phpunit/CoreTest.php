@@ -100,12 +100,40 @@ class CoreTest extends TestCase
         $this->assertEquals(PyCore::scalar(PyCore::range(3)), range(0, 2));
     }
 
-    public function testObject() {
+    public function testObject()
+    {
         $o = PyCore::object("hello world");
         $this->assertTrue($o instanceof PyObject);
         $this->assertStringContainsString('zend_string', strval(PyCore::type($o)));
 
         $o = PyCore::object(123456789);
         $this->assertStringContainsString('int', strval(PyCore::type($o)));
+    }
+
+    public function testFileno()
+    {
+        $this->assertEquals(0, PyCore::fileno(STDIN));
+        $this->assertEquals(1, PyCore::fileno(STDOUT));
+        $this->assertEquals(2, PyCore::fileno(STDERR));
+
+        $size = 1 * 1024 * 1024;
+        try {
+            $fp = fopen("php://temp/maxmemory:$size", 'r+');
+            $fd = PyCore::fileno($fp);
+        } catch (\Throwable $e) {
+            $this->assertStringContainsString('not supported', $e->getMessage());
+        }
+
+        $fp = fopen(__FILE__, 'r');
+        $this->assertGreaterThan(0, PyCore::fileno($fp));
+
+        $svr = stream_socket_server("tcp://127.0.0.1:0", $errno, $errstr);
+        $this->assertNotEmpty($svr);
+
+        $name = stream_socket_get_name($svr, false);
+        [$host, $port] = explode(':', $name);
+        $this->assertEquals('127.0.0.1', $host);
+        $this->assertGreaterThan(0, PyCore::fileno($svr));
+        $this->assertGreaterThan(1024, $port);
     }
 }

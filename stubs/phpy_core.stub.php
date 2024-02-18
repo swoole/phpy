@@ -6,7 +6,7 @@
 
 /**
  * @method static print(PyObject $o)
- * @method static exec(string $code, $global=null, $locals=null)
+ * @method static exec(string $code, $global = null, $locals = null)
  */
 class PyCore
 {
@@ -51,6 +51,14 @@ class PyCore
     }
 
     public static function next(PyObject $iter): mixed
+    {
+
+    }
+
+    /**
+     * @param resource $fp
+     */
+    public static function fileno($fp): int|false
     {
 
     }
