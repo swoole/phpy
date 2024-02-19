@@ -32,7 +32,6 @@ static PyTypeObject ZendResourceType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 static void Resource_dtor(PyObject *pv) {
     ZendResource *self = (ZendResource *) pv;
-    phpy::php::del_object(pv);
     zval_ptr_dtor(&self->resource);
     ZVAL_NULL(&self->resource);
 }
