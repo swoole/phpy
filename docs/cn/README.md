@@ -16,6 +16,7 @@ PHP 扩展
 * [内存拷贝](php/memory.md)
 * [性能测试](benchmark.md)
 * [IDE 提示](php/composer.md)
+* [Socket API](php/socket.md)
 
 Python 模块
 ---

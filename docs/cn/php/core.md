@@ -45,7 +45,8 @@ $class = $m->$className;
 - `PyCore::dict()` 构造一个字典对象
 - `PyCore::set()` 构造一个集合对象
 - `PyCore::range()` 构造一个范围序列
-- `PyCore::scalar()` 将 `PyObject` 对象转为 `PHP` 的标量类型，例如 `PyStr` 将转为 `PHP 字符串`，`Dict/Tuple/Set/List` 将转为 `Array`
+- `PyCore::scalar($pyobj)` 将 `PyObject` 对象转为 `PHP` 的标量类型，例如 `PyStr` 将转为 `PHP 字符串`，`Dict/Tuple/Set/List` 将转为 `Array`
+- `PyCore::fileno($fp)` 获取 `PHP Stream` 资源的文件描述符，请注意仅支持 `tcp/udp/unix` 类型的资源
 
 > `PyCore` 实现了 `__callStatic()` 魔术方法，对于 `PyCore` 静态方法调用会自动调用 `Python` 的 `builtins` 模块对应的方法 ，
 > 可参考 [Built-in Functions](https://docs.python.org/3/library/functions.html) 了解更多内置方法的使用
