@@ -217,6 +217,7 @@ PHP_MINIT_FUNCTION(phpy) {
     PyConfig py_config;
     PyConfig_InitPythonConfig(&py_config);
     py_config.install_signal_handlers = 0; // ignore signal
+    py_config.parse_argv = 0;
     Py_InitializeFromConfig(&py_config);
     PyConfig_Clear(&py_config);
 #else
