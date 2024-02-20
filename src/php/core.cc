@@ -211,7 +211,19 @@ PHP_MINIT_FUNCTION(phpy) {
         return FAILURE;
     }
     srand(time(NULL));
+
+#if PY_VERSION_HEX >= 0x03080000
+    // doc: https://docs.python.org/3/c-api/init_config.html
+    PyConfig py_config;
+    PyConfig_InitPythonConfig(&py_config);
+    py_config.install_signal_handlers = 0; // ignore signal
+    py_config.parse_argv = 0;
+    Py_InitializeFromConfig(&py_config);
+    PyConfig_Clear(&py_config);
+#else
     Py_InitializeEx(0);
+#endif
+
     module_phpy = PyImport_ImportModule("phpy");
     if (!module_phpy) {
         PyErr_Print();
