@@ -45,4 +45,7 @@ ZEND_METHOD(PyFn, __construct) {
     ZEND_PARSE_PARAMETERS_START(1, 1)
     Z_PARAM_ZVAL(zfn)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
+
+    PyObject *pv = phpy::python::new_callable(zfn);
+    phpy_object_ctor(ZEND_THIS, pv);
 }

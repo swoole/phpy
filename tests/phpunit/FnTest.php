@@ -68,4 +68,16 @@ class FnTest extends TestCase
         }
         $this->assertFalse($success);
     }
+
+    function testCtor()
+    {
+        $m = PyCore::import('app.user');
+        $uuid = uniqid();
+        $fn = new PyFn(function ($namespace) use ($uuid) {
+            $this->assertEquals($namespace, 'app.user');
+            return $uuid;
+        });
+        $rs = $m->test_callback($fn);
+        $this->assertEquals($rs, $uuid);
+    }
 }
