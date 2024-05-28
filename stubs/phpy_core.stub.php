@@ -63,6 +63,11 @@ class PyCore
 
     }
 
+    public static function setOptions(array $options): void
+    {
+
+    }
+
     public static function __callStatic(string $name, array $arguments): mixed
     {
 

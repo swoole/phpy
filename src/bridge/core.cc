@@ -104,6 +104,10 @@ static void py2php_scalar_impl(PyObject *pv, zval *zv) {
         dict2array(pv, zv);
     } else if (PySet_Check(pv)) {
         set2array(pv, zv);
+    } else if (PyLong_CheckExact(pv)) {
+        long2long(pv, zv);
+    } else if (PyFloat_Check(pv)) {
+        ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));
     } else {
         phpy::php::new_object(zv, pv);
     }
@@ -178,9 +182,9 @@ static bool py2php_base_type(PyObject *pv, zval *zv) {
         ZVAL_BOOL(zv, Py_IsTrue(pv));
     } else if (Py_IsNone(pv)) {
         ZVAL_NULL(zv);
-    } else if (PyLong_CheckExact(pv)) {
+    } else if (!phpy_options.numeric_as_object && PyLong_CheckExact(pv)) {
         long2long(pv, zv);
-    } else if (PyFloat_Check(pv)) {
+    } else if (!phpy_options.numeric_as_object && PyFloat_Check(pv)) {
         ZVAL_DOUBLE(zv, PyFloat_AsDouble(pv));
     } else if (ZendObject_Check(pv)) {
         ZVAL_ZVAL(zv, zend_object_cast(pv), 1, 0);

@@ -39,6 +39,8 @@ using phpy::CallObject;
 using phpy::php::arg_1;
 using phpy::php::arg_2;
 
+phpy::Options phpy_options;
+
 ZEND_METHOD(PyCore, import) {
     size_t l_module;
     char *module;
@@ -165,6 +167,20 @@ ZEND_METHOD(PyCore, scalar) {
     Py_DECREF(pyobj);
 }
 
+ZEND_METHOD(PyCore, setOptions) {
+    zval *options;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_ARRAY(options)
+    ZEND_PARSE_PARAMETERS_END_EX(return );
+
+    zval *opt;
+
+    if ((opt = phpy::php::array_get(options, ZEND_STRL("numeric_as_object")))) {
+        phpy_options.numeric_as_object = zend_is_true(opt);
+    }
+}
+
 int php_class_core_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "PyCore", class_PyCore_methods);
@@ -216,7 +232,7 @@ PHP_MINIT_FUNCTION(phpy) {
     // doc: https://docs.python.org/3/c-api/init_config.html
     PyConfig py_config;
     PyConfig_InitPythonConfig(&py_config);
-    py_config.install_signal_handlers = 0; // ignore signal
+    py_config.install_signal_handlers = 0;  // ignore signal
     py_config.parse_argv = 0;
     Py_InitializeFromConfig(&py_config);
     PyConfig_Clear(&py_config);

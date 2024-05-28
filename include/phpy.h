@@ -284,7 +284,7 @@ static inline zval *array_get(zval *zv, long index) {
     return zend_hash_index_find(Z_ARR_P(zv), index);
 }
 /**
- * Return value: Borrowed reference.
+ * Return value: Borrowed reference. If not exist, returns null pointer
  */
 static inline zval *array_get(zval *zv, const char *key, size_t l_key) {
     return zend_hash_str_find(Z_ARR_P(zv), key, l_key);
@@ -379,4 +379,9 @@ void string2zval(PyObject *pv, zval *zv);
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);
 }  // namespace python
+struct Options {
+    bool numeric_as_object;
+};
 }  // namespace phpy
+
+extern phpy::Options phpy_options;

@@ -136,4 +136,15 @@ class CoreTest extends TestCase
         $this->assertGreaterThan(0, PyCore::fileno($svr));
         $this->assertGreaterThan(1024, $port);
     }
+
+    public function testNumericAsObject()
+    {
+        PyCore::setOptions(['numeric_as_object' => true]);
+        $rs = PyCore::int(2)->__add__(3)->__mul__(7);
+        $this->assertEquals(35, PyCore::scalar($rs));
+
+        PyCore::setOptions(['numeric_as_object' => false]);
+        $rs = PyCore::int(2)->__add__(3);
+        $this->assertEquals(5, $rs);
+    }
 }
