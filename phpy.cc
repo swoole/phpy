@@ -31,6 +31,7 @@ PHP_MINFO_FUNCTION(phpy)
 	php_info_print_table_row(2, "Copyright", "上海识沃网络科技有限公司");
     php_info_print_table_row(2, "Email", "service@swoole.com");
     php_info_print_table_row(2, "Website", "https://www.swoole.com/");
+    php_info_print_table_row(2, "Version", PHP_PHPY_VERSION);
 	php_info_print_table_end();
 }
 /* }}} */
