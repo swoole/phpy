@@ -23,8 +23,7 @@ Compile and install phpy.so as an extension, and append `extension=phpy.so` to `
 
 ```php
 $os = PyCore::import("os");
-$un = $os->uname();
-echo strval($un);
+echo $os->uname();
 ```
 
 ## Calling PHP from Python
