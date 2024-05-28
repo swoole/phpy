@@ -30,6 +30,14 @@ class PyObject implements \ArrayAccess, \Iterator, \Countable
 
     }
 
+    /**
+     * @implementation-alias PyObject::__toString
+     */
+    public function toString(): string
+    {
+
+    }
+
     public function __invoke(mixed ...$arguments): mixed
     {
 

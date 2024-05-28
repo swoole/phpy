@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 6c2b1214662b2b65bab2468fcd8c505dd8dca9a0 */
+ * Stub hash: bd509faeced9617d3f064788b4a5a571ff400e07 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PyObject___construct, 0, 0, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, value, IS_MIXED, 0, "null")
@@ -21,6 +21,8 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject___toString, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+
+#define arginfo_class_PyObject_toString arginfo_class_PyObject___toString
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject___invoke, 0, 0, IS_MIXED, 0)
 	ZEND_ARG_VARIADIC_TYPE_INFO(0, arguments, IS_MIXED, 0)
@@ -84,6 +86,7 @@ static const zend_function_entry class_PyObject_methods[] = {
 	ZEND_ME(PyObject, __get, arginfo_class_PyObject___get, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, __set, arginfo_class_PyObject___set, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, __toString, arginfo_class_PyObject___toString, ZEND_ACC_PUBLIC)
+	ZEND_MALIAS(PyObject, toString, __toString, arginfo_class_PyObject_toString, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, __invoke, arginfo_class_PyObject___invoke, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, offsetGet, arginfo_class_PyObject_offsetGet, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, offsetSet, arginfo_class_PyObject_offsetSet, ZEND_ACC_PUBLIC)
