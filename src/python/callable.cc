@@ -79,8 +79,9 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     zval retval;
     zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv);
     if (result == FAILURE) {
-        if (EG(exception) && phpy::php::env_equals(ZEND_STRL("phpy_display_exception"), ZEND_STRL("on"))) {
+        if (EG(exception) && phpy_options.display_exception) {
             zend_exception_error(EG(exception), E_ERROR);
+            zend_clear_exception();
         }
         PyErr_Format(PyExc_RuntimeError, "Function call failed");
         return NULL;

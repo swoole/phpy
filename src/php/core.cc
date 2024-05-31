@@ -178,6 +178,8 @@ ZEND_METHOD(PyCore, setOptions) {
 
     if ((opt = phpy::php::array_get(options, ZEND_STRL("numeric_as_object")))) {
         phpy_options.numeric_as_object = zend_is_true(opt);
+    } else if ((opt = phpy::php::array_get(options, ZEND_STRL("display_exception")))) {
+        phpy_options.display_exception = zend_is_true(opt);
     }
 }
 

@@ -381,6 +381,7 @@ void release_argv(uint32_t argc, zval *argv);
 }  // namespace python
 struct Options {
     bool numeric_as_object;
+    bool display_exception;
 };
 }  // namespace phpy
 
