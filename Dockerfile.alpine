@@ -1,0 +1,26 @@
+FROM php:8.2.13-cli-alpine
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk add python3
+RUN apk add autoconf gcc g++ make python3-dev
+
+WORKDIR /work
+COPY . /work/phpy
+
+RUN docker-php-source extract && \
+    cd /work/phpy && phpize && \
+    ./configure --with-python-config=/usr/bin/python3-config && \
+    make clean && make -j $(nproc)
+
+FROM php:8.2.13-cli-alpine
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk add python3 bash
+
+COPY --from=0 /work/phpy/modules/phpy.so /tmp
+RUN cp /tmp/phpy.so $(php-config --extension-dir) && \
+    docker-php-ext-enable phpy && \
+    docker-php-source delete
+RUN php --ri phpy
+
+CMD ["bash"]
+
