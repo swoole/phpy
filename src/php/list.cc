@@ -77,6 +77,8 @@ ZEND_METHOD(PyList, offsetGet) {
         zend_throw_error(NULL, "PyList: index[%ld] out of range", pk);
         return;
     }
+    // PyList_GetItem()
+    // Return value: Borrowed reference
     auto value = PyList_GetItem(object, pk);
     if (value != NULL) {
         py2php(value, return_value);
@@ -94,16 +96,16 @@ ZEND_METHOD(PyList, offsetSet) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     PyObject *pv = php2py(zv);
-    ON_SCOPE_EXIT {
-        Py_DECREF(pv);
-    };
     int result;
     if (zk == NULL || ZVAL_IS_NULL(zk)) {
         result = PyList_Append(object, pv);
     } else {
         Py_INCREF(pv);
+        // PyList_SetItem()
+        // Not increase reference count of the value
         result = PyList_SetItem(object, zval_get_long(zk), pv);
     }
+    Py_DECREF(pv);
     if (result < 0) {
         phpy::php::throw_error_if_occurred();
     }
