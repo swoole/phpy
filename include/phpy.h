@@ -151,6 +151,7 @@ void debug_dump(uint32_t i, zval *item);
 void debug_dump(uint32_t i, PyObject *pObj);
 void var_dump(zval *var);
 void debug_var_dump(zval *var);
+void debug_print_refcnt(const char *fn, PyObject *zv);
 
 bool py_module_string_init(PyObject *m);
 bool py_module_object_init(PyObject *m);

@@ -90,11 +90,9 @@ ZEND_METHOD(PyDict, offsetSet) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     PyObject *pv = php2py(zv);
     PyObject *pk = php2py(zk);
-    ON_SCOPE_EXIT {
-        Py_DECREF(pv);
-        Py_DECREF(pk);
-    };
     auto value = PyDict_SetItem(object, pk, pv);
+    Py_DECREF(pv);
+    Py_DECREF(pk);
     if (value < 0) {
         phpy::php::throw_error_if_occurred();
     }

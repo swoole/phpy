@@ -118,6 +118,9 @@ void py2php_scalar(PyObject *pv, zval *zv) {
     py2php_fn(pv, zv);
 }
 
+/**
+ * Increase reference count of the value
+ */
 void py2php(PyObject *pv, zval *zv) {
     py2php_fn = py2php_object_impl;
     py2php_fn(pv, zv);
@@ -206,7 +209,9 @@ PyObject *array2list(zend_array *ht) {
     zval *current;
     PyObject *list = PyList_New(0);
     ZEND_HASH_FOREACH_VAL(ht, current) {
-        PyList_Append(list, php2py(current));
+        auto elem = php2py(current);
+        PyList_Append(list, elem);
+        Py_DECREF(elem);
     }
     ZEND_HASH_FOREACH_END();
     return list;
@@ -217,6 +222,8 @@ PyObject *array2tuple(zend_array *ht) {
     PyObject *tuple = PyTuple_New(phpy::php::array_count(ht));
     Py_ssize_t index = 0;
     ZEND_HASH_FOREACH_VAL(ht, current) {
+        // PyTuple_SetItem()
+        // NOT increase reference count of the value
         PyTuple_SetItem(tuple, index++, php2py(current));
     }
     ZEND_HASH_FOREACH_END();
@@ -227,7 +234,9 @@ PyObject *array2set(zend_array *ht) {
     zval *current;
     PyObject *pset = PySet_New(0);
     ZEND_HASH_FOREACH_VAL(ht, current) {
-        PySet_Add(pset, php2py(current));
+        auto elem = php2py(current);
+        PySet_Add(pset, elem);
+        Py_DECREF(elem);
     }
     ZEND_HASH_FOREACH_END();
     return pset;
@@ -244,6 +253,7 @@ static void iterator2array(PyObject *pv, zval *zv) {
         zval item;
         py2php_fn(next, &item);
         add_next_index_zval(zv, &item);
+        Py_DECREF(next);
     }
     Py_DECREF(iter);
 }
@@ -260,7 +270,14 @@ PyObject *array2dict(zend_array *ht) {
         } else {
             dk = PyLong_FromLong(index);
         }
-        PyDict_SetItem(dict, dk, php2py(value));
+        auto elem = php2py(value);
+        /**
+         * PyDict_SetItem()
+         * Increase reference count of the key and value
+         */
+        PyDict_SetItem(dict, dk, elem);
+        Py_DECREF(elem);
+        Py_DECREF(dk);
     }
     ZEND_HASH_FOREACH_END();
     return dict;
@@ -270,15 +287,24 @@ static void dict2array(PyObject *pv, zval *zv) {
     PyObject *iter = PyObject_GetIter(pv);
     array_init(zv);
     while (true) {
+        /**
+         * PyIter_Next()
+         * Return value: New reference
+         */
         PyObject *next = PyIter_Next(iter);
         if (!next) {
             break;
         }
+        /**
+         * PyDict_GetItem()
+         * Return value: Borrowed reference
+         */
         auto value = PyDict_GetItem(pv, next);
         zval item;
         py2php_fn(value, &item);
         StrObject key(next);
         add_assoc_zval_ex(zv, key.val(), key.len(), &item);
+        Py_DECREF(next);
     }
     Py_DECREF(iter);
 }
@@ -374,6 +400,10 @@ void debug_var_dump(zval *var) {
     php_debug_zval_dump(var, var_dump_level);
 }
 
+void debug_print_refcnt(const char *fn, PyObject *zv) {
+    printf("[%s] refcount=%zu\n", fn, Py_REFCNT(zv));
+}
+
 CallObject::CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval *_argv, zend_array *_kwargs) {
     fn = _fn;
     return_value = _return_value;
@@ -446,14 +476,18 @@ void CallObject::parse_args(zval *array) {
     zend_ulong num_key;
 
     ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(array), num_key, string_key, current) {
+        auto elem = php2py(current);
         if (!string_key) {
-            PyList_Append(arg_list, php2py(current));
+            PyList_Append(arg_list, elem);
         } else {
             if (kwargs == nullptr) {
                 kwargs = PyDict_New();
             }
-            PyDict_SetItem(kwargs, string2py(string_key), php2py(current));
+            auto dk = string2py(string_key);
+            PyDict_SetItem(kwargs, dk, elem);
+            Py_DECREF(dk);
         }
+        Py_DECREF(elem);
         (void) num_key;
     }
     ZEND_HASH_FOREACH_END();
@@ -526,6 +560,8 @@ void string2zval(PyObject *pv, zval *zv) {
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
     Py_ssize_t i;
     for (i = begin; i < size; i++) {
+        // PyTuple_GetItem()
+        // Return value: Borrowed reference
         PyObject *arg = PyTuple_GetItem(args, i);
         if (arg == NULL) {
             PyErr_SetString(PyExc_TypeError, "wrong parameter");

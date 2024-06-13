@@ -78,6 +78,8 @@ ZEND_METHOD(PyTuple, offsetGet) {
         zend_throw_error(NULL, "PyTuple: index[%ld] out of range", pk);
         return;
     }
+    // PyTuple_GetItem()
+    // Return value: Borrowed reference
     auto value = PyTuple_GetItem(object, pk);
     if (value != NULL) {
         py2php(value, return_value);
