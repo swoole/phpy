@@ -44,7 +44,7 @@ if s3 == "hello":
 print(s1[2])
 ```
 
-请注意 `phpy.String`返回的格式与 `bytes` 一致，是一个 `uchar int`。
+请注意 `phpy.String`返回的格式与 `bytes` 一致，是一个 `uchar`。
 但与 `str` 不同，`str` 会处理 `UTF-8` 编码返回一个 `UTF-8` 的宽字符，例如 `str('中国')[0]` 返回的是 `中`。
 
 ## 转为 `Python` 的 `bytes` 类型
