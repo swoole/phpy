@@ -48,7 +48,6 @@ if test "$PHP_PHPY" != "no"; then
   fi
 
   PHP_REQUIRE_CXX()
-  PHP_ADD_LIBRARY(stdc++, 1, PHPY_SHARED_LIBADD)
 
   PHP_SUBST(PHPY_SHARED_LIBADD)
 
@@ -69,7 +68,7 @@ if test "$PHP_PHPY" != "no"; then
   phpy_source_files=$(cd $phpy_source_dir && find src -type f -name "*.cc")
   phpy_source_files="phpy.cc $phpy_source_files"
 
-  PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared)
+  PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared,,, cxx)
 
     AC_MSG_RESULT([$ext_builddir])
 
