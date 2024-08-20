@@ -6,7 +6,7 @@
 extern zend_module_entry phpy_module_entry;
 # define phpext_phpy_ptr &phpy_module_entry
 
-# define PHP_PHPY_VERSION "1.0.5"
+# define PHP_PHPY_VERSION "1.0.6"
 
 # if defined(ZTS) && defined(COMPILE_DL_PHPY)
 ZEND_TSRMLS_CACHE_EXTERN()

@@ -21,7 +21,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </lead>
     <date>2024-08-20</date>
     <version>
-        <release>1.0.5</release>
+        <release>1.0.6</release>
         <api>1.0</api>
     </version>
     <stability>
@@ -30,7 +30,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </stability>
     <license uri="http://www.apache.org/licenses/LICENSE-2.0.html">Apache2.0</license>
     <notes>
-        version 1.0.5
+        - Added python-config PECL configure option
     </notes>
     <contents>
         <dir name="/">
@@ -102,5 +102,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
         </required>
     </dependencies>
     <providesextension>phpy</providesextension>
-    <extsrcrelease/>
+    <extsrcrelease>
+        <configureoption name="with-python-config" prompt="Specify the path of python-config" default="/usr/bin/python3-config"/>
+    </extsrcrelease>
 </package>
