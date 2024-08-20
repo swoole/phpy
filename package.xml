@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<package packagerversion="1.4.11" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
+         xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+    <name>phpy</name>
+    <channel>pecl.php.net</channel>
+    <summary>A library for inter-calling Python and PHP</summary>
+    <description>
+        This extension allows PHP to directly use Python modules and functions without RPC.
+        Including Pytorch, transformer, numpy, tensorflow and other Python AI libraries, which can be used like calling
+        PHP functions.
+    </description>
+    <lead>
+        <name>Tianfeng.Han</name>
+        <user>tianfenghan</user>
+        <email>rango@swoole.com</email>
+        <active>yes</active>
+    </lead>
+    <date>2024-08-20</date>
+    <version>
+        <release>1.0.5</release>
+        <api>1.0</api>
+    </version>
+    <stability>
+        <release>stable</release>
+        <api>stable</api>
+    </stability>
+    <license uri="http://www.apache.org/licenses/LICENSE-2.0.html">Apache2.0</license>
+    <notes>
+        version 1.0.5
+    </notes>
+    <contents>
+        <dir name="/">
+            <file role='src' name='README.md'/>
+            <file role='src' name='config.m4'/>
+            <file role='src' name='config.w32'/>
+            <file role='src' name='.clang-format'/>
+            <file role='src' name='phpy.cc'/>
+            <file role='src' name='php_phpy.h'/>
+            <file role='src' name='include/phpy.h'/>
+            <file role='src' name='stubs/phpy_core_arginfo.h'/>
+            <file role='src' name='stubs/phpy_dict_arginfo.h'/>
+            <file role='src' name='stubs/phpy_error_arginfo.h'/>
+            <file role='src' name='stubs/phpy_fn_arginfo.h'/>
+            <file role='src' name='stubs/phpy_iter_arginfo.h'/>
+            <file role='src' name='stubs/phpy_list_arginfo.h'/>
+            <file role='src' name='stubs/phpy_module_arginfo.h'/>
+            <file role='src' name='stubs/phpy_object_arginfo.h'/>
+            <file role='src' name='stubs/phpy_sequence_arginfo.h'/>
+            <file role='src' name='stubs/phpy_set_arginfo.h'/>
+            <file role='src' name='stubs/phpy_str_arginfo.h'/>
+            <file role='src' name='stubs/phpy_tuple_arginfo.h'/>
+            <file role='src' name='stubs/phpy_type_arginfo.h'/>
+            <file role='src' name='stubs/phpy_core.stub.php'/>
+            <file role='src' name='stubs/phpy_dict.stub.php'/>
+            <file role='src' name='stubs/phpy_error.stub.php'/>
+            <file role='src' name='stubs/phpy_fn.stub.php'/>
+            <file role='src' name='stubs/phpy_iter.stub.php'/>
+            <file role='src' name='stubs/phpy_list.stub.php'/>
+            <file role='src' name='stubs/phpy_module.stub.php'/>
+            <file role='src' name='stubs/phpy_object.stub.php'/>
+            <file role='src' name='stubs/phpy_sequence.stub.php'/>
+            <file role='src' name='stubs/phpy_set.stub.php'/>
+            <file role='src' name='stubs/phpy_str.stub.php'/>
+            <file role='src' name='stubs/phpy_tuple.stub.php'/>
+            <file role='src' name='stubs/phpy_type.stub.php'/>
+            <file role='src' name='src/bridge/core.cc'/>
+            <file role='src' name='src/php/core.cc'/>
+            <file role='src' name='src/php/dict.cc'/>
+            <file role='src' name='src/php/error.cc'/>
+            <file role='src' name='src/php/fn.cc'/>
+            <file role='src' name='src/php/iter.cc'/>
+            <file role='src' name='src/php/list.cc'/>
+            <file role='src' name='src/php/module.cc'/>
+            <file role='src' name='src/php/object.cc'/>
+            <file role='src' name='src/php/sequence.cc'/>
+            <file role='src' name='src/php/set.cc'/>
+            <file role='src' name='src/php/str.cc'/>
+            <file role='src' name='src/php/tuple.cc'/>
+            <file role='src' name='src/php/type.cc'/>
+            <file role='src' name='src/python/array.cc'/>
+            <file role='src' name='src/python/callable.cc'/>
+            <file role='src' name='src/python/class.cc'/>
+            <file role='src' name='src/python/module.cc'/>
+            <file role='src' name='src/python/object.cc'/>
+            <file role='src' name='src/python/reference.cc'/>
+            <file role='src' name='src/python/resource.cc'/>
+            <file role='src' name='src/python/string.cc'/>
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>8.1.0</min>
+            </php>
+            <pearinstaller>
+                <min>1.4.0</min>
+            </pearinstaller>
+        </required>
+    </dependencies>
+    <providesextension>phpy</providesextension>
+    <extsrcrelease/>
+</package>

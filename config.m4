@@ -57,14 +57,25 @@ if test "$PHP_PHPY" != "no"; then
   CXXFLAGS="$CXXFLAGS -Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now"
   CXXFLAGS="$CXXFLAGS -std=c++14"
 
-  if test -f "phpy.cc"; then
+  if test -f "$abs_srcdir/phpy.cc"; then
+      phpy_source_dir=$abs_srcdir
+  elif test -f "php_swoole.cc"; then
       phpy_source_dir=$(pwd)
   else
       phpy_source_dir="ext/phpy"
   fi
+  AC_MSG_RESULT([$phpy_source_dir])
 
   phpy_source_files=$(cd $phpy_source_dir && find src -type f -name "*.cc")
   phpy_source_files="phpy.cc $phpy_source_files"
 
   PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared)
+
+    AC_MSG_RESULT([$ext_builddir])
+
+    PHP_ADD_INCLUDE([$ext_srcdir/include])
+    PHP_ADD_BUILD_DIR($ext_builddir/src)
+    PHP_ADD_BUILD_DIR($ext_builddir/src/bridge)
+    PHP_ADD_BUILD_DIR($ext_builddir/src/php)
+    PHP_ADD_BUILD_DIR($ext_builddir/src/python)
 fi
