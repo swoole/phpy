@@ -59,7 +59,7 @@ if test "$PHP_PHPY" != "no"; then
 
   if test -f "$abs_srcdir/phpy.cc"; then
       phpy_source_dir=$abs_srcdir
-  elif test -f "php_swoole.cc"; then
+  elif test -f "phpy.cc"; then
       phpy_source_dir=$(pwd)
   else
       phpy_source_dir="ext/phpy"
