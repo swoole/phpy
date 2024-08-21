@@ -104,6 +104,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dependencies>
     <providesextension>phpy</providesextension>
     <extsrcrelease>
-        <configureoption name="with-python-config" prompt="Specify the path of python-config" default="/usr/bin/python3-config"/>
+        <configureoption name="with-python-config" prompt="Specify the path of python-config" default="python3-config"/>
     </extsrcrelease>
 </package>
