@@ -45,5 +45,7 @@ jobs:
         env:
           LC_ALL: POSIX # Do not remove this line, PR: https://github.com/swoole/phpy/pull/45
         run: |
+          sudo apt install -y redis-server
+          sudo service redis-server start
           composer install
           composer test
