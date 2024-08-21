@@ -7,7 +7,6 @@
 #include "php.h"
 #include "ext/standard/info.h"
 #include "php_phpy.h"
-#include <patchlevel.h>
 
 /* {{{ PHP_RINIT_FUNCTION */
 PHP_RINIT_FUNCTION(phpy)
@@ -23,18 +22,19 @@ PHP_RINIT_FUNCTION(phpy)
 extern PHP_MINIT_FUNCTION(phpy);
 extern PHP_MSHUTDOWN_FUNCTION(phpy);
 extern PHP_RSHUTDOWN_FUNCTION(phpy);
+extern const char *phpy_get_python_version(void);
 
 /* {{{ PHP_MINFO_FUNCTION */
 PHP_MINFO_FUNCTION(phpy)
 {
-	php_info_print_table_start();
-	php_info_print_table_header(2, "phpy support", "enabled");
-	php_info_print_table_row(2, "Copyright", "上海识沃网络科技有限公司");
+    php_info_print_table_start();
+    php_info_print_table_header(2, "phpy support", "enabled");
+    php_info_print_table_row(2, "Copyright", "上海识沃网络科技有限公司");
     php_info_print_table_row(2, "Email", "service@swoole.com");
     php_info_print_table_row(2, "Website", "https://www.swoole.com/");
     php_info_print_table_row(2, "Extension Version", PHP_PHPY_VERSION);
-    php_info_print_table_row(2, "Python Version", PY_VERSION);
-	php_info_print_table_end();
+    php_info_print_table_row(2, "Python Version", phpy_get_python_version());
+    php_info_print_table_end();
 }
 /* }}} */
 

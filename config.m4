@@ -4,17 +4,17 @@ dnl config.m4 for extension phpy
 PHP_ARG_WITH([python_dir],
   [dir of python],
   [AS_HELP_STRING([[--with-python-dir[=DIR]]],
-    [Specify python installation dir, default is /usr])], [no], [no])
+    [Specify python installation dir])], [no], [no])
 
 PHP_ARG_WITH([python_version],
   [version of python],
   [AS_HELP_STRING([[--with-python-version[=VERSION]]],
-    [Specify version of python, or use default (ex: 3.12)])], [no], [no])
+    [Specify version of python])], [no], [no])
 
 PHP_ARG_WITH([python_config],
   [path of python_config],
   [AS_HELP_STRING([[--with-python-config[=PATH]]],
-    [Specify path of python_config])], [no], [no])
+    [Specify path of python_config, the default is python3-config])], [no], [no])
 
 PHP_ARG_ENABLE([phpy],
   [whether to enable phpy support],
@@ -43,12 +43,19 @@ AC_DEFUN([GET_PYTHON_INCLUDES], [
   fi
 ])
 
+AC_DEFUN([GET_PYTHON_VERSION_WITH_PYTHON_DIR], [
+  PHP_PYTHON_VERSION=$("${PHP_PYTHON_DIR}/bin/python3" -c "import sys; print('%d.%d'%(sys.version_info.major, sys.version_info.minor))")
+  if test $? -ne 0; then
+      AC_MSG_ERROR([failed to execute `python3`])
+  fi
+])
+
 if test "$PHP_PHPY" != "no"; then
   if test "$PHP_PYTHON_CONFIG" != "no"; then
     GET_PYTHON_INCLUDES()
     GET_PYTHON_LDFLAGS()
   elif test "$PHP_PYTHON_DIR" != "no"; then
-    PHP_PYTHON_VERSION=$("${PHP_PYTHON_DIR}/bin/python" -c "import sys; print('%d.%d'%(sys.version_info.major, sys.version_info.minor))")
+    GET_PYTHON_VERSION_WITH_PYTHON_DIR()
     AC_MSG_RESULT([Python DIR: ${PHP_PYTHON_DIR}])
     AC_MSG_RESULT([Python Version: ${PHP_PYTHON_VERSION}])
     PHP_ADD_INCLUDE("${PHP_PYTHON_DIR}/include/python${PHP_PYTHON_VERSION}")

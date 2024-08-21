@@ -309,6 +309,12 @@ PHP_RSHUTDOWN_FUNCTION(phpy) {
     return SUCCESS;
 }
 
+BEGIN_EXTERN_C()
+const char *phpy_get_python_version(void) {
+    return Py_GetVersion();
+}
+END_EXTERN_C()
+
 ZEND_METHOD(PyCore, __callStatic) {
     char *name;
     size_t l_name;
