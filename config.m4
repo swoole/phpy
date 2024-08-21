@@ -23,10 +23,31 @@ PHP_ARG_ENABLE([phpy],
     [Enable phpy support])],
   [no])
 
+AC_DEFUN([GET_PYTHON_LDFLAGS], [
+  TMP_RESULT="$($PHP_PYTHON_CONFIG --embed --ldflags)"
+  if test $? -eq 0; then
+      PYTHON_LDFLAGS="$TMP_RESULT"
+  elif test $? -eq 1; then
+      PYTHON_LDFLAGS="$LDFLAGS $($PHP_PYTHON_CONFIG --ldflags)"
+  else
+      AC_MSG_ERROR([failed to execute `$PHP_PYTHON_CONFIG --ldflags`])
+  fi
+  LDFLAGS="$LDFLAGS $PYTHON_LDFLAGS"
+])
+
+AC_DEFUN([GET_PYTHON_INCLUDES], [
+  TMP_RESULT="$INCLUDES $($PHP_PYTHON_CONFIG --includes)"
+  if test $? -eq 0; then
+      INCLUDES="$INCLUDES $TMP_RESULT"
+  else
+      AC_MSG_ERROR([failed to execute `$PHP_PYTHON_CONFIG --includes`])
+  fi
+])
+
 if test "$PHP_PHPY" != "no"; then
   if test "$PHP_PYTHON_CONFIG" != "no"; then
-    INCLUDES="$INCLUDES $($PHP_PYTHON_CONFIG --includes)"
-    LDFLAGS="$LDFLAGS $($PHP_PYTHON_CONFIG --embed --ldflags)"
+    GET_PYTHON_INCLUDES()
+    GET_PYTHON_LDFLAGS()
   else
     if test "$PHP_PYTHON_DIR" = "no"; then
        PHP_PYTHON_DIR="/opt/anaconda3"
@@ -63,14 +84,15 @@ if test "$PHP_PHPY" != "no"; then
   else
       phpy_source_dir="ext/phpy"
   fi
-  AC_MSG_RESULT([$phpy_source_dir])
 
-  phpy_source_files=$(cd $phpy_source_dir && find src -type f -name "*.cc")
-  phpy_source_files="phpy.cc $phpy_source_files"
+    dnl AC_MSG_RESULT([$phpy_source_dir])
 
-  PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared,,, cxx)
+    phpy_source_files=$(cd $phpy_source_dir && find src -type f -name "*.cc")
+    phpy_source_files="phpy.cc $phpy_source_files"
 
-    AC_MSG_RESULT([$ext_builddir])
+    PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared,,, cxx)
+
+  dnl AC_MSG_RESULT([$ext_builddir])
 
     PHP_ADD_INCLUDE([$ext_srcdir/include])
     PHP_ADD_BUILD_DIR($ext_builddir/src)
