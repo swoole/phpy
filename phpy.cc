@@ -22,7 +22,6 @@ PHP_RINIT_FUNCTION(phpy)
 extern PHP_MINIT_FUNCTION(phpy);
 extern PHP_MSHUTDOWN_FUNCTION(phpy);
 extern PHP_RSHUTDOWN_FUNCTION(phpy);
-extern const char *phpy_get_python_version(void);
 
 /* {{{ PHP_MINFO_FUNCTION */
 PHP_MINFO_FUNCTION(phpy)

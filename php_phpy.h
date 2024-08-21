@@ -8,6 +8,10 @@ extern zend_module_entry phpy_module_entry;
 
 # define PHP_PHPY_VERSION "1.0.6"
 
+BEGIN_EXTERN_C()
+extern const char *phpy_get_python_version(void);
+END_EXTERN_C()
+
 # if defined(ZTS) && defined(COMPILE_DL_PHPY)
 ZEND_TSRMLS_CACHE_EXTERN()
 # endif
