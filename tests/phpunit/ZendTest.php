@@ -15,4 +15,14 @@ class ZendTest extends TestCase
         $type = strval($m->get_type($dict, 'zend_object'));
         $this->assertStringStartsWith('<zend_object object at', $type);
     }
+
+    function testCallMethodInPython()
+    {
+        $m = PyCore::import('app.user');
+
+        $redis = new redis();
+        $redis->connect('127.0.0.1');
+        $rs = $m->test_redis($redis);
+        $this->assertEquals($rs, 'hello phpy');
+    }
 }

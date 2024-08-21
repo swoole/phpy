@@ -80,3 +80,8 @@ def lazy_square(limit):
 
 def get_type(d, k):
     return repr(d[k])
+
+
+def test_redis(redis):
+    redis.set('name', 'hello phpy')
+    return redis.get('name')
