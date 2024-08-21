@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: |
           phpize
-          ./configure --with-python-config=python3-config
+          ./configure
           make -j $(nproc)
           sudo make install
           sudo sh -c "echo 'extension=phpy.so' > /etc/php/${PHP_VERSION}/cli/conf.d/90-phpy.ini"
