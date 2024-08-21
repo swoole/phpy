@@ -368,10 +368,13 @@ ZEND_METHOD(PyCore, fileno) {
         RETURN_FALSE;
     }
 
+#ifndef PHP_WIN32
     if (php_stream_is(stream, PHP_STREAM_IS_MEMORY) || php_stream_is(stream, PHP_STREAM_IS_TEMP)) {
         zend_throw_exception(zend_ce_exception, "Memory and temporary file stream is not supported", 0);
         RETURN_FALSE;
-    } else if (php_stream_can_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
+    } else
+#endif
+    if (php_stream_can_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
         if (php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL, (void **) &fd, 1) !=
                 SUCCESS ||
             fd < 0) {

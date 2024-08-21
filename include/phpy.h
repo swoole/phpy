@@ -20,6 +20,14 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#ifdef HAVE_PUTENV
+#undef HAVE_PUTENV
+#endif
+
+#ifdef HAVE_GETPID
+#undef HAVE_GETPID
+#endif
+
 #include <main/php.h>
 #include <main/SAPI.h>
 #include <main/php_main.h>

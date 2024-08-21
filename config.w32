@@ -5,11 +5,12 @@ ARG_ENABLE("phpy", "enable phpy extension", "yes");
 if (PHP_PHPY != "no") {
 	PYTHONHOME = WshShell.Environment("Process").Item("PYTHONHOME")
 	if (PYTHONHOME) {
-		ADD_SOURCES("ext/phpy/src/bridge", "core.cc", "phpy")
-		ADD_SOURCES("ext/phpy/src/php", "object.cc type.cc error.cc iter.cc dict.cc core.cc fn.cc str.cc sequence.cc list.cc set.cc tuple.cc module.cc", "phpy")
-		ADD_SOURCES("ext/phpy/src/python", "class.cc module.cc object.cc reference.cc resource.cc callable.cc string.cc array.cc", "phpy")
+		var ext_dir = configure_module_dirname
+		ADD_SOURCES(ext_dir + "/src/bridge", "core.cc", "phpy")
+		ADD_SOURCES(ext_dir + "/src/php", "object.cc type.cc error.cc iter.cc dict.cc core.cc fn.cc str.cc sequence.cc list.cc set.cc tuple.cc module.cc", "phpy")
+		ADD_SOURCES(ext_dir + "/src/python", "class.cc module.cc object.cc reference.cc resource.cc callable.cc string.cc array.cc", "phpy")
 	
-		EXTENSION("phpy", "phpy.cc", null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -Iext/phpy/include -Iext/phpy /I ' + PYTHONHOME + '/include')
+		EXTENSION("phpy", "phpy.cc", null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 -I ' + ext_dir + '/include -I ' + ext_dir + ' /I ' + PYTHONHOME + '/include')
 
 		ADD_FLAG("CFLAGS", "/D PHP_PHPY_EXPORTS ")
 		ADD_FLAG("LDFLAGS_PHPY", '/libpath:' + PYTHONHOME + '/libs')
