@@ -55,15 +55,9 @@ if test "$PHP_PHPY" != "no"; then
   elif test "$PHP_PYTHON_VERSION" != "no"; then
     AC_MSG_RESULT([Python Version: ${PHP_PYTHON_VERSION}])
     dnl modern version use python3-embed, old (<= 3.6) use python3
-    if test "$PHP_PYTHON_VERSION" = "no"; then
-      PKG_CHECK_MODULES([PYTHON], [python3-embed],,
-        [PKG_CHECK_MODULES([PYTHON], [python3])]
-      )
-    else
-      PKG_CHECK_MODULES([PYTHON], [python-${PHP_PYTHON_VERSION}-embed],,
-        [PKG_CHECK_MODULES([PYTHON], [python-${PHP_PYTHON_VERSION}])]
-      )
-    fi
+    PKG_CHECK_MODULES([PYTHON], [python-${PHP_PYTHON_VERSION}-embed],,
+      [PKG_CHECK_MODULES([PYTHON], [python-${PHP_PYTHON_VERSION}])]
+    )
     PHP_EVAL_LIBLINE($PYTHON_LIBS, PHPY_SHARED_LIBADD)
     PHP_EVAL_INCLINE($PYTHON_CFLAGS)
   else
