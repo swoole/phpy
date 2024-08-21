@@ -25,4 +25,10 @@ class ZendTest extends TestCase
         $rs = $m->test_redis($redis);
         $this->assertEquals($rs, 'hello phpy');
     }
+
+    function testCallFuncInPython()
+    {
+        $m = PyCore::import('app.phpy');
+        $this->assertContains('phpy', $m->test_import());
+    }
 }
