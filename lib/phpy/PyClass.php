@@ -17,6 +17,9 @@ class PyClass
     private string $_proxyFile;
     private string $_class;
 
+    /**
+     * @throws \Exception
+     */
     function __construct()
     {
         if (!self::$_sys) {
@@ -39,7 +42,11 @@ class PyClass
         }
     }
 
-    private function makeProxy()
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    private function makeProxy(): void
     {
         $ref = new ReflectionClass($this);
         $refParents = $ref->getAttributes('parent');
@@ -53,11 +60,11 @@ class PyClass
             foreach ($refParents as $refParent) {
                 $parent = $refParent->getArguments();
                 if (count($parent) == 1) {
-                    $parents[] = $parent[0];
+                    $parents[] = self::checkName($parent[0], 'class');
                 } else {
                     [$class, $package] = $parent;
-                    $import .= 'import ' . $package . PHP_EOL;
-                    $parents[] = $package . '.' . $class;
+                    $import .= 'import ' . self::checkName($package, 'package') . PHP_EOL;
+                    $parents[] = $package . '.' . self::checkName($class, 'class');
                 }
             }
         }
@@ -89,19 +96,34 @@ class PyClass
         file_put_contents($this->_proxyFile, $content);
     }
 
-    protected function super()
+    protected function super(): ?PyObject
     {
         return $this->_super;
     }
 
-    protected function self()
+    protected function self(): ?PyObject
     {
         return $this->_self;
     }
 
-    static function setProxyPath(string $path): void
+    public static function setProxyPath(string $path): void
     {
         self::$_proxyPath = $path;
         self::$_sys->path->append($path);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private static function checkName(string $name, string $type): string
+    {
+        static $regx = [
+            'class' => '#^[a-z_][a-z_0-9]*$#i',
+            'package' => '#^[a-z_][a-z_0-9]*(\.[a-z_][a-z_0-9]*)*$#i'
+        ];
+        if (!preg_match($regx[$type], $name)) {
+            throw new \Exception("Invalid $type name: '$name'");
+        }
+        return $name;
     }
 }
