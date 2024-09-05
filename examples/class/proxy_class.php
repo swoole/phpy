@@ -4,5 +4,7 @@ require __DIR__ . '/Dog.php';
 
 PyCore::import('sys')->path->append('.');
 
+\phpy\PyClass::setProxyPath(__DIR__, true);
+
 $dog = new Dog('dog', 1);
 $dog->speak('hello');

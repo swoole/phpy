@@ -10,28 +10,29 @@ use ReflectionMethod;
 class PyClass
 {
     static private string $_proxyPath = '';
+    static private bool $_checkStat = false;
     static private ?PyObject $_sys = null;
     protected ?PyObject $_self = null;
     protected ?PyObject $_super = null;
     protected string $_proxyClass;
     private string $_proxyFile;
-    private string $_class;
 
     /**
      * @throws \Exception
      */
     function __construct()
     {
-        if (!self::$_sys) {
-            self::$_sys = PyCore::import('sys');
-        }
         if (!self::$_proxyPath) {
-            self::setProxyPath(getcwd() . '/__phpy_proxy__');
+            self::setProxyPath(getcwd());
         }
 
-        $this->_class = get_class($this);
-        $this->_proxyClass = strtolower(str_replace('\\', '_', $this->_class));
+        $class = get_class($this);
+        $this->_proxyClass = strtolower(str_replace('\\', '_', $class));
         $this->_proxyFile = self::$_proxyPath . '/' . $this->_proxyClass . '.py';
+
+        if (self::$_checkStat) {
+            $this->checkProxyFile();
+        }
 
         if (!is_file($this->_proxyFile)) {
             $this->makeProxy();
@@ -106,10 +107,19 @@ class PyClass
         return $this->_self;
     }
 
-    public static function setProxyPath(string $path): void
+    /**
+     * @param string $rootPath
+     * @param bool $checkStat Check file changes and delete proxy files when PHP class files are updated
+     * @return void
+     */
+    public static function setProxyPath(string $rootPath, bool $checkStat = false): void
     {
-        self::$_proxyPath = $path;
-        self::$_sys->path->append($path);
+        self::$_proxyPath = $rootPath . '/__phpy_proxy__';
+        if (!self::$_sys) {
+            self::$_sys = PyCore::import('sys');
+        }
+        self::$_sys->path->append(self::$_proxyPath);
+        self::$_checkStat = $checkStat;
     }
 
     /**
@@ -125,5 +135,14 @@ class PyClass
             throw new \Exception("Invalid $type name: '$name'");
         }
         return $name;
+    }
+
+    private function checkProxyFile(): void
+    {
+        clearstatcache(true, $this->_proxyFile);
+        $ref = new ReflectionClass($this);
+        if (filemtime($ref->getFileName()) > filemtime($this->_proxyFile)) {
+            unlink($this->_proxyFile);
+        }
     }
 }
