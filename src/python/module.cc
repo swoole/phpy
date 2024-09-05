@@ -163,6 +163,29 @@ static PyObject *phpy_eval(PyObject *self, PyObject *args) {
     return PyLong_FromLong(exit_status);
 }
 
+static PyObject *phpy_setOptions(PyObject *self, PyObject *args) {
+    PyObject *options;
+    if (!PyArg_ParseTuple(args, "O!", &PyDict_Type, &options)) {
+        PyErr_SetString(PyExc_TypeError, "must supply at least 1 parameter.");
+        return NULL;
+    }
+
+    PyObject *opt;
+    if ((opt = PyDict_GetItemString(options, "numeric_as_object"))) {
+        phpy_options.numeric_as_object = Py_IsTrue(opt);
+        Py_DECREF(opt);
+    }
+    if ((opt = PyDict_GetItemString(options, "argument_as_object"))) {
+        phpy_options.argument_as_object = Py_IsTrue(opt);
+        Py_DECREF(opt);
+    }
+    if ((opt = PyDict_GetItemString(options, "display_exception"))) {
+        phpy_options.display_exception = Py_IsTrue(opt);
+        Py_DECREF(opt);
+    }
+    Py_RETURN_NONE;
+}
+
 // clang-format off
 
 static PyMethodDef phpy_methods[] = {
@@ -172,6 +195,7 @@ static PyMethodDef phpy_methods[] = {
     {"globals", (PyCFunction) phpy_globals, METH_VARARGS, "get global variable"},
     {"eval", (PyCFunction) phpy_eval, METH_VARARGS, "execute php code"},
     {"scalar", (PyCFunction) phpy_scalar, METH_VARARGS, "convert object to php scalar type"},
+    {"setOptions", (PyCFunction) phpy_setOptions, METH_VARARGS, "set options"},
     {NULL, NULL, 0, NULL}
 };
 

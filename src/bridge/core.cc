@@ -568,7 +568,11 @@ void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
             break;
         }
         zval item;
-        py2php_scalar(arg, &item);
+        if (phpy_options.argument_as_object) {
+            py2php(arg, &item);
+        } else {
+            py2php_scalar(arg, &item);
+        }
         argv[i - begin] = item;
     }
 }

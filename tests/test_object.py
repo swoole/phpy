@@ -43,3 +43,10 @@ def test_return_object():
     o = phpy.call('curl_init')
     _type = phpy.call('get_class', o)
     assert _type == 'CurlHandle'
+
+
+def test_argument_as_object():
+    phpy.setOptions({'argument_as_object': True})
+    d = {'name': 'swoole'}
+    assert str(phpy.call('gettype', d)) == 'object'
+    assert str(phpy.call('get_class', d)) == 'PyDict'
