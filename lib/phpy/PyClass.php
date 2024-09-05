@@ -38,9 +38,6 @@ class PyClass
             $this->makeProxy();
         }
         PyCore::import($this->_proxyClass)->{$this->_proxyClass}($this);
-        if (func_num_args() > 0) {
-            $this->super()->__init__(...func_get_args());
-        }
     }
 
     /**

@@ -8,8 +8,9 @@ class Dog extends PyClass
 {
     function __construct(string $name, int $age)
     {
-        parent::__construct($name, $age);
+        parent::__construct();
         $this->self()->color = 'black';
+        $this->super()->__init__($name, $age);
     }
 
     function speak(string $name): void
