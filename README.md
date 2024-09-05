@@ -29,7 +29,7 @@ echo $os->uname();
 ### Transformers
 
 ```php
-$transformers = PyCore::import( 'transformers');
+$transformers = PyCore::import('transformers');
 $AutoTokenizer = $transformers->AutoTokenizer;
 $AutoModelForSequenceClassification = $transformers->AutoModelForSequenceClassification;
 

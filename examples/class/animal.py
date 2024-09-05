@@ -7,5 +7,5 @@ class Animal(abc.ABC):
         self.age = age
 
     def speak(self, name):
-        print("Animal speak")
+        print("Animal speak, Age: ", self.age)
         pass

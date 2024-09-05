@@ -19,7 +19,8 @@
     "autoload": {
         "psr-4": {
             "python\\": "./lib/python",
-            "PhpyTool\\": "tools/src"
+            "PhpyTool\\": "tools/src",
+            "phpy\\": "./lib/phpy"
         }
     },
     "scripts": {
