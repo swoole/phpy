@@ -50,3 +50,4 @@ def test_argument_as_object():
     d = {'name': 'swoole'}
     assert str(phpy.call('gettype', d)) == 'object'
     assert str(phpy.call('get_class', d)) == 'PyDict'
+    phpy.setOptions({'argument_as_object': False})
