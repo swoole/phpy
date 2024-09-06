@@ -2,9 +2,23 @@
 
 namespace PhpyTool;
 
+use PyCore;
+use PyStr;
+
 class  Tool
 {
-    static function render($tplFile, $outFile, $vars, $prefix = '')
+    static array $ignoreAttrs = [
+        '__builtins__',
+        '__all__',
+        '__loader__',
+        '__cached__',
+        '__file__',
+        '__spec__',
+        '__weakref__',
+        '__sizeof__',
+    ];
+
+    static function render($tplFile, $outFile, $vars, $prefix = ''): void
     {
         extract($vars);
         ob_start();
@@ -19,7 +33,7 @@ class  Tool
         file_put_contents($outFile, $out);
     }
 
-    static function valueToRepr($v, $python = false)
+    static function valueToRepr($v, $python = false): ?string
     {
         if (is_string($v)) {
             $v = str_replace(
@@ -47,5 +61,152 @@ class  Tool
         } else {
             return $python ? 'None' : 'null';
         }
+    }
+
+    public static function parseClass($module_name, $class_name, $class): void
+    {
+        $methods = [];
+        $properties = [];
+        $constructor = ['call' => '', 'args' => ''];
+        $attrs = PyCore::dir($class);
+        foreach ($attrs as $name) {
+            $name = $name->__toString();
+            if (in_array($name, self::$ignoreAttrs) or ($name[0] === '_' and $name !== '__init__')) {
+                continue;
+            }
+            $attr = $class->{$name};
+            $type = PyCore::type($attr)->__toString();
+            if ($type === "<class 'function'>") {
+                $info = self::parseMethod($name, $attr);
+                if ($name === '__init__') {
+                    $constructor = $info;
+                } else {
+                    $methods[$name] = $info;
+                }
+            } elseif ($type === "<class 'property'>") {
+                $properties[] = $name;
+            } else {
+                echo "[$module_name.$class_name.$name] attr unknown type: $type\n";
+            }
+        }
+
+        $module_name_ext = 'python.' . $module_name . '.' . $class_name;
+        $namespace = self::genNameSpace($module_name_ext);
+        $sub_dir = str_replace('.', '/', $module_name_ext);
+        self::render(
+            __DIR__ . '/../templates/php-class.tpl',
+            OUT_DIR . '/' . $sub_dir . '.php',
+            compact('class_name', 'module_name', 'namespace', 'properties', 'methods', 'constructor'),
+            '<?php' . PHP_EOL,
+        );
+    }
+
+    public static function parseMethod($name, $func): array
+    {
+        $inspect = PyCore::import('inspect');
+        $info = $inspect->getfullargspec($func);
+        $args = $info[0];
+        $args = $args->__getitem__(PyCore::slice(1, null));
+        $defaultValue = $info[3];
+        return [
+            'args' => self::genArgs($args, $defaultValue),
+            'call' => self::genArgs($args),
+        ];
+    }
+
+    public static function parseFunction($name, $func): array
+    {
+        $inspect = PyCore::import('inspect');
+        $info = $inspect->getfullargspec($func);
+        $args = $info[0];
+        $defaultValue = $info[3];
+        return [
+            'args' => self::genArgs($args, $defaultValue),
+            'call' => self::genArgs($args),
+        ];
+    }
+
+    public static function parseModule($module_name, $module): array
+    {
+        $staticProperties = [];
+        $dynamicProperties = [];
+        $constants = [];
+        $functions = [];
+        $classes = [];
+        $comment = '';
+        $attrs = PyCore::dir($module);
+
+        foreach ($attrs as $name) {
+            $name = strval($name);
+            $attr = $module->{$name};
+
+            if (is_numeric($attr)) {
+                $constants[$name] = $attr;
+            } elseif (is_bool($attr) or is_string($attr)) {
+                $staticProperties[$name] = self::valueToRepr($attr);
+            } elseif ($attr === null) {
+                $staticProperties[$name] = self::valueToRepr(null);
+            } elseif ($name === '__doc__') {
+                $comment = strval($attr);
+            } elseif (in_array($name, self::$ignoreAttrs)) {
+                continue;
+            } elseif ($attr instanceof PyStr) {
+                $staticProperties[$name] = self::valueToRepr(PyCore::scalar($attr));
+            } else {
+                $type = (strval(PyCore::type($attr)));
+                if ($type === "<class 'builtin_function_or_method'>" or $type === "<class 'function'>") {
+                    try {
+                        $functions[$name] = self::parseFunction($name, $attr);
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+                } elseif ($type === "<class 'type'>") {
+                    self::parseClass($module_name, $name, $attr);
+                } else {
+                    $dynamicProperties[$name] = $type;
+                }
+            }
+        }
+
+        return compact(
+            'staticProperties',
+            'dynamicProperties',
+            'constants',
+            'functions',
+            'classes',
+            'comment',
+        );
+    }
+
+    static function genArgs($args, $default = null)
+    {
+        $n = count($args);
+        if ($n == 0) {
+            return '';
+        }
+        $list = [];
+        foreach ($args as $arg) {
+            $list[] = '$' . $arg;
+        }
+        if ($default) {
+            $values = PyCore::scalar($default);
+            $pos = $n - count($values);
+            for ($i = $pos; $i < $n; $i++) {
+                $v = $values[$i - $pos];
+                $list[$i] = $list[$i] . ' = ' . self::valueToRepr($v);
+            }
+        }
+        return implode(', ', $list);
+    }
+
+
+    static function genNameSpace($module_name_ext): string
+    {
+        $list = explode('.', $module_name_ext);
+        if (count($list) == 2) {
+            return $list[0];
+        }
+
+        return implode('\\', array_slice($list, 0, count($list) - 1));
     }
 }

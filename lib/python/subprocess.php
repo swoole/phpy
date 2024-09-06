@@ -47,28 +47,21 @@ class subprocess{
     public $PIPE = -1;
     public $STDOUT = -2;
     public $_PIPE_BUF = 4096;
-    public $_WNOHANG = 1;
 
     public $_USE_POSIX_SPAWN = true;
     public $_USE_VFORK = true;
     public $__name__ = "subprocess";
     public $__package__ = "";
-    public $_can_fork_exec = true;
     public $_mswindows = false;
 
-    public $CalledProcessError = null;
-    public $CompletedProcess = null;
-    public $Popen = null;
-    public $SubprocessError = null;
-    public $TimeoutExpired = null;
     public $_PopenSelector = null;
     public $_active = null;
+    public $_posixsubprocess = null;
     public $builtins = null;
     public $contextlib = null;
     public $errno = null;
     public $fcntl = null;
     public $io = null;
-    public $locale = null;
     public $os = null;
     public $select = null;
     public $selectors = null;
@@ -78,14 +71,6 @@ class subprocess{
     public $time = null;
     public $types = null;
     public $warnings = null;
-
-    public function _WIFSTOPPED($status)
-    {
-    }
-
-    public function _WSTOPSIG($status)
-    {
-    }
 
     public function _args_from_interpreter_flags()
     {
@@ -99,19 +84,7 @@ class subprocess{
     {
     }
 
-    public function _text_encoding()
-    {
-    }
-
     public function _use_posix_spawn()
-    {
-    }
-
-    public function _waitpid($pid, $options)
-    {
-    }
-
-    public function _waitstatus_to_exitcode($status)
     {
     }
 

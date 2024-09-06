@@ -64,6 +64,23 @@ class os{
     public $F_ULOCK = 0;
     public $GRND_NONBLOCK = 1;
     public $GRND_RANDOM = 2;
+    public $MFD_ALLOW_SEALING = 2;
+    public $MFD_CLOEXEC = 1;
+    public $MFD_HUGETLB = 4;
+    public $MFD_HUGE_16GB = -2013265920;
+    public $MFD_HUGE_16MB = 1610612736;
+    public $MFD_HUGE_1GB = 2013265920;
+    public $MFD_HUGE_1MB = 1342177280;
+    public $MFD_HUGE_256MB = 1879048192;
+    public $MFD_HUGE_2GB = 2080374784;
+    public $MFD_HUGE_2MB = 1409286144;
+    public $MFD_HUGE_32MB = 1677721600;
+    public $MFD_HUGE_512KB = 1275068416;
+    public $MFD_HUGE_512MB = 1946157056;
+    public $MFD_HUGE_64KB = 1073741824;
+    public $MFD_HUGE_8MB = 1543503872;
+    public $MFD_HUGE_MASK = 63;
+    public $MFD_HUGE_SHIFT = 26;
     public $NGROUPS_MAX = 65536;
     public $O_ACCMODE = 3;
     public $O_APPEND = 1024;
@@ -106,6 +123,7 @@ class os{
     public $P_NOWAITO = 1;
     public $P_PGID = 2;
     public $P_PID = 1;
+    public $P_PIDFD = 3;
     public $P_WAIT = 0;
     public $RTLD_DEEPBIND = 8;
     public $RTLD_GLOBAL = 256;
@@ -114,6 +132,11 @@ class os{
     public $RTLD_NODELETE = 4096;
     public $RTLD_NOLOAD = 4;
     public $RTLD_NOW = 2;
+    public $RWF_APPEND = 16;
+    public $RWF_DSYNC = 2;
+    public $RWF_HIPRI = 1;
+    public $RWF_NOWAIT = 8;
+    public $RWF_SYNC = 4;
     public $R_OK = 4;
     public $SCHED_BATCH = 3;
     public $SCHED_FIFO = 1;
@@ -167,34 +190,23 @@ class os{
     public $sep = "/";
     public $supports_bytes_environ = true;
 
-    public $DirEntry = null;
-    public $GenericAlias = null;
     public $Mapping = null;
     public $MutableMapping = null;
     public $PathLike = null;
     public $_Environ = null;
-    public $_wrap_close = null;
     public $abc = null;
     public $confstr_names = null;
     public $environ = null;
     public $environb = null;
-    public $error = null;
     public $path = null;
     public $pathconf_names = null;
-    public $sched_param = null;
     public $st = null;
-    public $stat_result = null;
-    public $statvfs_result = null;
     public $supports_dir_fd = null;
     public $supports_effective_ids = null;
     public $supports_fd = null;
     public $supports_follow_symlinks = null;
     public $sys = null;
     public $sysconf_names = null;
-    public $terminal_size = null;
-    public $times_result = null;
-    public $uname_result = null;
-    public $waitid_result = null;
 
     public function WCOREDUMP($status)
     {
@@ -297,6 +309,10 @@ class os{
     }
 
     public function confstr($name)
+    {
+    }
+
+    public function copy_file_range($src, $dst, $count, $offset_src = null, $offset_dst = null)
     {
     }
 
@@ -564,11 +580,7 @@ class os{
     {
     }
 
-    public function login_tty($fd)
-    {
-    }
-
-    public function lseek($fd, $position, $whence)
+    public function lseek($fd, $position, $how)
     {
     }
 
@@ -585,6 +597,10 @@ class os{
     }
 
     public function makedirs($name, $mode = 511, $exist_ok = false)
+    {
+    }
+
+    public function memfd_create($name, $flags = 1)
     {
     }
 
@@ -617,6 +633,10 @@ class os{
     }
 
     public function pathconf($path, $name)
+    {
+    }
+
+    public function pidfd_open($pid, $flags = 0)
     {
     }
 
