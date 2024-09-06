@@ -19,9 +19,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>rango@swoole.com</email>
         <active>yes</active>
     </lead>
-    <date>2024-08-20</date>
+    <date>2024-09-06</date>
     <version>
-        <release>1.0.6</release>
+        <release>1.0.8</release>
         <api>1.0</api>
     </version>
     <stability>
@@ -30,7 +30,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </stability>
     <license uri="http://www.apache.org/licenses/LICENSE-2.0.html">Apache2.0</license>
     <notes>
-        - Added python-config PECL configure option
+        - Added argument_as_object configuration item
+        - Add Helper::printTraceback()
+        - Support windows platform
+        - Support Python class as parent class of PHP class
     </notes>
     <contents>
         <dir name="/">
@@ -90,6 +93,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <file role='src' name='src/python/reference.cc'/>
             <file role='src' name='src/python/resource.cc'/>
             <file role='src' name='src/python/string.cc'/>
+            <file role='src' name='lib/phpy/Helper.php'/>
+            <file role='src' name='lib/phpy/PyClass.php'/>
+            <file role='src' name='lib/phpy/proxy.tpl'/>
         </dir>
     </contents>
     <dependencies>
