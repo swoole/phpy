@@ -17,6 +17,7 @@ PHP 扩展
 * [性能测试](benchmark.md)
 * [IDE 提示](php/composer.md)
 * [Socket API](php/socket.md)
+* [继承 Python 类](php/inherit.md)
 
 Python 模块
 ---

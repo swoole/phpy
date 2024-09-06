@@ -17,17 +17,39 @@ use phpy\PyClass;
 #[parent('Animal', 'animal')]
 class Dog extends PyClass
 {
+    protected string $weight;
+
     function __construct(string $name, int $age)
     {
         parent::__construct();
+        // 此属性未在 PHP 层定义，将会设置为 Python 属性
+        $this->color = 'black';
+        // 此属性由 PHP 层定义，不会设置为 Python 属性
+        $this->weight = '10kg';
+        // 读写 Python 属性
         $this->self()->color = 'black';
+        // 调用 Python 方法
+        $this->get_age();
+        $this->self()->get_age();
+        // 调用父类构造方法
         $this->super()->__init__($name, $age);
     }
 
-    function speak(string $name): void
+    public function speak(string $name): void
     {
         echo "Dog $name, color: {$this->self()->color}, speak: wang wang wang\n";
         $this->super()->speak('dog');
+    }
+    
+    protected function test()
+    {
+        debug_print_backtrace();
+    }
+    
+    // 此方法不会映射到 Python 层，无法在 Python 中使用
+    private function get_weight(): string
+    {
+        return $this->weight;
     }
 }
 ```
@@ -45,24 +67,27 @@ $this->super()->__init__($name, $age);
 
 必须在 `parent::__construct()` 之后调用，否则会报错。
 
-## 读写 Python 属性
+## 读写属性
 ```php
 $this->self()->color = 'black';
-```
-
-## 读写 PHP 属性
-```php
 $this->color = 'red';
 ```
 
-## 调用 Python 对象方法
+- `PHP` 类和 `Python` 类有同名属性，可以使用 `$this->self()` 方法访问 `Python` 属性
+- 在 `PHP` 类中未定义的属性，可以直接使用 `$this->{$attr}` 访问，等同于 `$this->self()->{$attr}`
+
+## 调用方法
 ```php
-$this->self()->speak('dog');
+$this->self()->get_age();
+$this->get_age();
 ```
+
+- `PHP` 类和 `Python` 父类有同名方法，可以使用 `$this->self()->{$method}()` 调用 `Python` 方法
+- 在 `PHP` 类中未定义的方法，可以直接使用 `$this->{$method}()` 调用，等同于 `$this->self()->{$method}()`
 
 ## 调用父类方法
 
-当子类和父类有同名方法时，可以使用 `super()` 方法调用父类的方法。
+当子类和父类有同名方法时，可以使用 `$this->super()->{$method}()` 方法调用父类的方法。
 
 ```php
 $this->super()->speak('dog');
@@ -75,6 +100,17 @@ $this->super()->speak('dog');
 #[parent('Base', 'dog')]
 class Dog extends PyClass {}
 ```
+
+## 传递对象到 `Python` 层
+```php
+$framework = PyCore::import('framework');
+$framework->run($this->self());
+```
+
+某些场景需要将 `PHP` 对象传递到 `Python` 层，可以使用 `$this->self()` 方法获取 `Python` 对象，
+将对象传递给 `Python` 层。当在 `Python` 内部调用对象方法时，将会调用 `PHP` 类的方法。
+
+> 仅 `public/protected` 方法可以被 `Python` 调用
 
 ## 设置代理文件路径
 ```php

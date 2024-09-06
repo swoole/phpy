@@ -67,11 +67,14 @@ class PyClass
             }
         }
 
-        $refMethods = $ref->getMethods(ReflectionMethod::IS_PUBLIC);
+        $refMethods = $ref->getMethods();
         $methods = [];
         foreach ($refMethods as $method) {
             $modifiers = $method->getModifiers();
-            if (str_starts_with($method->name, '__') or $modifiers & ReflectionMethod::IS_STATIC) {
+            if (str_starts_with($method->name, '__')
+                or ($modifiers & ReflectionMethod::IS_STATIC)
+                or ($modifiers & ReflectionMethod::IS_PRIVATE)
+                or ($modifiers & ReflectionMethod::IS_ABSTRACT)) {
                 continue;
             }
             $refParams = $method->getParameters();
@@ -99,7 +102,7 @@ class PyClass
         return $this->_super;
     }
 
-    protected function self(): ?PyObject
+    public function self(): ?PyObject
     {
         return $this->_self;
     }
@@ -141,5 +144,20 @@ class PyClass
         if (filemtime($ref->getFileName()) > filemtime($this->_proxyFile)) {
             unlink($this->_proxyFile);
         }
+    }
+
+    public function __get($name)
+    {
+        return $this->_self->{$name};
+    }
+
+    public function __set($name, $value)
+    {
+        $this->_self->{$name} = $value;
+    }
+
+    public function __call($name, $arguments)
+    {
+        return $this->_self->{$name}(...$arguments);
     }
 }

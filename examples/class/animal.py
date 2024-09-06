@@ -9,3 +9,6 @@ class Animal(abc.ABC):
     def speak(self, name):
         print("Animal speak, Age: ", self.age)
         pass
+
+    def get_age(self):
+        return self.age

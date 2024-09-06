@@ -8,3 +8,6 @@ PyCore::import('sys')->path->append('.');
 
 $dog = new Dog('dog', 1);
 $dog->speak('hello');
+var_dump($dog->age);
+$dog->age = 3;
+var_dump($dog->get_age());
