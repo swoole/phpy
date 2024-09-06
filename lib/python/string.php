@@ -17,14 +17,16 @@ punctuation -- a string containing all ASCII punctuation characters
 printable -- a string containing all ASCII characters considered printable
 
 */
-class string{
+class string
+{
     /**
-    * @return string 
+    * @return string
     */
     public static function import()
     {
         return \PyCore::import('string');
     }
+
 
     public $__name__ = "string";
     public $__package__ = "";
@@ -38,13 +40,14 @@ class string{
     public $punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
     public $whitespace = " \t\n\r\v";
 
-    public $Formatter = null;
-    public $Template = null;
     public $_ChainMap = null;
     public $_re = null;
     public $_sentinel_dict = null;
     public $_string = null;
 
+    /**
+    * @return mixed
+    */
     public function capwords($s, $sep = null)
     {
     }

@@ -20,5 +20,5 @@ $list = [
 
 
 foreach ($list as $module) {
-    `php gen-lib.php $module`;
+    `php gen-php-lib.php $module`;
 }

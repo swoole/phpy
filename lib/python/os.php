@@ -24,14 +24,16 @@ only use functions that are defined by all platforms (e.g., unlink
 and opendir), and leave all pathname manipulation to os.path
 (e.g., split and join).
 */
-class os{
+class os
+{
     /**
-    * @return os 
+    * @return os
     */
     public static function import()
     {
         return \PyCore::import('os');
     }
+
     public $CLD_CONTINUED = 6;
     public $CLD_DUMPED = 3;
     public $CLD_EXITED = 1;
@@ -208,766 +210,1339 @@ class os{
     public $sys = null;
     public $sysconf_names = null;
 
+    /**
+    * @return mixed
+    */
     public function WCOREDUMP($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WEXITSTATUS($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WIFCONTINUED($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WIFEXITED($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WIFSIGNALED($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WIFSTOPPED($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WSTOPSIG($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function WTERMSIG($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_methods($C)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _execvpe($file, $args, $env = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _exists($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _exit($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _fspath($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _fwalk($topfd, $toppath, $isbytes, $topdown, $onerror, $follow_symlinks)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _get_exports_list($module)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _spawnvef($mode, $file, $args, $env, $func)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _walk($top, $topdown, $onerror, $followlinks)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function abort()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function access($path, $mode)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function chdir($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function chmod($path, $mode)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function chown($path, $uid, $gid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function chroot($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function close($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function closerange($fd_low, $fd_high)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function confstr($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function copy_file_range($src, $dst, $count, $offset_src = null, $offset_dst = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function cpu_count()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function ctermid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function device_encoding($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dup($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dup2($fd, $fd2, $inheritable = true)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function eventfd($initval, $flags = 524288)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function eventfd_read($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function eventfd_write($fd, $value)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execl($file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execle($file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execlp($file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execlpe($file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execv($path, $argv)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execve($path, $argv, $env)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execvp($file, $args)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function execvpe($file, $args, $env)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fchdir($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fchmod($fd, $mode)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fchown($fd, $uid, $gid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fdatasync($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fdopen($fd, $mode = "r", $buffering = -1, $encoding = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fork()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function forkpty()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fpathconf($fd, $name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fsdecode($filename)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fsencode($filename)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fspath($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fstat($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fstatvfs($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fsync($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function ftruncate($fd, $length)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fwalk($top = ".", $topdown = true, $onerror = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_blocking($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_exec_path($env = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_inheritable($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getcwd()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getcwdb()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getegid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getenv($key, $default = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getenvb($key, $default = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function geteuid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getgid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getgrouplist($user, $group)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getgroups()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getloadavg()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getlogin()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getpgid($pid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getpgrp()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getpid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getppid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getpriority($which, $who)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getrandom($size, $flags = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getresgid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getresuid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getsid($pid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getuid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getxattr($path, $attribute)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function initgroups($username, $gid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function isatty($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function kill($pid, $signal)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function killpg($pgid, $signal)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lchown($path, $uid, $gid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function link($src, $dst)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function listdir($path = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function listxattr($path = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lockf($fd, $command, $length)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lseek($fd, $position, $how)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lstat($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function major($device)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function makedev($major, $minor)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function makedirs($name, $mode = 511, $exist_ok = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function memfd_create($name, $flags = 1)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function minor($device)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function mkdir($path, $mode = 511)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function mkfifo($path, $mode = 438)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function mknod($path, $mode = 384, $device = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function nice($increment)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function open($path, $flags, $mode = 511)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function openpty()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pathconf($path, $name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pidfd_open($pid, $flags = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pipe()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pipe2($flags)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function popen($cmd, $mode = "r", $buffering = -1)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function posix_fadvise($fd, $offset, $length, $advice)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function posix_fallocate($fd, $offset, $length)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pread($fd, $length, $offset)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function preadv($fd, $buffers, $offset, $flags = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function putenv($name, $value)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pwrite($fd, $buffer, $offset)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pwritev($fd, $buffers, $offset, $flags = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function read($fd, $length)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function readlink($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function readv($fd, $buffers)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function remove($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function removedirs($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function removexattr($path, $attribute)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function rename($src, $dst)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function renames($old, $new)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function replace($src, $dst)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function rmdir($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function scandir($path = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_get_priority_max($policy)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_get_priority_min($policy)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_getaffinity($pid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_getparam($pid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_getscheduler($pid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_rr_get_interval($pid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_setaffinity($pid, $mask)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_setparam($pid, $param)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_setscheduler($pid, $policy, $param)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sched_yield()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sendfile($out_fd, $in_fd, $offset, $count)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_blocking($fd, $blocking)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_inheritable($fd, $inheritable)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setegid($egid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function seteuid($euid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setgid($gid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setgroups($groups)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setpgid($pid, $pgrp)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setpgrp()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setpriority($which, $who, $priority)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setregid($rgid, $egid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setresgid($rgid, $egid, $sgid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setresuid($ruid, $euid, $suid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setreuid($ruid, $euid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setsid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setuid($uid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setxattr($path, $attribute, $value, $flags = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnl($mode, $file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnle($mode, $file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnlp($mode, $file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnlpe($mode, $file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnv($mode, $file, $args)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnve($mode, $file, $args, $env)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnvp($mode, $file, $args)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function spawnvpe($mode, $file, $args, $env)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function splice($src, $dst, $count, $offset_src = null, $offset_dst = null, $flags = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function stat($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function statvfs($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function strerror($code)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function symlink($src, $dst, $target_is_directory = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sync()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sysconf($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function system($command)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function tcgetpgrp($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function tcsetpgrp($fd, $pgid)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function times()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function truncate($path, $length)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function ttyname($fd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function umask($mask)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function uname()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unlink($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unsetenv($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function urandom($size)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function wait()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function wait3($options)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function wait4($pid, $options)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function waitid($idtype, $id, $options)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function waitpid($pid, $options)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function waitstatus_to_exitcode($status)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function walk($top, $topdown = true, $onerror = null, $followlinks = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function write($fd, $data)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function writev($fd, $buffers)
     {
     }

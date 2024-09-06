@@ -99,23 +99,22 @@ Using json.tool from the shell to validate and pretty-print::
     $ echo '{ 1.2:3.4}' | python -m json.tool
     Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
 */
-class json{
+class json
+{
     /**
-    * @return json 
+    * @return json
     */
     public static function import()
     {
         return \PyCore::import('json');
     }
 
+
     public $__author__ = "Bob Ippolito <bob@redivi.com>";
     public $__name__ = "json";
     public $__package__ = "json";
     public $__version__ = "2.0.9";
 
-    public $JSONDecodeError = null;
-    public $JSONDecoder = null;
-    public $JSONEncoder = null;
     public $__path__ = null;
     public $_default_decoder = null;
     public $_default_encoder = null;
@@ -124,22 +123,37 @@ class json{
     public $encoder = null;
     public $scanner = null;
 
+    /**
+    * @return mixed
+    */
     public function detect_encoding($b)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dump($obj, $fp)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dumps($obj)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function load($fp)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function loads($s)
     {
     }

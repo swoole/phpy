@@ -44,14 +44,16 @@ General notes on the underlying Mersenne Twister core generator:
   and is, therefore, threadsafe.
 
 */
-class random{
+class random
+{
     /**
-    * @return random 
+    * @return random
     */
     public static function import()
     {
         return \PyCore::import('random');
     }
+
     public $BPF = 53;
     public $LOG4 = 1.3862943611199;
     public $NV_MAGICCONST = 1.7155277699214;
@@ -65,15 +67,11 @@ class random{
     public $__name__ = "random";
     public $__package__ = "";
 
-    public $Random = null;
-    public $SystemRandom = null;
     public $_Sequence = null;
     public $_Set = null;
-    public $_accumulate = null;
     public $_inst = null;
     public $_os = null;
     public $_random = null;
-    public $_repeat = null;
     public $betavariate = null;
     public $choice = null;
     public $choices = null;
@@ -96,70 +94,121 @@ class random{
     public $vonmisesvariate = null;
     public $weibullvariate = null;
 
+    /**
+    * @return mixed
+    */
     public function _acos($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _bisect($a, $x, $lo = 0, $hi = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _ceil($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _cos($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _exp($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _floor($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _index($a)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _isfinite($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _sha512($string = "")
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _sin($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _sqrt($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _test($N = 2000)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _test_generator($n, $func, $args)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _urandom($size)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _warn($message, $category = null, $stacklevel = 1, $source = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getrandbits($self, $k)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function random($self)
     {
     }

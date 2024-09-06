@@ -26,106 +26,96 @@ Misc variables:
     compatible_formats
 
 */
-class pickle{
+class pickle
+{
     /**
-    * @return pickle 
+    * @return pickle
     */
     public static function import()
     {
         return \PyCore::import('pickle');
     }
+
     public $DEFAULT_PROTOCOL = 4;
-    public $DUP = 2;
     public $HIGHEST_PROTOCOL = 5;
-    public $POP = 0;
-    public $POP_MARK = 1;
     public $maxsize = 9223372036854775807;
 
-    public $ADDITEMS = "ê";
-    public $APPEND = "a";
-    public $APPENDS = "e";
-    public $BINBYTES = "B";
-    public $BINBYTES8 = "é";
-    public $BINFLOAT = "G";
-    public $BINGET = "h";
-    public $BININT = "J";
-    public $BININT1 = "K";
-    public $BININT2 = "M";
-    public $BINPERSID = "Q";
-    public $BINPUT = "q";
-    public $BINSTRING = "T";
-    public $BINUNICODE = "X";
-    public $BINUNICODE8 = "ç";
-    public $BUILD = "b";
-    public $BYTEARRAY8 = "ñ";
-    public $DICT = "d";
-    public $EMPTY_DICT = "}";
-    public $EMPTY_LIST = "]";
-    public $EMPTY_SET = "è";
-    public $EMPTY_TUPLE = ")";
-    public $EXT1 = "Ç";
-    public $EXT2 = "É";
-    public $EXT4 = "Ñ";
-    public $FALSE = "I00\n";
-    public $FLOAT = "F";
-    public $FRAME = "ï";
-    public $FROZENSET = "ë";
-    public $GET = "g";
-    public $GLOBAL = "c";
-    public $INST = "i";
-    public $INT = "I";
-    public $LIST = "l";
-    public $LONG = "L";
-    public $LONG1 = "ä";
-    public $LONG4 = "ã";
-    public $LONG_BINGET = "j";
-    public $LONG_BINPUT = "r";
-    public $MARK = "(";
-    public $MEMOIZE = "î";
-    public $NEWFALSE = "â";
-    public $NEWOBJ = "Å";
-    public $NEWOBJ_EX = "í";
-    public $NEWTRUE = "à";
-    public $NEXT_BUFFER = "ó";
-    public $NONE = "N";
-    public $OBJ = "o";
-    public $PERSID = "P";
-    public $PROTO = "Ä";
-    public $PUT = "p";
     public $PyStringMap = null;
-    public $READONLY_BUFFER = "ò";
-    public $REDUCE = "R";
-    public $SETITEM = "s";
-    public $SETITEMS = "u";
-    public $SHORT_BINBYTES = "C";
-    public $SHORT_BINSTRING = "U";
-    public $SHORT_BINUNICODE = "å";
-    public $STACK_GLOBAL = "ì";
-    public $STOP = ".";
-    public $STRING = "S";
-    public $TRUE = "I01\n";
-    public $TUPLE = "t";
-    public $TUPLE1 = "Ö";
-    public $TUPLE2 = "Ü";
-    public $TUPLE3 = "á";
-    public $UNICODE = "V";
     public $_HAVE_PICKLE_BUFFER = true;
     public $__name__ = "pickle";
     public $__package__ = "";
     public $format_version = "4.0";
 
-    public $FunctionType = null;
-    public $PickleBuffer = null;
-    public $PickleError = null;
-    public $Pickler = null;
-    public $PicklingError = null;
-    public $Unpickler = null;
-    public $UnpicklingError = null;
-    public $_Framer = null;
-    public $_Pickler = null;
-    public $_Stop = null;
-    public $_Unframer = null;
-    public $_Unpickler = null;
+    public $ADDITEMS = null;
+    public $APPEND = null;
+    public $APPENDS = null;
+    public $BINBYTES = null;
+    public $BINBYTES8 = null;
+    public $BINFLOAT = null;
+    public $BINGET = null;
+    public $BININT = null;
+    public $BININT1 = null;
+    public $BININT2 = null;
+    public $BINPERSID = null;
+    public $BINPUT = null;
+    public $BINSTRING = null;
+    public $BINUNICODE = null;
+    public $BINUNICODE8 = null;
+    public $BUILD = null;
+    public $BYTEARRAY8 = null;
+    public $DICT = null;
+    public $DUP = null;
+    public $EMPTY_DICT = null;
+    public $EMPTY_LIST = null;
+    public $EMPTY_SET = null;
+    public $EMPTY_TUPLE = null;
+    public $EXT1 = null;
+    public $EXT2 = null;
+    public $EXT4 = null;
+    public $FALSE = null;
+    public $FLOAT = null;
+    public $FRAME = null;
+    public $FROZENSET = null;
+    public $GET = null;
+    public $GLOBAL = null;
+    public $INST = null;
+    public $INT = null;
+    public $LIST = null;
+    public $LONG = null;
+    public $LONG1 = null;
+    public $LONG4 = null;
+    public $LONG_BINGET = null;
+    public $LONG_BINPUT = null;
+    public $MARK = null;
+    public $MEMOIZE = null;
+    public $NEWFALSE = null;
+    public $NEWOBJ = null;
+    public $NEWOBJ_EX = null;
+    public $NEWTRUE = null;
+    public $NEXT_BUFFER = null;
+    public $NONE = null;
+    public $OBJ = null;
+    public $PERSID = null;
+    public $POP = null;
+    public $POP_MARK = null;
+    public $PROTO = null;
+    public $PUT = null;
+    public $READONLY_BUFFER = null;
+    public $REDUCE = null;
+    public $SETITEM = null;
+    public $SETITEMS = null;
+    public $SHORT_BINBYTES = null;
+    public $SHORT_BINSTRING = null;
+    public $SHORT_BINUNICODE = null;
+    public $STACK_GLOBAL = null;
+    public $STOP = null;
+    public $STRING = null;
+    public $TRUE = null;
+    public $TUPLE = null;
+    public $TUPLE1 = null;
+    public $TUPLE2 = null;
+    public $TUPLE3 = null;
+    public $UNICODE = null;
     public $_compat_pickle = null;
     public $_extension_cache = null;
     public $_extension_registry = null;
@@ -136,63 +126,103 @@ class pickle{
     public $compatible_formats = null;
     public $dispatch_table = null;
     public $io = null;
-    public $islice = null;
-    public $partial = null;
     public $re = null;
     public $sys = null;
 
+    /**
+    * @return mixed
+    */
     public function _dump($obj, $file, $protocol = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _dumps($obj, $protocol = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _getattribute($obj, $name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _load($file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _loads($s)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _test()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function decode_long($data)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dump($obj, $file, $protocol = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dumps($obj, $protocol = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function encode_long($x)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function load($file)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function loads($data)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unpack($format, $buffer)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function whichmodule($obj, $name)
     {
     }

@@ -57,8 +57,7 @@ Functions:
 
 displayhook() -- print an object to the screen, and save it in builtins._
 excepthook() -- print an exception and its traceback to sys.stderr
-exception() -- return the current thread's active exception
-exc_info() -- return information about the current thread's active exception
+exc_info() -- return thread-safe information about the current exception
 exit() -- exit the interpreter by raising SystemExit
 getdlopenflags() -- returns flags to be used for dlopen() calls
 getprofile() -- get the global profiling function
@@ -71,39 +70,40 @@ setprofile() -- set the global profiling function
 setrecursionlimit() -- set the max recursion depth for the interpreter
 settrace() -- set the global debug tracing function
 */
-class sys{
+class sys
+{
     /**
-    * @return sys 
+    * @return sys
     */
     public static function import()
     {
         return \PyCore::import('sys');
     }
+
     public $api_version = 1013;
-    public $hexversion = 51054064;
+    public $hexversion = 50990320;
     public $maxsize = 9223372036854775807;
     public $maxunicode = 1114111;
 
     public $__name__ = "sys";
     public $__package__ = "";
-    public $_base_executable = "/opt/anaconda3/bin/python3";
+    public $_base_executable = "/usr/bin/python3";
     public $_framework = "";
     public $_home = null;
-    public $_stdlib_dir = "/opt/anaconda3/lib/python3.11";
     public $abiflags = "";
-    public $base_exec_prefix = "/opt/anaconda3";
-    public $base_prefix = "/opt/anaconda3";
+    public $base_exec_prefix = "/usr";
+    public $base_prefix = "/usr";
     public $byteorder = "little";
     public $copyright = "Copyright (c) 2001-2023 Python Software Foundation.\nAll Rights Reserved.\n\nCopyright (c) 2000 BeOpen.com.\nAll Rights Reserved.\n\nCopyright (c) 1995-2001 Corporation for National Research Initiatives.\nAll Rights Reserved.\n\nCopyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.\nAll Rights Reserved.";
     public $dont_write_bytecode = false;
-    public $exec_prefix = "/opt/anaconda3";
-    public $executable = "/opt/anaconda3/bin/python3";
+    public $exec_prefix = "/usr";
+    public $executable = "/usr/bin/python3";
     public $float_repr_style = "short";
     public $platform = "linux";
     public $platlibdir = "lib";
-    public $prefix = "/opt/anaconda3";
+    public $prefix = "/usr";
     public $pycache_prefix = null;
-    public $version = "3.11.5 (main, Sep 11 2023, 14:07:11) [GCC 11.2.0]";
+    public $version = "3.10.12 (main, Jul 29 2024, 16:56:48) [GCC 11.4.0]";
 
     public $__stderr__ = null;
     public $__stdin__ = null;
@@ -131,154 +131,261 @@ class sys{
     public $version_info = null;
     public $warnoptions = null;
 
+    /**
+    * @return mixed
+    */
     public function __displayhook__($object)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function __excepthook__($exctype, $value, $traceback)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function __interactivehook__()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function __unraisablehook__($unraisable)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _clear_type_cache()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _current_exceptions()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _current_frames()
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function _deactivate_opcache()
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function _debugmallocstats()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _getframe($depth = 0)
     {
     }
 
-    public function _getquickenedcount()
-    {
-    }
-
+    /**
+    * @return mixed
+    */
     public function addaudithook($hook)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function call_tracing($func, $args)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function displayhook($object)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function exc_info()
     {
     }
 
-    public function excepthook($exctype, $value, $traceback)
+    /**
+    * @return mixed
+    */
+    public function excepthook($exc_type, $exc_obj, $exc_tb)
     {
     }
 
-    public function exception()
-    {
-    }
-
+    /**
+    * @return mixed
+    */
     public function exit($status = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_asyncgen_hooks()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_coroutine_origin_tracking_depth()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_int_max_str_digits()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getallocatedblocks()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getdefaultencoding()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getdlopenflags()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getfilesystemencodeerrors()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getfilesystemencoding()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getprofile()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getrecursionlimit()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getrefcount($object)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getswitchinterval()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function gettrace()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function intern($string)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function is_finalizing()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_coroutine_origin_tracking_depth($depth)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_int_max_str_digits($maxdigits)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setdlopenflags($flags)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setrecursionlimit($limit)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function setswitchinterval($interval)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unraisablehook($unraisable)
     {
     }

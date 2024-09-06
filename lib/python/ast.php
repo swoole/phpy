@@ -28,14 +28,16 @@ namespace python;
     :copyright: Copyright 2008 by Armin Ronacher.
     :license: Python License.
 */
-class ast{
+class ast
+{
     /**
-    * @return ast 
+    * @return ast
     */
     public static function import()
     {
         return \PyCore::import('ast');
     }
+
     public $PyCF_ALLOW_TOP_LEVEL_AWAIT = 8192;
     public $PyCF_ONLY_AST = 1024;
     public $PyCF_TYPE_COMMENTS = 4096;
@@ -44,237 +46,165 @@ class ast{
     public $__name__ = "ast";
     public $__package__ = "";
 
-    public $AST = null;
-    public $Add = null;
-    public $And = null;
-    public $AnnAssign = null;
-    public $Assert = null;
-    public $Assign = null;
-    public $AsyncFor = null;
-    public $AsyncFunctionDef = null;
-    public $AsyncWith = null;
-    public $Attribute = null;
-    public $AugAssign = null;
-    public $AugLoad = null;
-    public $AugStore = null;
-    public $Await = null;
-    public $BinOp = null;
-    public $BitAnd = null;
-    public $BitOr = null;
-    public $BitXor = null;
-    public $BoolOp = null;
-    public $Break = null;
     public $Bytes = null;
-    public $Call = null;
-    public $ClassDef = null;
-    public $Compare = null;
-    public $Constant = null;
-    public $Continue = null;
-    public $Del = null;
-    public $Delete = null;
-    public $Dict = null;
-    public $DictComp = null;
-    public $Div = null;
     public $Ellipsis = null;
-    public $Eq = null;
-    public $ExceptHandler = null;
-    public $Expr = null;
-    public $Expression = null;
-    public $ExtSlice = null;
-    public $FloorDiv = null;
-    public $For = null;
-    public $FormattedValue = null;
-    public $FunctionDef = null;
-    public $FunctionType = null;
-    public $GeneratorExp = null;
-    public $Global = null;
-    public $Gt = null;
-    public $GtE = null;
-    public $If = null;
-    public $IfExp = null;
-    public $Import = null;
-    public $ImportFrom = null;
-    public $In = null;
-    public $Index = null;
     public $IntEnum = null;
-    public $Interactive = null;
-    public $Invert = null;
-    public $Is = null;
-    public $IsNot = null;
-    public $JoinedStr = null;
-    public $LShift = null;
-    public $Lambda = null;
-    public $List = null;
-    public $ListComp = null;
-    public $Load = null;
-    public $Lt = null;
-    public $LtE = null;
-    public $MatMult = null;
-    public $Match = null;
-    public $MatchAs = null;
-    public $MatchClass = null;
-    public $MatchMapping = null;
-    public $MatchOr = null;
-    public $MatchSequence = null;
-    public $MatchSingleton = null;
-    public $MatchStar = null;
-    public $MatchValue = null;
-    public $Mod = null;
-    public $Module = null;
-    public $Mult = null;
-    public $Name = null;
     public $NameConstant = null;
-    public $NamedExpr = null;
-    public $NodeTransformer = null;
-    public $NodeVisitor = null;
-    public $Nonlocal = null;
-    public $Not = null;
-    public $NotEq = null;
-    public $NotIn = null;
     public $Num = null;
-    public $Or = null;
-    public $Param = null;
-    public $Pass = null;
-    public $Pow = null;
-    public $RShift = null;
-    public $Raise = null;
-    public $Return = null;
-    public $Set = null;
-    public $SetComp = null;
-    public $Slice = null;
-    public $Starred = null;
-    public $Store = null;
     public $Str = null;
-    public $Sub = null;
-    public $Subscript = null;
-    public $Suite = null;
-    public $Try = null;
-    public $TryStar = null;
-    public $Tuple = null;
-    public $TypeIgnore = null;
-    public $UAdd = null;
-    public $USub = null;
-    public $UnaryOp = null;
-    public $While = null;
-    public $With = null;
-    public $Yield = null;
-    public $YieldFrom = null;
-    public $_ABC = null;
     public $_ALL_QUOTES = null;
     public $_MULTI_QUOTES = null;
     public $_Precedence = null;
     public $_SINGLE_QUOTES = null;
-    public $_Unparser = null;
     public $_const_node_type_names = null;
     public $_const_types = null;
     public $_const_types_not = null;
-    public $alias = null;
-    public $arg = null;
-    public $arguments = null;
-    public $auto = null;
-    public $boolop = null;
-    public $cmpop = null;
-    public $comprehension = null;
-    public $excepthandler = null;
-    public $expr = null;
-    public $expr_context = null;
-    public $keyword = null;
-    public $match_case = null;
-    public $mod = null;
     public $nullcontext = null;
-    public $operator = null;
-    public $pattern = null;
-    public $slice = null;
-    public $stmt = null;
     public $sys = null;
-    public $type_ignore = null;
-    public $unaryop = null;
-    public $withitem = null;
 
+    /**
+    * @return mixed
+    */
     public function _dims_getter($self)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _dims_setter($self, $value)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _getter($self)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _new($cls)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _pad_whitespace($source)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _setter($self, $value)
     {
     }
 
-    public function _simple_enum($etype = [])
-    {
-    }
-
+    /**
+    * @return mixed
+    */
     public function _splitlines_no_ff($source)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function contextmanager($func)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function copy_location($new_node, $old_node)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function dump($node, $annotate_fields = true, $include_attributes = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function fix_missing_locations($node)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_docstring($node, $clean = true)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_source_segment($source, $node)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function increment_lineno($node, $n = 1)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function iter_child_nodes($node)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function iter_fields($node)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function literal_eval($node_or_string)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function main()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function parse($source, $filename = "<unknown>", $mode = "exec")
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unparse($ast_obj)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function walk($node)
     {
     }

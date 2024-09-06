@@ -5,7 +5,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 use PhpyTool\Tool;
 
 if (empty($argv[1])) {
-    exit("Usage: php gen-lib.php [python-module-name]\n");
+    exit("Usage: php {$argv[0]} [python-module-name]\n");
 }
 
 /**
@@ -18,6 +18,8 @@ $module = PyCore::import($module_name);
 if (!($module instanceof PyModule)) {
     exit(1);
 }
+
+echo "module $module_name\n";
 
 $info = Tool::parseModule($module_name, $module);
 extract($info);
@@ -33,6 +35,3 @@ Tool::render(
     compact('module_name', 'module', 'class', 'comment', 'namespace', 'constants', 'staticProperties', 'dynamicProperties', 'functions'),
     '<?php' . PHP_EOL,
 );
-
-
-

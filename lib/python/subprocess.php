@@ -35,14 +35,16 @@ getoutput(...): Runs a command in the shell, waits for it to complete,
 getstatusoutput(...): Runs a command in the shell, waits for it to complete,
     then returns a (exitcode, output) tuple
 */
-class subprocess{
+class subprocess
+{
     /**
-    * @return subprocess 
+    * @return subprocess
     */
     public static function import()
     {
         return \PyCore::import('subprocess');
     }
+
     public $DEVNULL = -3;
     public $PIPE = -1;
     public $STDOUT = -2;
@@ -72,46 +74,79 @@ class subprocess{
     public $types = null;
     public $warnings = null;
 
+    /**
+    * @return mixed
+    */
     public function _args_from_interpreter_flags()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _cleanup()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _optim_args_from_interpreter_flags()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _use_posix_spawn()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function call()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function check_call()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function check_output()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getoutput($cmd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getstatusoutput($cmd)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function list2cmdline($seq)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function run()
     {
     }

@@ -47,14 +47,16 @@ Typical usage:
     >>> uuid.UUID(bytes=x.bytes)
     UUID('00010203-0405-0607-0809-0a0b0c0d0e0f')
 */
-class uuid{
+class uuid
+{
     /**
-    * @return uuid 
+    * @return uuid
     */
     public static function import()
     {
         return \PyCore::import('uuid');
     }
+
     public $_has_uuid_generate_time_safe = 1;
 
     public $RESERVED_FUTURE = "reserved for future definition";
@@ -63,7 +65,6 @@ class uuid{
     public $RFC_4122 = "specified in RFC 4122";
     public $_AIX = false;
     public $_LINUX = true;
-    public $_MAC_DELIM = ":";
     public $_MAC_OMITS_LEADING_ZEROES = false;
     public $_UuidCreate = null;
     public $__author__ = "Ka-Ping Yee <ping@zesty.ca>";
@@ -79,100 +80,157 @@ class uuid{
     public $NAMESPACE_URL = null;
     public $NAMESPACE_X500 = null;
     public $SafeUUID = null;
-    public $UUID = null;
     public $_GETTERS = null;
+    public $_MAC_DELIM = null;
     public $_OS_GETTERS = null;
     public $_uuid = null;
-    public $bytes_ = null;
-    public $int_ = null;
     public $os = null;
     public $platform = null;
     public $sys = null;
 
+    /**
+    * @return mixed
+    */
     public function _arp_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _find_mac_near_keyword($command, $args, $keywords, $get_word_index)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _find_mac_under_heading($command, $args, $heading)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _get_command_stdout($command)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _ifconfig_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _ip_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _ipconfig_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _is_universal($mac)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _lanscan_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _load_system_functions()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _netbios_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _netstat_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _parse_mac($word)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _random_getnode()
     {
     }
 
-    public function _simple_enum($etype = [])
-    {
-    }
-
+    /**
+    * @return mixed
+    */
     public function _unix_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _windll_getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getnode()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function uuid1($node = null, $clock_seq = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function uuid3($namespace, $name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function uuid4()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function uuid5($namespace, $name)
     {
     }

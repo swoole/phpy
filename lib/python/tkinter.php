@@ -33,14 +33,16 @@ button = tkinter.Button(frame,text="Exit",command=tk.destroy)
 button.pack(side=BOTTOM)
 tk.mainloop()
 */
-class tkinter{
+class tkinter
+{
     /**
-    * @return tkinter 
+    * @return tkinter
     */
     public static function import()
     {
         return \PyCore::import('tkinter');
     }
+
     public $EXCEPTION = 8;
     public $FALSE = 0;
     public $NO = 0;
@@ -132,130 +134,132 @@ class tkinter{
     public $_default_root = null;
     public $_support_default_root = true;
 
-    public $BaseWidget = null;
-    public $BitmapImage = null;
-    public $BooleanVar = null;
-    public $Button = null;
-    public $CallWrapper = null;
-    public $Canvas = null;
-    public $Checkbutton = null;
-    public $DoubleVar = null;
-    public $Entry = null;
-    public $Event = null;
     public $EventType = null;
-    public $Frame = null;
-    public $Grid = null;
-    public $Image = null;
-    public $IntVar = null;
-    public $Label = null;
-    public $LabelFrame = null;
-    public $Listbox = null;
-    public $Menu = null;
-    public $Menubutton = null;
-    public $Message = null;
-    public $Misc = null;
-    public $OptionMenu = null;
-    public $Pack = null;
-    public $PanedWindow = null;
-    public $PhotoImage = null;
-    public $Place = null;
-    public $Radiobutton = null;
-    public $Scale = null;
-    public $Scrollbar = null;
-    public $Spinbox = null;
-    public $StringVar = null;
-    public $TclError = null;
-    public $Text = null;
-    public $Tk = null;
-    public $Toplevel = null;
-    public $Variable = null;
-    public $Widget = null;
-    public $Wm = null;
-    public $XView = null;
-    public $YView = null;
-    public $_VersionInfoType = null;
     public $__path__ = null;
     public $_magic_re = null;
-    public $_setit = null;
     public $_space_re = null;
     public $_tkinter = null;
-    public $collections = null;
     public $constants = null;
     public $enum = null;
-    public $getdouble = null;
-    public $getint = null;
     public $re = null;
     public $sys = null;
     public $types = null;
 
+    /**
+    * @return mixed
+    */
     public function NoDefaultRoot()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function Tcl($screenName = null, $baseName = null, $className = "Tk", $useTk = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _cnfmerge($cnfs)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _destroy_temp_root($master)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _exit($code = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _flatten($item)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _get_default_root($what = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _get_temp_root()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _join($value)
     {
     }
 
-    public function _parse_version($version)
-    {
-    }
-
+    /**
+    * @return mixed
+    */
     public function _splitdict($tk, $v, $cut_minus = true, $conv = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _stringify($value)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _test()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _tkerror($err)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function getboolean($s)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function image_names()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function image_types()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function mainloop($n = 0)
     {
     }

@@ -3,15 +3,16 @@ namespace <?= $namespace ?>;
 /**
 <?= $comment ?>
 */
-class <?= $class ?>
+class <?= $class . PHP_EOL ?>
 {
     /**
-    * @return <?= $class . ' ' . PHP_EOL ?>
+    * @return <?= $class . PHP_EOL ?>
     */
     public static function import()
     {
         return \PyCore::import('<?=$module_name?>');
     }
+
 <?php foreach ($constants as $name => $value): ?>
     public $<?= $name ?> = <?= $value ?>;
 <?php endforeach; ?>
@@ -25,6 +26,9 @@ class <?= $class ?>
 <?php endforeach; ?>
 
 <?php foreach ($functions as $name => $info): ?>
+    /**
+    * @return mixed
+    */
     public function <?= $name ?>(<?= $info['args'] ?>)
     {
     }

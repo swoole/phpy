@@ -11,14 +11,16 @@ Tensors and arbitrary types, and other useful utilities.
 It has a CUDA counterpart, that enables you to run your tensor computations
 on an NVIDIA GPU with compute capability >= 3.0.
 */
-class torch{
+class torch
+{
     /**
-    * @return torch 
+    * @return torch
     */
     public static function import()
     {
         return \PyCore::import('torch');
     }
+
     public $e = 2.718281828459;
     public $inf = INF;
     public $nan = NAN;
@@ -27,16 +29,14 @@ class torch{
     public $TYPE_CHECKING = false;
     public $USE_GLOBAL_DEPS = true;
     public $USE_RTLD_GLOBAL_WITH_LIBTORCH = false;
-    public $_GLOBAL_DEVICE_CONTEXT = null;
     public $__name__ = "torch";
     public $__package__ = "torch";
-    public $__version__ = "2.1.1+cu121";
-    public $attr = "wait";
+    public $__version__ = "2.4.1+cu121";
     public $has_lapack = true;
     public $has_mkl = true;
     public $has_openmp = true;
     public $has_spectral = true;
-    public $name = "zeros_like";
+    public $newaxis = null;
 
     public $AVG = null;
     public $AggregationType = null;
@@ -76,8 +76,6 @@ class torch{
     public $DeviceObjType = null;
     public $Dict = null;
     public $DictType = null;
-    public $DisableTorchFunction = null;
-    public $DisableTorchFunctionSubclass = null;
     public $DispatchKey = null;
     public $DispatchKeySet = null;
     public $DoubleStorage = null;
@@ -86,7 +84,6 @@ class torch{
     public $ErrorReport = null;
     public $ExcludeDispatchKeyGuard = null;
     public $ExecutionPlan = null;
-    public $FatalError = null;
     public $FileCheck = null;
     public $FloatStorage = null;
     public $FloatTensor = null;
@@ -94,7 +91,6 @@ class torch{
     public $FunctionSchema = null;
     public $Future = null;
     public $FutureType = null;
-    public $Generator = null;
     public $Gradient = null;
     public $Graph = null;
     public $GraphExecutorState = null;
@@ -106,7 +102,6 @@ class torch{
     public $IntTensor = null;
     public $IntType = null;
     public $InterfaceType = null;
-    public $JITException = null;
     public $List = null;
     public $ListType = null;
     public $LiteScriptModule = null;
@@ -151,17 +146,12 @@ class torch{
     public $Set = null;
     public $ShortStorage = null;
     public $ShortTensor = null;
-    public $Size = null;
     public $StaticModule = null;
     public $Storage = null;
     public $StorageBase = null;
-    public $Stream = null;
     public $StreamObjType = null;
     public $StringType = null;
-    public $SymBool = null;
     public $SymBoolType = null;
-    public $SymFloat = null;
-    public $SymInt = null;
     public $SymIntType = null;
     public $Tag = null;
     public $Tensor = null;
@@ -171,16 +161,13 @@ class torch{
     public $Tuple = null;
     public $TupleType = null;
     public $Type = null;
-    public $TypedStorage = null;
     public $Union = null;
     public $UnionType = null;
     public $UntypedStorage = null;
     public $Use = null;
     public $Value = null;
     public $_C = null;
-    public $_TorchCompileInductorWrapper = null;
-    public $_TorchCompileWrapper = null;
-    public $_TritonLibrary = null;
+    public $_GLOBAL_DEVICE_CONTEXT = null;
     public $_VF = null;
     public $__annotations__ = null;
     public $__config__ = null;
@@ -198,6 +185,7 @@ class torch{
     public $_higher_order_ops = null;
     public $_jit_internal = null;
     public $_lazy_modules = null;
+    public $_library = null;
     public $_linalg_utils = null;
     public $_lobpcg = null;
     public $_logging = null;
@@ -211,20 +199,23 @@ class torch{
     public $_refs = null;
     public $_sources = null;
     public $_storage_classes = null;
+    public $_streambase = null;
+    public $_strobelight = null;
     public $_subclasses = null;
     public $_tensor = null;
     public $_tensor_classes = null;
     public $_tensor_str = null;
     public $_utils = null;
     public $_utils_internal = null;
+    public $_vendor = null;
     public $_vmap_internals = null;
     public $_weights_only_unpickler = null;
     public $amp = null;
     public $ao = null;
-    public $autocast = null;
     public $autograd = null;
     public $backends = null;
     public $bfloat16 = null;
+    public $bit = null;
     public $bits16 = null;
     public $bits1x8 = null;
     public $bits2x4 = null;
@@ -248,54 +239,51 @@ class torch{
     public $ctypes = null;
     public $cuda = null;
     public $default_generator = null;
-    public $device = null;
     public $distributed = null;
     public $distributions = null;
     public $double = null;
-    public $dtype = null;
-    public $enable_grad = null;
     public $export = null;
     public $fft = null;
-    public $finfo = null;
     public $float = null;
     public $float16 = null;
     public $float32 = null;
     public $float64 = null;
     public $float8_e4m3fn = null;
+    public $float8_e4m3fnuz = null;
     public $float8_e5m2 = null;
+    public $float8_e5m2fnuz = null;
     public $func = null;
     public $functional = null;
     public $futures = null;
     public $fx = null;
     public $half = null;
     public $hub = null;
-    public $iinfo = null;
-    public $inference_mode = null;
+    public $importlib = null;
     public $inspect = null;
     public $int = null;
     public $int16 = null;
     public $int32 = null;
     public $int64 = null;
     public $int8 = null;
+    public $jagged = null;
     public $jit = null;
-    public $layout = null;
     public $legacy_contiguous_format = null;
     public $library = null;
     public $linalg = null;
     public $long = null;
     public $masked = null;
     public $math = null;
-    public $memory_format = null;
     public $mps = null;
+    public $mtia = null;
     public $multiprocessing = null;
     public $nested = null;
     public $nn = null;
-    public $no_grad = null;
     public $ops = null;
     public $optim = null;
     public $os = null;
     public $overrides = null;
     public $package = null;
+    public $pdb = null;
     public $per_channel_affine = null;
     public $per_channel_affine_float_qparams = null;
     public $per_channel_symmetric = null;
@@ -304,11 +292,8 @@ class torch{
     public $platform = null;
     public $preserve_format = null;
     public $profiler = null;
-    public $py_float = null;
-    public $py_int = null;
     public $qint32 = null;
     public $qint8 = null;
-    public $qscheme = null;
     public $quantization = null;
     public $quantized_gru = null;
     public $quantized_lstm = null;
@@ -319,7 +304,6 @@ class torch{
     public $random = null;
     public $return_types = null;
     public $serialization = null;
-    public $set_grad_enabled = null;
     public $short = null;
     public $signal = null;
     public $sparse = null;
@@ -334,330 +318,708 @@ class torch{
     public $sys = null;
     public $testing = null;
     public $textwrap = null;
+    public $threading = null;
     public $torch = null;
     public $torch_version = null;
     public $types = null;
+    public $uint1 = null;
+    public $uint16 = null;
+    public $uint2 = null;
+    public $uint3 = null;
+    public $uint32 = null;
+    public $uint4 = null;
+    public $uint5 = null;
+    public $uint6 = null;
+    public $uint64 = null;
+    public $uint7 = null;
     public $uint8 = null;
     public $utils = null;
     public $version = null;
     public $windows = null;
+    public $xpu = null;
 
+    /**
+    * @return mixed
+    */
     public function __getattr__($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _assert($condition, $message)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check($cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_index($cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function _check_is_size($i, $message = null)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function _check_not_implemented($cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_tensor_all($cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_tensor_all_with($error_type, $cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_type($cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_value($cond, $message = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _check_with($error_type, $cond, $message)
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function _constrain_as_size($symbol, $min = null, $max = null)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function _disable_dynamo($fn = null, $recursive = true)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _import_dotted_name($name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _load_global_deps()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _preload_cuda_deps($lib_folder, $lib_name)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _register_device_module($device_type, $module)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function _running_with_deploy()
     {
     }
 
-    public function _sparse_coo_tensor_unsafe()
+    /**
+    * @return mixed
+    */
+    public function _sym_acos($a)
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function _sym_asin($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_atan($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_cos($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_cosh($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_sin($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_sinh($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_sqrt($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_tan($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sym_tanh($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
+    public function _sync($t)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function _warn_typed_storage_removal($stacklevel = 2)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function align_tensors()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function are_deterministic_algorithms_enabled()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function atleast_1d()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function atleast_2d()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function atleast_3d()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function block_diag()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function broadcast_shapes()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function broadcast_tensors()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function cartesian_prod()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function cdist($x1, $x2, $p = 2, $compute_mode = "use_mm_for_euclid_dist_if_necessary")
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function chain_matmul()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function classproperty($func)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function compile($model = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function compiled_with_cxx11_abi()
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function cond($pred, $true_fn, $false_fn, $operands)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function eig($self, $eigenvectors = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function einsum()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function from_dlpack($ext_tensor)
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function get_default_device()
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function get_deterministic_debug_mode()
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function get_device_module($device = null)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function get_file_path()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_float32_matmul_precision()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function get_rng_state()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function initial_seed()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function is_deterministic_algorithms_warn_only_enabled()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function is_storage($obj)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function is_tensor($obj)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function is_warn_always_enabled()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function load($f, $map_location = null, $pickle_module = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lobpcg($A, $k = null, $B = null, $X = null, $n = null, $iK = null, $niter = null, $tol = null, $largest = null, $method = null, $tracker = null, $ortho_iparams = null, $ortho_fparams = null, $ortho_bparams = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lstsq($input, $A)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function lu()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function manual_seed($seed)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function matrix_rank($input, $tol = null, $symmetric = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function meshgrid()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function norm($input, $p = "fro", $dim = null, $keepdim = false, $out = null, $dtype = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function pca_lowrank($A, $q = null, $center = true, $niter = 2)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function prepare_multiprocessing_environment($path)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function save($obj, $f, $pickle_module = null, $pickle_protocol = 2, $_use_new_zipfile_serialization = true, $_disable_byteorder_record = false)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function seed()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_default_device($device)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_default_dtype($d)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_default_tensor_type($t)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_deterministic_debug_mode($debug_mode)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_float32_matmul_precision($precision)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_printoptions($precision = null, $threshold = null, $edgeitems = null, $linewidth = null, $profile = null, $sci_mode = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_rng_state($new_state)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function set_warn_always($b)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function solve($input, $A)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function split($tensor, $split_size_or_sections, $dim = 0)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function stft($input, $n_fft, $hop_length = null, $win_length = null, $window = null, $center = true, $pad_mode = "reflect", $normalized = false, $onesided = null, $return_complex = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function svd_lowrank($A, $q = 6, $niter = 2, $M = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sym_float($a)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sym_int($a)
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function sym_ite($b, $t, $f)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function sym_max($a, $b)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sym_min($a, $b)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function sym_not($a)
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function sym_sqrt($a)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function symeig($input, $eigenvectors = false, $upper = true)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function tensordot($a, $b, $dims = 2, $out = null)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function typename($o)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unique()
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function unique_consecutive()
     {
     }
 
+    /**
+    * @return mixed
+    */
+    public function unravel_index($indices, $shape)
+    {
+    }
+
+    /**
+    * @return mixed
+    */
     public function use_deterministic_algorithms($mode)
     {
     }
 
+    /**
+    * @return mixed
+    */
     public function vmap($func, $in_dims = 0, $out_dims = 0, $randomness = "error")
     {
     }
