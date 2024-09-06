@@ -50,13 +50,14 @@ class PyClass
         $this->_proxyClass = strtolower(str_replace('\\', '_', $class));
         $this->_proxyFile = self::$_proxyPath . '/' . $this->_proxyClass . '.py';
 
-        if (self::$_checkStat) {
+        $hasProxyFile = is_file($this->_proxyFile);
+        if ($hasProxyFile and self::$_checkStat) {
             $this->checkProxyFile();
         }
-
-        if (!is_file($this->_proxyFile)) {
+        if (!$hasProxyFile) {
             $this->makeProxy();
         }
+
         PyCore::import($this->_proxyClass)->{$this->_proxyClass}($this);
     }
 
@@ -67,7 +68,10 @@ class PyClass
     private function makeProxy(): void
     {
         $ref = new ReflectionClass($this);
-        $refParents = $ref->getAttributes('parent');
+        $refParents = $ref->getAttributes('inherit');
+        if (empty($refParents)) {
+            $refParents = $ref->getAttributes('parent');
+        }
 
         $import = '';
         $parents = [];

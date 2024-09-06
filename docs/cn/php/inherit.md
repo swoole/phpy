@@ -14,7 +14,7 @@ composer require swoole/phpy
 ```php
 use phpy\PyClass;
 
-#[parent('Animal', 'animal')]
+#[Inherit('Animal', 'animal')]
 class Dog extends PyClass
 {
     protected string $weight;
@@ -55,9 +55,9 @@ class Dog extends PyClass
 ```
 
 - `PHP` 类必须要继承自 `PyClass` 基类
-- 使用 `#[parent('Animal', 'animal')]` 属性声明继承关系
+- 使用 `#[Inherit('Animal', 'animal')]` 属性声明继承关系
   - 第一个参数为 `Python` 类名，第二个参数为 `Python` 包名
-  - 支持多继承，多个 `#[parent]` 属性声明
+  - 支持多继承，可添加多个 `#[Inherit]` 属性声明
 - 在子类的构造方法必须执行父类的构造方法 `parent::__construct()`，否则会报错
 
 ## 调用基类构造方法
@@ -96,10 +96,17 @@ $this->super()->speak('dog');
 ## 多重继承
 
 ```php
-#[parent('Animal', 'animal')]
-#[parent('Base', 'dog')]
+#[Inherit('Animal', 'animal')]
+#[Inherit('Base', 'dog')]
 class Dog extends PyClass {}
 ```
+
+等同于如下的 `Python` 代码：
+```python
+class Dog(Animal, Base):
+    pass
+```
+
 
 ## 传递对象到 `Python` 层
 ```php

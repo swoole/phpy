@@ -49,4 +49,5 @@ configure.in
 acinclude.m4
 config.guess
 config.sub
+/composer.lock
 

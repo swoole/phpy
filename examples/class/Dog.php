@@ -2,8 +2,11 @@
 
 use phpy\PyClass;
 
-
-#[parent('Animal', 'animal')]
+/**
+ * @property string $color
+ * @method get_age()
+ */
+#[Inherit('Animal', 'animal')]
 class Dog extends PyClass
 {
     function __construct(string $name, int $age)
@@ -13,14 +16,14 @@ class Dog extends PyClass
         $this->super()->__init__($name, $age);
     }
 
-    protected function test()
+    protected function test(): void
     {
         debug_print_backtrace();
     }
 
     function speak(string $name): void
     {
-        echo "Dog $name, color: {$this->self()->color}, speak: wang wang wang\n";
+        echo "Dog $name, color: {$this->color}, speak: wang wang wang\n";
         $this->super()->speak('dog');
     }
 }
