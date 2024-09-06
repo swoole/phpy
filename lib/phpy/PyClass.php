@@ -17,6 +17,26 @@ class PyClass
     protected string $_proxyClass;
     private string $_proxyFile;
 
+    const IGNORE_METHODS = [
+        '__construct',
+        '__destruct',
+        '__call',
+        '__callStatic',
+        '__get',
+        '__set',
+        '__isset',
+        '__unset',
+        '__sleep',
+        '__wakeup',
+        '__toString',
+        '__invoke',
+        '__set_state',
+        '__clone',
+        '__debugInfo',
+        'self',
+        'super',
+    ];
+
     /**
      * @throws \Exception
      */
@@ -71,7 +91,7 @@ class PyClass
         $methods = [];
         foreach ($refMethods as $method) {
             $modifiers = $method->getModifiers();
-            if (str_starts_with($method->name, '__')
+            if (in_array($method->name, self::IGNORE_METHODS)
                 or ($modifiers & ReflectionMethod::IS_STATIC)
                 or ($modifiers & ReflectionMethod::IS_PRIVATE)
                 or ($modifiers & ReflectionMethod::IS_ABSTRACT)) {

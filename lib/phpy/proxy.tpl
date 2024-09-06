@@ -13,6 +13,6 @@ class <?=$this->_proxyClass?>(<?=implode(', ', $parents)?>):
 
 <?php foreach($methods as $m):?>
   def <?=$m['name']?>(self, <?=$m['argv']?>):
-    self.__this.call('<?=$m['name']?>', <?=$m['argv']?>)
+    return self.__this.call('<?=$m['name']?>', <?=$m['argv']?>)
 
 <?php endforeach; ?>
