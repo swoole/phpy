@@ -41,4 +41,14 @@ class IterTest extends TestCase
         }
         $this->assertEquals($array, range(1, 12));
     }
+
+    function testNotIterable()
+    {
+        $slice = PyCore::slice(1, 10);
+        try {
+            $iter = PyCore::iter($slice);
+        } catch (PyError $error) {
+            $this->assertStringContainsString("'slice' object is not iterable", $error->getMessage());
+        }
+    }
 }

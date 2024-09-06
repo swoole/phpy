@@ -62,17 +62,21 @@ PyObject *phpy_object_get_iterator(zval *object) {
 
 void phpy_object_iterator_reset(zval *object) {
     auto oo = phpy_object_get_object(object);
-    // Return value: New reference
     if (oo->iterator != NULL) {
         Py_DECREF(oo->iterator);
     }
-    oo->iterator = PyObject_GetIter(oo->object);
-    // Return value: New reference
     if (oo->current != NULL) {
         Py_DECREF(oo->current);
     }
-    oo->current = PyIter_Next(oo->iterator);
     oo->index = 0;
+    // Return value: New reference
+    oo->iterator = PyObject_GetIter(oo->object);
+    if (oo->iterator == NULL) {
+        phpy::php::throw_error_if_occurred();
+    } else {
+        // Return value: New reference
+        oo->current = PyIter_Next(oo->iterator);
+    }
 }
 
 PyObject *phpy_object_iterator_next(zval *object) {
