@@ -18,6 +18,22 @@ class  Tool
         '__sizeof__',
     ];
 
+    protected const KEYWORDS = [
+        'and',
+        'break',
+        'continue',
+        'for',
+        'global',
+        'if',
+        'list',
+        'match',
+        'or',
+        'return',
+        'try',
+        'while',
+        'yield',
+    ];
+
     static function render($tplFile, $outFile, $vars, $prefix = ''): void
     {
         extract($vars);
@@ -65,6 +81,9 @@ class  Tool
 
     public static function parseClass($module_name, $class_name, $class): void
     {
+        if (in_array(strtolower($class_name), self::KEYWORDS)) {
+            $class_name = '_' . $class_name;
+        }
         $methods = [];
         $properties = [];
         $constructor = ['call' => '', 'args' => ''];

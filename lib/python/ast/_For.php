@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class If
+class _For
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->If();
+        $this->_self = \PyCore::import('ast')->_For();
     }
 
 }

@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class Yield
+class _While
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->Yield();
+        $this->_self = \PyCore::import('ast')->_While();
     }
 
 }

@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class For
+class _Break
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->For();
+        $this->_self = \PyCore::import('ast')->_Break();
     }
 
 }

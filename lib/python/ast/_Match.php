@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class Return
+class _Match
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->Return();
+        $this->_self = \PyCore::import('ast')->_Match();
     }
 
 }

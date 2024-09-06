@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class Continue
+class _Yield
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->Continue();
+        $this->_self = \PyCore::import('ast')->_Yield();
     }
 
 }

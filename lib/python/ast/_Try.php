@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class Global
+class _Try
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->Global();
+        $this->_self = \PyCore::import('ast')->_Try();
     }
 
 }

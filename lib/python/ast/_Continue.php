@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class Or
+class _Continue
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->Or();
+        $this->_self = \PyCore::import('ast')->_Continue();
     }
 
 }

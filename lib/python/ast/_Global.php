@@ -3,13 +3,13 @@ namespace python\ast;
 
 /**
 */
-class List
+class _Global
 {
     private $_self;
 
     public function __construct()
     {
-        $this->_self = \PyCore::import('ast')->List();
+        $this->_self = \PyCore::import('ast')->_Global();
     }
 
 }
