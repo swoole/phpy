@@ -26,6 +26,9 @@ class KvReadonly:
     def __getitem__(self, key):
         return self.d.get(key)
 
+    def exists(self, key):
+        return key in self.d
+
 
 class Kv(KvReadonly):
     def __setitem__(self, key, value):
