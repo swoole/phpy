@@ -69,7 +69,7 @@ static void py2php_object_impl(PyObject *pv, zval *zv) {
         phpy::php::new_list(zv, pv);
     } else if (PyTuple_CheckExact(pv)) {
         phpy::php::new_tuple(zv, pv);
-    } else if (PySet_CheckExact(pv)) {
+    } else if (PySet_Check(pv)) {
         phpy::php::new_set(zv, pv);
     } else if (PyDict_CheckExact(pv)) {
         phpy::php::new_dict(zv, pv);
