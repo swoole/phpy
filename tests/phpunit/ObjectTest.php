@@ -52,9 +52,8 @@ class ObjectTest extends TestCase
         $val = uniqid();
         $kv['val'] = $val;
         $this->assertEquals($kv['val'], $val);
-        //  offsetExists always succeeds
         $this->assertArrayHasKey('ikey', $kv);
-        $this->assertArrayHasKey('ikey2', $kv);
+        $this->assertArrayNotHasKey('ikey2', $kv);
     }
 
     public function testCount()

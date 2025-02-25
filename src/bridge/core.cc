@@ -59,6 +59,19 @@ static inline void set2array(PyObject *pv, zval *zv) {
 
 static void dict2array(PyObject *pv, zval *zv);
 
+#ifndef PySet_CheckExact
+#define PySet_CheckExact(op) Py_IS_TYPE(op, &PySet_Type)
+#endif
+
+/**
+ * Not exact Python built-in types like tuple, set, dict, or list must be handled as PyObject.
+ * Custom subclasses may override access methods, leading to unpredictable errors.
+ * For example, pygame.key.ScancodeWrapper inherits from tuple but internally sets `.tp_as_mapping = &pg_scancodewrapper_mapping`,
+ * overloading the array access operator. In such cases, if PyTuple_Check is used in PHPy,
+ * it will attempt to cast ScancodeWrapper to a PyTuple type and use PyTuple_GetItem to retrieve data,
+ * resulting in False. However, in Python code, calling __getitem__ for dictionary access returns True.
+ * Reference: https://github.com/pygame/pygame/blob/main/src_c/key.c
+ */
 static void py2php_object_impl(PyObject *pv, zval *zv) {
     if (py2php_base_type(pv, zv)) {
         return;
@@ -69,7 +82,7 @@ static void py2php_object_impl(PyObject *pv, zval *zv) {
         phpy::php::new_list(zv, pv);
     } else if (PyTuple_CheckExact(pv)) {
         phpy::php::new_tuple(zv, pv);
-    } else if (PySet_Check(pv)) {
+    } else if (PySet_CheckExact(pv)) {
         phpy::php::new_set(zv, pv);
     } else if (PyDict_CheckExact(pv)) {
         phpy::php::new_dict(zv, pv);
