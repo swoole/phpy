@@ -36,6 +36,11 @@ class ObjectTest extends TestCase
         } catch (\PyError $error) {
             $this->assertStringContainsString('object does not support item assignment', $error->getMessage());
         }
+        $this->assertTrue(isset($kv['ikey']));
+        $this->assertTrue(isset($kv['skey']));
+        $this->assertFalse(isset($kv[uniqid()]));
+
+        var_dump(get_class($kv));
     }
 
     public function testSetItem()

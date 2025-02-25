@@ -382,6 +382,15 @@ ZEND_METHOD(PyObject, offsetUnset) {
 }
 
 ZEND_METHOD(PyObject, offsetExists) {
-    // The PyMapping_HasKey function always succeeds
-    RETURN_TRUE;
+    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    auto object = phpy_object_get_handle(ZEND_THIS);
+    // The PyMapping_HasKey function always return 1, it not work
+    auto value = PyObject_GetItem(object, pk);
+    Py_DECREF(pk);
+    if (value == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    RETVAL_BOOL(!Py_IsNone(value));
+    Py_DECREF(value);
 }
