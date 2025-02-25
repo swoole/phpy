@@ -63,19 +63,19 @@ static void py2php_object_impl(PyObject *pv, zval *zv) {
     if (py2php_base_type(pv, zv)) {
         return;
     }
-    if (PyUnicode_Check(pv)) {
+    if (PyUnicode_CheckExact(pv)) {
         phpy::php::new_str(zv, pv);
-    } else if (PyList_Check(pv)) {
+    } else if (PyList_CheckExact(pv)) {
         phpy::php::new_list(zv, pv);
-    } else if (PyTuple_Check(pv)) {
+    } else if (PyTuple_CheckExact(pv)) {
         phpy::php::new_tuple(zv, pv);
-    } else if (PySet_Check(pv)) {
+    } else if (PySet_CheckExact(pv)) {
         phpy::php::new_set(zv, pv);
-    } else if (PyDict_Check(pv)) {
+    } else if (PyDict_CheckExact(pv)) {
         phpy::php::new_dict(zv, pv);
-    } else if (PyModule_Check(pv)) {
+    } else if (PyModule_CheckExact(pv)) {
         phpy::php::new_module(zv, pv);
-    } else if (PyType_Check(pv)) {
+    } else if (PyType_CheckExact(pv)) {
         phpy::php::new_type(zv, pv);
     } else if (PyIter_Check(pv)) {
         phpy::php::new_iter(zv, pv);
