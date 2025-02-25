@@ -31,8 +31,11 @@
 static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
+static PyObject *module_operator = nullptr;
 static std::unordered_map<const char *, PyObject *> builtin_functions;
+static std::unordered_map<const char *, PyObject *> operator_functions;
 static std::unordered_map<PyObject *, void (*)(PyObject *)> zend_objects;
+static PyObject *py_contains_operator;
 static long eval_code_id = 0;
 
 using phpy::CallObject;
@@ -252,12 +255,28 @@ PHP_MINIT_FUNCTION(phpy) {
         zend_error(E_ERROR, "Error: could not import module 'phpy'");
         return FAILURE;
     }
+
     module_builtins = PyImport_ImportModule("builtins");
     if (!module_builtins) {
         PyErr_Print();
         zend_error(E_ERROR, "Error: could not import module 'builtins'");
         return FAILURE;
     }
+
+    module_operator = PyImport_ImportModule("operator");
+    if (!module_operator) {
+        PyErr_Print();
+        zend_error(E_ERROR, "Error: could not import module 'operator'");
+        return FAILURE;
+    }
+
+    py_contains_operator = PyObject_GetAttrString(module_operator, "contains");
+    if (!py_contains_operator) {
+        PyErr_Print();
+        zend_error(E_ERROR, "Error: could not get 'operator.contains'");
+        return FAILURE;
+    }
+
     php_class_init_all(INIT_FUNC_ARGS_PASSTHRU);
     return SUCCESS;
 }
@@ -273,18 +292,33 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
         Py_DECREF(kv.second);
     }
     builtin_functions.clear();
+
+    for (auto kv : operator_functions) {
+        Py_DECREF(kv.second);
+    }
+    operator_functions.clear();
+    Py_DECREF(py_contains_operator);
+
     Py_Finalize();
     return SUCCESS;
 }
 
 namespace phpy {
+namespace python {
+bool contains(PyObject *obj, PyObject *key) {
+    auto rs = PyObject_CallFunction(py_contains_operator, "OO", obj, key);
+    return Py_IsTrue(rs);
+}
+}  // namespace python
 namespace php {
 void add_object(PyObject *pv, void (*dtor)(PyObject *)) {
     zend_objects.emplace(pv, dtor);
 }
+
 void del_object(PyObject *pv) {
     zend_objects.erase(pv);
 }
+
 void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *return_value) {
     auto fn_iter = builtin_functions.find(name);
     PyObject *fn;
@@ -295,6 +329,24 @@ void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *ret
             return;
         }
         builtin_functions[name] = fn;
+    } else {
+        fn = fn_iter->second;
+    }
+
+    CallObject caller(fn, return_value, arguments);
+    caller.call();
+}
+
+void call_operator_fn(const char *name, size_t l_name, zval *arguments, zval *return_value) {
+    auto fn_iter = operator_functions.find(name);
+    PyObject *fn;
+    if (fn_iter == operator_functions.end()) {
+        fn = PyObject_GetAttrString(module_operator, name);
+        if (!fn || !PyCallable_Check(fn)) {
+            phpy::php::throw_error_if_occurred();
+            return;
+        }
+        operator_functions[name] = fn;
     } else {
         fn = fn_iter->second;
     }
