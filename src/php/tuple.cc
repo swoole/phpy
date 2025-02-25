@@ -97,5 +97,5 @@ ZEND_METHOD(PyTuple, offsetUnset) {
 ZEND_METHOD(PyTuple, offsetExists) {
     auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
-    RETVAL_BOOL(PyTuple_Size(object) > pk);
+    RETVAL_BOOL(pk >= 0 && PyTuple_Size(object) > pk);
 }

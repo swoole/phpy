@@ -22,6 +22,10 @@ class TupleTest extends TestCase
 
         $slice = $tuple->slice(1, 3);
         $this->assertEquals(PyCore::scalar($slice), [$v1, $v2]);
+
+        $this->assertTrue(isset($tuple[1]));
+        $this->assertFalse(isset($tuple[5]));
+        $this->assertFalse(isset($tuple[-1]));
     }
 
     public function testList()
