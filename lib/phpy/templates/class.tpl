@@ -10,6 +10,7 @@ class <?=$this->_proxyClass?>(<?=implode(', ', $parents)?>):
     self.__this = _this
     _this.set('_super', super())
     _this.set('_self', self)
+    _this.call('__init')
 
 <?php foreach($methods as $m):?>
   def <?=$m['name']?>(self, <?=$m['argv']?>):

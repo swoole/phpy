@@ -61,6 +61,11 @@ class PyClass
         PyCore::import($this->_proxyClass)->{$this->_proxyClass}($this);
     }
 
+    public function __init()
+    {
+
+    }
+
     /**
      * @return void
      * @throws \Exception
