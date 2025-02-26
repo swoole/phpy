@@ -82,11 +82,11 @@ class PyClass
             foreach ($refParents as $refParent) {
                 $parent = $refParent->getArguments();
                 if (count($parent) == 1) {
-                    $parents[] = self::checkName($parent[0], 'class');
+                    $parents[] = Helper::checkName($parent[0], 'class');
                 } else {
                     [$class, $package] = $parent;
-                    $import .= 'import ' . self::checkName($package, 'package') . PHP_EOL;
-                    $parents[] = $package . '.' . self::checkName($class, 'class');
+                    $import .= 'import ' . Helper::checkName($package, 'package') . PHP_EOL;
+                    $parents[] = $package . '.' . Helper::checkName($class, 'class');
                 }
             }
         }
@@ -112,7 +112,7 @@ class PyClass
             ];
         }
         ob_start();
-        include __DIR__ . '/proxy.tpl';
+        include __DIR__ . '/templates/class.tpl';
         $content = ob_get_clean();
         $dir = dirname($this->_proxyFile);
         if (!is_dir($dir)) {
@@ -146,19 +146,9 @@ class PyClass
         self::$_checkStat = $checkStat;
     }
 
-    /**
-     * @throws \Exception
-     */
-    private static function checkName(string $name, string $type): string
+    public static function getProxyPath(): string
     {
-        static $regx = [
-            'class' => '#^[a-z_][a-z_0-9]*$#i',
-            'package' => '#^[a-z_][a-z_0-9]*(\.[a-z_][a-z_0-9]*)*$#i'
-        ];
-        if (!preg_match($regx[$type], $name)) {
-            throw new \Exception("Invalid $type name: '$name'");
-        }
-        return $name;
+        return self::$_proxyPath;
     }
 
     private function checkProxyFile(): void

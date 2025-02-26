@@ -10,4 +10,4 @@ class Inherit
     }
 }
 
-class_alias(Inherit::class, \Inherit::class);
+
