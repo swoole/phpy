@@ -9,20 +9,19 @@ require ROOT_PATH . '/vendor/autoload.php';
 $pui = PyCore::import('PUI.PySide6');
 
 #[Annotation('PUIApp')]
-#[Import('PUI.PySide6', '*')]
-function Example()
+#[Import('PUI.PySide6', 'PUIApp')]
+function Example(): void
 {
     global $pui;
-    $____object = $pui->Window(title: "test", size: [320, 240]);
-    $__ = $____object->__enter__();
+    $window = $pui->Window(title: "test", size: [320, 240]);
+    $window->__enter__();
     try {
         $pui->Label("Hello world");
     } finally {
-        $____object->__exit__(null, null, null);
+        $window->__exit__(null, null, null);
     }
 }
 
 PyClass::setProxyPath(__DIR__, true);
-$fn = PyNamedFn('Example');
-$root = $fn();
+$root = PyNamedFn('Example')();
 $root->run();
