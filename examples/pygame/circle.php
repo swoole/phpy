@@ -37,6 +37,19 @@ while($running) {
         $player_pos->x += 300 * $dt;
     }
 
+    if ($player_pos->x < 0) {
+        $player_pos->x = 0;
+    }
+    if ($player_pos->x > $screen->get_width()) {
+        $player_pos->x = $screen->get_width();
+    }
+    if ($player_pos->y < 0) {
+        $player_pos->y = 0;
+    }
+    if ($player_pos->y > $screen->get_height()) {
+        $player_pos->y = $screen->get_height();
+    }
+
     $pygame->display->flip();
     $dt = $clock->tick(60) / 1000;
 }

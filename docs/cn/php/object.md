@@ -121,3 +121,39 @@ function kwargs(...$kwargs) {
 ```
 
 可将命名参数传递给另外函数。
+
+## 切片语法
+支持切片语法，使用`PyCore::slice($a, $b, $c = null)` 构建切片对象，作为数组的`Key`传递给对象即可。
+
+### 实例：
+```php
+$s = new PyStr("Python Programming")
+
+# 获取前三个字符
+# Python: print(s[0:3])
+PyCore::print($s[PyCore::slice(0, 3)]);  # 输出: "Pyt"
+
+# 获取从索引 7 到索引 12 的字符
+# Python: print(s[7:12])  # 输出: "Progr"
+PyCore::print($s[PyCore::slice(7, 12)]);  # 输出: "Progr"
+
+# 获取整个字符串
+# Python: print(s[:])  # 输出: "Python Programming"
+PyCore::print($s[PyCore::slice()]);  # 输出: "Python Programming
+
+# 使用步长
+# Python: print(s[::2])  # 输出: "Pto rgamn"（每两个字符取一个）
+PyCore::print($s[PyCore::slice(null, null, 2)]);  # 输出: "Pto rgamn"
+
+# 反向切片
+# Python: print(s[::-1])  # 输出: "gnimmargorP nohtyP"（字符串反转）
+PyCore::print($s[PyCore::slice(null, null, -1)]);  # 输出: "gnimmargorP nohtyP"
+
+# 获取最后一个字符
+# Python: print(s[-1])  # 输出: "g"
+PyCore::print($s[PyCore::slice(-1)]);  # 输出: "g"
+
+# 获取倒数第三个到倒数第一个字符
+# Python: print(s[-3:-1])  # 输出: "mi"
+PyCore::print($s[PyCore::slice(-3, -1)]);  # 输出: "mi"
+```

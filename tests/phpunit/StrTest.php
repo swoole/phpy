@@ -22,4 +22,24 @@ class StrTest extends TestCase
         $bytes = PyCore::scalar($os->urandom(128));
         $this->assertEquals(128, strlen($bytes));
     }
+
+    public function testOffsetGet()
+    {
+        $str = new PyStr("我是中国人");
+        $this->assertEquals($str[0], '我');
+        $this->assertEquals($str[2], '中');
+        $this->assertEquals($str[PyCore::slice(2, 4)], '中国');
+    }
+
+    public function testSlice()
+    {
+        $s = new PyStr("Python Programming");
+        $this->assertEquals($s[PyCore::slice(0, 3)], "Pyt");
+        $this->assertEquals($s[PyCore::slice(7, 12)], "Progr");
+        $this->assertEquals($s[PyCore::slice(null, null, null)], "Python Programming");
+        $this->assertEquals($s[PyCore::slice(null, null, 2)], "Pto rgamn");
+        $this->assertEquals($s[PyCore::slice(null, null, -1)], "gnimmargorP nohtyP");
+        $this->assertEquals($s[PyCore::slice(-1, null)], "g");
+        $this->assertEquals($s[PyCore::slice(-3, -1)], "in");
+    }
 }
