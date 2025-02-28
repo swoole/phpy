@@ -61,8 +61,10 @@ bool ZendCallable_Check(PyObject *pv) {
 }
 
 static void Callable_dealloc(ZendCallable *self) {
-    zval_ptr_dtor(&self->callable);
-    phpy::php::del_object((PyObject *) self);
+    if (phpy::php::del_object((PyObject *) self)) {
+        zval_ptr_dtor(&self->callable);
+        ZVAL_NULL(&self->callable);
+    }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
 

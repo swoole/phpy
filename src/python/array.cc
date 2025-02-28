@@ -212,9 +212,11 @@ static PyObject *Array_next(ZendArray *self) {
 }
 
 static void Array_destroy(ZendArray *self) {
-    zval_ptr_dtor(&self->array);
+    if (phpy::php::del_object((PyObject *) self)) {
+        zval_ptr_dtor(&self->array);
+        ZVAL_NULL(&self->array);
+    }
     Py_TYPE(self)->tp_free((PyObject *) self);
-    phpy::php::del_object((PyObject *) self);
 }
 
 bool py_module_array_init(PyObject *m) {

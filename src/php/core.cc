@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <vector>
 
 #include <php_network.h>
 #include <php_streams.h>
@@ -28,13 +29,15 @@
 
 #include "stubs/phpy_core_arginfo.h"
 
+typedef void (*PyObjectDtor)(PyObject *);
+
 static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
 static PyObject *module_operator = nullptr;
 static std::unordered_map<const char *, PyObject *> builtin_functions;
 static std::unordered_map<const char *, PyObject *> operator_functions;
-static std::unordered_map<PyObject *, void (*)(PyObject *)> zend_objects;
+static std::unordered_map<PyObject *, PyObjectDtor> zend_objects;
 static PyObject *py_contains_operator;
 static long eval_code_id = 0;
 
@@ -315,8 +318,8 @@ void add_object(PyObject *pv, void (*dtor)(PyObject *)) {
     zend_objects.emplace(pv, dtor);
 }
 
-void del_object(PyObject *pv) {
-    zend_objects.erase(pv);
+bool del_object(PyObject *pv) {
+    return zend_objects.erase(pv) > 0;
 }
 
 void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *return_value) {
@@ -358,7 +361,9 @@ void call_operator_fn(const char *name, size_t l_name, zval *arguments, zval *re
 }  // namespace phpy
 
 PHP_RSHUTDOWN_FUNCTION(phpy) {
-    for (auto kv : zend_objects) {
+    std::vector<std::pair<PyObject *, PyObjectDtor>> objects;
+    objects.reserve(zend_objects.size());
+    for (auto kv : objects) {
         kv.second(kv.first);
     }
     zend_objects.clear();
@@ -436,7 +441,7 @@ ZEND_METHOD(PyCore, fileno) {
         RETURN_FALSE;
     } else
 #endif
-    if (php_stream_can_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
+        if (php_stream_can_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL) == SUCCESS) {
         if (php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL, (void **) &fd, 1) !=
                 SUCCESS ||
             fd < 0) {

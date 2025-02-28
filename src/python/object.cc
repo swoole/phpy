@@ -75,13 +75,15 @@ static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds) {
 
 static void Object_dtor(PyObject *pv) {
     ZendObject *self = (ZendObject *) pv;
-    zval_ptr_dtor(&self->object);
+    zval object = self->object;
     ZVAL_NULL(&self->object);
+    zval_ptr_dtor(&object);
 }
 
 static void Object_destroy(ZendObject *self) {
-    Object_dtor((PyObject *) self);
-    phpy::php::del_object((PyObject *) self);
+    if (phpy::php::del_object((PyObject *) self)) {
+        Object_dtor((PyObject *) self);
+    }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
 

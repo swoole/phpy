@@ -250,7 +250,7 @@ void new_iter(zval *zv, PyObject *type);
 void new_error(zval *zv, PyObject *error);
 
 void add_object(PyObject *pv, void (*)(PyObject *));
-void del_object(PyObject *pv);
+bool del_object(PyObject *pv);
 void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *return_value);
 bool env_equals(const char *name, size_t nlen, const char *val, size_t vlen);
 void throw_error(PyObject *error);

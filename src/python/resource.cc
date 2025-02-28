@@ -58,8 +58,9 @@ bool ZendResource_Check(PyObject *pv) {
 }
 
 static void Resource_destroy(ZendResource *self) {
-    zval_ptr_dtor(&self->resource);
-    phpy::php::del_object((PyObject *) self);
+    if (phpy::php::del_object((PyObject *) self)) {
+        Resource_dtor((PyObject *) self);
+    }
 }
 
 bool py_module_resource_init(PyObject *m) {

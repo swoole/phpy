@@ -99,7 +99,9 @@ static PyObject *Class_new(ZendClass *self, PyObject *args) {
 }
 
 static void Class_dealloc(ZendClass *self) {
-    phpy::php::del_object((PyObject *) self);
+    if (phpy::php::del_object((PyObject *) self)) {
+        self->ce = NULL;
+    }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
