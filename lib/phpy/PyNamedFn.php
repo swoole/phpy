@@ -60,14 +60,17 @@ class PyNamedFn
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
-        if (!is_file(dirname($this->_proxyFile) . '/__init__.py')) {
-            file_put_contents(dirname($this->_proxyFile) . '/__init__.py', '');
+        if (!is_file($dir . '/__init__.py')) {
+            file_put_contents($dir . '/__init__.py', '');
         }
         file_put_contents($this->_proxyFile, $content);
     }
 
     public function get()
     {
+        $dir = dirname($this->_proxyFile);
+        var_dump(shell_exec('ls -al ' . $dir));
+        var_dump(shell_exec('ls -al ' . PyClass::getProxyPath()));
         return PyCore::import('functions.' . $this->name)->{$this->name};
     }
 }
