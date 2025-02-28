@@ -66,8 +66,8 @@ static void dict2array(PyObject *pv, zval *zv);
 /**
  * Not exact Python built-in types like tuple, set, dict, or list must be handled as PyObject.
  * Custom subclasses may override access methods, leading to unpredictable errors.
- * For example, pygame.key.ScancodeWrapper inherits from tuple but internally sets `.tp_as_mapping = &pg_scancodewrapper_mapping`,
- * overloading the array access operator. In such cases, if PyTuple_Check is used in PHPy,
+ * For example, pygame.key.ScancodeWrapper inherits from tuple but internally sets `.tp_as_mapping =
+ * &pg_scancodewrapper_mapping`, overloading the array access operator. In such cases, if PyTuple_Check is used in PHPy,
  * it will attempt to cast ScancodeWrapper to a PyTuple type and use PyTuple_GetItem to retrieve data,
  * resulting in False. However, in Python code, calling __getitem__ for dictionary access returns True.
  * Reference: https://github.com/pygame/pygame/blob/main/src_c/key.c
@@ -424,7 +424,7 @@ CallObject::CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval 
         kwargs = array2dict(_kwargs);
     }
     if (_argv) {
-        parse_args(_argc, _argv);
+        args_ready = parse_args(_argc, _argv);
     }
 }
 
@@ -432,12 +432,15 @@ CallObject::CallObject(PyObject *_fn, zval *_return_value, zval *_argv) {
     fn = _fn;
     return_value = _return_value;
     if (_argv) {
-        parse_args(_argv);
+        args_ready = parse_args(_argv);
     }
 }
 
 void CallObject::call() {
     PyObject *value;
+    if (!args_ready) {
+        goto _error;
+    }
     if (argc == 0 && kwargs == nullptr) {
         value = PyObject_CallNoArgs(fn);
     } else {
@@ -448,6 +451,7 @@ void CallObject::call() {
         py2php(value, return_value);
         Py_DECREF(value);
     } else {
+    _error:
         phpy::php::throw_error_if_occurred();
         RETVAL_NULL();
     }
@@ -466,21 +470,26 @@ PyObject *string2py(zend_string *zstr) {
     return PyUnicode_FromStringAndSize(ZSTR_VAL(zstr), ZSTR_LEN(zstr));
 }
 
-void CallObject::parse_args(uint32_t _argc, zval *_argv) {
+bool CallObject::parse_args(uint32_t _argc, zval *_argv) {
     argc = _argc;
     if (argc == 0 && kwargs == nullptr) {
-        return;
+        return true;
     }
     args = PyTuple_New(argc);
     for (uint32_t i = 0; i < argc; i++) {
-        PyTuple_SetItem(args, i, php2py(&_argv[i]));
+        auto elem = php2py(&_argv[i]);
+        if (elem == NULL) {
+            return false;
+        }
+        PyTuple_SetItem(args, i, elem);
     }
+    return true;
 }
 
-void CallObject::parse_args(zval *array) {
+bool CallObject::parse_args(zval *array) {
     argc = phpy::php::array_count(array);
     if (argc == 0) {
-        return;
+        return true;
     }
 
     auto arg_list = PyList_New(0);
@@ -490,6 +499,9 @@ void CallObject::parse_args(zval *array) {
 
     ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(array), num_key, string_key, current) {
         auto elem = php2py(current);
+        if (elem == NULL) {
+            return false;
+        }
         if (!string_key) {
             PyList_Append(arg_list, elem);
         } else {
@@ -507,6 +519,7 @@ void CallObject::parse_args(zval *array) {
 
     args = PyList_AsTuple(arg_list);
     Py_DECREF(arg_list);
+    return true;
 }
 
 StrObject::StrObject(PyObject *pv) {

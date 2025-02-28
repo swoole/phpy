@@ -80,4 +80,14 @@ class ObjectTest extends TestCase
         $data = PyCore::bytes($bytes);
         $this->assertEquals($bytes, strval($data));
     }
+
+    public function testInvalidArgs()
+    {
+        $user = PyCore::import('app.user');
+        try {
+            $user->test_str_concat('hello', random_bytes(128));
+        } catch (\PyError $error) {
+            $this->assertStringContainsString("'utf-8' codec can't decode byte", $error->getMessage());
+        }
+    }
 }

@@ -363,6 +363,9 @@ void call_operator_fn(const char *name, size_t l_name, zval *arguments, zval *re
 PHP_RSHUTDOWN_FUNCTION(phpy) {
     std::vector<std::pair<PyObject *, PyObjectDtor>> objects;
     objects.reserve(zend_objects.size());
+    for (auto kv : zend_objects) {
+        objects.push_back(std::make_pair(kv.first, kv.second));
+    }
     for (auto kv : objects) {
         kv.second(kv.first);
     }

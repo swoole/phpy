@@ -345,10 +345,11 @@ struct CallObject {
     uint32_t argc = 0;
     PyObject *fn;
     zval *return_value;
+    bool args_ready;
     CallObject(PyObject *_fn, zval *_return_value, uint32_t _argc, zval *_argv, zend_array *_kwargs);
     CallObject(PyObject *_fn, zval *_return_value, zval *_argv);
-    void parse_args(zval *array);
-    void parse_args(uint32_t _argc, zval *_argv);
+    bool parse_args(zval *array);
+    bool parse_args(uint32_t _argc, zval *_argv);
     ~CallObject();
     void call();
 };

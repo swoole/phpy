@@ -88,3 +88,6 @@ def get_type(d, k):
 def test_redis(redis):
     redis.set('name', 'hello phpy')
     return redis.get('name')
+
+def test_str_concat(a, b):
+    return a + b
