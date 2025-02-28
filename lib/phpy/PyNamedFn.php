@@ -71,6 +71,8 @@ class PyNamedFn
         $dir = dirname($this->_proxyFile);
         var_dump(shell_exec('ls -al ' . $dir));
         var_dump(shell_exec('ls -al ' . PyClass::getProxyPath()));
+        var_dump(shell_exec('cat ' . $this->_proxyFile));
+        PyCore::print(PyCore::import('sys')->path);
         return PyCore::import('functions.' . $this->name)->{$this->name};
     }
 }

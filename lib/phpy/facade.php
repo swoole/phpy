@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @param string $fnName
+ * @return PyObject
+ * @throws Exception
+ */
 function PyNamedFn(string $fnName): PyObject
 {
     return (new PyNamedFn($fnName))->get();
