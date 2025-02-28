@@ -11,7 +11,6 @@ use Symfony\Component\Console\Question\Question;
 
 class PhpyInstall extends AbstractCommand
 {
-
     /** @inheritdoc  */
     protected function configure(): void
     {
@@ -36,7 +35,7 @@ class PhpyInstall extends AbstractCommand
             $this->output('Downloading the latest source code ...');
             if (
                 $this->execWithProgress($version === 'latest' ?
-                    "git clone --depth 1 https://github.com/swoole/phpy.git $installDir":
+                    "git clone --depth 1 https://github.com/swoole/phpy.git $installDir" :
                     "git clone --depth 1 --branch $version https://github.com/swoole/phpy.git $installDir") !== 0
             ) {
                 return $this->error('Error downloading source code.');

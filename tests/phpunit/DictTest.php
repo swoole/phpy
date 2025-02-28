@@ -7,7 +7,7 @@ class DictTest extends TestCase
 {
     public function testDict()
     {
-        $dict = new PyDict;
+        $dict = new PyDict();
         $dict['hello'] = uniqid();
 
         $this->assertTrue(isset($dict['hello']));
@@ -76,11 +76,11 @@ CODE;
 
     public function testUb1()
     {
-        $this->assertEmpty((new PyDict)->current());
+        $this->assertEmpty((new PyDict())->current());
     }
 
     public function testUb2()
     {
-        $this->assertEmpty((new PyDict)->key());
+        $this->assertEmpty((new PyDict())->key());
     }
 }

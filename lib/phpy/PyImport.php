@@ -10,7 +10,7 @@ class PyImport
     /**
      * @throws Exception
      */
-    static public function parse(ReflectionMethod|ReflectionClass|ReflectionFunction $ref): array
+    public static function parse(ReflectionMethod|ReflectionClass|ReflectionFunction $ref): array
     {
         $importAttrs = $ref->getAttributes('PyImport');
         $imports = [];
@@ -30,4 +30,3 @@ class PyImport
         return $imports;
     }
 }
-

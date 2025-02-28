@@ -10,7 +10,7 @@
 #[PyImport('time')]
 class Dog extends PyClass
 {
-    function __construct(string $name, int $age)
+    public function __construct(string $name, int $age)
     {
         parent::__construct();
         $this->color = 'black';
@@ -22,7 +22,7 @@ class Dog extends PyClass
         debug_print_backtrace();
     }
 
-    function speak(string $name): void
+    public function speak(string $name): void
     {
         echo "Dog $name, color: {$this->color}, speak: wang wang wang\n";
         $this->super()->speak('dog');

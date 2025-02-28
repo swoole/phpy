@@ -2,7 +2,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-
 class ModuleTest extends TestCase
 {
     public function testImport()

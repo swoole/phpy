@@ -17,9 +17,9 @@ PyCore::import('sys')->path->append(__DIR__ . '/lib');
 
 class PyLoader
 {
-    static array $modules;
+    public static array $modules;
 
-    static function import(string $name)
+    public static function import(string $name)
     {
         if (!isset(self::$modules[$name])) {
             self::$modules[$name] = PyCore::import($name);
@@ -34,22 +34,21 @@ class FnCallableClass
     private $phpunit;
     private $uuid;
 
-    function __construct($phpunit, $uuid)
+    public function __construct($phpunit, $uuid)
     {
         $this->phpunit = $phpunit;
         $this->uuid = $uuid;
     }
 
-    function __invoke($namespace)
+    public function __invoke($namespace)
     {
         $this->phpunit->assertEquals($namespace, 'app.user');
         return $this->uuid;
     }
 
-    function test($namespace)
+    public function test($namespace)
     {
         $this->phpunit->assertEquals($namespace, 'app.user');
         return $this->uuid;
     }
 }
-

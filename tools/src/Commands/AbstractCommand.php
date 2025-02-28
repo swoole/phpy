@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace PhpyTool\Commands;
@@ -11,7 +12,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractCommand extends Command
 {
-
     public static bool $debug = false;
 
     /**
@@ -69,11 +69,11 @@ abstract class AbstractCommand extends Command
     {
         if (self::$debug) {
             $this->subOutput($info = "DEBUG INFO -> $info");
-            $file = str_replace('\\','_', get_called_class()) . '-' . $this->getRuntimeId();
+            $file = str_replace('\\', '_', get_called_class()) . '-' . $this->getRuntimeId();
             if (!is_dir($dir = getcwd() . "/.log")) {
                 mkdir($dir, 0777, true);
             }
-            file_put_contents("$dir/$file.log", "$info\n", FILE_APPEND|LOCK_EX);
+            file_put_contents("$dir/$file.log", "$info\n", FILE_APPEND | LOCK_EX);
         }
     }
 

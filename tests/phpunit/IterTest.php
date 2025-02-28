@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 class IterTest extends TestCase
 {
-    function testIter()
+    public function testIter()
     {
         $platform = PyCore::import('platform');
         $uname = $platform->uname();
@@ -20,10 +20,10 @@ class IterTest extends TestCase
         $this->assertGreaterThanOrEqual(5, count($list));
     }
 
-    function testNewIter()
+    public function testNewIter()
     {
         try {
-            new PyIter;
+            new PyIter();
         } catch (Error $error) {
             $this->assertStringContainsString('private PyIter::__construct()', $error->getMessage());
             $success = false;
@@ -31,7 +31,7 @@ class IterTest extends TestCase
         $this->assertFalse($success);
     }
 
-    function testNextInt()
+    public function testNextInt()
     {
         $array = [];
         $__iter = PyCore::iter(PyCore::range(1, 13));
@@ -42,7 +42,7 @@ class IterTest extends TestCase
         $this->assertEquals($array, range(1, 12));
     }
 
-    function testNotIterable()
+    public function testNotIterable()
     {
         $slice = PyCore::slice(1, 10);
         try {

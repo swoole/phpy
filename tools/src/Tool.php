@@ -5,9 +5,9 @@ namespace PhpyTool;
 use PyCore;
 use PyStr;
 
-class  Tool
+class Tool
 {
-    static array $ignoreAttrs = [
+    public static array $ignoreAttrs = [
         '__builtins__',
         '__all__',
         '__loader__',
@@ -34,7 +34,7 @@ class  Tool
         'yield',
     ];
 
-    static function render($tplFile, $outFile, $vars, $prefix = ''): void
+    public static function render($tplFile, $outFile, $vars, $prefix = ''): void
     {
         extract($vars);
         ob_start();
@@ -49,13 +49,14 @@ class  Tool
         file_put_contents($outFile, $out);
     }
 
-    static function valueToRepr($v, $python = false): ?string
+    public static function valueToRepr($v, $python = false): ?string
     {
         if (is_string($v)) {
             $v = str_replace(
                 ["\\", "\n", "\r", "\t", "\v", "\x00", "\""],
                 ["\\\\", "\\n", "\\r", "\\t", "\\v", "\\x00", "\\\""],
-                $v);
+                $v
+            );
             return "\"$v\"";
         } elseif ($v === []) {
             return '[]';
@@ -197,7 +198,7 @@ class  Tool
         );
     }
 
-    static function genArgs($args, $default = null)
+    public static function genArgs($args, $default = null)
     {
         $n = count($args);
         if ($n == 0) {
@@ -219,7 +220,7 @@ class  Tool
     }
 
 
-    static function genNameSpace($module_name_ext): string
+    public static function genNameSpace($module_name_ext): string
     {
         $list = explode('.', $module_name_ext);
         if (count($list) == 2) {

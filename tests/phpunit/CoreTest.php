@@ -48,20 +48,20 @@ class CoreTest extends TestCase
         $this->assertEquals("<class 'NoneType'>", PyCore::type($dict));
     }
 
-    function testHash()
+    public function testHash()
     {
         $dict = new PyStr(uniqid());
         $this->assertIsNumeric(PyCore::hash($dict));
     }
 
-    function testHasAttr()
+    public function testHasAttr()
     {
         $platform = PyCore::import("platform");
         $this->assertTrue(PyCore::hasattr($platform, 'uname'));
         $this->assertFalse(PyCore::hasattr($platform, 'not_exists'));
     }
 
-    function testLen()
+    public function testLen()
     {
         $platform = PyCore::import("platform");
         $uname = $platform->uname();
@@ -69,14 +69,14 @@ class CoreTest extends TestCase
         $this->assertGreaterThan(90, strlen(PyCore::str($uname)));
 
         $n = 14;
-        $list = new PyList;
+        $list = new PyList();
         while ($n--) {
             $list[] = uniqid();
         }
         $this->assertEquals(14, PyCore::len($list));
     }
 
-    function testScalar()
+    public function testScalar()
     {
         $rint = random_int(100000, 9999999);
         $uuid = uniqid();

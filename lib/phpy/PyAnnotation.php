@@ -7,7 +7,7 @@ class PyAnnotation
     {
     }
 
-    static function parse(ReflectionMethod|ReflectionClass|ReflectionFunction $ref)
+    public static function parse(ReflectionMethod|ReflectionClass|ReflectionFunction $ref)
     {
         $annotationAttrs = $ref->getAttributes('PyAnnotation');
         $annotations = [];
@@ -22,4 +22,3 @@ class PyAnnotation
         return $annotations;
     }
 }
-

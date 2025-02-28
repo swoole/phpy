@@ -2,7 +2,7 @@
 
 class PyHelper
 {
-    static $typeMap = [
+    public static $typeMap = [
         'PyTuple' => 'tuple',
         'PyList' => 'list',
         'PyDict' => 'dict',

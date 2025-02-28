@@ -2,15 +2,15 @@
 
 class PyClass
 {
-    static private string $_proxyPath = '';
-    static private bool $_checkStat = false;
-    static private ?PyObject $_sys = null;
+    private static string $_proxyPath = '';
+    private static bool $_checkStat = false;
+    private static ?PyObject $_sys = null;
     protected ?PyObject $_self = null;
     protected ?PyObject $_super = null;
     protected string $_proxyClass;
     private string $_proxyFile;
 
-    const IGNORE_METHODS = [
+    public const IGNORE_METHODS = [
         '__construct',
         '__destruct',
         '__call',
@@ -33,7 +33,7 @@ class PyClass
     /**
      * @throws \Exception
      */
-    function __construct()
+    public function __construct()
     {
         if (!self::$_proxyPath) {
             self::setProxyPath(getcwd());

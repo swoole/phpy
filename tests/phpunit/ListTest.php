@@ -64,13 +64,13 @@ class ListTest extends TestCase
         $this->assertEquals($list->index(9), 4);
     }
 
-    function testUb1()
+    public function testUb1()
     {
         $list = new PyList([1, 2, 3, 4]);
         $this->assertEmpty($list->current());
     }
 
-    function testUb2()
+    public function testUb2()
     {
         $list = new PyList([1, 2, 3, 4]);
         $this->assertEmpty($list->next());

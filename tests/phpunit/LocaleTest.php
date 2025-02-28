@@ -1,6 +1,5 @@
 <?php
 
-
 namespace phpunit;
 
 use PHPUnit\Framework\TestCase;

@@ -13,7 +13,7 @@ class ProxyTest extends TestCase
         parent::__construct($name);
     }
 
-    function testClass()
+    public function testClass()
     {
         include BASE_PATH . '/tests/lib/Dog.php';
 
@@ -23,7 +23,7 @@ class ProxyTest extends TestCase
         $this->assertEquals($dog->get_age(), 3);
     }
 
-    function testNamedFn()
+    public function testNamedFn()
     {
         PyCore::setOptions(['argument_as_object' => true]);
         $a = random_int(1, 10000000);
@@ -39,7 +39,7 @@ class ProxyTest extends TestCase
         $this->assertEquals($rs[6], PyCore::str('world'));
     }
 
-    function testWith()
+    public function testWith()
     {
         $tmpname = tempnam(sys_get_temp_dir(), 'phpy');
         $bytes = random_bytes(random_int(1024, 8192));

@@ -35,7 +35,10 @@ class PythonInstall extends AbstractCommand
         }
         // 再次检查Python版本
         if (version_compare(
-            $this->pythonVersion = substr($this->exec('python3 --version', ignore: true), 7, 4), '3.10', '<')
+            $this->pythonVersion = substr($this->exec('python3 --version', ignore: true), 7, 4),
+            '3.10',
+            '<'
+        )
         ) {
             return $this->error('Python version must be 3.10 or higher.');
         }

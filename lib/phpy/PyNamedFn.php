@@ -66,7 +66,7 @@ class PyNamedFn
         file_put_contents($this->_proxyFile, $content);
     }
 
-    function get()
+    public function get()
     {
         return PyCore::import('functions.' . $this->name)->{$this->name};
     }

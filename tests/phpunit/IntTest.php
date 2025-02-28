@@ -4,14 +4,14 @@ use PHPUnit\Framework\TestCase;
 
 class IntTest extends TestCase
 {
-    function testIntOverflow()
+    public function testIntOverflow()
     {
         $i = PyCore::int(12345435);
 
         $this->assertEquals(strval($i->__pow__(3)), '1881564851360655187875');
     }
 
-    function testEnum()
+    public function testEnum()
     {
         $m = PyCore::import('app.user');
         $v = $m->Color->GREEN;

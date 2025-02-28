@@ -42,7 +42,7 @@ class TupleTest extends TestCase
         $this->test($list, $v1, $v2);
     }
 
-    function testArray()
+    public function testArray()
     {
         $list = [];
         $v1 = random_int(1000, 99999);

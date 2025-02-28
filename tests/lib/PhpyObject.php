@@ -2,15 +2,15 @@
 
 class PhpyObject
 {
-    static public string $name = 'empty';
+    public static string $name = 'empty';
     public $b;
 
-    function __construct(string $b)
+    public function __construct(string $b)
     {
         $this->b = $b;
     }
 
-    function test()
+    public function test()
     {
         return $this->b;
     }

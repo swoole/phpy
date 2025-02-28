@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 class TypeTest extends TestCase
 {
-    function testType()
+    public function testType()
     {
         $type = PyCore::type(1);
         $this->assertTrue($type instanceof PyType);
@@ -12,10 +12,10 @@ class TypeTest extends TestCase
         $this->assertEquals("<class 'int'>", (string)$type);
     }
 
-    function testNewType()
+    public function testNewType()
     {
         try {
-            new PyType;
+            new PyType();
         } catch (Error $error) {
             $this->assertStringContainsString('private PyType::__construct()', $error->getMessage());
             $success = false;

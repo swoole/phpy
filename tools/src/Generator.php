@@ -34,7 +34,7 @@ class Generator
      * @throws RuntimeException
      * @throws ReflectionException
      */
-    static function make($extension): void
+    public static function make($extension): void
     {
         if (self::$rootDir === '') {
             self::$rootDir = dirname(__DIR__) . '/output/';
@@ -117,7 +117,7 @@ class Generator
         }
     }
 
-    static function changeCasePascal2Snake(string $name): string
+    public static function changeCasePascal2Snake(string $name): string
     {
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
     }

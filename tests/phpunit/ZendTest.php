@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 class ZendTest extends TestCase
 {
-    function testZendObject()
+    public function testZendObject()
     {
         $dict = PyCore::dict();
         $zojb = new stdClass();
@@ -16,7 +16,7 @@ class ZendTest extends TestCase
         $this->assertStringStartsWith('<zend_object object at', $type);
     }
 
-    function testCallMethodInPython()
+    public function testCallMethodInPython()
     {
         $m = PyCore::import('app.user');
 
@@ -26,7 +26,7 @@ class ZendTest extends TestCase
         $this->assertEquals($rs, 'hello phpy');
     }
 
-    function testCallFuncInPython()
+    public function testCallFuncInPython()
     {
         $m = PyCore::import('app.phpy');
         $this->assertContains('phpy', $m->test_import());
