@@ -1,10 +1,6 @@
 <?php
 
-namespace phpy;
-
-use PyCore;
-
-class Helper
+class PyHelper
 {
     public static function printTraceback($traceback): void
     {
@@ -16,13 +12,10 @@ class Helper
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function checkName(string $name, string $type): string
     {
-        if ($type == 'class' and $name === '*') {
-            return '*';
-        }
         static $regx = [
             'class' => '#^[a-z_][a-z_0-9]*$#i',
             'package' => '#^[a-z_][a-z_0-9]*(\.[a-z_][a-z_0-9]*)*$#i'
@@ -31,5 +24,20 @@ class Helper
             throw new \Exception("Invalid $type name: '$name'");
         }
         return $name;
+    }
+
+    public static function parseReturnType(ReflectionFunction $ref): string
+    {
+        $refReturnType = $ref->getReturnType();
+        if ($refReturnType) {
+            $type = $refReturnType->getName();
+            if ($type === 'void') {
+                return '';
+            } else {
+                return '-> ' . $type;
+            }
+        } else {
+            return '';
+        }
     }
 }

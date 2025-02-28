@@ -1,10 +1,11 @@
 <?php
-require dirname(__DIR__, 2) . '/vendor/autoload.php';
-require __DIR__ . '/Dog.php';
+define('ROOT_PATH', dirname(__DIR__, 2));
+require ROOT_PATH . '/vendor/autoload.php';
+require ROOT_PATH . '/tests/lib/Dog.php';
 
-PyCore::import('sys')->path->append('.');
+PyCore::import('sys')->path->append(ROOT_PATH . '/tests/lib');
 
-\phpy\PyClass::setProxyPath(__DIR__, true);
+PyClass::setProxyPath(ROOT_PATH, true);
 
 $dog = new Dog('dog', 1);
 $dog->speak('hello');

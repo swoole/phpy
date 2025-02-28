@@ -8,20 +8,16 @@ $sys->path->append(ROOT_PATH . '/lib');
 require ROOT_PATH . '/vendor/autoload.php';
 $pui = PyCore::import('PUI.PySide6');
 
-#[Annotation('PUIApp')]
-#[Import('PUI.PySide6', 'PUIApp')]
+#[PyAnnotation('PUIApp')]
+#[PyImport('PUI.PySide6', 'PUIApp')]
 function Example(): void
 {
     global $pui;
-    $window = $pui->Window(title: "test", size: [320, 240]);
-    $window->__enter__();
-    try {
+    PyWith(function ($target) use ($pui) {
         $pui->Label("Hello world");
-    } finally {
-        $window->__exit__(null, null, null);
-    }
+    }, $pui->Window(title: "test", size: [320, 240]));
 }
 
-PyClass::setProxyPath(__DIR__, true);
+PyClass::setProxyPath(ROOT_PATH, true);
 $root = PyNamedFn('Example')();
 $root->run();

@@ -18,10 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "python\\": "./lib/python",
-            "PhpyTool\\": "tools/src",
-            "phpy\\": "./lib/phpy"
+            "python\\": "lib/python",
+            "PhpyTool\\": "tools/src"
         },
+        "classmap": [
+            "lib/phpy"
+        ],
         "files": [
             "lib/phpy/facade.php"
         ]

@@ -1,12 +1,5 @@
 <?php
 
-namespace phpy;
-
-use PyCore;
-use PyObject;
-use ReflectionClass;
-use ReflectionMethod;
-
 class PyClass
 {
     static private string $_proxyPath = '';
@@ -52,7 +45,7 @@ class PyClass
 
         $hasProxyFile = is_file($this->_proxyFile);
         if ($hasProxyFile and self::$_checkStat) {
-            $this->checkProxyFile();
+            $this->checkProxyFile($hasProxyFile);
         }
         if (!$hasProxyFile) {
             $this->makeProxy();
@@ -73,12 +66,12 @@ class PyClass
     private function makeProxy(): void
     {
         $ref = new ReflectionClass($this);
-        $refParents = $ref->getAttributes('inherit');
+        $refParents = $ref->getAttributes('PyInherit');
         if (empty($refParents)) {
             $refParents = $ref->getAttributes('parent');
         }
 
-        $import = '';
+        $importParentClass = '';
         $parents = [];
 
         if (empty($refParents)) {
@@ -87,14 +80,17 @@ class PyClass
             foreach ($refParents as $refParent) {
                 $parent = $refParent->getArguments();
                 if (count($parent) == 1) {
-                    $parents[] = Helper::checkName($parent[0], 'class');
+                    $parents[] = PyHelper::checkName($parent[0], 'class');
                 } else {
                     [$class, $package] = $parent;
-                    $import .= 'import ' . Helper::checkName($package, 'package') . PHP_EOL;
-                    $parents[] = $package . '.' . Helper::checkName($class, 'class');
+                    $importParentClass .= 'import ' . PyHelper::checkName($package, 'package') . PHP_EOL;
+                    $parents[] = $package . '.' . PyHelper::checkName($class, 'class');
                 }
             }
         }
+
+        $imports = PyImport::parse($ref);
+        $annotations = PyAnnotation::parse($ref);
 
         $refMethods = $ref->getMethods();
         $methods = [];
@@ -156,12 +152,13 @@ class PyClass
         return self::$_proxyPath;
     }
 
-    private function checkProxyFile(): void
+    private function checkProxyFile(&$hasProxyFile): void
     {
         clearstatcache(true, $this->_proxyFile);
         $ref = new ReflectionClass($this);
         if (filemtime($ref->getFileName()) > filemtime($this->_proxyFile)) {
             unlink($this->_proxyFile);
+            $hasProxyFile = false;
         }
     }
 

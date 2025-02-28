@@ -1,20 +1,19 @@
 <?php
 
-namespace phpy;
-
-use PyCore;
-use PyObject;
-
 class PyNamedFn
 {
     private string $_proxyFile;
     private string $name;
 
+    /**
+     * @param string $name
+     * @throws Exception
+     */
     public function __construct(string $name)
     {
         $this->name = $name;
         if (!function_exists($name)) {
-            throw new \Exception("Function `$name` not found");
+            throw new Exception("Function `$name` not found");
         }
 
         $proxyDir = PyClass::getProxyPath();
@@ -26,34 +25,14 @@ class PyNamedFn
 
     /**
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     private function makeProxy(): void
     {
         $ref = new \ReflectionFunction($this->name);
 
-        $annotationAttrs = $ref->getAttributes('annotation');
-        $annotations = [];
-        foreach ($annotationAttrs as $attr) {
-            $args = $attr->getArguments();
-            if (count($args) != 1) {
-                throw new \Exception("Invalid annotation arguments");
-            } else {
-                $annotations[] = $args[0];
-            }
-        }
-
-        $importAttrs = $ref->getAttributes('import');
-        $packages = [];
-        foreach ($importAttrs as $attr) {
-            $args = $attr->getArguments();
-            if (count($args) == 0 or count($args) > 2) {
-                throw new \Exception("Invalid import arguments");
-            }
-            $packages[] = count($args) == 1 ?
-                'import ' . Helper::checkName($args[0], 'package') :
-                'from ' . Helper::checkName($args[0], 'package') . ' import ' . Helper::checkName($args[1], 'class');
-        }
+        $annotations = PyAnnotation::parse($ref);
+        $imports = PyImport::parse($ref);
 
         $refParams = $ref->getParameters();
         $_args = [];
@@ -69,8 +48,7 @@ class PyNamedFn
             $_argNames[] = $name;
         }
 
-        $refReturnType = $ref->getReturnType();
-        $returnType = $refReturnType ? ' -> ' . $refReturnType->getName() : '';
+        $returnType = PyHelper::parseReturnType($ref);
 
         $name = $this->name;
         $args = implode(', ', $_args);

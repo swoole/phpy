@@ -1,16 +1,21 @@
 <?php
 
-use phpy\Import;
-use phpy\Inherit;
-use phpy\PyClass;
-use phpy\Annotation;
-
-class_alias(Inherit::class, \Inherit::class);
-class_alias(Import::class, \Import::class);
-class_alias(Annotation::class, \Annotation::class);
-class_alias(PyClass::class, \PyClass::class);
-
 function PyNamedFn(string $fnName): PyObject
 {
-    return (new phpy\PyNamedFn($fnName))->get();
+    return (new PyNamedFn($fnName))->get();
+}
+
+function PyWith(callable $fn, ...$objects): void
+{
+    $targets = [];
+    foreach ($objects as $object) {
+        $targets[] = $object->__enter__();
+    }
+    try {
+        $fn(...$targets);
+    } finally {
+        foreach ($objects as $object) {
+            $object->__exit__(null, null, null);
+        }
+    }
 }

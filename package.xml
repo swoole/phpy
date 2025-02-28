@@ -19,7 +19,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>rango@swoole.com</email>
         <active>yes</active>
     </lead>
-    <date>2024-09-06</date>
+    <date>2025-02-26</date>
     <version>
         <release>1.0.10</release>
         <api>1.0</api>
@@ -30,10 +30,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </stability>
     <license uri="http://www.apache.org/licenses/LICENSE-2.0.html">Apache2.0</license>
     <notes>
-        - Added argument_as_object configuration item
-        - Add Helper::printTraceback()
-        - Support windows platform
-        - Support Python class as parent class of PHP class
+        - Added named function supports
+        - Only exact type(tuple/set/list...) of PyObject are converted to subclasses, otherwise they are passed as PyObject
+        - Solve the problem that PyObject::offsetExists is not available
+        - Fixed symbol not found when configure with python-dir
     </notes>
     <contents>
         <dir name="/">
@@ -93,9 +93,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
             <file role='src' name='src/python/reference.cc'/>
             <file role='src' name='src/python/resource.cc'/>
             <file role='src' name='src/python/string.cc'/>
-            <file role='src' name='lib/phpy/Helper.php'/>
-            <file role='src' name='lib/phpy/PyClass.php'/>
-            <file role='src' name='lib/phpy/proxy.tpl'/>
         </dir>
     </contents>
     <dependencies>

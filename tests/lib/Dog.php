@@ -1,12 +1,13 @@
 <?php
 
-use phpy\PyClass;
-
 /**
  * @property string $color
  * @method get_age()
  */
-#[Inherit('Animal', 'animal')]
+#[PyInherit('Animal', 'animal')]
+#[PyImport('os')]
+#[PyImport('sys')]
+#[PyImport('time')]
 class Dog extends PyClass
 {
     function __construct(string $name, int $age)
