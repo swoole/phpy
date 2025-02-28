@@ -143,6 +143,9 @@ class PyClass
         if (!self::$_sys) {
             self::$_sys = PyCore::import('sys');
         }
+        if (!is_file(self::$_proxyPath . '/__init__.py')) {
+            file_put_contents(self::$_proxyPath . '/__init__.py', '');
+        }
         self::$_sys->path->append(self::$_proxyPath);
         self::$_checkStat = $checkStat;
     }
