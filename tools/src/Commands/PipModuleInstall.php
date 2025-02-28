@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace phpy\Commands;
+namespace PhpyTool\Commands;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;

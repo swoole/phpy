@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace phpy\Commands;
+namespace PhpyTool\Commands;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,13 +25,13 @@ class PythonInstall extends AbstractCommand
     /** @inheritdoc  */
     protected function handler(): int
     {
-        $this->output('Checking and installing Python 3.10+ ...');
+        $this->output('Checking and installing Python-3.10+ Python-pip Python-dev ...');
         if (!$installCommands = $this->getPythonInstallCommands()) {
             return $this->error('Unsupported operating system.');
         }
         $this->execWithProgress($installCommands, $lastLine);
         if (!str_starts_with($lastLine, 'OK:')) {
-            return $this->error('Failed to install Python 3.10+.');
+            return $this->error('Failed to install Python-3.10+ Python-pip Python-dev.');
         }
         // 再次检查Python版本
         if (version_compare(
