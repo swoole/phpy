@@ -7,11 +7,15 @@ use PyCore;
 
 class ProxyTest extends TestCase
 {
+    public function __construct($name)
+    {
+        \PyClass::setProxyPath(BASE_PATH, true);
+        parent::__construct($name);
+    }
+
     function testClass()
     {
-        $ROOT_PATH = dirname(__DIR__, 2);
-        \PyClass::setProxyPath($ROOT_PATH, true);
-        include $ROOT_PATH . '/tests/lib/Dog.php';
+        include BASE_PATH . '/tests/lib/Dog.php';
 
         $dog = new \Dog('dog', 1);
         $dog->speak('hello');
@@ -21,7 +25,18 @@ class ProxyTest extends TestCase
 
     function testNamedFn()
     {
-
+        PyCore::setOptions(['argument_as_object' => true]);
+        $a = random_int(1, 10000000);
+        $b = random_int(1, 10000000) / 33;
+        $d = uniqid();
+        $rs = PyNamedFn('test_fn_1')($a, $b, true, $d, PyCore::slice(1, 10, 2), PyCore::list([1, 2, 3]), PyCore::str('world'));
+        $this->assertEquals($rs[0], $a);
+        $this->assertEquals($rs[1], $b);
+        $this->assertEquals($rs[2], true);
+        $this->assertEquals($rs[3], $d);
+        $this->assertEquals($rs[4], PyCore::slice(1, 10, 2));
+        $this->assertEquals($rs[5], PyCore::list([1, 2, 3]));
+        $this->assertEquals($rs[6], PyCore::str('world'));
     }
 
     function testWith()

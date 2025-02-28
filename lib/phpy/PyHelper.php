@@ -2,6 +2,19 @@
 
 class PyHelper
 {
+    static $typeMap = [
+        'PyTuple' => 'tuple',
+        'PyList' => 'list',
+        'PyDict' => 'dict',
+        'PySet' => 'set',
+        'PyStr' => 'str',
+        'PyObject' => 'object',
+        'int' => 'int',
+        'float' => 'float',
+        'bool' => 'bool',
+        'string' => 'str',
+    ];
+
     public static function printTraceback($traceback): void
     {
         $frame = $traceback;
@@ -26,18 +39,33 @@ class PyHelper
         return $name;
     }
 
+    /**
+     * @param string $type
+     * @return string
+     * @throws Exception
+     */
+    public static function parseType(string $type): string
+    {
+        if (!isset(self::$typeMap[$type])) {
+            throw new Exception("Unsupported return type: $type");
+        }
+        return self::$typeMap[$type];
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function parseReturnType(ReflectionFunction $ref): string
     {
         $refReturnType = $ref->getReturnType();
-        if ($refReturnType) {
-            $type = $refReturnType->getName();
-            if ($type === 'void') {
-                return '';
-            } else {
-                return '-> ' . $type;
-            }
-        } else {
+        if (!$refReturnType) {
             return '';
         }
+        $type = $refReturnType->getName();
+        if ($type === 'void') {
+            return '';
+        }
+
+        return '-> ' . self::parseType($type);
     }
 }

@@ -41,7 +41,7 @@ class PyNamedFn
             $type = $param->getType();
             $name = $param->getName();
             if ($type) {
-                $_args[] = $name . ': ' . $type->getName();
+                $_args[] = $name . ': ' . PyHelper::parseType($type->getName());
             } else {
                 $_args[] = $name;
             }

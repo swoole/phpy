@@ -11,6 +11,7 @@ date_default_timezone_set('Asia/Shanghai');
 !defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
 
 require BASE_PATH . '/vendor/autoload.php';
+require BASE_PATH . '/tests/lib/functions.php';
 
 PyCore::import('sys')->path->append(__DIR__ . '/lib');
 
