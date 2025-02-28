@@ -60,6 +60,9 @@ class PyNamedFn
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
+        if (!is_file(dirname($this->_proxyFile) . '/__init__.py')) {
+            file_put_contents(dirname($this->_proxyFile) . '/__init__.py', '');
+        }
         file_put_contents($this->_proxyFile, $content);
     }
 
