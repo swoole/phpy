@@ -9,6 +9,9 @@
 *.lo
 *.o
 *.loT
+/.log
+/.runtime
+/.venv
 /Debug
 /build
 /out
