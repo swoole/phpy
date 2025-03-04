@@ -42,15 +42,9 @@ class PyClass
         $class = get_class($this);
         $this->_proxyClass = strtolower(str_replace('\\', '_', $class));
         $this->_proxyFile = self::$_proxyPath . '/' . $this->_proxyClass . '.py';
-
-        $hasProxyFile = is_file($this->_proxyFile);
-        if ($hasProxyFile and self::$_checkStat) {
-            $this->checkProxyFile($hasProxyFile);
-        }
-        if (!$hasProxyFile) {
+        if (!self::hasProxyFile($this->_proxyFile, $this)) {
             $this->makeProxy();
         }
-
         PyCore::import($this->_proxyClass)->{$this->_proxyClass}($this);
     }
 
@@ -143,6 +137,9 @@ class PyClass
         if (!self::$_sys) {
             self::$_sys = PyCore::import('sys');
         }
+        if (!is_file(self::$_proxyPath . '/__init__.py')) {
+            file_put_contents(self::$_proxyPath . '/__init__.py', '');
+        }
         self::$_sys->path->append(self::$_proxyPath);
         self::$_checkStat = $checkStat;
     }
@@ -152,14 +149,24 @@ class PyClass
         return self::$_proxyPath;
     }
 
-    private function checkProxyFile(&$hasProxyFile): void
+    /**
+     * @param string $proxyFile
+     * @param PyClass|PyNamedFn $entity
+     * @return bool
+     * @throws ReflectionException
+     */
+    public static function hasProxyFile(string $proxyFile, PyClass|PyNamedFn $entity): bool
     {
-        clearstatcache(true, $this->_proxyFile);
-        $ref = new ReflectionClass($this);
-        if (filemtime($ref->getFileName()) > filemtime($this->_proxyFile)) {
-            unlink($this->_proxyFile);
-            $hasProxyFile = false;
+        $ref = $entity instanceof PyClass ? new ReflectionClass($entity) : new ReflectionFunction($entity->getName());
+        $exists = is_file($proxyFile);
+        if (!$exists) {
+            return false;
         }
+        if (self::$_checkStat and filemtime($ref->getFileName()) > filemtime($proxyFile)) {
+            unlink($proxyFile);
+            return false;
+        }
+        return true;
     }
 
     public function __get($name)

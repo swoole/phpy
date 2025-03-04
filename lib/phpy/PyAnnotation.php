@@ -16,7 +16,7 @@ class PyAnnotation
             if (count($args) != 1) {
                 throw new \Exception("Invalid annotation arguments");
             } else {
-                $annotations[] = $args[0];
+                $annotations[] = str_starts_with($args[0], '@') ? substr($args[0], 1) : $args[0];
             }
         }
         return $annotations;

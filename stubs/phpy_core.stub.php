@@ -7,6 +7,7 @@
 /**
  * @method static print(PyObject $o)
  * @method static exec(string $code, $global = null, $locals = null)
+ * @method static type(mixed $value): PyType
  */
 class PyCore
 {

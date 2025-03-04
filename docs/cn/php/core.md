@@ -107,3 +107,24 @@ $b = PyCore::import('a')->b;
 # 替换为以下代码
 $b = PyCore::import('a.b');
 ```
+
+## 内置类型
+某些情况下，我们需要将类型作为参数传递给 `Python` 函数，可使用`PyCore::type()`实现。
+
+```php
+$type_int = PyCore::type(0);
+$type_float = PyCore::type(3.14);
+$type_str = PyCore::type('hello');
+$type_list = PyCore::type([1, 2, 3]);
+$type_dict = PyCore::type(['a' => 1, 'b' => 2]);
+$type_tuple = PyCore::type([1, 2, 3]);
+$type_null = PyCore::type(null);
+$type_bool = PyCore::type(true);
+```
+
+`PyCore::type()` 返回一个 `PyType` 对象，可用于传递给 `Python` 函数。`PyType` 对象作为
+函数调用，可再次构造一个新的`Python`对象。
+
+```php
+$value = $type_int(100);
+```

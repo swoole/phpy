@@ -22,9 +22,10 @@ class PyImport
             if (count($args) === 1) {
                 $imports[] = 'import ' . PyHelper::checkName($args[0], 'package');
             } else {
+                [$class, $package] = $args;
                 $imports[] =
-                    'from ' . PyHelper::checkName($args[0], 'package') . ' ' .
-                    'import ' . ($args[1] === '*' ? '*' : PyHelper::checkName($args[1], 'class'));
+                    'from ' . PyHelper::checkName($package, 'package') . ' ' .
+                    'import ' . ($args[1] === '*' ? '*' : PyHelper::checkName($class, 'class'));
             }
         }
         return $imports;

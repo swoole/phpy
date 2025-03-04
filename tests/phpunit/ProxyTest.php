@@ -7,12 +7,6 @@ use PyCore;
 
 class ProxyTest extends TestCase
 {
-    public function __construct($name)
-    {
-        \PyClass::setProxyPath(BASE_PATH, true);
-        parent::__construct($name);
-    }
-
     public function testClass()
     {
         include BASE_PATH . '/tests/lib/Dog.php';
@@ -25,11 +19,14 @@ class ProxyTest extends TestCase
 
     public function testNamedFn()
     {
-        PyCore::setOptions(['argument_as_object' => true]);
         $a = random_int(1, 10000000);
         $b = random_int(1, 10000000) / 33;
         $d = uniqid();
+
+        PyCore::setOptions(['argument_as_object' => true]);
         $rs = PyNamedFn('test_fn_1')($a, $b, true, $d, PyCore::slice(1, 10, 2), PyCore::list([1, 2, 3]), PyCore::str('world'));
+        PyCore::setOptions(['argument_as_object' => false]);
+
         $this->assertEquals($rs[0], $a);
         $this->assertEquals($rs[1], $b);
         $this->assertEquals($rs[2], true);

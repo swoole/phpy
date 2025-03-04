@@ -14,6 +14,7 @@ require BASE_PATH . '/vendor/autoload.php';
 require BASE_PATH . '/tests/lib/functions.php';
 
 PyCore::import('sys')->path->append(__DIR__ . '/lib');
+PyClass::setProxyPath(BASE_PATH, true);
 
 class PyLoader
 {
@@ -27,7 +28,6 @@ class PyLoader
         return self::$modules[$name];
     }
 }
-
 
 class FnCallableClass
 {

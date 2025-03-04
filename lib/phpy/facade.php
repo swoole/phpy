@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * @param string $fnName
+ * @return PyObject
+ * @throws Exception
+ */
 function PyNamedFn(string $fnName): PyObject
 {
-    return (new PyNamedFn($fnName))->get();
+    return (new PyNamedFn($fnName))->getPyFn();
 }
 
 function PyWith(callable $fn, ...$objects): void
