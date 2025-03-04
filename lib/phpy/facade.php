@@ -10,6 +10,11 @@ function PyNamedFn(string $fnName): PyObject
     return (new PyNamedFn($fnName))->getPyFn();
 }
 
+function PyEnum(string $class): PyObject
+{
+    return (new PyEnum($class))->getPyEnum();
+}
+
 function PyWith(callable $fn, ...$objects): void
 {
     $targets = [];
@@ -24,3 +29,4 @@ function PyWith(callable $fn, ...$objects): void
         }
     }
 }
+

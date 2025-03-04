@@ -68,4 +68,9 @@ class PyHelper
 
         return '-> ' . self::parseType($type);
     }
+
+    public static function escapeName(string $name): string
+    {
+        return str_replace('\\', '_', $name);
+    }
 }

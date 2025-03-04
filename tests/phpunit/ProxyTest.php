@@ -46,4 +46,13 @@ class ProxyTest extends TestCase
         $this->assertEquals(file_get_contents($tmpname), $bytes);
         unlink($tmpname);
     }
+
+    public function testEnum()
+    {
+        include BASE_PATH . '/tests/lib/MediumEnum.php';
+
+        $enum = PyEnum(\lib\MediumEnum::class);
+        $this->assertStringContainsString('Glass', $enum->Glass->__toString());
+        $this->assertStringContainsString('_False', $enum->_False->__toString());
+    }
 }

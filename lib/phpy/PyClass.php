@@ -2,6 +2,8 @@
 
 class PyClass
 {
+    const PREFIX = '__phpy_proxy__';
+
     private static string $_proxyPath = '';
     private static bool $_checkStat = false;
     private static ?PyObject $_sys = null;
@@ -133,7 +135,7 @@ class PyClass
      */
     public static function setProxyPath(string $rootPath, bool $checkStat = false): void
     {
-        self::$_proxyPath = $rootPath . '/__phpy_proxy__';
+        self::$_proxyPath = $rootPath . '/' . self::PREFIX;
         if (!self::$_sys) {
             self::$_sys = PyCore::import('sys');
         }
@@ -149,7 +151,7 @@ class PyClass
 
     public static function getProxyPath(): string
     {
-        return self::$_proxyPath;
+        return self::$_proxyPath ?: realpath('.') . '/' . self::PREFIX;
     }
 
     /**
@@ -157,15 +159,23 @@ class PyClass
      * @param PyClass|PyNamedFn $entity
      * @return bool
      * @throws ReflectionException
+     * @throws Exception
      */
-    public static function hasProxyFile(string $proxyFile, PyClass|PyNamedFn $entity): bool
+    public static function hasProxyFile(string $proxyFile, mixed $entity): bool
     {
-        $ref = $entity instanceof PyClass ? new ReflectionClass($entity) : new ReflectionFunction($entity->getName());
+        if ($entity instanceof PyClass or $entity instanceof PyEnum) {
+            $file = (new ReflectionClass($entity))->getFileName();
+        } elseif ($entity instanceof PyNamedFn) {
+            $file = (new ReflectionFunction($entity->getName()))->getFileName();
+        } else {
+            throw new Exception('Invalid entity');
+        }
+
         $exists = is_file($proxyFile);
         if (!$exists) {
             return false;
         }
-        if (self::$_checkStat and filemtime($ref->getFileName()) > filemtime($proxyFile)) {
+        if (self::$_checkStat and filemtime($file) > filemtime($proxyFile)) {
             unlink($proxyFile);
             return false;
         }

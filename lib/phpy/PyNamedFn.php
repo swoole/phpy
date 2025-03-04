@@ -15,7 +15,7 @@ class PyNamedFn
         if (!function_exists($name)) {
             throw new Exception("Function `$name` not found");
         }
-        $this->_proxyFile = PyClass::getProxyPath() . '/functions/' . $name . '.py';
+        $this->_proxyFile = PyClass::getProxyPath() . '/functions/' . PyHelper::escapeName($name) . '.py';
         if (!PyClass::hasProxyFile($this->_proxyFile, $this)) {
             $this->makeProxy();
         }
@@ -36,19 +36,19 @@ class PyNamedFn
         $_args = [];
         $_argNames = [];
         foreach ($refParams as $param) {
-            $type = $param->getType();
-            $name = $param->getName();
-            if ($type) {
-                $_args[] = $name . ': ' . PyHelper::parseType($type->getName());
+            $argType = $param->getType();
+            $argName = $param->getName();
+            if ($argType) {
+                $_args[] = $argName . ': ' . PyHelper::parseType($argType->getName());
             } else {
-                $_args[] = $name;
+                $_args[] = $argName;
             }
-            $_argNames[] = $name;
+            $_argNames[] = $argName;
         }
 
         $returnType = PyHelper::parseReturnType($ref);
 
-        $name = $this->name;
+        $name = PyHelper::escapeName($this->name);
         $args = implode(', ', $_args);
         $argNames = implode(', ', $_argNames);
         ob_start();
@@ -66,7 +66,8 @@ class PyNamedFn
 
     public function getPyFn()
     {
-        return PyCore::import('functions.' . $this->name)->{$this->name};
+        $name = PyHelper::escapeName($this->name);
+        return PyCore::import('functions.' . $name)->{$name};
     }
 
     public function getName(): string
