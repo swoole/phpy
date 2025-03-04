@@ -8,6 +8,14 @@
  * @method static print(PyObject $o)
  * @method static exec(string $code, $global = null, $locals = null)
  * @method static type(mixed $value): PyType
+ * @method static slice(?int $start, ?int $stop, ?int $step = null): PyObject
+ * @method static list(array $values): PyObject
+ * @method static str(string $str): PyStr
+ * @method static open(string $filename, string $mode = 'r'): PyObject
+ * @method static len(PyObject $o): int
+ * @method static iter($uname)
+ * @method static range(int $start, int $stop, int $step = 1)
+ * @method static dict()
  */
 class PyCore
 {

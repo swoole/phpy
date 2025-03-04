@@ -5,7 +5,7 @@ on: [ push, pull_request ]
 jobs:
   python:
     runs-on: ubuntu-latest
-    if: 0
+    if: 1
     env:
       PYTHON_VERSION: ${{ matrix.python }}
       IN_CI: 1

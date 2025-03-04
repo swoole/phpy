@@ -160,7 +160,7 @@ class CoreTest extends TestCase
         $stop = $m->test_raise(function () use ($builtins) {
             PyCore::raise($builtins->StopIteration);
         });
-        $this->assertEquals($stop, 'StopIteration');
+        $this->assertEquals('StopIteration', $stop);
 
         $array = $m->test_raise(function () use ($builtins) {
             PyCore::raise($builtins->TypeError, new PyList([1, 2, 3, 4]));
