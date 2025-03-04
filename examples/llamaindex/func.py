@@ -1,9 +1,9 @@
 import asyncio
 
 
-# def multiply(a: float, b: float) -> float:
-#     """Useful for multiplying two numbers."""
-#     return a * b
+def multiply(a: float, b: float = 3.13) -> float:
+    """Useful for multiplying two numbers."""
+    return a * b
 
 
 async def main(agent, prompt):

@@ -49,10 +49,19 @@ class ProxyTest extends TestCase
 
     public function testEnum()
     {
-        include BASE_PATH . '/tests/lib/MediumEnum.php';
+        include BASE_PATH . '/tests/lib/TestEnum.php';
 
-        $enum = PyEnum(\lib\MediumEnum::class);
+        $enum = PyEnum(\lib\TestEnum::class);
         $this->assertStringContainsString('Glass', $enum->Glass->__toString());
         $this->assertStringContainsString('_False', $enum->_False->__toString());
+        $this->assertEquals($enum->Glass->value, 1.520);
+        $this->assertEquals($enum->Oil->value, 1.515);
+        $this->assertEquals($enum->Water->value, 1.333);
+        $this->assertEquals($enum->Air->value, 1.0003);
+        $this->assertEquals($enum->Year->value, 2025);
+        $this->assertEquals($enum->_None->value, null);
+        $this->assertEquals($enum->_True->value, true);
+        $this->assertEquals($enum->_False->value, false);
+        $this->assertEquals($enum->Hello->value, 'hello');
     }
 }

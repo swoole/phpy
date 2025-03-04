@@ -2,7 +2,7 @@
 
 namespace lib;
 
-class MediumEnum
+class TestEnum
 {
     const Glass = 1.520;
     const Oil = 1.515;

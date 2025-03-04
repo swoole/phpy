@@ -49,8 +49,14 @@ class PyNamedFn
         $returnType = PyHelper::parseReturnType($ref);
 
         $name = PyHelper::escapeName($this->name);
-        $args = implode(', ', $_args);
+        $refArgs = $ref->getAttributes(PyArguments::class);
+        if (empty($refArgs)) {
+            $args = implode(', ', $_args);
+        } else {
+            $args = PyArguments::parse($refArgs[0], $_argNames);
+        }
         $argNames = implode(', ', $_argNames);
+
         ob_start();
         include __DIR__ . '/templates/function.tpl';
         $content = ob_get_clean();

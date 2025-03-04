@@ -16,6 +16,7 @@
  * @method static iter($uname)
  * @method static range(int $start, int $stop, int $step = 1)
  * @method static dict()
+ * @method static isinstance($object, $type): bool
  */
 class PyCore
 {
