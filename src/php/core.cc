@@ -471,3 +471,25 @@ ZEND_METHOD(PyCore, fileno) {
         RETURN_LONG(fd);
     }
 }
+
+ZEND_METHOD(PyCore, raise) {
+    zval *ztype, *zvalue = nullptr;
+
+    ZEND_PARSE_PARAMETERS_START(1, 2)
+    Z_PARAM_OBJECT_OF_CLASS(ztype, phpy_object_get_ce())
+    Z_PARAM_OPTIONAL
+    Z_PARAM_ZVAL(zvalue)
+    ZEND_PARSE_PARAMETERS_END_EX(return );
+
+    if (zvalue) {
+        if (Z_TYPE_P(zvalue) == IS_OBJECT && phpy::php::is_pyobject(zvalue)) {
+            PyErr_SetObject(phpy_object_get_handle(ztype), phpy_object_get_handle(zvalue));
+        } else {
+            zend_string *message = zval_get_string(zvalue);
+            PyErr_SetString(phpy_object_get_handle(ztype), ZSTR_VAL(message));
+            zend_string_release(message);
+        }
+    } else {
+        PyErr_SetNone(phpy_object_get_handle(ztype));
+    }
+}

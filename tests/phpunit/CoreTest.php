@@ -147,4 +147,24 @@ class CoreTest extends TestCase
         $rs = PyCore::int(2)->__add__(3);
         $this->assertEquals(5, $rs);
     }
+
+    public function testRaise()
+    {
+        $m = PyCore::import('app.user');
+        $builtins = PyCore::import("builtins");
+        $message = $m->test_raise(function () use ($builtins) {
+            PyCore::raise($builtins->ValueError, "test raise");
+        });
+        $this->assertStringContainsString('test raise', $message);
+
+        $stop = $m->test_raise(function () use ($builtins) {
+            PyCore::raise($builtins->StopIteration);
+        });
+        $this->assertEquals($stop, 'StopIteration');
+
+        $array = $m->test_raise(function () use ($builtins) {
+            PyCore::raise($builtins->TypeError, new PyList([1, 2, 3, 4]));
+        });
+        $this->assertEquals([1, 2, 3, 4], PyCore::scalar($array));
+    }
 }

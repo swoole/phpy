@@ -137,6 +137,9 @@ class PyClass
         if (!self::$_sys) {
             self::$_sys = PyCore::import('sys');
         }
+        if (!is_dir(self::$_proxyPath)) {
+            mkdir(self::$_proxyPath, 0777, true);
+        }
         if (!is_file(self::$_proxyPath . '/__init__.py')) {
             file_put_contents(self::$_proxyPath . '/__init__.py', '');
         }

@@ -69,6 +69,11 @@ class PyCore
 
     }
 
+    public static function raise(PyObject $type, mixed $value = null): void
+    {
+
+    }
+
     public static function __callStatic(string $name, array $arguments): mixed
     {
 

@@ -89,5 +89,17 @@ def test_redis(redis):
     redis.set('name', 'hello phpy')
     return redis.get('name')
 
+
 def test_str_concat(a, b):
     return a + b
+
+
+def test_raise(fn):
+    try:
+        fn()
+    except StopIteration as e:
+        return 'StopIteration'
+    except TypeError as e:
+        return [1, 2, 3, 4]
+    except Exception as e:
+        return str(e)

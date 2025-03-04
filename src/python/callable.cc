@@ -88,6 +88,9 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
         PyErr_Format(PyExc_RuntimeError, "Function call failed");
         return NULL;
     }
+    if (PyErr_Occurred()) {
+        return NULL;
+    }
     RETURN_PYOBJ(&retval);
 }
 
