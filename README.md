@@ -5,6 +5,8 @@
 A library for inter-calling `Python` and `PHP`. 
 You can use Python functions and libraries in PHP, or use PHP packages in Python.
 
+![phpy ecosystems](docs/images/ecosystems.svg)
+
 - See documents: [docs/en/README.md](docs/en/README.md)
 - Supports `Linux`/`Windows`/`macOS`
 - **Not support Python `threading` or `async-io` features**
