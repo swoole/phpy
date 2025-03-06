@@ -6,7 +6,7 @@
 extern zend_module_entry phpy_module_entry;
 # define phpext_phpy_ptr &phpy_module_entry
 
-# define PHP_PHPY_VERSION "1.0.10"
+# define PHP_PHPY_VERSION "1.0.11"
 
 BEGIN_EXTERN_C()
 extern const char *phpy_get_python_version(void);

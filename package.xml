@@ -19,9 +19,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
         <email>rango@swoole.com</email>
         <active>yes</active>
     </lead>
-    <date>2025-02-26</date>
+    <date>2025-03-06</date>
     <version>
-        <release>1.0.10</release>
+        <release>1.0.11</release>
         <api>1.0</api>
     </version>
     <stability>
@@ -30,10 +30,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </stability>
     <license uri="http://www.apache.org/licenses/LICENSE-2.0.html">Apache2.0</license>
     <notes>
-        - Added named function supports
-        - Only exact type(tuple/set/list...) of PyObject are converted to subclasses, otherwise they are passed as PyObject
-        - Solve the problem that PyObject::offsetExists is not available
-        - Fixed symbol not found when configure with python-dir
+        - Added PyCore::raise() to throw exceptions to the Python layer.
+        - Added PyNamedFn function, which converts PHP functions into Python functions, complete with annotations, parameters, and return type information.
+        - Added the PyEnum function to transform PHP classes containing only constants into Python Enums.
+        - Added the bin/phpy tool.
+        - Added the argument_as_object option
+        - Fixed a bug in PyTuple::offsetExists where it returned false for negative input parameters.
+        - Added a PyClass::__init() callback, which is invoked within the init method of Python classes.
     </notes>
     <contents>
         <dir name="/">
