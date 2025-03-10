@@ -12,6 +12,7 @@ $application->addCommands([
     new \PhpyTool\Commands\PhpyInstall(),
     new \PhpyTool\Commands\PythonInstall(),
     new \PhpyTool\Commands\PipMirrorConfig(),
+    new \PhpyTool\Commands\ScanImport(),
 ]);
 try {
     $application->run();
