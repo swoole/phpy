@@ -1,0 +1,2 @@
+<?php
+$module = PyImport('numpy');

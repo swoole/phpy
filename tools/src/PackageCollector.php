@@ -14,11 +14,18 @@ class PackageCollector extends NodeVisitorAbstract
 
     public function enterNode(Node $node): void
     {
+        $foundPackageFn = function (Node $node) {
+            if (isset($node->args[0]) && $node->args[0]->value instanceof Node\Scalar\String_) {
+                $this->packages[] = $node->args[0]->value->value;
+            }
+        };
         if ($node instanceof Node\Expr\StaticCall) {
-            if ($node->class instanceof Node\Name && $node->class->toString() === 'PyCore' && $node->name->toString() === 'import') {
-                if (isset($node->args[0]) && $node->args[0]->value instanceof Node\Scalar\String_) {
-                    $this->packages[] = $node->args[0]->value->value;
-                }
+            if ($node->class instanceof Node\Name && strval($node->class) === 'PyCore' && strval($node->name) === 'import') {
+                $foundPackageFn($node);
+            }
+        } elseif ($node instanceof Node\Expr\FuncCall) {
+            if ($node->name instanceof Node\Name && strtolower($node->name) === 'pyimport') {
+                $foundPackageFn($node);
             }
         }
     }
@@ -38,7 +45,6 @@ class PackageCollector extends NodeVisitorAbstract
         $traverser->addVisitor($collector);
 
         try {
-            // 解析代码
             $statements = $parser->parse($code);
             $traverser->traverse($statements);
         } catch (Error $e) {
