@@ -8,7 +8,7 @@
  * @method static print(PyObject $o)
  * @method static exec(string $code, $global = null, $locals = null)
  * @method static type(mixed $value): PyType
- * @method static slice(?int $start, ?int $stop, ?int $step = null): PyObject
+ * @method static slice(?int $start = null, ?int $stop = null, ?int $step = null): PyObject
  * @method static list(array $values): PyObject
  * @method static str(string $str): PyStr
  * @method static open(string $filename, string $mode = 'r'): PyObject
@@ -17,6 +17,8 @@
  * @method static range(int $start, int $stop, int $step = 1)
  * @method static dict()
  * @method static isinstance($object, $type): bool
+ * @method static tuple(array $array)
+ * @method static set(array $array)
  */
 class PyCore
 {
