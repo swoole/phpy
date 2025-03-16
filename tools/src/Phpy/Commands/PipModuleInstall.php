@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpyTool\Commands;
+namespace PhpyTool\Phpy\Commands;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,7 +18,7 @@ class PipModuleInstall extends AbstractCommand
         parent::configure();
         $this
             ->setName('install:pip-module')
-            ->setDescription('Installs Python PyORC module.')
+            ->setDescription('Installs Python module.')
             ->addArgument('module', InputArgument::REQUIRED, 'The module name to install')
             ->addArgument('version', InputArgument::OPTIONAL, 'The version of Python module to install', 'latest');
     }

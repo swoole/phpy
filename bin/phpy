@@ -1,20 +1,12 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-use Symfony\Component\Console\Application;
+use PhpyTool\Phpy\Application;
 
 require_once ($GLOBALS['_composer_autoload_path'] ?? dirname(__DIR__) . '/vendor/autoload.php');
 
-$application = new Application();
-
-$application->addCommands([
-    new \PhpyTool\Commands\PipModuleInstall(),
-    new \PhpyTool\Commands\PhpyInstall(),
-    new \PhpyTool\Commands\PythonInstall(),
-    new \PhpyTool\Commands\PipMirrorConfig(),
-]);
 try {
-    $application->run();
+    (new Application())->run();
 } catch (Throwable $e) {
     exit($e->getMessage() . PHP_EOL);
 }

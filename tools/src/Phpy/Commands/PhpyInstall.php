@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpyTool\Commands;
+namespace PhpyTool\Phpy\Commands;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,33 +25,34 @@ class PhpyInstall extends AbstractCommand
     protected function handler(): int
     {
         $helper = new QuestionHelper();
-        $version = $this->getInput()?->getArgument('version');
+        $version = $this->consoleIO?->getInput()->getArgument('version');
         // 询问安装目录
-        $question = new Question("[?] Please specify the installation directory (default: .runtime): \n", getcwd() . '/.runtime');
-        $installDir = $helper->ask($this->getInput(), $this->getOutput(), $question) . '/swoole_phpy_' . str_replace('.', '', $version);
+        $installDir = $this->consoleIO
+            ?->ask('Please specify the installation directory (default: .runtime):', getcwd() . '/.runtime')
+            . '/swoole_phpy_' . str_replace('.', '', $version);
 
         if (!file_exists($installDir)) {
             // 下载源码
-            $this->output('Downloading the latest source code ...');
+            $this->consoleIO?->output('Downloading the latest source code ...');
             if (
                 $this->execWithProgress($version === 'latest' ?
                     "git clone --depth 1 https://github.com/swoole/phpy.git $installDir" :
                     "git clone --depth 1 --branch $version https://github.com/swoole/phpy.git $installDir") !== 0
             ) {
-                return $this->error('Error downloading source code.');
+                return $this->consoleIO?->error('Error downloading source code.');
             }
         } else {
-            $this->comment('PHPy source code already downloaded.');
+            $this->consoleIO?->comment('PHPy source code already downloaded.');
         }
 
         // 安装编译依赖组件
-        $this->output('Installing dependencies...');
+        $this->consoleIO?->output('Installing dependencies...');
         if ($installCommands = $this->getSystemInstallCommands()) {
             if ($this->execWithProgress($installCommands) !== 0) {
-                return $this->error('Error installing dependencies.');
+                return $this->consoleIO?->error('Error installing dependencies.');
             }
         } else {
-            return $this->error('Please install PHPy manually.');
+            return $this->consoleIO?->error('Please install PHPy manually.');
         }
 
         $question = new Question("[?] Please specify the Python-config directory (default: /usr/bin/python-config): \n", '/usr/bin/python-config');
