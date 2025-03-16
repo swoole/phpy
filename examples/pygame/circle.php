@@ -16,7 +16,6 @@ while($running) {
         if ($event->type == $pygame->QUIT) {
             $running = false;
         }
-
     }
     $screen->fill("purple");
     $pygame->draw->circle($screen, "red", $player_pos, 40);

@@ -5,10 +5,12 @@ phpy
 `Python` 与 `PHP` 互调用库，可以在 `PHP` 中使用 `Python` 语言的函数和类库，或者在 `Python` 中使用 `PHP` 的包。
 但不是语言内嵌。编码依然使用各自的原生语法。
 
-> 查看 [中文文档](docs/cn/README.md)  
+![phpy ecosystems](docs/images/ecosystems.svg)
 
+- 查看 [中文文档](docs/cn/README.md)  
 - 支持 `Linux`/`Windows`/`macOS` 等多种操作和平台
 - 不支持 Python 多线程、`async-io` 特性
+- 需要 `PHP 8.1` 或更高版本
 
 PHP 调用 Python
 ----
