@@ -52,7 +52,7 @@ class System
                 throw new PhpyException('Python not found. ');
             }
         }
-        System::putFileContent($command, $path);
+//        System::putFileContent($command, $path);
         return $path;
     }
 
@@ -72,7 +72,7 @@ class System
                 throw new PhpyException('Python-pip not found. ');
             }
         }
-        System::putFileContent($command, $path);
+//        System::putFileContent($command, $path);
         return $path;
     }
 
@@ -92,7 +92,7 @@ class System
                 throw new PhpyException('Python-config not found. ');
             }
         }
-        System::putFileContent($command, $path);
+//        System::putFileContent($command, $path);
         return $path;
     }
 

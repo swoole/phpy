@@ -32,18 +32,18 @@ EOT
     protected function handler(): int
     {
         $this->consoleIO->output('Python-env: ');
-        $this->process->pythonExec('--version');
-        $this->process->pipExec('--version');
+        $this->process->executePython('--version', subOutput: true);
+        $this->process->executePip('--version', subOutput: true);
         $this->consoleIO->output('Python-includes: ');
-        $this->process->pythonConfigExec('--includes');
+        $this->process->executePythonConfig('--includes', subOutput: true);
 
         if ($module = $this->consoleIO->getInput()->getArgument('module')) {
             $this->consoleIO->output("Python-module [$module]: ");
-            $this->process->pipExec("show $module");
+            $resultCode = $this->process->executePip("show $module", subOutput: true);
         } else {
             $this->consoleIO->output('Python-modules: ');
-            $this->process->pipExec('list');
+            $resultCode = $this->process->executePip('list', subOutput: true);
         }
-        return 0;
+        return $resultCode;
     }
 }

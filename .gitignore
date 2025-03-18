@@ -56,3 +56,4 @@ config.sub
 /*.command
 /py-vendor
 /requirements.txt
+/phpy.lock

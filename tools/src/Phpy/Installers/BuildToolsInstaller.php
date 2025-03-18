@@ -46,8 +46,8 @@ class BuildToolsInstaller implements InstallerInterface
             true,
             questionClass: ConfirmationQuestion::class
         )) {
-            if ($this->process->execWithProgress(
-                    "$command"
+            if ($this->process->execute(
+                    "$command", subOutput: true
                 ) !== 0) {
                 throw new CommandFailedException('Error installing dependency tools.');
             }
@@ -64,8 +64,8 @@ class BuildToolsInstaller implements InstallerInterface
             false,
             questionClass: ConfirmationQuestion::class
         )) {
-            $this->process->execWithProgress(
-                "$command"
+            $this->process->execute(
+                "$command", subOutput: true
             );
         }
     }

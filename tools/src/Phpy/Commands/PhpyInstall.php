@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace PhpyTool\Phpy\Commands;
 
+use PhpyTool\Phpy\Config;
+use PhpyTool\Phpy\Exceptions\CommandFailedException;
+use PhpyTool\Phpy\Exceptions\CommandStopException;
+use PhpyTool\Phpy\Exceptions\CommandSuccessedException;
+use PhpyTool\Phpy\Installers\BuildToolsInstaller;
+use PhpyTool\Phpy\Installers\PhpyInstaller;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 
 class PhpyInstall extends AbstractCommand
 {
@@ -24,122 +29,51 @@ class PhpyInstall extends AbstractCommand
     /** @inheritdoc  */
     protected function handler(): int
     {
-        $helper = new QuestionHelper();
-        $version = $this->consoleIO?->getInput()->getArgument('version');
-        // 询问安装目录
-        $installDir = $this->consoleIO
-            ?->ask('Please specify the installation directory (default: .runtime):', getcwd() . '/.runtime')
-            . '/swoole_phpy_' . str_replace('.', '', $version);
+        $config = new Config();
+        $pythonSourceUrl = $config->get('phpy.source-url', 'https://github.com/swoole/phpy.git');
+        $config->set('phpy.source-url', $this->consoleIO?->ask(
+            "Please enter the ext-phpy source code URL to install (default: <comment>$pythonSourceUrl</comment>).",
+            $pythonSourceUrl
+        ));
 
-        if (!file_exists($installDir)) {
-            // 下载源码
-            $this->consoleIO?->output('Downloading the latest source code ...');
-            if (
-                $this->execWithProgress($version === 'latest' ?
-                    "git clone --depth 1 https://github.com/swoole/phpy.git $installDir" :
-                    "git clone --depth 1 --branch $version https://github.com/swoole/phpy.git $installDir") !== 0
-            ) {
-                return $this->consoleIO?->error('Error downloading source code.');
-            }
+        $pythonVersion = $config->get('phpy.install-version', 'latest');
+        $config->set('phpy.install-version', $this->consoleIO?->ask(
+            "Please enter the ext-phpy version to install (default: <comment>$pythonVersion</comment>).",
+            $pythonVersion
+        ));
+
+        if ($this->consoleIO?->ask(
+            'Do you want to add ext-phpy in php.ini? [<comment>Y,n</comment>]:',
+            false,
+            questionClass: ConfirmationQuestion::class
+        )) {
+            $phpyIniPath = $config->get('phpy.ini-path', '/usr/local/etc/php/conf.d/xx-php-ext-phpy.ini');
+            $config->set('phpy.ini-path', $this->consoleIO?->ask(
+                "Please enter the ext-phpy php.ini path (default: <comment>$phpyIniPath</comment>).",
+                $phpyIniPath
+            ));
         } else {
-            $this->consoleIO?->comment('PHPy source code already downloaded.');
+            $config->set('phpy.ini-path', null);
         }
-
-        // 安装编译依赖组件
-        $this->consoleIO?->output('Installing dependencies...');
-        if ($installCommands = $this->getSystemInstallCommands()) {
-            if ($this->execWithProgress($installCommands) !== 0) {
-                return $this->consoleIO?->error('Error installing dependencies.');
+        try {
+            $buildTools = new BuildToolsInstaller($config, $this->consoleIO);
+            $buildTools->install();
+            (new PhpyInstaller($config, $this->consoleIO))->install();
+            if ($this->consoleIO?->ask(
+                'Do you need to uninstall the build dependencies? [<comment>n,Y</comment>]',
+                false,
+                questionClass: ConfirmationQuestion::class
+            )) {
+                $buildTools->uninstall();
             }
-        } else {
-            return $this->consoleIO?->error('Please install PHPy manually.');
+        } catch (CommandStopException) {
+            return $this->consoleIO?->success('Installation stop.');
+        } catch (CommandSuccessedException $exception) {
+            return $this->consoleIO?->success($exception->getMessage());
+        } catch (CommandFailedException $exception) {
+            return $this->consoleIO?->error($exception->getMessage());
         }
 
-        $question = new Question("[?] Please specify the Python-config directory (default: /usr/bin/python-config): \n", '/usr/bin/python-config');
-        $pythonConfigDir = $helper->ask($this->getInput(), $this->getOutput(), $question);
-        // 编译并安装拓展
-        $this->output('Building and installing PHPy extension...');
-        if (
-            $this->execWithProgress(
-                "cd $installDir && phpize && ./configure --with-python-config=$pythonConfigDir && make clean && make && make install"
-            ) !== 0
-        ) {
-            return $this->error('Error building and installing PHPy extension.');
-        }
-
-        // 询问是否移除源码
-        $question = new ConfirmationQuestion("[?] Do you want to add ext-PHPy in php.ini? [Y/n]: \n", true);
-        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
-            $question = new Question("[?] Please specify the php.ini path (default: /usr/local/etc/php/conf.d/xx-php-ext-phpy.ini): \n", '/usr/local/etc/php/conf.d/xx-php-ext-phpy.ini');
-            $phpIniPath = $helper->ask($this->getInput(), $this->getOutput(), $question);
-            $this->system('echo "extension=phpy.so" > ' . $phpIniPath, $rc, true);
-            if ($rc !== 0) {
-                $this->error('Error removing source code. Your can remove it manually.');
-            }
-        }
-
-        // 询问是否移除源码
-        $question = new ConfirmationQuestion("[?] Do you want to remove the source code? (path: $installDir) [Y/n]: \n", true);
-        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
-            $this->system('rm -rf ' . $installDir, $rc, true);
-            if ($rc !== 0) {
-                $this->error('Error removing source code. Your can remove it manually.');
-            }
-        }
-
-        // 询问是否卸载编译依赖组件
-        $question = new ConfirmationQuestion("[?] Do you want to remove the build dependencies? [Y/n]: \n", true);
-        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
-            $removeCommands = $this->getSystemUninstallCommands();
-            if ($removeCommands) {
-                if ($this->execWithProgress($removeCommands) !== 0) {
-                    $this->error('Error removing build dependencies. Your can remove it manually.');
-                }
-            }
-        }
-
-        // 询问是composer安装swoole/phpy
-        $question = new ConfirmationQuestion("[?] Do you want to require swoole/phpy? [y/N]: \n", false);
-        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
-            if ($this->execWithProgress('composer require swoole/phpy --ignore-platform-req=ext-phpy') !== 0) {
-                $this->error('Error requiring PHPy via Composer. Your can require it manually.');
-            }
-        }
-
-        return $this->success('PHPy installation completed successfully. ');
-    }
-
-    private function getSystemInstallCommands(): ?string
-    {
-        return match ($this->getSystemType()) {
-            'alpine'    => 'apk add --no-cache gcc g++ make autoconf',
-            'redhat'    => 'sudo yum install -y gcc gcc-c++ make autoconf',
-            'darwin'    => 'brew install autoconf',
-            'windows'   => null,
-            default     => 'sudo apt-get install -y build-essential autoconf',
-        };
-    }
-
-    private function getSystemUninstallCommands(): ?string
-    {
-        return match ($this->getSystemType()) {
-            'alpine'    => 'apk del gcc g++ make autoconf',
-            'redhat'    => 'sudo yum remove -y gcc gcc-c++ make autoconf',
-            'darwin'    => 'brew uninstall autoconf',
-            'windows'   => null,
-            default     => 'sudo apt-get remove -y build-essential autoconf',
-        };
-    }
-
-    private function getSystemType(): string
-    {
-        return match (true) {
-            file_exists('/etc/alpine-release')                => 'alpine',
-            file_exists('/etc/centos-release') ||
-            file_exists('/etc/redhat-release')                => 'redhat',
-            stripos(php_uname('s'), 'Darwin') !== false  => 'darwin',
-            stripos(php_uname('s'), 'Windows') !== false => 'windows',
-            default                                                    => 'linux',
-        };
+        return $this->consoleIO?->success('PHPy installation completed successfully. ');
     }
 }

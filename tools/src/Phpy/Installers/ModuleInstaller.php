@@ -9,8 +9,14 @@ use PhpyTool\Phpy\Application;
 use PhpyTool\Phpy\Config;
 use PhpyTool\Phpy\ConsoleIO;
 use PhpyTool\Phpy\Exceptions\CommandFailedException;
+use PhpyTool\Phpy\Exceptions\CommandStopException;
+use PhpyTool\Phpy\Helpers\PackageCollector;
 use PhpyTool\Phpy\Helpers\Process;
+use PhpyTool\Phpy\Helpers\PythonMetadata;
 use PhpyTool\Phpy\Helpers\System;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ModuleInstaller implements InstallerInterface
 {
@@ -40,7 +46,7 @@ class ModuleInstaller implements InstallerInterface
         $this->config = $config;
         $this->consoleIO = $consoleIO;
         $this->process = $consoleIO?->getExtra('process') ?: new Process($consoleIO);
-        if (!$config->get('module')) {
+        if (!$config->get('modules')) {
             $this->skipInfo = 'Module not configured. Skip install.';
             return;
         }
@@ -52,118 +58,138 @@ class ModuleInstaller implements InstallerInterface
      * @param string $module
      * @return array|null
      */
-    protected function moduleVersions(string $module): ?array
+    public function moduleVersions(string $module): ?array
     {
-        $res = $this->process->pipExec("index versions $module");
-        if (!str_contains($res, 'ERROR')) {
-            // 解析 pip 输出，获取模块的可用版本
-            preg_match_all('/Available versions: (.+)/', $res, $matches);
-            return explode(', ', $matches[1][0] ?? '');
+        $resultCode = $this->process->executePip("index versions $module", output: $output);
+        if ($resultCode === 0) {
+            $res = [];
+            foreach ($output as $line) {
+                if (str_starts_with($line, 'Available versions:')) {
+                    // 解析 pip 输出，获取模块的可用版本
+                    preg_match_all('/Available versions: (.+)/', $line, $matches);
+                    $res = explode(', ', $matches[1][0] ?? '');
+                }
+            }
+            return $res;
         }
         return null;
+    }
+
+    /**
+     * @return void
+     */
+    public function scan(): void
+    {
+        $dirs = $this->config->get('config.scan-dirs');
+        if (!$dirs) {
+            throw new CommandStopException('Nothing to scan');
+        }
+        $packages = [];
+        foreach ($dirs as $dir) {
+
+            if (!is_dir($dir = System::getcwd() . $dir)) {
+                continue;
+            }
+            $files = $this->findPhpFiles(realpath($dir));
+
+            foreach ($files as $file) {
+                $this->consoleIO?->output("Scanning <info>$file</info>");
+                $scannedPackages = PackageCollector::parseFile($file);
+                foreach ($scannedPackages as $package) {
+                    $this->consoleIO?->subOutput("<comment>--</comment> scanned: <comment>$package</comment>");
+                }
+                $packages = array_merge($packages, $scannedPackages);
+            }
+        }
+        $packages = array_unique($packages);
+        $modules = [];
+        foreach ($packages as $key => $package) {
+            $package = explode('.', $package)[0];
+            if (PythonMetadata::isStdLibrary($package)) {
+                continue;
+            }
+            if ($availableVersions = $this->moduleVersions($package)) {
+                $modules[$package] = Semver::rsort($availableVersions)[0];
+            }
+        }
+        if ($modules) {
+            $count = count($modules);
+            $this->consoleIO?->output("Installs: $count");
+            foreach ($modules as $module => $version) {
+                $this->consoleIO?->subOutput("<comment>--</comment> <info>$module</info> - <comment>$version</comment>");
+            }
+        }
+        if (!$this->consoleIO?->ask(
+            "Do you want to install these modules? [<comment>Y,n</comment>]",
+            true,
+            ConfirmationQuestion::class
+        )) {
+            throw new CommandStopException('PHPy will not install any modules');
+        }
+        $this->config->set('modules', array_merge($this->config->get('modules', []), $modules));
     }
 
     /** @inheritdoc  */
     public function install(): void
     {
         $modules = $this->config->get('modules', []);
-        $installModules = [];
-        foreach ($modules as $module => $versionConstraint) {
-            // 查询 pip 库中的模块版本
-            if (!$availableVersions = $this->moduleVersions($module)) {
-                $this->consoleIO?->output(<<<EOT
-Python module <comment>$module</comment> not found in pip.
+        $vendorModules = $this->config->get('vendor-modules', []);
+        $phpyHash = $this->config->get('phpy-hash');
+        $composerHash = $this->config->get('composer-hash');
 
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                );
-                throw new CommandFailedException('Install failed.');
-            }
-            // 检查版本是否满足约束
-            $satisfyingVersions = Semver::satisfiedBy($availableVersions, $versionConstraint);
-            if (!$satisfyingVersions) {
-                $this->consoleIO?->output(<<<EOT
-Python module <info>$module</info> version <comment>$versionConstraint</comment>> not found in pip.
-
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                );
-                throw new CommandFailedException('Install failed.');
-            }
-            // 选择满足约束的版本
-            $installModules[$module] = Semver::rsort($satisfyingVersions);
+        // 如果存在 phpy-hash 和 composer-hash， 则为install
+        if ($phpyHash and $composerHash) {
+            $installModules = array_merge($modules, $vendorModules);
         }
+        // 不存在，则为update
+        else {
+            $this->config->set('phpy-hash', hash_file('SHA256', System::getcwd() . '/phpy.json'));
+            $this->config->set('composer-hash', hash_file('SHA256', System::getcwd() . '/composer.json'));
+            $localModules = [];
+            foreach ($modules as $module => $versionConstraint) {
+                $localModules[$module] = $this->satisfyingVersions($module, $this->availableVersions($module), $versionConstraint);
+            }
 
-        // 没有hash，说明是json文件安装，则扫描vendor
-        if (!$this->config->get('hash')) {
             // vendor
-            $vendorModules = [];
-            Application::getVendorConfigFiles(function ($organization, $package, $configFilePath) use (&$vendorModules) {
+            $vendors = [];
+            Application::getVendorConfigFiles(function ($organization, $package, $configFilePath) use (&$vendors) {
                 $config = new Config($configFilePath);
                 $modules = $config->get('modules', []);
                 foreach ($modules as $module => $versionConstraint) {
-                    $vendorModules[$module][$versionConstraint] = [
+                    $vendors[$module][$versionConstraint] = [
                         'organization' => $organization,
                         'package' => $package,
                     ];
                 }
             });
-            foreach ($vendorModules as $module => $item) {
-                // others
-                if (!isset($installModules[$module])) {
-                    // 查询 pip 库中的模块版本
-                    if (!$availableVersions = $this->moduleVersions($module)) {
-                        $this->consoleIO?->output(<<<EOT
-Python module <info>$module</info> not found in pip.
+            $this->config->set('vendors', $vendors);
 
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                        );
-                        throw new CommandFailedException('Install failed.');
-                    }
-                }
-                // exits
-                else {
-                    $availableVersions = $installModules[$module];
-                }
+            $vendorModules = [];
+            foreach ($vendors as $module => $item) {
+                $availableVersions = ($local = isset($localModules[$module]))
+                    ? $localModules[$module]
+                    : $this->availableVersions($module);
+                // 循环检查所有组织/包的版本约束
                 foreach ($item as $versionConstraint => $info) {
-                    // 检查版本是否满足约束
-                    $satisfyingVersions = Semver::satisfiedBy($availableVersions, $versionConstraint);
-                    if (!$satisfyingVersions) {
-                        $this->consoleIO?->output(<<<EOT
-Package <info>{$info['organization']}/{$info['package']}</info> --
-Python module <info>$module</info> version-constraint <comment>$versionConstraint</comment>> not found in pip.
-
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                        );
-                        throw new CommandFailedException('Install failed.');
-                    }
-                    $availableVersions = Semver::rsort($satisfyingVersions);
+                    $availableVersions = $this->satisfyingVersions($module, $availableVersions, $versionConstraint, $info);
                 }
-                $installModules[$module] = $availableVersions;
+                if ($availableVersions) {
+                    if (!$local) {
+                        $vendorModules[$module] = $availableVersions[0];
+                    } else {
+                        $localModules[$module] = $availableVersions[0];
+                    }
+                }
             }
+            $this->config->set('modules', $localModules);
+            $this->config->set('vendor-modules', $vendorModules);
+            $installModules = array_merge($localModules, $vendorModules);
         }
+
         if ($installModules) {
-            // 生成 requirements.txt 且安装
-            $installModulesContent = '';
-            foreach ($installModules as $module => $versions) {
-                $this->config->set("modules.$module", $version = $versions[0]);
-                $installModulesContent .= "$module==$version\n";
-            }
-            System::putFileContent($requirementsFile = System::getcwd() . '/requirements.txt', $installModulesContent, cache: false);
-            $this->consoleIO->subOutput(<<<EOT
-Installs: 
-$installModulesContent
-EOT);
-            if ($pipGlobalIndex = $this->config->get('config.pip-index-url')) {
-                $this->process->pipExec("config set global.index-url $pipGlobalIndex");
-            }
-            if ($this->process->pipExec("install -r $requirementsFile") !== 0) {
-                throw new CommandFailedException('Install failed.');
-            }
+            $this->pipModulesInstall($installModules);
         } else {
-            $this->consoleIO->output('No modules to install.');
+            $this->consoleIO->output('No modules.');
         }
     }
 
@@ -175,105 +201,121 @@ EOT);
     /** @inheritdoc  */
     public function upgrade(): void
     {
-        $modules = $this->config->get('modules', []);
-        $this->config->set('local-modules', $modules);
-        $installModules = [];
-        foreach ($modules as $module => $versionConstraint) {
-            // 查询 pip 库中的模块版本
-            if (!$availableVersions = $this->moduleVersions($module)) {
-                $this->consoleIO?->output(<<<EOT
-Python module <comment>$module</comment> not found in pip.
-
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                );
-                throw new CommandFailedException('Update failed.');
-            }
-            // 检查版本是否满足约束
-            $satisfyingVersions = Semver::satisfiedBy($availableVersions, $versionConstraint);
-            if (!$satisfyingVersions) {
-                $this->consoleIO?->output(<<<EOT
-Python module <info>$module</info> version-constraint <comment>$versionConstraint</comment>> not found in pip.
-
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                );
-                throw new CommandFailedException('Update failed.');
-            }
-            // 选择满足约束的版本
-            $installModules[$module] = Semver::rsort($satisfyingVersions);
-        }
-        // vendor
-        $vendorModules = [];
-        Application::getVendorConfigFiles(function ($organization, $package, $configFilePath) use (&$vendorModules) {
-            $config = new Config($configFilePath);
-            $modules = $config->get('modules', []);
-            foreach ($modules as $module => $versionConstraint) {
-                $vendorModules[$module][$versionConstraint] = [
-                    'organization' => $organization,
-                    'package' => $package,
-                ];
-            }
-        });
-        foreach ($vendorModules as $module => $item) {
-            // others
-            if (!isset($installModules[$module])) {
-                // 查询 pip 库中的模块版本
-                if (!$availableVersions = $this->moduleVersions($module)) {
-                    $this->consoleIO?->output(<<<EOT
-Python module <info>$module</info> not found in pip.
-
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                    );
-                    throw new CommandFailedException('Update failed.');
-                }
-            }
-            // exits
-            else {
-                $availableVersions = $installModules[$module];
-            }
-            foreach ($item as $versionConstraint => $info) {
-                // 检查版本是否满足约束
-                $satisfyingVersions = Semver::satisfiedBy($availableVersions, $versionConstraint);
-                if (!$satisfyingVersions) {
-                    $this->consoleIO?->output(<<<EOT
-Package <info>{$info['organization']}/{$info['package']}</info> --
-Python module <info>$module</info> version-constraint <comment>$versionConstraint</comment>> not found in pip.
-
-Read more about <comment>https://pypi.org/search</comment>
-EOT
-                    );
-                    throw new CommandFailedException('Update failed.');
-                }
-                $availableVersions = Semver::rsort($satisfyingVersions);
-            }
-            $installModules[$module] = $availableVersions;
-        }
-        if ($installModules) {
-            // 生成 requirements.txt 且安装
-            $installModulesContent = '';
-            foreach ($installModules as $module => $versions) {
-                $this->config->set("modules.$module", $version = $versions[0]);
-                $installModulesContent .= "$module==$version\n";
-            }
-            System::putFileContent($requirementsFile = System::getcwd() . '/requirements.txt', $installModulesContent, cache: false);
-            $this->consoleIO->subOutput(<<<EOT
-Updates: 
-$installModulesContent
-EOT);
-            if ($pipGlobalIndex = $this->config->get('config.pip-index-url')) {
-                $this->process->pipExec("config set global.index-url $pipGlobalIndex");
-            }
-            if ($this->process->pipExec("install -r $requirementsFile") !== 0) {
-                throw new CommandFailedException('Update failed.');
+        if ($hash = $this->config->get('phpy-hash')) {
+            $phpyHash = hash_file('SHA256', System::getcwd() . '/phpy.json');
+            if ($phpyHash !== $hash) {
+                $this->config->set('phpy-hash', null);
             }
         }
-        $this->config->set('vendor-modules', $vendorModules);
+        if ($hash = $this->config->get('composer-hash')) {
+            $composerHash = hash_file('SHA256', System::getcwd() . '/composer.json');
+            if ($composerHash !== $hash) {
+                $this->config->set('composer-hash', null);
+            }
+        }
+        $this->install();
     }
 
     /** @inheritdoc  */
     public function clearCache(): void
     {
+    }
+
+
+    /**
+     * 查找php文件
+     *
+     * @param $directory
+     * @return array
+     */
+    private function findPhpFiles($directory): array
+    {
+        $phpFiles = [];
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        foreach ($iterator as $file) {
+            if ($file->isFile() && pathinfo($file->getFilename(), PATHINFO_EXTENSION) === 'php') {
+                $phpFiles[] = $file->getPathname();
+            }
+        }
+        return $phpFiles;
+    }
+
+    /**
+     * 获取可用的Python模块版本
+     *
+     * @param string $module
+     * @param array $availableVersions
+     * @param string $versionConstraint
+     * @param array<string, string> $info
+     * @return array
+     */
+    private function satisfyingVersions(string $module, array $availableVersions, string $versionConstraint, array $info = []): array
+    {
+        $organization = $info['organization'] ?? null;
+        $package = $info['package'] ?? null;
+        $msg = ($organization and $package)
+            ? "Package <info>{$info['organization']}/{$info['package']}</info>"
+            : "Local";
+        // 检查版本是否满足约束
+        $satisfyingVersions = Semver::satisfiedBy($availableVersions, $versionConstraint);
+        if (!$satisfyingVersions) {
+            $this->consoleIO?->output(<<<EOT
+$msg
+Python module <info>$module</info>-<comment>$versionConstraint</comment>> not found in pip.
+
+Read more about <comment>https://pypi.org/search</comment>
+EOT
+            );
+            throw new CommandFailedException('Failed.');
+        }
+        // 选择满足约束的版本列表
+        return Semver::rsort($satisfyingVersions);
+    }
+
+    /**
+     * 返回pip可用版本列表
+     *
+     * @param string $module
+     * @return array
+     */
+    public function availableVersions(string $module): array
+    {
+        // 查询 pip 库中的模块版本
+        if (!$availableVersions = $this->moduleVersions($module)) {
+            $this->consoleIO?->output(<<<EOT
+Python module <comment>$module</comment> not found in pip.
+
+Read more about <comment>https://pypi.org/search</comment>
+EOT
+            );
+            throw new CommandFailedException('Failed.');
+        }
+        return $availableVersions;
+    }
+
+    /**
+     * pip安装模块
+     *
+     * @param array $modules
+     * @return void
+     */
+    private function pipModulesInstall(array $modules): void
+    {
+        // 生成 requirements.txt 且安装
+        $installModulesContent = '';
+        foreach ($modules as $module => $version) {
+            $installModulesContent .= "$module==$version\n";
+        }
+        System::putFileContent($requirementsFile = System::getcwd() . '/requirements.txt', $installModulesContent, cache: false);
+        $this->consoleIO->subOutput(<<<EOT
+Installs: 
+$installModulesContent
+EOT);
+        if ($pipGlobalIndex = $this->config->get('config.pip-index-url')) {
+            $this->process->executePip("config set global.index-url $pipGlobalIndex");
+        }
+        if ($this->process->executePip("install -r $requirementsFile", subOutput: true) !== 0) {
+            throw new CommandFailedException('Failed.');
+        }
     }
 }

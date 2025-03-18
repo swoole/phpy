@@ -15,6 +15,7 @@ class Config
     protected array $config = [
         'config' => [
             'cache-dir'     => '~/.cache/phpy',
+            'scan-dirs'     => [],
             'pip-index-url' => ''
         ],
         'python' => [
@@ -37,17 +38,34 @@ class Config
     ];
 
     /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
+        return json_encode($this->config, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
      * @param string|null $file
      */
     public function __construct(?string $file = null)
     {
-        $config = [];
         if ($file) {
-            try {
-                $config = json_decode(System::getFileContent($file), true, flags: JSON_THROW_ON_ERROR);
-            } catch (\Throwable) {}
+            $this->load($file);
         }
-        $this->config = array_replace_recursive($this->config, $config);
+    }
+
+    /**
+     * @param string $file
+     * @return void
+     */
+    public function load(string $file): void
+    {
+        try {
+            $config = json_decode(System::getFileContent($file), true, flags: JSON_THROW_ON_ERROR);
+        } catch (\Throwable) {}
+        $this->config = array_replace_recursive($this->config, $config ?? []);
     }
 
     /**

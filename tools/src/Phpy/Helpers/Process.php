@@ -55,101 +55,75 @@ class Process
     }
 
     /**
-     * @param string $command
-     * @param null|mixed $lastLine
-     * @return string|int|bool|null
-     */
-    public function pipExec(string $command, mixed &$lastLine = null): string|int|bool|null
-    {
-        $pip = System::pip();
-        return $this->execWithProgress("$pip $command", $lastLine);
-    }
-
-    /**
-     * @param string $command
-     * @param null|mixed $lastLine
-     * @return bool|int|string|null
-     */
-    public function pythonExec(string $command, mixed &$lastLine = null): bool|int|string|null
-    {
-        $python = System::python();
-        return $this->execWithProgress("$python $command", $lastLine);
-    }
-
-    /**
-     * @param string $command
-     * @param null|mixed $lastLine
-     * @return bool|int|string|null
-     */
-    public function pythonConfigExec(string $command, mixed &$lastLine = null): bool|int|string|null
-    {
-        $python = System::pythonConfig();
-        return $this->execWithProgress("$python $command", $lastLine);
-    }
-
-    /**
      * 执行命令
+     *
+     * @param string $command 执行命令
+     * @param array|null $output stdout & stderr （结果列表始终为倒序）
+     * @param bool $subOutput 是否输出到subOutput（输出始终为正序）
+     * @return int 错误码 -1失败
+     */
+    public function execute(string $command, ?array &$output = null, bool $subOutput = false): int
+    {
+        $command = str_ends_with($command, ' 2>&1') ? $command : "$command 2>&1";
+        $this->debugMode("execute( $command )");
+        $resultCode = -1;
+        $output = $output === null ? [] : $output;
+        if (is_resource($handle = popen($command, 'r'))) {
+            // 逐行读取命令输出
+            while (!feof($handle)) {
+                $line = fgets($handle);
+                if ($line !== false) {
+                    $line = rtrim($line);
+                    array_unshift($output, $line);
+                    if ($subOutput) {
+                        $this->consoleIO?->subOutput($line);
+                    }
+                }
+            }
+            $resultCode = pclose($handle);
+        }
+        return $resultCode;
+    }
+
+    /**
+     * 执行命令pip
      *
      * @param string $command
      * @param mixed|null $output
-     * @param int|null $resultCode
-     * @param bool $ignore 忽略中断
-     * @return string|int|bool|null
+     * @param bool $subOutput
+     * @return int|null
      */
-    public function exec(string $command, mixed &$output = null, mixed &$resultCode = 0, bool $ignore = false): string|int|bool|null
+    public function executePip(string $command, ?array &$output = null, bool $subOutput = false): int|null
     {
-        $this->debugMode("exec( $command )");
-        $lastLine = exec($command, $output, $resultCode);
-        if ($resultCode !== 0 and !$ignore) {
-            $this->consoleIO?->error($lastLine);
-            return $resultCode;
-        }
-        $this->debugMode("->> rc: $resultCode | last info: $lastLine");
-        return $lastLine;
+        $pip = System::pip();
+        return $this->execute("$pip $command", $output, subOutput: $subOutput);
     }
 
     /**
+     * 执行命令python
+     *
      * @param string $command
-     * @param int|null $resultCode
-     * @param bool $ignore
-     * @return string|int|bool|null
+     * @param mixed|null $output
+     * @param bool $subOutput
+     * @return int|null
      */
-    public function system(string $command, ?int &$resultCode = 0, bool $ignore = false): string|int|bool|null
+    public function executePython(string $command, ?array &$output = null, bool $subOutput = false): int|null
     {
-        $this->debugMode("system( $command )");
-        $info = system($command, $resultCode);
-        if ($resultCode !== 0) {
-            if (!$ignore) {
-                $this->consoleIO?->error($info);
-                return $resultCode;
-            }
-        }
-        $this->debugMode("->> rc: $resultCode | last info: $info");
-        return $info;
+        $python = System::python();
+        return $this->execute("$python $command", $output, subOutput: $subOutput);
     }
 
     /**
+     * 执行命令python-config
+     *
      * @param string $command
-     * @param string|null $lastLine
-     * @return int resultCode
+     * @param mixed|null $output
+     * @param bool $subOutput
+     * @return int|null
      */
-    public function execWithProgress(string $command, ?string &$lastLine = null): int
+    public function executePythonConfig(string $command, ?array &$output = null, bool $subOutput = false): int|null
     {
-        $this->debugMode("execWithProgress( $command )");
-        $process = popen($command, 'r');
-        while (!feof($process)) {
-            $line = fgets($process);
-            if ($line === false) {
-                break;
-            } else {
-                $lastLine = trim($line);
-                if ($lastLine) {
-                    $this->consoleIO?->subOutput($lastLine);
-                }
-            }
-            usleep(1000);
-        }
-        $this->debugMode("> rc: null | last info: $lastLine");
-        return pclose($process);
+        $python = System::pythonConfig();
+        return $this->execute("$python $command", $output, subOutput: $subOutput);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpyTool\Phpy\Commands;
 
+use PhpyTool\Phpy\Config;
+use PhpyTool\Phpy\Installers\ModuleInstaller;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
@@ -26,41 +28,27 @@ class PipModuleInstall extends AbstractCommand
     /** @inheritdoc  */
     protected function handler(): int
     {
-        $helper = new QuestionHelper();
-        $module = $this->getInput()?->getArgument('module');
-        $version = $this->getInput()?->getArgument('version');
+        $module = $this->consoleIO?->getInput()->getArgument('module');
+        $version = $this->consoleIO?->getInput()?->getArgument('version');
 
-        $question = new Question("[?] Please specify the path of Python (default: /usr/bin/python3): \n", '/usr/bin/python3');
-        $pythonPath = $helper->ask($this->getInput(), $this->getOutput(), $question);
+        $moduleInstaller = new ModuleInstaller(new Config(), $this->consoleIO);
+        $versions = $moduleInstaller->availableVersions($module);
+        if ($version === 'latest') {
+            $ver = $versions[0];
+        }
+        if ($index = array_search($version, $versions, true)) {
+            $ver = $versions[$index];
+        }
+        if ($ver ?? null) {
+            return $this->consoleIO?->error("Python module $module-$version is not available.");
+        }
         if (
-            !file_exists($pythonPath) or
-            version_compare(
-                $this->pythonVersion = substr($this->exec("$pythonPath --version", ignore: true), 7, 4),
-                '3.10',
-                '<'
-            )
+            $this->process->executePip("install $module==$version --break-system-packages", subOutput: true)
+            !== 0
         ) {
-            return $this->error('Please install Python 3.10+ manually.');
+            return $this->consoleIO?->error("Error installing Python module $module-$version.");
         }
 
-        $question = new Question("[?] Please specify the path of pip (default: /usr/bin/pip3): \n", '/usr/bin/pip3');
-        $pipPath = $helper->ask($this->getInput(), $this->getOutput(), $question);
-        if (!file_exists($pipPath)) {
-            return $this->error('Please install Python-pip manually.');
-        }
-
-        $this->output("Installing Python module $module-$version ...");
-        $moduleInstalled = $this->exec("$pipPath show $module", ignore: true);
-        if (!$moduleInstalled or ($version !== 'latest' and !str_contains($moduleInstalled, "Version: $version"))) {
-            if ($this->execWithProgress(
-                "$pipPath install $module" . ($version === 'latest' ? '' : "==$version") . ' --break-system-packages'
-            )) {
-                return $this->error("Error installing Python module $module-$version.");
-            }
-        } else {
-            $this->comment("Python module $module-$version is already installed.");
-        }
-
-        return $this->success("Python module $module-$version installation complete.");
+        return $this->consoleIO?->success("Python module $module-$version installation complete.");
     }
 }

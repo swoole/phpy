@@ -77,6 +77,8 @@ EOT
                 $this->consoleIO?->comment("No phpy.lock file present. Updating dependencies to latest instead of installing from lock file.");
             }
             $config = new Config($lockFile ?: $jsonFile);
+            // build tools
+            (new BuildToolsInstaller($config, $this->consoleIO))->install();
             // install python env
             if (!$this->consoleIO?->getInput()->getOption('skip-env')) {
                 (new PythonInstaller($config, $this->consoleIO))->install();
@@ -87,13 +89,10 @@ EOT
             }
             // install modules
             if (!$this->consoleIO?->getInput()->getOption('skip-module')) {
-                // build tools
-                (new BuildToolsInstaller($config, $this->consoleIO))->install();
                 // module
                 (new ModuleInstaller($config, $this->consoleIO))->install();
             }
             if (!$lockFile) {
-                $config->set('hash', hash_file('SHA-256', $jsonFile));
                 Application::setLockFile(System::getcwd(), $config->all());
             }
         } catch (CommandStopException) {

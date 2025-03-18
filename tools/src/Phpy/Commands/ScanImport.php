@@ -1,16 +1,22 @@
 <?php
 
-namespace PhpyTool\Commands;
+declare(strict_types=1);
 
-use PhpyTool\PackageCollector;
-use PhpyTool\PythonMetadata;
+namespace PhpyTool\Phpy\Commands;
+
+use PhpyTool\Phpy\Config;
+use PhpyTool\Phpy\Exceptions\CommandFailedException;
+use PhpyTool\Phpy\Exceptions\CommandStopException;
+use PhpyTool\Phpy\Exceptions\CommandSuccessedException;
+use PhpyTool\Phpy\Helpers\PackageCollector;
+use PhpyTool\Phpy\Helpers\PythonMetadata;
+use PhpyTool\Phpy\Installers\BuildToolsInstaller;
+use PhpyTool\Phpy\Installers\ModuleInstaller;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\Question;
 
 class ScanImport extends AbstractCommand
 {
@@ -39,62 +45,43 @@ class ScanImport extends AbstractCommand
     /** @inheritdoc */
     protected function handler(): int
     {
-        $this->output('Scan the PHP code in the path directory to see what Python modules are imported ...');
-        $srcPath = realpath($this->input->getArgument('path'));
+        $this->consoleIO?->output('Scan the PHP code in the path directory to see what Python modules are imported ...');
+        $srcPath = realpath($this->consoleIO?->getInput()->getArgument('path'));
         if (!is_dir($srcPath)) {
-            return $this->error('The path is not a directory.');
+            return $this->consoleIO?->error('The path is not a directory.');
         }
 
-        $files = $this->findPhpFiles($srcPath);
-        $packages = [];
-        foreach ($files as $file) {
-            $this->output->writeln('Scanning <info>' . str_replace($srcPath . '/', '', $file) . '</info>');
-            $packages = array_merge($packages, PackageCollector::parseFile($file));
-        }
+        try {
+            $config = new Config();
+            $config->set('config.scan-dirs', [$srcPath]);
+            $moduleInstaller = new ModuleInstaller($config, $this->consoleIO);
+            $moduleInstaller->scan();
 
-        $packages = array_unique($packages);
-        if (!$packages) {
-            $this->output('No Python modules found.');
-            return 0;
-        }
-
-        $packages = array_filter($packages, function ($module) {
-            return !PythonMetadata::isStdLibrary($module);
-        });
-        $this->output('Found Python modules: ' . implode(', ', array_map(function ($module) {
-                return "<comment>$module</comment>";
-            }, $packages)));
-
-        $helper = new QuestionHelper();
-        $question = new ConfirmationQuestion("[?] Should the dependent packages be written into <info>requirements.txt</info> (yes/no)?: \n", false);
-        if ($helper->ask($this->getInput(), $this->getOutput(), $question)) {
-            $pipPackages = array_unique(array_filter(array_map(function ($module) {
-                return PythonMetadata::getPipPackage($module);
-            }, $packages), fn($package) => $package !== null));
-
-            $requirementsFile = 'requirements.txt';
-
-            $original = file_get_contents($requirementsFile);
-            $lines = explode("\n", $original);
-            foreach ($lines as $line) {
-                [$_package] = explode('==', $line);
-                if (in_array($_package, $pipPackages)) {
-                    unset($pipPackages[array_search($_package, $pipPackages)]);
+            if ($config->get('modules')) {
+                $buildTools = new BuildToolsInstaller($config, $this->consoleIO);
+                if ($this->consoleIO?->ask(
+                    'Do you want to install the dependent packages? [<comment>Y,n</comment>]',
+                    true,
+                    questionClass: ConfirmationQuestion::class
+                )) {
+                    $buildTools->install();
+                    $moduleInstaller->install();
+                }
+                if ($this->consoleIO?->ask(
+                    'Do you need to uninstall the build dependencies? [<comment>n,Y</comment>]',
+                    false,
+                    questionClass: ConfirmationQuestion::class
+                )) {
+                    $buildTools->uninstall();
                 }
             }
-
-            $fp = fopen($requirementsFile, 'a');
-            fwrite($fp, "\n" . implode("\n", $pipPackages));
-            fclose($fp);
-
-            $this->success("The dependent packages have been written to <info>$requirementsFile</info>.");
-
-            if ($helper->ask($this->getInput(), $this->getOutput(), new ConfirmationQuestion("[?] Do you want to install the dependent packages (yes/no)?: \n", false))) {
-                $this->output('Installing dependent packages ...');
-                system('pip install -r ' . $requirementsFile);
-                return $this->success('The dependent packages have been installed.');
-            }
+        } catch (CommandStopException) {
+            return $this->consoleIO?->success('Stop.');
+        } catch (CommandSuccessedException $exception) {
+            return $this->consoleIO?->success($exception->getMessage());
+        } catch (CommandFailedException $exception) {
+            return $this->consoleIO?->error($exception->getMessage());
         }
-        return 0;
+        return $this->consoleIO?->success('Scan import complete.');
     }
 }

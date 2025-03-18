@@ -1,0 +1,25 @@
+{
+    "config": {
+        "cache-dir": "~/.cache/phpy",
+        "scan-dirs": [
+        ],
+        "pip-index-url": ""
+    },
+    "python": {
+        "source-url": "https://github.com/python/cpython.git",
+        "install-dir": "/usr",
+        "install-version": "latest",
+        "install-configure": [
+            "--enable-optimizations",
+            "--with-lto",
+            "--enable-static"
+        ]
+    },
+    "phpy": {
+        "source-url": "https://github.com/swoole/phpy.git",
+        "install-version": "latest",
+        "install-configure": [],
+        "ini-path": "/usr/local/etc/php/conf.d/xx-php-ext-phpy.ini"
+    },
+    "modules": {}
+}

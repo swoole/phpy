@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace PhpyTool\Phpy;
 
 use Closure;
+use PhpyTool\Phpy\Commands\InitConfigCommand;
 use PhpyTool\Phpy\Commands\InstallCommand;
 use PhpyTool\Phpy\Commands\PhpyInstall;
 use PhpyTool\Phpy\Commands\PipMirrorConfig;
 use PhpyTool\Phpy\Commands\PipModuleInstall;
 use PhpyTool\Phpy\Commands\PythonInstall;
+use PhpyTool\Phpy\Commands\ScanCommand;
 use PhpyTool\Phpy\Commands\ShowCommand;
 use PhpyTool\Phpy\Commands\UpdateCommand;
 use PhpyTool\Phpy\Helpers\System;
@@ -33,6 +35,8 @@ doc;
         System::setcwd(getcwd());
         parent::__construct('PHPy', static::VERSION);
         $this->addCommands([
+            new ScanCommand(),
+            new InitConfigCommand(),
             new InstallCommand(),
             new UpdateCommand(),
             new ShowCommand(),
@@ -137,9 +141,12 @@ EOT, $this->getLogo(), $this->getName(), $this->getVersion());
     public static function findConfigFile(?Closure $closure = null): string|null
     {
         $currentDir = $startDir = System::getcwd();
-        while ($currentDir !== dirname($currentDir)) {dump(1);
+        while ($currentDir !== dirname($currentDir)) {
             if ($filePath = static::getConfigFile($currentDir)) {
-                return $closure ? call_user_func($closure, $filePath, $currentDir, $startDir) : $filePath;
+                if ($closure) {
+                    call_user_func($closure, $filePath, $currentDir, $startDir);
+                }
+                return $filePath;
             }
             $currentDir = dirname($currentDir);
         }
@@ -157,7 +164,10 @@ EOT, $this->getLogo(), $this->getName(), $this->getVersion());
         $currentDir = $startDir = System::getcwd();
         while ($currentDir !== dirname($currentDir)) {
             if ($filePath = static::getLockFile($currentDir)) {
-                return $closure ? call_user_func($closure, $filePath, $currentDir, $startDir) : $filePath;
+                if ($closure) {
+                    call_user_func($closure, $filePath, $currentDir, $startDir);
+                }
+                return $filePath;
             }
             $currentDir = dirname($currentDir);
         }
@@ -175,7 +185,10 @@ EOT, $this->getLogo(), $this->getName(), $this->getVersion());
         $currentDir = $startDir = System::getcwd();
         while ($currentDir !== dirname($currentDir)) {
             if ($filePath = static::getRequirementsFile($currentDir)) {
-                return $closure ? call_user_func($closure, $filePath, $currentDir, $startDir) : $filePath;
+                if ($closure) {
+                    call_user_func($closure, $filePath, $currentDir, $startDir);
+                }
+                return $filePath;
             }
             $currentDir = dirname($currentDir);
         }

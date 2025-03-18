@@ -10,8 +10,10 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ConsoleIO
 {
@@ -37,6 +39,9 @@ class ConsoleIO
         $this->output = $output;
         $this->helperSet = $helperSet;
         $this->extra = $extra;
+        $this->getOutput()
+            ->getFormatter()
+            ->setStyle('sub-output', new OutputFormatterStyle('gray', null));
     }
 
     /**
@@ -142,10 +147,7 @@ class ConsoleIO
     public function subOutput(string $message, string $tag = '[>]'): void
     {
         $this->getOutput()
-            ->getFormatter()
-            ->setStyle('sub-output', new OutputFormatterStyle('gray', null));
-        $this->getOutput()
-            ->writeln("$tag <sub-output>$message</sub-output>");
+            ->writeln(" $tag <sub-output>$message</sub-output>");
     }
 
     /**
@@ -164,11 +166,12 @@ class ConsoleIO
      * 输出info
      *
      * @param string $message
-     * @return void
+     * @return int
      */
-    public function comment(string $message): void
+    public function comment(string $message): int
     {
         $this->getOutput()->writeln("[i] <comment>$message</comment>");
+        return Command::SUCCESS;
     }
 
     /**
@@ -179,6 +182,11 @@ class ConsoleIO
      */
     public function error(string $message): int
     {
+        $output = $this->getOutput();
+        if ($output instanceof ConsoleOutput) {
+            $output->getErrorOutput()->writeln("[×] <error>$message</error>");
+            return Command::FAILURE;
+        }
         $this->getOutput()->writeln("[×] <error>$message</error>");
         return Command::FAILURE;
     }

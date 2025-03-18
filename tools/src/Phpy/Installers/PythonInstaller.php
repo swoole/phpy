@@ -76,8 +76,8 @@ class PythonInstaller implements InstallerInterface
             $sourceDir = "$cacheDir/python-$version";
             if (!file_exists($sourceDir)) {
                 $this->consoleIO?->output('CPython-source Downloading ...');
-                if ($this->process->execWithProgress(
-                        "git clone --depth 1 $versionOpt $url $sourceDir"
+                if ($this->process->execute(
+                        "git clone --depth 1 $versionOpt $url $sourceDir", subOutput: true
                     ) !== 0) {
                     throw new CommandFailedException('Error downloading Python.');
                 }
@@ -90,8 +90,9 @@ class PythonInstaller implements InstallerInterface
             $pythonInstallConfigure = implode(' ', $pythonInstallConfigure);
             $this->consoleIO?->output("Building and installing Python-$version...");
             if (
-                $this->process->execWithProgress(
-                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make && make install"
+                $this->process->execute(
+                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make && make install",
+                    subOutput: true
                 ) !== 0
             ) {
                 throw new CommandFailedException("Error building and installing Python-$version.");
@@ -102,18 +103,21 @@ class PythonInstaller implements InstallerInterface
         $pip = $installDir . '/bin/pip';
         $cwd = System::getcwd();
         // 虚拟环境
-        if (!file_exists($venvPath = "$cwd/py-vendor/.venv")) {
+        if (!file_exists($venvPath = "$cwd/py-vendor")) {
             // 安装虚拟
-            $this->process->execWithProgress("$python -m venv $venvPath");
-            $this->process->execWithProgress("source $venvPath/bin/activate");
+            $this->process->execute("$python -m venv $venvPath", subOutput: true);
+            $this->process->execute("source $venvPath/bin/activate", subOutput: true);
             // 软链python-config
             $pythonConfigPath = "$venvPath/bin/python-config";
-            $this->process->execWithProgress("ln -s $installDir/bin/python-config $pythonConfigPath");
+            $this->process->execute("ln -s $installDir/bin/python-config $pythonConfigPath", subOutput: true);
             // 软链python-include
-            $this->process->execWithProgress("rm -rf $venvPath/include/python");
-            $this->process->execWithProgress("ln -s $installDir/include/python $venvPath/include");
+            $this->process->execute("rm -rf $venvPath/include/python", subOutput: true);
+            $this->process->execute("ln -s $installDir/include/python $venvPath/include", subOutput: true);
             // 设置环境
-            $this->process->execWithProgress("echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command");
+            $this->process->execute(
+                "echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command",
+                subOutput: true
+            );
         }
     }
 
@@ -125,12 +129,12 @@ class PythonInstaller implements InstallerInterface
         // 卸载源码
         $sourceDir = "$cacheDir/python-$version";
         if (file_exists($sourceDir)) {
-            $this->process->exec("rm -rf $sourceDir");
+            $this->process->execute("rm -rf $sourceDir", subOutput: true);
         }
         // 卸载虚拟环境
         $cwd = System::getcwd();
         if (file_exists($venvPath = "$cwd/py-vendor/.venv")) {
-            $this->process->exec("rm -rf $venvPath");
+            $this->process->execute("rm -rf $venvPath", subOutput: true);
         }
     }
 
@@ -147,11 +151,11 @@ class PythonInstaller implements InstallerInterface
             // 下载源码
             $sourceDir = "$cacheDir/python-$version";
             if (file_exists($sourceDir)) {
-                $this->process->exec("rm -rf $sourceDir");
+                $this->process->execute("rm -rf $sourceDir", subOutput: true);
             }
             $this->consoleIO?->output('CPython-source Downloading ...');
-            if ($this->process->execWithProgress(
-                    "git clone --depth 1 $versionOpt $url $sourceDir"
+            if ($this->process->execute(
+                    "git clone --depth 1 $versionOpt $url $sourceDir", subOutput: true
                 ) !== 0) {
                 throw new CommandFailedException('Error downloading Python.');
             }
@@ -163,8 +167,9 @@ class PythonInstaller implements InstallerInterface
             $pythonInstallConfigure = implode(' ', $pythonInstallConfigure);
             $this->consoleIO?->output("Building and installing Python-$version...");
             if (
-                $this->process->execWithProgress(
-                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make && make install"
+                $this->process->execute(
+                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make && make install",
+                    subOutput: true
                 ) !== 0
             ) {
                 throw new CommandFailedException("Error building and installing Python-$version.");
@@ -176,27 +181,30 @@ class PythonInstaller implements InstallerInterface
         $cwd = System::getcwd();
         // 虚拟环境
         if (file_exists($venvPath = "$cwd/py-vendor/.venv")) {
-            $this->process->exec("rm -rf $venvPath");
+            $this->process->execute("rm -rf $venvPath", subOutput: true);
         }
         // 安装虚拟
-        $this->process->execWithProgress("$python -m venv $venvPath");
-        $this->process->execWithProgress("source $venvPath/bin/activate");
+        $this->process->execute("$python -m venv $venvPath", subOutput: true);
+        $this->process->execute("source $venvPath/bin/activate", subOutput: true);
         // 软链python-config
         $pythonConfigPath = "$venvPath/bin/python-config";
-        $this->process->execWithProgress("ln -s $installDir/bin/python-config $pythonConfigPath");
+        $this->process->execute("ln -s $installDir/bin/python-config $pythonConfigPath", subOutput: true);
         // 软链python-include
-        $this->process->execWithProgress("rm -rf $venvPath/include/python");
-        $this->process->execWithProgress("ln -s $installDir/include/python $venvPath/include");
+        $this->process->execute("rm -rf $venvPath/include/python", subOutput: true);
+        $this->process->execute("ln -s $installDir/include/python $venvPath/include", subOutput: true);
         // 设置环境
-        $this->process->execWithProgress("echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command");
+        $this->process->execute(
+            "echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command",
+            subOutput: true
+        );
     }
 
     /** @inheritdoc  */
     public function clearCache(): void
     {
         $cacheDir = $this->config->get('config.cache-dir');
-        if ($this->process->execWithProgress(
-            "rm -rf $cacheDir/python-*"
+        if ($this->process->execute(
+            "rm -rf $cacheDir/python-*", subOutput: true
         ) !== 0) {
             throw new CommandFailedException('Error clearing Python cache.');
         }
