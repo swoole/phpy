@@ -9,7 +9,7 @@ require ROOT_PATH . '/vendor/autoload.php';
 $pui = PyCore::import('PUI.PySide6');
 
 #[PyAnnotation('PUIApp')]
-#[PyImport('PUI.PySide6', 'PUIApp')]
+#[PyImport('PUIApp', 'PUI.PySide6')]
 function Example(): void
 {
     global $pui;
