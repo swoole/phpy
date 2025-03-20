@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpyTool;
+namespace PhpyTool\Phpy\Helpers;
 
 class PythonMetadata
 {

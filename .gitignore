@@ -53,4 +53,7 @@ acinclude.m4
 config.guess
 config.sub
 /composer.lock
-
+/*.command
+/py-vendor
+/requirements.txt
+/phpy.lock
