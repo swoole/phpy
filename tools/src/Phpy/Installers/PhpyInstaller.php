@@ -56,8 +56,11 @@ class PhpyInstaller implements InstallerInterface
             return;
         }
         $url = $this->config->get('phpy.source-url');
-        $version = $this->config->get('phpy.version', 'latest');
+        $version = $this->config->get('phpy.install-version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
+        if (str_starts_with($cacheDir, '~')) {
+            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
+        }
         $versionOpt = ($version === 'latest') ? '' : "--branch $version";
         // 下载源码
         $sourceDir = "$cacheDir/phpy-$version";
@@ -107,6 +110,9 @@ class PhpyInstaller implements InstallerInterface
     public function clearCache(): void
     {
         $cacheDir = $this->config->get('config.cache-dir');
+        if (str_starts_with($cacheDir, '~')) {
+            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
+        }
         if ($this->process->execute(
             "rm -rf $cacheDir/phpy-*", subOutput: true
         ) !== 0) {

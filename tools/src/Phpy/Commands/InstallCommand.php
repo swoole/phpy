@@ -95,6 +95,7 @@ EOT
             if (!$lockFile) {
                 Application::setLockFile(System::getcwd(), $config->all());
             }
+
         } catch (CommandStopException) {
             return $this->consoleIO?->success('Installation stop.');
         } catch (CommandSuccessedException $exception) {
@@ -102,6 +103,6 @@ EOT
         } catch (CommandFailedException $exception) {
             return $this->consoleIO?->error($exception->getMessage());
         }
-        return $this->consoleIO?->error('Installation failed.');
+        return $this->consoleIO?->success('Installation completed.');
     }
 }

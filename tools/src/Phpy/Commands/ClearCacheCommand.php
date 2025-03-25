@@ -10,11 +10,13 @@ use PhpyTool\Phpy\Exceptions\CommandFailedException;
 use PhpyTool\Phpy\Exceptions\CommandStopException;
 use PhpyTool\Phpy\Exceptions\CommandSuccessedException;
 use PhpyTool\Phpy\Helpers\System;
+use PhpyTool\Phpy\Installers\BuildToolsInstaller;
 use PhpyTool\Phpy\Installers\ModuleInstaller;
-use Symfony\Component\Console\Input\InputArgument;
+use PhpyTool\Phpy\Installers\PhpyInstaller;
+use PhpyTool\Phpy\Installers\PythonInstaller;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class ScanCommand extends AbstractCommand
+class ClearCacheCommand extends AbstractCommand
 {
 
     /** @inheritdoc  */
@@ -22,15 +24,12 @@ class ScanCommand extends AbstractCommand
     {
         parent::configure();
         $this
-            ->setName('scan')
-            ->addArgument('dirs', InputArgument::IS_ARRAY|InputArgument::OPTIONAL, 'Scan directories', [])
-            ->setDescription('Scan python modules import and dependencies')
+            ->setName('clear-cache')
+            ->setDescription("Clears phpy's Python-source and ext-phpy cache")
             ->setHelp(
                 <<<EOT
-The <info>scan</info> command scan python modules import and dependencies.
-
-PHPy introduces modules through Python-pip, read more at 
-https://pypi.org/help/
+The <info>clear-cache</info> command deletes all cached Python-source and ext-phpy from
+phpy's cache directory.
 EOT
             );
     }
@@ -38,8 +37,7 @@ EOT
     /** @inheritdoc  */
     protected function handler(): int
     {
-        $config = new Config();
-        if (!$dirs = $this->consoleIO->getInput()->getArgument('dirs')) {
+        try {
             // find json file
             $jsonFile = Application::findConfigFile(function ($file, $cDir, $sDir) {
                 if ($cDir !== $sDir) {
@@ -56,23 +54,19 @@ EOT
             if (!$jsonFile) {
                 throw new CommandFailedException('PHPy could not find a phpy.json file in the project');
             }
-            $config->load($jsonFile);
-        } else {
-            $config->set('config.scan-dirs', $dirs);
-        }
-        try {
-            $moduleInstaller = new ModuleInstaller($config, $this->consoleIO);
-            // 解析 import依赖
-            $moduleInstaller->scan();
-            // 安装
-            $moduleInstaller->install();
-        } catch (CommandStopException $exception) {
-            return $this->consoleIO?->success($exception->getMessage() ?: 'Scan stop.');
+            $config = new Config($jsonFile);
+            // Python
+            (new PythonInstaller($config, $this->consoleIO))->clearCache();
+            // ext-phpy
+            (new PhpyInstaller($config, $this->consoleIO))->clearCache();
+
+        } catch (CommandStopException) {
+            return $this->consoleIO?->success('Clear-cache stop.');
         } catch (CommandSuccessedException $exception) {
             return $this->consoleIO?->success($exception->getMessage());
         } catch (CommandFailedException $exception) {
             return $this->consoleIO?->error($exception->getMessage());
         }
-        return $this->consoleIO?->success('Scan completed.');
+        return $this->consoleIO?->success('Clear-cache completed.');
     }
 }

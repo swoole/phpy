@@ -86,6 +86,6 @@ EOT
         } catch (CommandFailedException $exception) {
             return $this->consoleIO?->error($exception->getMessage());
         }
-        return $this->consoleIO?->error('Installation failed.');
+        return $this->consoleIO?->success('Installation completed.');
     }
 }

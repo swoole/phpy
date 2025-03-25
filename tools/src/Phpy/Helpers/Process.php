@@ -73,10 +73,12 @@ class Process
             while (!feof($handle)) {
                 $line = fgets($handle);
                 if ($line !== false) {
-                    $line = rtrim($line);
-                    array_unshift($output, $line);
-                    if ($subOutput) {
-                        $this->consoleIO?->subOutput($line);
+                    $line = $line ? trim($line) : null;
+                    if ($line) {
+                        array_unshift($output, $line);
+                        if ($subOutput) {
+                            $this->consoleIO?->subOutput($line);
+                        }
                     }
                 }
             }

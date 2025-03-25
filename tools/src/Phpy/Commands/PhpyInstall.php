@@ -74,6 +74,6 @@ class PhpyInstall extends AbstractCommand
             return $this->consoleIO?->error($exception->getMessage());
         }
 
-        return $this->consoleIO?->success('PHPy installation completed successfully. ');
+        return $this->consoleIO?->success('PHPy installation completed. ');
     }
 }

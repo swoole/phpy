@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpyTool\Phpy;
 
 use Closure;
+use PhpyTool\Phpy\Commands\ClearCacheCommand;
 use PhpyTool\Phpy\Commands\InitConfigCommand;
 use PhpyTool\Phpy\Commands\InstallCommand;
 use PhpyTool\Phpy\Commands\PhpyInstall;
@@ -44,6 +45,7 @@ doc;
             new PhpyInstall(),
             new PythonInstall(),
             new PipMirrorConfig(),
+            new ClearCacheCommand(),
         ]);
     }
 

@@ -65,8 +65,11 @@ class PythonInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function install(): void
     {
-        $version = $this->config->get('python.version', 'latest');
+        $version = $this->config->get('python.install-version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
+        if (str_starts_with($cacheDir, '~')) {
+            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
+        }
         $installDir = $this->config->get('python.install-dir');
 
         if (!$this->skipInfo) {
@@ -91,21 +94,27 @@ class PythonInstaller implements InstallerInterface
             $this->consoleIO?->output("Building and installing Python-$version...");
             if (
                 $this->process->execute(
-                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make && make install",
+                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make -j$(nproc) && make install",
                     subOutput: true
                 ) !== 0
             ) {
                 throw new CommandFailedException("Error building and installing Python-$version.");
             }
+            $python = $installDir . '/bin/python';
+            $pip = $installDir . '/bin/pip';
+            $cwd = System::getcwd();
+            // 设置环境
+            $this->process->execute(
+                "echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command",
+                subOutput: true
+            );
         }
 
-        $python = $installDir . '/bin/python';
-        $pip = $installDir . '/bin/pip';
         $cwd = System::getcwd();
         // 虚拟环境
         if (!file_exists($venvPath = "$cwd/py-vendor")) {
             // 安装虚拟
-            $this->process->execute("$python -m venv $venvPath", subOutput: true);
+            $this->process->executePython("-m venv $venvPath", subOutput: true);
             $this->process->execute("source $venvPath/bin/activate", subOutput: true);
             // 软链python-config
             $pythonConfigPath = "$venvPath/bin/python-config";
@@ -113,11 +122,7 @@ class PythonInstaller implements InstallerInterface
             // 软链python-include
             $this->process->execute("rm -rf $venvPath/include/python", subOutput: true);
             $this->process->execute("ln -s $installDir/include/python $venvPath/include", subOutput: true);
-            // 设置环境
-            $this->process->execute(
-                "echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command",
-                subOutput: true
-            );
+
         }
     }
 
@@ -126,6 +131,9 @@ class PythonInstaller implements InstallerInterface
     {
         $version = $this->config->get('python.version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
+        if (str_starts_with($cacheDir, '~')) {
+            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
+        }
         // 卸载源码
         $sourceDir = "$cacheDir/python-$version";
         if (file_exists($sourceDir)) {
@@ -143,6 +151,9 @@ class PythonInstaller implements InstallerInterface
     {
         $version = $this->config->get('python.version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
+        if (str_starts_with($cacheDir, '~')) {
+            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
+        }
         $installDir = $this->config->get('python.install-dir');
 
         if (!$this->skipInfo) {
@@ -203,6 +214,9 @@ class PythonInstaller implements InstallerInterface
     public function clearCache(): void
     {
         $cacheDir = $this->config->get('config.cache-dir');
+        if (str_starts_with($cacheDir, '~')) {
+            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
+        }
         if ($this->process->execute(
             "rm -rf $cacheDir/python-*", subOutput: true
         ) !== 0) {
