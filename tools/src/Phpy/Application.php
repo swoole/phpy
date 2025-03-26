@@ -13,6 +13,7 @@ use PhpyTool\Phpy\Commands\PipMirrorConfig;
 use PhpyTool\Phpy\Commands\PipModuleInstall;
 use PhpyTool\Phpy\Commands\PythonInstall;
 use PhpyTool\Phpy\Commands\ScanCommand;
+use PhpyTool\Phpy\Commands\ScanImport;
 use PhpyTool\Phpy\Commands\ShowCommand;
 use PhpyTool\Phpy\Commands\UpdateCommand;
 use PhpyTool\Phpy\Helpers\System;

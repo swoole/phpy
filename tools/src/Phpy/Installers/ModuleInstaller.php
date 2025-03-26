@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpyTool\Phpy\Installers;
 
 use Composer\Semver\Semver;
+use Composer\Semver\VersionParser;
 use PhpyTool\Phpy\Application;
 use PhpyTool\Phpy\Config;
 use PhpyTool\Phpy\ConsoleIO;
@@ -66,9 +67,22 @@ class ModuleInstaller implements InstallerInterface
                     $res = explode(', ', $matches[1][0] ?? '');
                 }
             }
+            $this->consoleIO->output("Module <info>$module</info> available versions: <comment>" . implode(', ', $res) . "</comment>");
             return $res;
         }
         return null;
+    }
+
+    protected function filterInvalidVersions(array &$versions): void
+    {
+        $parser = new VersionParser();
+        foreach ($versions as $key => $version) {
+            try {
+                $parser->normalize($version);
+            } catch (\Exception) {
+                unset($versions[$key]);
+            }
+        }
     }
 
     /**
@@ -83,8 +97,7 @@ class ModuleInstaller implements InstallerInterface
         }
         $packages = [];
         foreach ($dirs as $dir) {
-
-            if (!is_dir($dir = System::getcwd() . $dir)) {
+            if (!str_starts_with($dir, '/') and !is_dir($dir = System::getcwd() . '/' . $dir)) {
                 continue;
             }
             $files = $this->findPhpFiles(realpath($dir));
@@ -99,34 +112,97 @@ class ModuleInstaller implements InstallerInterface
             }
         }
         $packages = array_unique($packages);
-        $modules = [];
+        $pipPackages = [];
         foreach ($packages as $key => $package) {
-            $package = explode('.', $package)[0];
-            if (PythonMetadata::isStdLibrary($package)) {
-                continue;
+            $pythonPackage = explode('.', $package)[0];
+            if (PythonMetadata::isStdLibrary($pythonPackage)) {
+                unset($packages[$key]);
             }
-            if ($availableVersions = $this->moduleVersions($package)) {
-                $modules[$package] = Semver::rsort($availableVersions)[0];
-            }
-        }
-        if ($modules) {
-            $count = count($modules);
-            $this->consoleIO?->output("Installs: $count");
-            foreach ($modules as $module => $version) {
-                $this->consoleIO?->subOutput("<comment>--</comment> <info>$module</info> - <comment>$version</comment>");
+            // Python 代码中 import 的包名与 pip 的包名可能是不同的，需要建立白名单
+            $pipPackage = PythonMetadata::getPipPackage($pythonPackage);
+            if ($pipPackage) {
+                $pipPackages[] = $pipPackage;
             }
         }
-        if (!$this->consoleIO?->ask(
+
+        if (!$pipPackages) {
+            $this->consoleIO?->output('<comment>No pip package be scanned.</comment>');
+            return;
+        }
+
+        $pipPackages = array_unique($pipPackages);
+        $modules = [];
+
+        if ($this->consoleIO?->confirm(
+            "Do you want to obtain the available version of packages from the pip server? [<comment>Y,n</comment>]",
+        )) {
+            foreach ($pipPackages as $package) {
+                if ($availableVersions = $this->moduleVersions($package)) {
+                    $this->filterInvalidVersions($availableVersions);
+                    $modules[$package] = Semver::rsort($availableVersions)[0];
+                }
+            }
+        } else {
+            foreach ($pipPackages as $package) {
+                $modules[$package] = '*';
+            }
+        }
+
+        $count = count($modules);
+        $this->consoleIO?->output("$count pip packets was scanned");
+        foreach ($modules as $module => $version) {
+            $this->consoleIO?->subOutput("<comment>--</comment> <info>$module</info> - <comment>$version</comment>");
+        }
+
+        $this->config->set('modules', array_merge($this->config->get('modules', []), $modules));
+
+        $this->installUsePip($modules);
+
+        if (!$this->consoleIO?->confirm(
             "Do you want to install these modules? [<comment>Y,n</comment>]",
-            true,
-            ConfirmationQuestion::class
+            true
         )) {
             throw new CommandStopException('PHPy will not install any modules');
         }
-        $this->config->set('modules', array_merge($this->config->get('modules', []), $modules));
     }
 
-    /** @inheritdoc  */
+    public function installUsePip($packages)
+    {
+        if ($this->consoleIO->confirm("[?] Should the dependent packages be written into <info>requirements.txt</info> [<comment>Y,n</comment>]?")) {
+            $requirementsFile = 'requirements.txt';
+
+            $original = file_get_contents($requirementsFile);
+            $lines = explode("\n", trim($original));
+            foreach ($lines as $line) {
+                [$_package] = explode('==', $line);
+                if (array_key_exists($_package, $packages)) {
+                    unset($packages[$_package]);
+                }
+            }
+
+            $fp = fopen($requirementsFile, 'a');
+            foreach ($packages as $package => $version) {
+                if ($version === '*') {
+                    fwrite($fp, "$package\n");
+                } else {
+                    fwrite($fp, "$package==$version\n");
+                }
+            }
+            fclose($fp);
+
+            $this->consoleIO->success("The dependent packages have been written to <info>$requirementsFile</info>.");
+
+            if ($this->consoleIO->confirm("[?] Do you want to install the dependent packages [<comment>Y,n</comment>]?")) {
+                $this->consoleIO->output('Installing dependent packages ...');
+                \system(System::pip() . " install -r $requirementsFile");
+                throw new CommandStopException('The dependent packages have been installed.');
+            } else {
+                throw new CommandStopException('No any packages have been installed.');
+            }
+        }
+    }
+
+    /** @inheritdoc */
     public function install(): void
     {
         $this->consoleIO?->output('Installing/Updating modules ...');
@@ -138,8 +214,7 @@ class ModuleInstaller implements InstallerInterface
         // 如果存在 phpy-hash 和 composer-hash， 则为install
         if ($phpyHash and $composerHash) {
             $installModules = array_merge($modules, $vendorModules);
-        }
-        // 不存在，则为update
+        } // 不存在，则为update
         else {
             $this->config->set('phpy-hash', hash_file('SHA256', System::getcwd() . '/phpy.json'));
             $this->config->set('composer-hash', hash_file('SHA256', System::getcwd() . '/composer.json'));
@@ -191,12 +266,12 @@ class ModuleInstaller implements InstallerInterface
         }
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function uninstall(): void
     {
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function upgrade(): void
     {
         if ($hash = $this->config->get('phpy-hash')) {
@@ -214,7 +289,7 @@ class ModuleInstaller implements InstallerInterface
         $this->install();
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function clearCache(): void
     {
     }
@@ -308,7 +383,8 @@ EOT
         $this->consoleIO->subOutput(<<<EOT
 Installs: 
 $installModulesContent
-EOT);
+EOT
+        );
         if ($pipGlobalIndex = $this->config->get('config.pip-index-url')) {
             $this->process->executePip("config set global.index-url $pipGlobalIndex");
         }
