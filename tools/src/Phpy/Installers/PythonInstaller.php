@@ -145,6 +145,7 @@ class PythonInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function uninstall(): void
     {
+        $this->consoleIO?->output('Python Uninstalling ...');
         $version = $this->config->get('python.version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
         if (str_starts_with($cacheDir, '~')) {
@@ -165,6 +166,7 @@ class PythonInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function upgrade(): void
     {
+        $this->consoleIO?->output('Python Upgrading ...');
         $version = $this->config->get('python.version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
         if (str_starts_with($cacheDir, '~')) {
@@ -229,6 +231,7 @@ class PythonInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function clearCache(): void
     {
+        $this->consoleIO?->output('Python Cache Clearing ...');
         $cacheDir = $this->config->get('config.cache-dir');
         if (str_starts_with($cacheDir, '~')) {
             $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);

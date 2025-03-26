@@ -55,7 +55,7 @@ class PhpyInstaller implements InstallerInterface
             $this->consoleIO?->comment($this->skipInfo);
             return;
         }
-        $this->consoleIO?->output('PHPy Installing ...');
+        $this->consoleIO?->output('PHPy Installing/Upgrading ...');
         $url = $this->config->get('phpy.source-url');
         $version = $this->config->get('phpy.install-version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');
@@ -95,6 +95,7 @@ class PhpyInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function uninstall(): void
     {
+        $this->consoleIO?->output('PHPy Uninstalling ...');
         $phpIniPath = $this->config->get('phpy.ini-path');
         if (file_exists($phpIniPath)) {
             $this->process->execute("rm $phpIniPath", subOutput: true);
@@ -104,6 +105,7 @@ class PhpyInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function upgrade(): void
     {
+        $this->skipInfo = null;
         $this->install();
     }
 
