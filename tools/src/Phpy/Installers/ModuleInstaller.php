@@ -155,6 +155,12 @@ class ModuleInstaller implements InstallerInterface
         }
 
         $this->config->set('modules', array_merge($this->config->get('modules', []), $modules));
+        if ($this->consoleIO?->confirm(
+            "Should the dependent packages be written into <info>phpy.json</info> [<comment>Y,n</comment>]?",
+            true
+        )) {
+            $this->config->save(System::getcwd().'/phpy.json');
+        }
 
         $this->installUsePip($modules);
 

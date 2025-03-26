@@ -72,6 +72,12 @@ class Config
         $this->config = array_replace_recursive($this->config, $config ?? []);
     }
 
+    public function save(string $file): void
+    {
+        $content = $this->__toString();
+        System::putFileContent($file, $content);
+    }
+
     /**
      * 获取配置
      *
