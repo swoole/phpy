@@ -1,0 +1,29 @@
+{
+    "config": {
+        "cache-dir": "~/.cache/phpy",
+        "scan-dirs": [
+        ],
+        "pip-index-url": ""
+    },
+    "python": {
+        "source-url": "https://github.com/python/cpython.git",
+        "install-dir": "/usr",
+        "install-version": "v3.13.2",
+        "install-configure": [
+            "--enable-shared",
+            "--with-system-expat",
+            "--with-system-ffi",
+            "--enable-ipv6",
+            "--enable-loadable-sqlite-extensions",
+            "--with-computed-gotos",
+            "--with-ensurepip=install"
+        ]
+    },
+    "phpy": {
+        "source-url": "https://github.com/swoole/phpy.git",
+        "install-version": "latest",
+        "install-configure": [],
+        "ini-path": "/usr/local/etc/php/conf.d/xx-php-ext-phpy.ini"
+    },
+    "modules": {}
+}
