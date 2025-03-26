@@ -52,9 +52,10 @@ class PhpyInstaller implements InstallerInterface
     public function install(): void
     {
         if ($this->skipInfo) {
-            $this->consoleIO?->output($this->skipInfo);
+            $this->consoleIO?->comment($this->skipInfo);
             return;
         }
+        $this->consoleIO?->output('PHPy Installing ...');
         $url = $this->config->get('phpy.source-url');
         $version = $this->config->get('phpy.install-version', 'latest');
         $cacheDir = $this->config->get('config.cache-dir');

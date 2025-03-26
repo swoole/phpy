@@ -39,17 +39,19 @@ class BuildToolsInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function install(): void
     {
+        $this->consoleIO?->output('Installing/Upgrading dependency tools ...');
         // 编译依赖工具
-        $command = System::getBuildToolsInstall();
-        if ($this->consoleIO?->ask(
-            "<info>Do you want to install dependency tools?</info> <comment>$command</comment> [<comment>Y,n</comment>]",
-            true,
-            questionClass: ConfirmationQuestion::class
-        )) {
-            if ($this->process->execute(
-                    "$command", subOutput: true
-                ) !== 0) {
-                throw new CommandFailedException('Error installing dependency tools.');
+        if ($command = System::getBuildToolsInstall()) {
+            if ($this->consoleIO?->ask(
+                "<info>Do you want to install dependency tools?</info> <comment>$command</comment> [<comment>Y,n</comment>]",
+                true,
+                questionClass: ConfirmationQuestion::class
+            )) {
+                if ($this->process->execute(
+                        "$command", subOutput: true
+                    ) !== 0) {
+                    throw new CommandFailedException('Error installing dependency tools.');
+                }
             }
         }
     }
@@ -57,16 +59,18 @@ class BuildToolsInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function uninstall(): void
     {
+        $this->consoleIO?->output('Uninstalling dependency tools ...');
         // 卸载编译依赖工具
-        $command = System::getBuildToolsUninstall();
-        if ($this->consoleIO?->ask(
-            "<info>Do you want to uninstall dependency tools?</info>> <comment$command</comment> [<comment>y,N</comment>])",
-            false,
-            questionClass: ConfirmationQuestion::class
-        )) {
-            $this->process->execute(
-                "$command", subOutput: true
-            );
+        if ($command = System::getBuildToolsUninstall()) {
+            if ($this->consoleIO?->ask(
+                "<info>Do you want to uninstall dependency tools?</info>> <comment$command</comment> [<comment>y,N</comment>])",
+                false,
+                questionClass: ConfirmationQuestion::class
+            )) {
+                $this->process->execute(
+                    "$command", subOutput: true
+                );
+            }
         }
     }
 

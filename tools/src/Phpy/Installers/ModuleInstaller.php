@@ -46,10 +46,6 @@ class ModuleInstaller implements InstallerInterface
         $this->config = $config;
         $this->consoleIO = $consoleIO;
         $this->process = $consoleIO?->getExtra('process') ?: new Process($consoleIO);
-        if (!$config->get('modules')) {
-            $this->skipInfo = 'Module not configured. Skip install.';
-            return;
-        }
     }
 
     /**
@@ -80,6 +76,7 @@ class ModuleInstaller implements InstallerInterface
      */
     public function scan(): void
     {
+        $this->consoleIO?->output('Scanning for modules ...');
         $dirs = $this->config->get('config.scan-dirs');
         if (!$dirs) {
             throw new CommandStopException('Nothing to scan');
@@ -132,6 +129,7 @@ class ModuleInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function install(): void
     {
+        $this->consoleIO?->output('Installing/Updating modules ...');
         $modules = $this->config->get('modules', []);
         $vendorModules = $this->config->get('vendor-modules', []);
         $phpyHash = $this->config->get('phpy-hash');

@@ -21,11 +21,15 @@ class Config
         'python' => [
             'source-url'        => 'https://github.com/python/cpython.git',
             'install-dir'       => '/usr',
-            'install-version'   => 'latest',
+            'install-version'   => 'v3.13.2',
             'install-configure' => [
-                '--enable-optimizations',
-                '--with-lto',
-                '--enable-static'
+                '--enable-shared',
+                '--with-system-expat',
+                '--with-system-ffi',
+                '--enable-ipv6',
+                '--enable-loadable-sqlite-extensions',
+                '--with-computed-gotos',
+                '--with-ensurepip=install',
             ],
         ],
         'phpy' => [
@@ -120,6 +124,7 @@ class Config
      */
     public function all(): array
     {
+        $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
         return $this->config;
     }
 }

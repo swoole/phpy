@@ -26,6 +26,7 @@ class InstallCommand extends AbstractCommand
         $this
             ->setName('install')
             ->setDescription('Installs the project dependencies from the phpy.lock file if present, or falls back on the phpy.json')
+            ->addOption('skip-build-tools', null, null, 'Skip the build tools installation.')
             ->addOption('skip-env', null, null, 'Skip the environment installation.')
             ->addOption('skip-ext', null, null, 'Skip the phpy extension installation.')
             ->addOption('skip-module', null, null, 'Skip the module installation.')
@@ -45,6 +46,8 @@ Finally, the command reads phpy.lock from the current
 directory to install Python module dependencies, using the 
 environment specified in phpy.json to execute pip install. 
 Use <comment>--skip-module</comment> to skip this step.
+
+Use <comment>--skip-build-tools</comment> to skip the build tools installation.
 
 PHPy introduces modules through Python-pip, read more at 
 https://pypi.org/help/

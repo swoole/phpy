@@ -91,7 +91,7 @@ EOT, $this->getLogo(), $this->getName(), $this->getVersion());
         if (file_exists($filePath)) {
             return false;
         }
-        return file_put_contents($filePath, json_encode($data, JSON_UNESCAPED_UNICODE));
+        return file_put_contents($filePath, json_encode($data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
     }
 
     /**
@@ -116,10 +116,10 @@ EOT, $this->getLogo(), $this->getName(), $this->getVersion());
     public static function setLockFile(string $dir, array $data): bool|int
     {
         $filePath = "$dir/phpy.lock";
-        if (file_exists($filePath) or !isset($data['hash'])) {
+        if (file_exists($filePath) or !isset($data['phpy-hash']) or !isset($data['composer-hash'])) {
             return false;
         }
-        return file_put_contents($filePath, json_encode($data, JSON_UNESCAPED_UNICODE));
+        return file_put_contents($filePath, json_encode($data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
     }
 
     /**

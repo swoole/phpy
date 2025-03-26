@@ -45,7 +45,7 @@ class System
     public static function python(?string $path = null): string
     {
         if (file_exists($command = System::getcwd() . '/python.command')) {
-            return System::getFileContent($command);
+            return trim(System::getFileContent($command));
         }
         if (!$path or !file_exists($path)) {
             if (!$path = exec('command -v python')) {
@@ -65,7 +65,7 @@ class System
     public static function pip(?string $path = null): string
     {
         if (file_exists($command = System::getcwd() . '/pip.command')) {
-            return System::getFileContent($command);
+            return trim(System::getFileContent($command));
         }
         if (!$path or !file_exists($path)) {
             if (!$path = exec('command -v pip')) {
@@ -85,7 +85,7 @@ class System
     public static function pythonConfig(?string $path = null): string
     {
         if (file_exists($command = System::getcwd() . '/python-config.command')) {
-            return System::getFileContent($command);
+            return trim(System::getFileContent($command));
         }
         if (!$path or !file_exists($path)) {
             if (!$path = exec('command -v python-config')) {
@@ -167,10 +167,79 @@ class System
     public static function getBuildToolsList(): array
     {
         return match (static::getPackageManager()) {
-            'yum', 'zypper'  => ['gcc', 'gcc-c++', 'make', 'autoconf'],
-            'apk', 'apt-get' => ['gcc', 'g++', 'make', 'autoconf'],
+            'apk' => [
+                'gcc', 'g++', 'make', 'autoconf',
+                'musl-dev',
+                'expat-dev',
+                'libffi-dev',
+                'openssl-dev',
+                'zlib-dev',
+                'xz-dev',
+                'bzip2-dev',
+                'sqlite-dev',
+                'gdbm-dev',
+                'gmp-dev',
+                'pcre-dev',
+                'icu-dev'
+            ],
+            'apt-get' => [
+                'build-essential',
+                'libexpat1-dev',
+                'libffi-dev',
+                'libssl-dev',
+                'zlib1g-dev',
+                'libbz2-dev',
+                'libsqlite3-dev',
+                'libgdbm-dev',
+                'liblzma-dev',
+                'libgmp-dev',
+                'linux-headers-generic'
+            ],
+            'yum' => [
+                'gcc',
+                'gcc-c++',
+                'make',
+                'autoconf',
+                'expat-devel',
+                'libffi-devel',
+                'openssl-devel',
+                'zlib-devel',
+                'bzip2-devel',
+                'sqlite-devel',
+                'gdbm-devel',
+                'gmp-devel',
+                'kernel-headers'
+            ],
+            'zypper' => [
+                'gcc',
+                'gcc-c++',
+                'make',
+                'autoconf',
+                'libexpat-devel',
+                'libffi-devel',
+                'libopenssl-devel',
+                'zlib-devel',
+                'bzip2-devel',
+                'sqlite3-devel',
+                'gdbm-devel',
+                'gmp-devel',
+                'kernel-default-devel'
+            ],
+            'pacman' => [
+                'gcc',
+                'make',
+                'autoconf',
+                'expat',
+                'libffi',
+                'openssl',
+                'zlib',
+                'bzip2',
+                'sqlite',
+                'gdbm',
+                'gmp',
+                'linux-headers'
+            ],
             'brew'           => ['autoconf'],
-            'pacman'         => ['gcc', 'make', 'autoconf'],
             'winget'         => ['make', 'autoconf'],
             default          => [],
         };
@@ -200,14 +269,18 @@ class System
     /**
      * 获取系统编译依赖安装命令
      *
+     * @param bool $check
      * @return string|null
      */
-    public static function getBuildToolsInstall(): ?string
+    public static function getBuildToolsInstall(bool $check = true): ?string
     {
-        self::$existingPackages = self::checkExistingPackages($packages = static::getBuildToolsList());
+        $packages = static::getBuildToolsList();
+        self::$existingPackages = $check ? self::checkExistingPackages($packages) : [];
 
         $installPackages = array_diff($packages, self::$existingPackages);
-
+        if (!$installPackages) {
+            return null;
+        }
         return match (self::getPackageManager()) {
             'apk'     => 'apk add --no-cache ' . implode(' ', $installPackages),
             'yum'     => 'sudo yum install ' . implode(' ', $installPackages),
@@ -241,7 +314,7 @@ class System
                     shell_exec("apt list --installed | grep ^$package/"),
             };
 
-            if (!empty(trim($result))) {
+            if ($result and !empty(trim($result))) {
                 $existingPackages[] = $package;
             }
         }
