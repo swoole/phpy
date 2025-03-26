@@ -363,6 +363,7 @@ EOT
             );
             throw new CommandFailedException('Failed.');
         }
+        $this->filterInvalidVersions($availableVersions);
         return $availableVersions;
     }
 
@@ -377,6 +378,7 @@ EOT
         // 生成 requirements.txt 且安装
         $installModulesContent = '';
         foreach ($modules as $module => $version) {
+            $version = is_array($version) ? $version[0] : $version;
             $installModulesContent .= "$module==$version\n";
         }
         System::putFileContent($requirementsFile = System::getcwd() . '/requirements.txt', $installModulesContent, cache: false);
