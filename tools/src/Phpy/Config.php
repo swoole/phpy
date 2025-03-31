@@ -93,7 +93,7 @@ class Config
                 $config = $config[$index];
             }
 
-            return $found ? $config : $default;
+            return $found ? (($config instanceof \stdClass) ? [] : $config) : $default;
         }
 
         return $config;

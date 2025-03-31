@@ -14,6 +14,7 @@ use PhpyTool\Phpy\Helpers\PackageCollector;
 use PhpyTool\Phpy\Helpers\Process;
 use PhpyTool\Phpy\Helpers\PythonMetadata;
 use PhpyTool\Phpy\Helpers\System;
+use PhpyTool\Phpy\Helpers\Version;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -31,11 +32,6 @@ class ModuleInstaller implements InstallerInterface
     protected null|ConsoleIO $consoleIO;
 
     /**
-     * @var null|string
-     */
-    protected null|string $skipInfo = null;
-
-    /**
      * @var Process
      */
     protected Process $process;
@@ -46,29 +42,6 @@ class ModuleInstaller implements InstallerInterface
         $this->config = $config;
         $this->consoleIO = $consoleIO;
         $this->process = $consoleIO?->getExtra('process') ?: new Process($consoleIO);
-    }
-
-    /**
-     * 查询 pip 库中的模块版本
-     *
-     * @param string $module
-     * @return array|null
-     */
-    public function moduleVersions(string $module): ?array
-    {
-        $resultCode = $this->process->executePip("index versions $module", output: $output);
-        if ($resultCode === 0) {
-            $res = [];
-            foreach ($output as $line) {
-                if (str_starts_with($line, 'Available versions:')) {
-                    // 解析 pip 输出，获取模块的可用版本
-                    preg_match_all('/Available versions: (.+)/', $line, $matches);
-                    $res = explode(', ', $matches[1][0] ?? '');
-                }
-            }
-            return $res;
-        }
-        return null;
     }
 
     /**
@@ -83,12 +56,10 @@ class ModuleInstaller implements InstallerInterface
         }
         $packages = [];
         foreach ($dirs as $dir) {
-
             if (!is_dir($dir = System::getcwd() . $dir)) {
                 continue;
             }
             $files = $this->findPhpFiles(realpath($dir));
-
             foreach ($files as $file) {
                 $this->consoleIO?->output("Scanning <info>$file</info>");
                 $scannedPackages = PackageCollector::parseFile($file);
@@ -99,19 +70,39 @@ class ModuleInstaller implements InstallerInterface
             }
         }
         $packages = array_unique($packages);
+        $pushing = [];
         $modules = [];
-        foreach ($packages as $key => $package) {
+        foreach ($packages as $package) {
             $package = explode('.', $package)[0];
             if (PythonMetadata::isStdLibrary($package)) {
                 continue;
             }
-            if ($availableVersions = $this->moduleVersions($package)) {
-                $modules[$package] = Semver::rsort($availableVersions)[0];
+            if (!$moduleName = PythonMetadata::getPipPackage($package)) {
+                $moduleName = $this->consoleIO?->ask(
+                    "No module information found for top_level <info>$package</info>. Please enter the module name for top_level <info>$package</info>:",
+                    ''
+                );
+                if (!$moduleName) {
+                    $this->consoleIO?->comment("<comment>--</comment> skipped: <comment>$package</comment>");
+                    continue;
+                }
+                $pushing[] = [
+                    'module_name' => $moduleName,
+                    'top_level' => $package,
+                    'version' => 'default',
+                ];
+            }
+            if ($availableVersions = Version::getPepVersions($moduleName)) {
+                foreach ($availableVersions as &$availableVersion) {
+                    $availableVersion = Version::pepToSemver($availableVersion);
+                }
+                $vMap = Version::splitVersion(Semver::rsort($availableVersions)[0]);
+                $modules[$package] = "^$vMap[0].$vMap[1]";
             }
         }
         if ($modules) {
             $count = count($modules);
-            $this->consoleIO?->output("Installs: $count");
+            $this->consoleIO?->output("Scanned: $count");
             foreach ($modules as $module => $version) {
                 $this->consoleIO?->subOutput("<comment>--</comment> <info>$module</info> - <comment>$version</comment>");
             }
@@ -123,32 +114,34 @@ class ModuleInstaller implements InstallerInterface
         )) {
             throw new CommandStopException('PHPy will not install any modules');
         }
+        // 保存到配置 local
         $this->config->set('modules', array_merge($this->config->get('modules', []), $modules));
+        // 写入文件
+        System::putFileContent(System::getcwd() . '/phpy.json', (string)$this->config);
+        // 推送
+        try {
+            if ($pushing) {
+                foreach ($pushing as $item) {
+                    PythonMetadata::pushMetadata($item['top_level'], $item['module_name'], $item['version']);
+                }
+            }
+        } catch (\Throwable) {}
     }
 
     /** @inheritdoc  */
     public function install(): void
     {
-        $this->consoleIO?->output('Installing/Updating modules ...');
-        $modules = $this->config->get('modules', []);
-        $vendorModules = $this->config->get('vendor-modules', []);
         $phpyHash = $this->config->get('phpy-hash');
         $composerHash = $this->config->get('composer-hash');
-
         // 如果存在 phpy-hash 和 composer-hash， 则为install
         if ($phpyHash and $composerHash) {
-            $installModules = array_merge($modules, $vendorModules);
-        }
-        // 不存在，则为update
-        else {
-            $this->config->set('phpy-hash', hash_file('SHA256', System::getcwd() . '/phpy.json'));
-            $this->config->set('composer-hash', hash_file('SHA256', System::getcwd() . '/composer.json'));
-            $localModules = [];
-            foreach ($modules as $module => $versionConstraint) {
-                $localModules[$module] = $this->satisfyingVersions($module, $this->availableVersions($module), $versionConstraint);
-            }
-
-            // vendor
+            $this->consoleIO?->output('Installing modules ...');
+            $installModules = $this->config->get('install-modules', []);
+        } else { // 不存在，则为update
+            $this->consoleIO?->output('Updating modules ...');
+            // 获取local
+            $locals = $this->config->get('modules', []);
+            // 获取vendor
             $vendors = [];
             Application::getVendorConfigFiles(function ($organization, $package, $configFilePath) use (&$vendors) {
                 $config = new Config($configFilePath);
@@ -161,33 +154,56 @@ class ModuleInstaller implements InstallerInterface
                 }
             });
             $this->config->set('vendors', $vendors);
-
+            $verMapCache = [];
+            // 检查locals
+            $localModules = [];
+            foreach ($locals as $module => $versionConstraint) {
+                // 版本映射储存
+                $verMapCache[$module] = $availableVersions = $this->availableVersions($module);
+                $localModules[$module] = $this->satisfyingVersions($module, array_keys($availableVersions), $versionConstraint);
+            }
+            // 检查vendors
             $vendorModules = [];
             foreach ($vendors as $module => $item) {
-                $availableVersions = ($local = isset($localModules[$module]))
-                    ? $localModules[$module]
-                    : $this->availableVersions($module);
+                // 如果本地存在的module则不需要拉取远端可用版本列表，否则则拉取
+                if ($local = isset($localModules[$module])) {
+                    $availableSemverVersions = $localModules[$module];
+                } else {
+                    $verMapCache[$module] = $availableVersions = $this->availableVersions($module);
+                    $availableSemverVersions = array_keys($availableVersions);
+                }
                 // 循环检查所有组织/包的版本约束
                 foreach ($item as $versionConstraint => $info) {
-                    $availableVersions = $this->satisfyingVersions($module, $availableVersions, $versionConstraint, $info);
+                    $availableSemverVersions = $this->satisfyingVersions($module, $availableSemverVersions, $versionConstraint, $info);
                 }
-                if ($availableVersions) {
-                    if (!$local) {
-                        $vendorModules[$module] = $availableVersions[0];
-                    } else {
-                        $localModules[$module] = $availableVersions[0];
-                    }
+                if (!$local) {
+                    $vendorModules[$module] = $availableSemverVersions;
+                } else {
+                    $localModules[$module] = $availableSemverVersions;
                 }
             }
-            $this->config->set('modules', $localModules);
-            $this->config->set('vendor-modules', $vendorModules);
+            // semver -> pep 440
+            foreach ($localModules as $module => $semverVersions) {
+                // 取出最新版本，获取PEP440映射
+                $localModules[$module] = $verMapCache[$semverVersions[0]];
+            }
+            foreach ($vendorModules as $module => $semverVersions) {
+                // 取出最新版本，获取PEP440映射
+                $vendorModules[$module] = $verMapCache[$semverVersions[0]];
+            }
             $installModules = array_merge($localModules, $vendorModules);
+            // 写入安装的模块
+            $this->config->set('install-modules', $installModules);
+            // 写入hash
+            $this->config->set('phpy-hash', hash_file('SHA256', System::getcwd() . '/phpy.json'));
+            // 写入composer-hash
+            $this->config->set('composer-hash', hash_file('SHA256', System::getcwd() . '/composer.json'));
         }
 
         if ($installModules) {
             $this->pipModulesInstall($installModules);
         } else {
-            $this->consoleIO->output('No modules.');
+            $this->consoleIO->output('No modules need to install.');
         }
     }
 
@@ -242,12 +258,12 @@ class ModuleInstaller implements InstallerInterface
      * 获取可用的Python模块版本
      *
      * @param string $module
-     * @param array $availableVersions
+     * @param array $availableSemverVersions
      * @param string $versionConstraint
      * @param array<string, string> $info
      * @return array
      */
-    private function satisfyingVersions(string $module, array $availableVersions, string $versionConstraint, array $info = []): array
+    private function satisfyingVersions(string $module, array $availableSemverVersions, string $versionConstraint, array $info = []): array
     {
         $organization = $info['organization'] ?? null;
         $package = $info['package'] ?? null;
@@ -255,7 +271,7 @@ class ModuleInstaller implements InstallerInterface
             ? "Package <info>{$info['organization']}/{$info['package']}</info>"
             : "Local";
         // 检查版本是否满足约束
-        $satisfyingVersions = Semver::satisfiedBy($availableVersions, $versionConstraint);
+        $satisfyingVersions = Semver::satisfiedBy($availableSemverVersions, $versionConstraint);
         if (!$satisfyingVersions) {
             $this->consoleIO?->output(<<<EOT
 $msg
@@ -274,14 +290,29 @@ EOT
      * 返回pip可用版本列表
      *
      * @param string $module
-     * @return array
+     * @return array<string, string> = [semverVersion => pepVersion]
      */
     public function availableVersions(string $module): array
     {
         // 查询 pip 库中的模块版本
-        if (!$availableVersions = $this->moduleVersions($module)) {
+        if (!$moduleVersions = Version::getPepVersions($module)) {
             $this->consoleIO?->output(<<<EOT
 Python module <comment>$module</comment> not found in pip.
+
+Read more about <comment>https://pypi.org/search</comment>
+EOT
+            );
+            throw new CommandFailedException('Failed.');
+        }
+        $availableVersions = [];
+        foreach ($moduleVersions as $version) {
+            if ($semver = Version::pepToSemver($version)) {
+                $availableVersions[$semver] = $version;
+            }
+        }
+        if (!$availableVersions) {
+            $this->consoleIO?->output(<<<EOT
+Python module <comment>$module</comment> not found suitable version in pip.
 
 Read more about <comment>https://pypi.org/search</comment>
 EOT

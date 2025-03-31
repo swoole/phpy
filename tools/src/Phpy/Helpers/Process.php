@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpyTool\Phpy\Helpers;
 
 use PhpyTool\Phpy\ConsoleIO;
+use PhpyTool\Phpy\Exceptions\PhpyException;
 
 class Process
 {
@@ -128,4 +129,126 @@ class Process
         $python = System::pythonConfig();
         return $this->execute("$python $command", $output, subOutput: $subOutput);
     }
+
+    /**
+     * 请求
+     *
+     * @param string $method
+     * @param string $url
+     * @param array $data
+     * @param array $headers
+     * @return array{httpCode:int, responseBody:string}
+     */
+    public function request(string $method, string $url, array $data = [], array $headers = []): array
+    {
+        $method = strtoupper($method);
+        $headers['Accept'] ??= 'application/json';
+        // 统一处理 GET 参数
+        if ($method === 'GET') {
+            $url .= $data
+                ? (str_contains($url, '?') ? '&' : '?') . http_build_query($data)
+                : '';
+        } else {
+            $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $headers['Content-Type'] = 'application/json';
+            $headers['Content-Length'] = strlen($jsonData);
+        }
+        // 没有安装curl，则使用curl命令
+        if (!extension_loaded('curl')) {
+            return $this->requestUseCurlShell($method, $url, $data, $headers);
+        }
+        $ch = curl_init();
+        try {
+            $options = [
+                CURLOPT_URL             => $url,
+                CURLOPT_RETURNTRANSFER  => true,
+                CURLOPT_CUSTOMREQUEST   => $method,
+                CURLOPT_HTTPHEADER      => self::formatHeaders($headers),
+                CURLOPT_FOLLOWLOCATION  => true,
+                CURLOPT_CONNECTTIMEOUT  => 30,
+                CURLOPT_TIMEOUT         => 60,
+            ];
+            if (isset($jsonData)) {
+                $options[CURLOPT_POSTFIELDS] = $jsonData;
+            }
+            curl_setopt_array($ch, $options);
+            $responseBody = curl_exec($ch);
+            if ($errorNo = curl_errno($ch)) {
+                throw new PhpyException("cURL error ($errorNo): " . curl_error($ch), $errorNo);
+            }
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            return [
+                'httpCode'      => (int)$httpCode,
+                'responseBody'  => (string)$responseBody
+            ];
+        } finally {
+            curl_close($ch);
+        }
+    }
+
+    /**
+     * 使用curl命令请求
+     *
+     * @param string $method
+     * @param string $url
+     * @param array $data
+     * @param array $headers
+     * @return array{httpCode:int, responseBody:string}
+     */
+    public function requestUseCurlShell(string $method, string $url, array $data = [], array $headers = []): array
+    {
+        $method = strtoupper($method);
+        $cmd = [
+            'curl',
+            '-sS',
+            '-X', $method,
+            '-o', '-',
+            '-w', "HTTP_CODE=%{http_code}",
+            '--connect-timeout', '30',
+            '--max-time', '60'
+        ];
+        // 添加请求头
+        foreach (self::formatHeaders($headers) as $header) {
+            array_push($cmd, '-H', escapeshellarg($header));
+        }
+
+        // 处理请求体
+        if ($method !== 'GET' and $data) {
+            $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
+            array_push($cmd, '--data', escapeshellarg($jsonData));
+        }
+
+        $cmd[] = escapeshellarg($url);
+        $output = [];
+        $resultCode = $this->execute(implode(' ', $cmd), $output);
+        // 处理命令行执行错误
+        if ($resultCode !== 0) {
+            throw new PhpyException("cURL command failed (exit $resultCode): " . implode("\n", $output), $resultCode);
+        }
+        $rawResponse = implode('', array_reverse($output));
+        if (preg_match('/^(?<response_body>.*)HTTP_CODE=(?<http_code>\d+)$/s', $rawResponse, $matches)) {
+            return [
+                'httpCode' => (int)$matches['http_code'],
+                'responseBody' => (string)$matches['response_body']
+            ];
+        } else {
+            throw new PhpyException("Invalid response format: $rawResponse");
+        }
+    }
+
+    /**
+     * headers map to headers
+     *
+     * @param array $headers
+     * @return array
+     */
+    private static function formatHeaders(array $headers): array
+    {
+        return array_map(
+            fn($k, $v) => "$k: $v",
+            array_keys($headers),
+            array_values($headers)
+        );
+    }
+
 }

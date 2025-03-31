@@ -68,7 +68,7 @@ class PythonInstaller implements InstallerInterface
     {
         $this->consoleIO?->output('Python Installing ...');
         $version = $this->config->get('python.install-version', 'v3.12.2');
-        if (!Version::validateVersion($version)) {
+        if (!Version::validatePepVersion($version)) {
             throw new PhpyException("Invalid Python version: $version");
         }
         $cacheDir = $this->config->get('config.cache-dir');
@@ -100,7 +100,7 @@ class PythonInstaller implements InstallerInterface
             $this->consoleIO?->output("Building and installing Python-$version...");
             if (
                 $this->process->execute(
-                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make -j$(nproc) && make install",
+                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make -j $(nproc) && make install",
                     subOutput: true
                 ) !== 0
             ) {

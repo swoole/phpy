@@ -65,7 +65,7 @@ EOT
             // 解析 import依赖
             $moduleInstaller->scan();
             // 安装
-            $moduleInstaller->install();
+            $moduleInstaller->upgrade();
         } catch (CommandStopException $exception) {
             return $this->consoleIO?->success($exception->getMessage() ?: 'Scan stop.');
         } catch (CommandSuccessedException $exception) {

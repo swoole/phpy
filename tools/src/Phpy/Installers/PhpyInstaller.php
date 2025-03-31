@@ -84,7 +84,7 @@ class PhpyInstaller implements InstallerInterface
         $iniCmd = $phpIniPath ? "&& echo 'extension=phpy.so' > $phpIniPath" : '';
         if (
             $this->process->execute(
-                "cd $sourceDir && phpize && ./configure $phpyInstallConfigure && make clean && make && make install $iniCmd",
+                "cd $sourceDir && phpize && ./configure $phpyInstallConfigure && make clean && make -j $(nproc) && make install $iniCmd",
                 subOutput: true
             ) !== 0
         ) {

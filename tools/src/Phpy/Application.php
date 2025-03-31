@@ -11,6 +11,7 @@ use PhpyTool\Phpy\Commands\InstallCommand;
 use PhpyTool\Phpy\Commands\PhpyInstall;
 use PhpyTool\Phpy\Commands\PipMirrorConfig;
 use PhpyTool\Phpy\Commands\PipModuleInstall;
+use PhpyTool\Phpy\Commands\PushMetadataCommand;
 use PhpyTool\Phpy\Commands\PythonInstall;
 use PhpyTool\Phpy\Commands\ScanCommand;
 use PhpyTool\Phpy\Commands\ShowCommand;
@@ -36,6 +37,7 @@ doc;
         System::setcwd(getcwd());
         parent::__construct('PHPy', static::VERSION);
         $this->addCommands([
+            new PushMetadataCommand(),
             new ScanCommand(),
             new InitConfigCommand(),
             new InstallCommand(),
