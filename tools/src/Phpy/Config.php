@@ -83,6 +83,17 @@ class Config
     }
 
     /**
+     * @param Config ...$configs
+     * @return void
+     */
+    public function merge(Config ...$configs): void
+    {
+        foreach ($configs as $config) {
+            $this->config = array_merge_recursive($this->config, $config->all(false));
+        }
+    }
+
+    /**
      * 获取配置
      *
      * @param string|null $key
@@ -130,11 +141,14 @@ class Config
     }
 
     /**
+     * @param bool $transform
      * @return array
      */
-    public function all(): array
+    public function all(bool $transform = true): array
     {
-        $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
+        if ($transform) {
+            $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
+        }
         return $this->config;
     }
 }

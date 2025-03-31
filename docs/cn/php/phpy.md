@@ -102,6 +102,8 @@ composer require swoole/phpy
 
 `update`命令会根据`phpy.json`配置信息进行更新，更多查看`--help`
 
+- 如果已经构建好Python环境，建议使用`./vendor/bin/phpy update --skip-build-tools --skip-env --skip-ext`跳过环境构建，避免重复执行
+
 ### 4. 环境检查
 
 #### 命令：
@@ -135,6 +137,10 @@ composer require swoole/phpy
 `scan`命令会根据`phpy.json`的`config.scan-dirs`扫描所有php文件并检查依赖的`Python-module`，
 引入并安装，更多查看`--help`
 
+- `scan`命令维护了一个`Python module`的`top_level`与`module_name`的映射表，在映射表中不存在映射关系的时候需要手动确认
+- `scan`命令负责将扫描结果保存至`phpy.json`，由`ModuleInstall->upgrade()`负责构建`requirements.txt`及安装
+- 如安装过程失败，请根据错误信息进行环境补足，一般情况是缺少依赖，待依赖安装完成后重复执行`scan`即可安装
+
 ### 6. 缓存清除
 
 #### 命令：
@@ -143,3 +149,21 @@ composer require swoole/phpy
 ```
 
 `clear-cache`命令会根据`phpy.json`的`config.cache-dir`清除相关缓存，更多查看`--help`
+
+## 共建维护
+
+### 公共映射库
+
+包 = 模块，包名 = 模块名，但在模块之中以import引入的名称是模块的`top_level`，`requirements.txt`
+安装的依据是`module_name`，但在`Python`世界中，`top_level`并不一定与`module_name`相同；
+
+因此`PHPy`通过`supabase`公共库储存维护了一张`top_level`与`module_name`的映射表，这张映射表需要
+开发者们一起积极维护；
+  - `PHPy`提供了一个`metadata:push_metadata`的命令，开发者可以手动提交映射关系至公共库；
+  - `PHPy`提供了一个`metadata:query_metadata`的命令，开发者可以查看映射关系公共库；
+  - `PHPy`的`scan`的命令也会在未索引到映射关系时提示开发者手动输入，输入数据在随后会自动同步到公共库；
+
+**！这里我们倡导所有使用者及开发者，请爱护好该映射库，请勿破坏！**
+
+**！公共库目前以免费版储存数据提供至开源社区，请勿过量占用资源！**
+
