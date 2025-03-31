@@ -72,6 +72,10 @@ class Config
         $this->config = array_replace_recursive($this->config, $config ?? []);
     }
 
+    /**
+     * @param string $file
+     * @return void
+     */
     public function save(string $file): void
     {
         $content = $this->__toString();
