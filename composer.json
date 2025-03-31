@@ -11,7 +11,6 @@
     "require": {
         "php": ">=8.1",
         "symfony/console": "^6.0 | ^7.0",
-        "symfony/cache": "^6.0 | ^7.0",
         "nikic/php-parser": "^5.4"
     },
     "require-dev": {
