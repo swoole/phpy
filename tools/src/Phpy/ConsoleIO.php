@@ -126,7 +126,7 @@ class ConsoleIO
      * @param string $message
      * @param mixed|null $default
      * @param string $tag
-     * @param class-string $questionClass
+     * @param class-string $questionClass when $questionClass is ConfirmationQuestion::class, it will be 'confirm'
      * @return mixed
      */
     public function ask(string $message, mixed $default = null, string $tag = '[?]', string $questionClass = Question::class): mixed
@@ -136,13 +136,6 @@ class ConsoleIO
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelperSet()->get('question');
         return $questionHelper->ask($this->getInput(), $this->getOutput(), $question);
-    }
-
-    public function confirm(string $msg, $default = false)
-    {
-        $helper = new QuestionHelper();
-        $question = new ConfirmationQuestion($msg, $default);
-        return $helper->ask($this->getInput(), $this->getOutput(), $question);
     }
 
     /**
