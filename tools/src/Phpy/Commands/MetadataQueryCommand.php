@@ -33,7 +33,7 @@ class MetadataQueryCommand extends AbstractCommand
         $currentPage = 1;
         $get = true;
         $list = [];
-        $schema = ['ID', 'Name', 'Top Level', 'Version', 'Created At'];
+        $schema = ['ID', 'Module Name', 'Top Level', 'Version', 'Created At'];
         do {
             $list = $get ? PythonMetadata::queryMetadata($topLevel, $moduleName, $pageSize, ($currentPage - 1) * $pageSize) : $list;
             // 检查是否有数据
