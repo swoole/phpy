@@ -16,7 +16,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class PushMetadataCommand extends AbstractCommand
+class MetadataPushCommand extends AbstractCommand
 {
 
     /** @inheritdoc  */

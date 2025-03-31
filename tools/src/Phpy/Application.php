@@ -8,10 +8,11 @@ use Closure;
 use PhpyTool\Phpy\Commands\ClearCacheCommand;
 use PhpyTool\Phpy\Commands\InitConfigCommand;
 use PhpyTool\Phpy\Commands\InstallCommand;
+use PhpyTool\Phpy\Commands\MetadataQueryCommand;
 use PhpyTool\Phpy\Commands\PhpyInstall;
 use PhpyTool\Phpy\Commands\PipMirrorConfig;
 use PhpyTool\Phpy\Commands\PipModuleInstall;
-use PhpyTool\Phpy\Commands\PushMetadataCommand;
+use PhpyTool\Phpy\Commands\MetadataPushCommand;
 use PhpyTool\Phpy\Commands\PythonInstall;
 use PhpyTool\Phpy\Commands\ScanCommand;
 use PhpyTool\Phpy\Commands\ShowCommand;
@@ -37,7 +38,8 @@ doc;
         System::setcwd(getcwd());
         parent::__construct('PHPy', static::VERSION);
         $this->addCommands([
-            new PushMetadataCommand(),
+            new MetadataQueryCommand(),
+            new MetadataPushCommand(),
             new ScanCommand(),
             new InitConfigCommand(),
             new InstallCommand(),

@@ -71,20 +71,24 @@ PYTHON;
     }
 
     /**
-     * 根据topLevel查询对应的模块信息
+     * 查询metadata
      *
-     * @param string $topLevel
+     * @param string|null $topLevel
+     * @param string|null $moduleName
      * @param int $limit
+     * @param int $offset
      * @return array
      */
-    public static function queryByTopLevel(string $topLevel, int $limit = 0): array
+    public static function queryMetadata(?string $topLevel, ?string $moduleName, int $limit = 0, int $offset = 0): array
     {
         $res = (new Process())->request(
             'POST',
-            "https://tfbjgnpmtlzytbezwtdx.supabase.co/rest/v1/rpc/query_by_top_level",
+            "https://tfbjgnpmtlzytbezwtdx.supabase.co/rest/v1/rpc/query_metadata",
             [
+                'p_module_name' => $moduleName,
                 'p_top_level'   => $topLevel,
-                'p_limit'       => $limit
+                'p_limit'       => $limit,
+                'p_offset'      => $offset,
             ],
             [
                 'Content-Type'  => 'application/json',
@@ -93,11 +97,10 @@ PYTHON;
             ]
         );
         if ($res['httpCode'] !== 200) {
-            throw new PhpyException("push metadata failed: {$res['responseBody']}");
+            throw new PhpyException("query metadata failed: {$res['responseBody']}");
         }
         return json_decode($res['responseBody'], true) ?? [];
     }
-
 
     /**
      * 根据topLevel查询对应的模块信息
@@ -112,7 +115,7 @@ PYTHON;
         [$topLevel] = explode('.', $nameString);
         if (!isset($metadataMap[$topLevel])) {
             $moduleName = null;
-            if ($query = static::queryByTopLevel($topLevel)) {
+            if ($query = static::queryMetadata($topLevel, null)) {
                 foreach ($query as $item) {
                     if ($version === $item['version']) {
                         $moduleName = $item['module_name'];
