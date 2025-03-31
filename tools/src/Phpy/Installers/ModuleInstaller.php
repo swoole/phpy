@@ -56,7 +56,7 @@ class ModuleInstaller implements InstallerInterface
         }
         $packages = [];
         foreach ($dirs as $dir) {
-            if (!is_dir($dir = System::getcwd() . $dir)) {
+            if (!str_starts_with($dir, '/') and !is_dir($dir = System::getcwd() . '/' . $dir)) {
                 continue;
             }
             $files = $this->findPhpFiles(realpath($dir));
@@ -128,7 +128,7 @@ class ModuleInstaller implements InstallerInterface
         } catch (\Throwable) {}
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function install(): void
     {
         $phpyHash = $this->config->get('phpy-hash');
@@ -207,12 +207,12 @@ class ModuleInstaller implements InstallerInterface
         }
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function uninstall(): void
     {
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function upgrade(): void
     {
         if ($hash = $this->config->get('phpy-hash')) {
@@ -230,7 +230,7 @@ class ModuleInstaller implements InstallerInterface
         $this->install();
     }
 
-    /** @inheritdoc  */
+    /** @inheritdoc */
     public function clearCache(): void
     {
     }
@@ -339,7 +339,8 @@ EOT
         $this->consoleIO->subOutput(<<<EOT
 Installs: 
 $installModulesContent
-EOT);
+EOT
+        );
         if ($pipGlobalIndex = $this->config->get('config.pip-index-url')) {
             $this->process->executePip("config set global.index-url $pipGlobalIndex");
         }
