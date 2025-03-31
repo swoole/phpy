@@ -25,7 +25,13 @@ class MetadataPushCommand extends AbstractCommand
         parent::configure();
         $this
             ->setName('metadata:push')
-            ->setDescription('Push metadata');
+            ->setDescription('Submit metadata to make scan smarter.')
+            ->setHelp(<<<EOT
+The <info>metadata:push</info> command collects the mapping between Python modules and
+ top levels to a public database; more accurate data submissions can help 
+ make the scan command smarter.
+EOT
+            );
     }
 
     /** @inheritdoc  */
