@@ -168,7 +168,7 @@ class System
     {
         return match (static::getPackageManager()) {
             'apk' => [
-                'gcc', 'g++', 'make', 'autoconf',
+                'gcc', 'g++', 'make', 'autoconf', 'cmake',
                 'musl-dev',
                 'expat-dev',
                 'libffi-dev',
@@ -196,10 +196,7 @@ class System
                 'linux-headers-generic'
             ],
             'yum' => [
-                'gcc',
-                'gcc-c++',
-                'make',
-                'autoconf',
+                'gcc', 'gcc-c++', 'make', 'autoconf', 'cmake',
                 'expat-devel',
                 'libffi-devel',
                 'openssl-devel',
@@ -211,10 +208,7 @@ class System
                 'kernel-headers'
             ],
             'zypper' => [
-                'gcc',
-                'gcc-c++',
-                'make',
-                'autoconf',
+                'gcc', 'gcc-c++', 'make', 'autoconf', 'cmake',
                 'libexpat-devel',
                 'libffi-devel',
                 'libopenssl-devel',
@@ -226,9 +220,7 @@ class System
                 'kernel-default-devel'
             ],
             'pacman' => [
-                'gcc',
-                'make',
-                'autoconf',
+                'gcc', 'make', 'autoconf', 'cmake',
                 'expat',
                 'libffi',
                 'openssl',

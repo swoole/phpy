@@ -55,8 +55,11 @@ class ModuleInstaller implements InstallerInterface
             throw new CommandStopException('Nothing to scan');
         }
         $packages = [];
+        $cwd = System::getcwd();
         foreach ($dirs as $dir) {
-            if (!str_starts_with($dir, '/') and !is_dir($dir = System::getcwd() . '/' . $dir)) {
+            $dir = !str_starts_with($dir, '/') ? "$cwd/$dir" : ($cwd . $dir);
+            if (!is_dir($dir)) {
+                $this->consoleIO?->comment("Skip $dir");
                 continue;
             }
             $files = $this->findPhpFiles(realpath($dir));
@@ -92,12 +95,15 @@ class ModuleInstaller implements InstallerInterface
                     'version' => 'default',
                 ];
             }
+
             if ($availableVersions = Version::getPepVersions($moduleName)) {
-                foreach ($availableVersions as &$availableVersion) {
-                    $availableVersion = Version::pepToSemver($availableVersion);
+                foreach ($availableVersions as $key => &$availableVersion) {
+                    if (!$availableVersion = Version::pepToSemver($availableVersion)) {
+                        unset($availableVersions[$key]);
+                    }
                 }
                 $vMap = Version::splitVersion(Semver::rsort($availableVersions)[0]);
-                $modules[$package] = "^$vMap[0].$vMap[1]";
+                $modules[$moduleName] = "^$vMap[0].$vMap[1]";
             }
         }
         if ($modules) {
@@ -110,12 +116,13 @@ class ModuleInstaller implements InstallerInterface
         if (!$this->consoleIO?->ask(
             "Do you want to install these modules? [<comment>Y,n</comment>]",
             true,
-            ConfirmationQuestion::class
+            questionClass: ConfirmationQuestion::class
         )) {
             throw new CommandStopException('PHPy will not install any modules');
         }
         // 保存到配置 local
         $this->config->set('modules', array_merge($this->config->get('modules', []), $modules));
+
         // 写入文件
         System::putFileContent(System::getcwd() . '/phpy.json', (string)$this->config);
         // 推送
@@ -185,11 +192,11 @@ class ModuleInstaller implements InstallerInterface
             // semver -> pep 440
             foreach ($localModules as $module => $semverVersions) {
                 // 取出最新版本，获取PEP440映射
-                $localModules[$module] = $verMapCache[$semverVersions[0]];
+                $localModules[$module] = $verMapCache[$module][$semverVersions[0]];
             }
             foreach ($vendorModules as $module => $semverVersions) {
                 // 取出最新版本，获取PEP440映射
-                $vendorModules[$module] = $verMapCache[$semverVersions[0]];
+                $vendorModules[$module] = $verMapCache[$module][$semverVersions[0]];
             }
             $installModules = array_merge($localModules, $vendorModules);
             // 写入安装的模块

@@ -19,15 +19,26 @@ class Version
     public static function getPepVersions(string $module): array
     {
         static $modulePepVersions = [];
-        if (isset($modulePepVersions[$module])) {
-            $res = (new Process())->request(
-                'GET',
-                "https://pypi.org/pypi/$module/json",
-                [],
-                [
-                    'Content-Type' => 'application/json'
-                ]
-            );
+        if (!isset($modulePepVersions[$module])) {
+            $retry = 0;
+            do {
+                try {
+                    $res = (new Process())->request(
+                        'GET',
+                        "https://pypi.org/pypi/$module/json",
+                        [],
+                        [
+                            'Content-Type' => 'application/json'
+                        ]
+                    );
+                } catch (\Throwable) {
+                    echo "request error, retry $retry";
+                    usleep(($retry + 1 ) * 200 * 1000);
+                } finally {
+                    $retry ++;
+                }
+            } while ($retry < 3);
+
             $httpCode = $res['httpCode'] ?? 500;
 
             $res = json_decode($responseBody = $res['responseBody'], true);
