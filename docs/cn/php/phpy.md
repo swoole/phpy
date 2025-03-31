@@ -159,8 +159,8 @@ composer require swoole/phpy
 
 因此`PHPy`通过`supabase`公共库储存维护了一张`top_level`与`module_name`的映射表，这张映射表需要
 开发者们一起积极维护；
-  - `PHPy`提供了一个`metadata:push_metadata`的命令，开发者可以手动提交映射关系至公共库；
-  - `PHPy`提供了一个`metadata:query_metadata`的命令，开发者可以查看映射关系公共库；
+  - `PHPy`提供了一个`metadata:push`的命令，开发者可以手动提交映射关系至公共库；
+  - `PHPy`提供了一个`metadata:query`的命令，开发者可以查看映射关系公共库；
   - `PHPy`的`scan`的命令也会在未索引到映射关系时提示开发者手动输入，输入数据在随后会自动同步到公共库；
 
 **！这里我们倡导所有使用者及开发者，请爱护好该映射库，请勿破坏！**
