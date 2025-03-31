@@ -28,6 +28,10 @@ class UpdateCommand extends AbstractCommand
             ->setName('update')
             ->setDescription('Updates your dependencies to the latest version according to phpy.json, and updates the phpy.lock file')
             ->addArgument('module', InputArgument::OPTIONAL, 'Python module name to update')
+            ->addOption('skip-build-tools', null, null, 'Skip the build tools installation.')
+            ->addOption('skip-env', null, null, 'Skip the environment upgrade.')
+            ->addOption('skip-ext', null, null, 'Skip the phpy extension upgrade.')
+            ->addOption('skip-module', null, null, 'Skip the module upgrade.')
             ->setHelp(
                 <<<EOT
 The <info>update</info> command reads the phpy.json file from the
@@ -62,9 +66,12 @@ EOT
             }
             // 尝试读取lock
             $lockFile = Application::getLockFile(System::getcwd());
-            $config = new Config($lockFile ?: $jsonFile);
+            $config = new Config($jsonFile);
+            $config->merge(new Config($lockFile));
             // build tools
-            (new BuildToolsInstaller($config, $this->consoleIO))->install();
+            if (!$this->consoleIO?->getInput()->getOption('skip-build-tools')) {
+                (new BuildToolsInstaller($config, $this->consoleIO))->install();
+            }
             // update python env
             if (!$this->consoleIO?->getInput()->getOption('skip-env')) {
                 (new PythonInstaller($config, $this->consoleIO))->upgrade();

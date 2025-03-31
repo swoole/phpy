@@ -72,10 +72,25 @@ class Config
         $this->config = array_replace_recursive($this->config, $config ?? []);
     }
 
+    /**
+     * @param string $file
+     * @return void
+     */
     public function save(string $file): void
     {
         $content = $this->__toString();
         System::putFileContent($file, $content);
+    }
+
+    /**
+     * @param Config ...$configs
+     * @return void
+     */
+    public function merge(Config ...$configs): void
+    {
+        foreach ($configs as $config) {
+            $this->config = array_merge_recursive($this->config, $config->all(false));
+        }
     }
 
     /**
@@ -99,7 +114,7 @@ class Config
                 $config = $config[$index];
             }
 
-            return $found ? $config : $default;
+            return $found ? (($config instanceof \stdClass) ? [] : $config) : $default;
         }
 
         return $config;
@@ -126,11 +141,14 @@ class Config
     }
 
     /**
+     * @param bool $transform
      * @return array
      */
-    public function all(): array
+    public function all(bool $transform = true): array
     {
-        $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
+        if ($transform) {
+            $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
+        }
         return $this->config;
     }
 }

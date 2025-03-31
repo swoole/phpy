@@ -66,9 +66,9 @@ class PythonInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function install(): void
     {
-        $this->consoleIO?->output('Python Installing ...');
+        $this->consoleIO?->output('Python Installing/Upgrading ...');
         $version = $this->config->get('python.install-version', 'v3.12.2');
-        if (!Version::validateVersion($version)) {
+        if (!Version::validatePepVersion($version)) {
             throw new PhpyException("Invalid Python version: $version");
         }
         $cacheDir = $this->config->get('config.cache-dir');
@@ -100,7 +100,7 @@ class PythonInstaller implements InstallerInterface
             $this->consoleIO?->output("Building and installing Python-$version...");
             if (
                 $this->process->execute(
-                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make -j$(nproc) && make install",
+                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make -j $(nproc) && make install",
                     subOutput: true
                 ) !== 0
             ) {
@@ -146,7 +146,7 @@ class PythonInstaller implements InstallerInterface
     public function uninstall(): void
     {
         $this->consoleIO?->output('Python Uninstalling ...');
-        $version = $this->config->get('python.version', 'latest');
+        $version = $this->config->get('python.version', 'v3.12.2');
         $cacheDir = $this->config->get('config.cache-dir');
         if (str_starts_with($cacheDir, '~')) {
             $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
@@ -166,66 +166,7 @@ class PythonInstaller implements InstallerInterface
     /** @inheritdoc  */
     public function upgrade(): void
     {
-        $this->consoleIO?->output('Python Upgrading ...');
-        $version = $this->config->get('python.version', 'latest');
-        $cacheDir = $this->config->get('config.cache-dir');
-        if (str_starts_with($cacheDir, '~')) {
-            $cacheDir = str_replace('~', getenv('HOME'), $cacheDir);
-        }
-        $installDir = $this->config->get('python.install-dir');
-
-        if (!$this->skipInfo) {
-            $url = $this->config->get('python.source-url');
-            $versionOpt = ($version === 'latest') ? '' : "--branch $version";
-            // 下载源码
-            $sourceDir = "$cacheDir/python-$version";
-            if (file_exists($sourceDir)) {
-                $this->process->execute("rm -rf $sourceDir", subOutput: true);
-            }
-            $this->consoleIO?->output('CPython-source Downloading ...');
-            if ($this->process->execute(
-                    "git clone --depth 1 $versionOpt $url $sourceDir", subOutput: true
-                ) !== 0) {
-                throw new CommandFailedException('Error downloading Python.');
-            }
-            $this->consoleIO?->output('CPython-source Downloaded.');
-
-            // 编译安装
-            $pythonInstallConfigure = $this->config->get('python.install-configure', []);
-            $pythonInstallConfigure[] = "--prefix=$installDir";
-            $pythonInstallConfigure = implode(' ', $pythonInstallConfigure);
-            $this->consoleIO?->output("Building and installing Python-$version...");
-            if (
-                $this->process->execute(
-                    "cd $sourceDir && ./configure $pythonInstallConfigure && make clean && make && make install",
-                    subOutput: true
-                ) !== 0
-            ) {
-                throw new CommandFailedException("Error building and installing Python-$version.");
-            }
-        }
-
-        $python = $installDir . '/bin/python';
-        $pip = $installDir . '/bin/pip';
-        $cwd = System::getcwd();
-        // 虚拟环境
-        if (file_exists($venvPath = "$cwd/py-vendor/.venv")) {
-            $this->process->execute("rm -rf $venvPath", subOutput: true);
-        }
-        // 安装虚拟
-        $this->process->execute("$python -m venv $venvPath", subOutput: true);
-        $this->process->execute("source $venvPath/bin/activate", subOutput: true);
-        // 软链python-config
-        $pythonConfigPath = "$venvPath/bin/python-config";
-        $this->process->execute("ln -s $installDir/bin/python-config $pythonConfigPath", subOutput: true);
-        // 软链python-include
-        $this->process->execute("rm -rf $venvPath/include/python", subOutput: true);
-        $this->process->execute("ln -s $installDir/include/python $venvPath/include", subOutput: true);
-        // 设置环境
-        $this->process->execute(
-            "echo '$python' > $cwd/python.command && echo '$pip' > $cwd/pip.command && echo '' > $cwd/python-config.command",
-            subOutput: true
-        );
+        $this->install();
     }
 
     /** @inheritdoc  */

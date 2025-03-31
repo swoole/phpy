@@ -81,7 +81,9 @@ EOT
             }
             $config = new Config($lockFile ?: $jsonFile);
             // build tools
-            (new BuildToolsInstaller($config, $this->consoleIO))->install();
+            if (!$this->consoleIO?->getInput()->getOption('skip-build-tools')) {
+                (new BuildToolsInstaller($config, $this->consoleIO))->install();
+            }
             // install python env
             if (!$this->consoleIO?->getInput()->getOption('skip-env')) {
                 (new PythonInstaller($config, $this->consoleIO))->install();

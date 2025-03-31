@@ -2,116 +2,132 @@
 
 namespace PhpyTool\Phpy\Helpers;
 
+use PhpyTool\Phpy\Exceptions\PhpyException;
+
 class PythonMetadata
 {
-    public static function isStdLibrary(string $module)
+    /** @var string  */
+    protected static string $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmYmpnbnBtdGx6eXRiZXp3dGR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5ODQ5MjQsImV4cCI6MjA1ODU2MDkyNH0.trmgSPSI55IRnU4ko1E6gJQNi-kyXbobsl61bkRZVBE';
+
+    /** @var string  */
+    protected static string $supabaseUrl = 'https://tfbjgnpmtlzytbezwtdx.supabase.co';
+
+    /**
+     * 判断是否是标准库
+     *
+     * @param string $module
+     * @return bool
+     */
+    public static function isStdLibrary(string $module): bool
     {
         static $stdLibrary = null;
         if (!$stdLibrary) {
-            $stdLibrary = array_flip(self::getStdLibrary());
+            $stdLibrary = array_flip(self::getPythonStdModules());
         }
         return isset($stdLibrary[$module]);
     }
 
-    private static function getStdLibrary(): array
+    /**
+     * 通过系统函数获取python标准库
+     *
+     * @return array
+     */
+    public static function getPythonStdModules(): array
     {
-        return [
-            "os",
-            "sys",
-            "re",
-            "math",
-            "random",
-            "dataclasses",
-            "json",
-            "datetime",
-            "time",
-            "calendar",
-            "collections",
-            "heapq",
-            "bisect",
-            "array",
-            "weakref",
-            "types",
-            "copy",
-            "pprint",
-            "reprlib",
-            "enum",
-            "numbers",
-            "textwrap",
-            "this",
-            "cmath",
-            "decimal",
-            "fractions",
-            "statistics",
-            "itertools",
-            "functools",
-            "operator",
-            "pathlib",
-            "fileinput",
-            "stat",
-            "filecmp",
-            "tempfile",
-            "glob",
-            "fnmatch",
-            "linecache",
-            "shutil",
-            "macpath",
-            "pickle",
-            "copyreg",
-            "shelve",
-            "marshal",
-            "dbm",
-            "sqlite3",
-            "zlib",
-            "gzip",
-            "bz2",
-            "lzma",
-            "zipfile",
-            "tarfile",
-            "csv",
-            "configparser",
-            "netrc",
-            "xdrlib",
-            "plistlib",
-            "hashlib",
-            "hmac",
-            "secrets",
-            "builtins",
-            "platform",
-            "asyncio",
-            "socket",
-            "turtle",
-            "typing",
-            "tkinter",
-        ];
+        $pythonCode = <<<'PYTHON'
+import sys, json
+print(json.dumps(sorted(sys.stdlib_module_names)))
+PYTHON;
+        // 执行命令并捕获输出
+        (new Process())->executePython("-c '$pythonCode'", $output);
+        return json_decode($output[0], true) ?? [];
     }
 
-    static function getPipPackage(string $module): ?string
+    /**
+     * 上报metadata
+     *
+     * @param string $topLevel
+     * @param string $moduleName
+     * @param string $version
+     * @return array
+     */
+    public static function pushMetadata(string $topLevel, string $moduleName, string $version = 'default'): array
     {
-        static $map = array(
-            "torch" => "torch",
-            "transformers" => "transformers",
-            "accelerate" => "accelerate",
-            "TermTk" => "pytermtk",
-            "paddlenlp" => "paddlenlp",
-            "cefpython3" => "cefpython3",
-            "dearpygui" => "dearpygui",
-            "pygame" => "pygame",
-            "gi" => "PyGObject",
-            "gradio_client" => "gradio_client",
-            "gradio" => "gradio",
-            "openai" => "openai",
-            "webview" => "pywebview",
-            "numpy" => "numpy",
-            "magicgui" => "magicgui",
-            "modelscope" => "modelscope",
-            "tqdm" => "tqdm",
-            "llama_index" => "llama-index",
-            "wx" => "wxPython",
-            "pyqt5" => "PyQt5",
+        $res = (new Process())->request(
+            'POST',
+            static::$supabaseUrl . "/rest/v1/rpc/push_metadata",
+            [
+                'p_module_name' => $moduleName,
+                'p_top_level'   => $topLevel,
+                'p_version'     => $version
+            ],
+            [
+                'Content-Type'  => 'application/json',
+                'apikey'        => static::$apiKey,
+                'Authorization' => 'Bearer ' . static::$apiKey
+            ]
         );
+        if ($res['httpCode'] !== 200) {
+            throw new PhpyException("push metadata failed: {$res['responseBody']}");
+        }
+        return json_decode($res['responseBody'], true) ?? [];
+    }
 
-        [$root] = explode('.', $module);
-        return $map[$root] ?? null;
+    /**
+     * 查询metadata
+     *
+     * @param string|null $topLevel
+     * @param string|null $moduleName
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public static function queryMetadata(?string $topLevel, ?string $moduleName, int $limit = 0, int $offset = 0): array
+    {
+        $res = (new Process())->request(
+            'POST',
+            static::$supabaseUrl . "/rest/v1/rpc/query_metadata",
+            [
+                'p_module_name' => $moduleName,
+                'p_top_level'   => $topLevel,
+                'p_limit'       => $limit,
+                'p_offset'      => $offset,
+            ],
+            [
+                'Content-Type'  => 'application/json',
+                'apikey'        => static::$apiKey,
+                'Authorization' => 'Bearer ' . static::$apiKey
+            ]
+        );
+        if ($res['httpCode'] !== 200) {
+            throw new PhpyException("query metadata failed: {$res['responseBody']}");
+        }
+        return json_decode($res['responseBody'], true) ?? [];
+    }
+
+    /**
+     * 根据topLevel查询对应的模块信息
+     *
+     * @param string $nameString
+     * @param string $version
+     * @return string|null
+     */
+    static function getPipPackage(string $nameString, string $version = 'default'): ?string
+    {
+        static $metadataMap = [];
+        [$topLevel] = explode('.', $nameString);
+        if (!isset($metadataMap[$topLevel])) {
+            $moduleName = null;
+            if ($query = static::queryMetadata($topLevel, null)) {
+                foreach ($query as $item) {
+                    if ($version === $item['version']) {
+                        $moduleName = $item['module_name'];
+                        break;
+                    }
+                }
+            }
+            $metadataMap[$topLevel] = $moduleName;
+        }
+        return $metadataMap[$topLevel] ?? null;
     }
 }
