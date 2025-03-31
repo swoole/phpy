@@ -9,6 +9,9 @@ class PythonMetadata
     /** @var string  */
     protected static string $apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmYmpnbnBtdGx6eXRiZXp3dGR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5ODQ5MjQsImV4cCI6MjA1ODU2MDkyNH0.trmgSPSI55IRnU4ko1E6gJQNi-kyXbobsl61bkRZVBE';
 
+    /** @var string  */
+    protected static string $supabaseUrl = 'https://tfbjgnpmtlzytbezwtdx.supabase.co';
+
     /**
      * 判断是否是标准库
      *
@@ -52,7 +55,7 @@ PYTHON;
     {
         $res = (new Process())->request(
             'POST',
-            "https://tfbjgnpmtlzytbezwtdx.supabase.co/rest/v1/rpc/push_metadata",
+            static::$supabaseUrl . "/rest/v1/rpc/push_metadata",
             [
                 'p_module_name' => $moduleName,
                 'p_top_level'   => $topLevel,
@@ -83,7 +86,7 @@ PYTHON;
     {
         $res = (new Process())->request(
             'POST',
-            "https://tfbjgnpmtlzytbezwtdx.supabase.co/rest/v1/rpc/query_metadata",
+            static::$supabaseUrl . "/rest/v1/rpc/query_metadata",
             [
                 'p_module_name' => $moduleName,
                 'p_top_level'   => $topLevel,
