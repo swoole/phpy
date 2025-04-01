@@ -132,6 +132,7 @@ class Process
 
     /**
      * 请求
+     *  - 当未安装curl拓展时尝试使用curl命令执行http请求
      *
      * @param string $method
      * @param string $url
