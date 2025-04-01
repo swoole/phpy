@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpyTool\Phpy;
 
+use Closure;
 use PhpyTool\Phpy\Helpers\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -12,9 +13,8 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ConsoleIO
 {
@@ -131,8 +131,27 @@ class ConsoleIO
      */
     public function ask(string $message, mixed $default = null, string $tag = '[?]', string $questionClass = Question::class): mixed
     {
+        if (!is_a($questionClass, Question::class)) {
+            throw new \InvalidArgumentException("$questionClass is not a valid Question class");
+        }
         // 询问安装目录
         $question = new $questionClass("$tag $message \n", $default);
+        /** @var QuestionHelper $questionHelper */
+        $questionHelper = $this->getHelperSet()->get('question');
+        return $questionHelper->ask($this->getInput(), $this->getOutput(), $question);
+    }
+
+    /**
+     * @param string $message
+     * @param array $choices
+     * @param mixed|null $default
+     * @param Closure|null $closure = function (ChoiceQuestion $question) {}
+     * @param string $tag
+     * @return mixed
+     */
+    public function choice(string $message, array $choices, mixed $default = null, ?Closure $closure = null, string $tag = '[?]'): mixed
+    {
+        $question = new ChoiceQuestion("$tag $message \n", $choices, $default);
         /** @var QuestionHelper $questionHelper */
         $questionHelper = $this->getHelperSet()->get('question');
         return $questionHelper->ask($this->getInput(), $this->getOutput(), $question);
