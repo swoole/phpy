@@ -21,7 +21,7 @@ class Version
         static $modulePepVersions = [];
         if (!isset($modulePepVersions[$module])) {
             $retry = 0;
-            do {
+            while (1) {
                 try {
                     $res = (new Process())->request(
                         'GET',
@@ -31,17 +31,19 @@ class Version
                             'Content-Type' => 'application/json'
                         ]
                     );
-                } catch (\Throwable) {
-                    echo "request error, retry $retry";
+                    break;
+                } catch (\Throwable $throwable) {
+                    if ($retry > 2) {
+                        throw new PhpyException("Request failed: {$throwable->getMessage()}");
+                    }
                     usleep(($retry + 1 ) * 200 * 1000);
                 } finally {
                     $retry ++;
                 }
-            } while ($retry < 3);
-
+            }
             $httpCode = $res['httpCode'] ?? 500;
 
-            $res = json_decode($responseBody = $res['responseBody'], true);
+            $res = json_decode(($responseBody = $res['responseBody'] ?? ''), true);
             if ($httpCode === 404) {
                 $modulePepVersions[$module] = [];
             } else if ($httpCode === 200) {

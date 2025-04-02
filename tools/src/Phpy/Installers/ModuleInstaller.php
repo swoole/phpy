@@ -67,7 +67,7 @@ class ModuleInstaller implements InstallerInterface
                 $this->consoleIO?->output("Scanning <info>$file</info>");
                 $scannedPackages = PackageCollector::parseFile($file);
                 foreach ($scannedPackages as $package) {
-                    $this->consoleIO?->subOutput("<comment>--</comment> scanned: <comment>$package</comment>");
+                    $this->consoleIO?->subOutput("<comment>--</comment> scanned top_level: <comment>$package</comment>");
                 }
                 $packages = array_merge($packages, $scannedPackages);
             }
@@ -108,9 +108,9 @@ class ModuleInstaller implements InstallerInterface
         }
         if ($modules) {
             $count = count($modules);
-            $this->consoleIO?->output("Scanned: $count");
+            $this->consoleIO?->output("Scanned modules: $count");
             foreach ($modules as $module => $version) {
-                $this->consoleIO?->subOutput("<comment>--</comment> <info>$module</info> - <comment>$version</comment>");
+                $this->consoleIO?->subOutput("<comment>--</comment> module_name: <info>$module</info> - <comment>$version</comment>");
             }
         }
         if (!$this->consoleIO?->ask(

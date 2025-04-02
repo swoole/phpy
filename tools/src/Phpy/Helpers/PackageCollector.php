@@ -10,8 +10,15 @@ use PhpParser\ParserFactory;
 
 class PackageCollector extends NodeVisitorAbstract
 {
+    /**
+     * @var array
+     */
     private array $packages = [];
 
+    /**
+     * @param Node $node
+     * @return void
+     */
     public function enterNode(Node $node): void
     {
         $foundPackageFn = function (Node $node, int $index = 0) {
@@ -44,11 +51,18 @@ class PackageCollector extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * @return array
+     */
     public function getPackages(): array
     {
         return array_unique($this->packages); // 去重
     }
 
+    /**
+     * @param $filePath
+     * @return array
+     */
     static function parseFile($filePath): array
     {
         $code = file_get_contents($filePath);

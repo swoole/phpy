@@ -46,8 +46,7 @@ class Config
      */
     public function __toString(): string
     {
-        $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
-        return json_encode($this->config, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+        return json_encode($this->all(), JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -146,9 +145,10 @@ class Config
      */
     public function all(bool $transform = true): array
     {
+        $config = $this->config;
         if ($transform) {
-            $this->config['modules'] = $this->config['modules'] ?: new \stdClass();
+            $config['modules'] = $config['modules'] ?: new \stdClass();
         }
-        return $this->config;
+        return $config;
     }
 }

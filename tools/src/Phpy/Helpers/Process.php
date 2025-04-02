@@ -57,6 +57,11 @@ class Process
 
     /**
      * 执行命令
+     *  - 默认将stderr重定向合并至stdout
+     *  - command支持使用2>，自定义stderr重定向
+     *      - 2>/dev/null： 忽略stderr
+     *      - 2>&1： 合并stderr至stdout
+     *      - 2>/tmp/run.log： 将stderr重定向至文件
      *
      * @param string $command 执行命令
      * @param array|null $output stdout & stderr （结果列表始终为倒序）
@@ -65,7 +70,7 @@ class Process
      */
     public function execute(string $command, ?array &$output = null, bool $subOutput = false): int
     {
-        $command = str_ends_with($command, ' 2>&1') ? $command : "$command 2>&1";
+        $command = str_contains($command, ' 2>') ? $command : "$command 2>&1";
         $this->debugMode("execute( $command )");
         $resultCode = -1;
         $output = $output === null ? [] : $output;
@@ -132,6 +137,7 @@ class Process
 
     /**
      * 请求
+     *  - 当未安装curl拓展时尝试使用curl命令执行http请求
      *
      * @param string $method
      * @param string $url

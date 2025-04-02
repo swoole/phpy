@@ -150,6 +150,13 @@ composer require swoole/phpy
 
 `clear-cache`命令会根据`phpy.json`的`config.cache-dir`清除相关缓存，更多查看`--help`
 
+### 7. 切换pip镜像
+```shell
+./vendor/bin/phpy config:pip-mirror
+```
+
+`config:pip-mirror`预设部分pip镜像源提供选择变更，并且支持自定义pip镜像源，更多查看`--help`
+
 ## 共建维护
 
 ### 公共映射库

@@ -22,7 +22,7 @@ class System
     /**
      * @return false|string
      */
-    public static function getcwd()
+    public static function getcwd(): bool|string
     {
         return $GLOBALS['PHPY_CWD'] ?? getcwd();
     }
@@ -31,7 +31,7 @@ class System
      * @param string $cwd
      * @return void
      */
-    public static function setcwd(string $cwd)
+    public static function setcwd(string $cwd): void
     {
         $GLOBALS['PHPY_CWD'] = $cwd;
     }
@@ -52,7 +52,6 @@ class System
                 throw new PhpyException('Python not found. ');
             }
         }
-//        System::putFileContent($command, $path);
         return $path;
     }
 
@@ -72,7 +71,6 @@ class System
                 throw new PhpyException('Python-pip not found. ');
             }
         }
-//        System::putFileContent($command, $path);
         return $path;
     }
 
@@ -92,7 +90,6 @@ class System
                 throw new PhpyException('Python-config not found. ');
             }
         }
-//        System::putFileContent($command, $path);
         return $path;
     }
 
