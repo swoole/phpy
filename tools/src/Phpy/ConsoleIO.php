@@ -131,7 +131,7 @@ class ConsoleIO
      */
     public function ask(string $message, mixed $default = null, string $tag = '[?]', string $questionClass = Question::class): mixed
     {
-        if (!is_a($questionClass, Question::class)) {
+        if (!is_a($questionClass, Question::class, true)) {
             throw new \InvalidArgumentException("$questionClass is not a valid Question class");
         }
         // 询问安装目录
