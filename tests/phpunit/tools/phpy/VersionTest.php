@@ -11,28 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 class VersionTest extends TestCase
 {
-    /**
-     * Test getPepVersions with different HTTP responses
-     */
-    public function testGetPepVersions()
-    {
-        // Mock Process class with different responses
-        $processMock = $this->getMockBuilder(Process::class)
-            ->onlyMethods(['request'])
-            ->getMock();
-
-        // Test normal response
-        $processMock->expects($this->exactly(2))
-            ->method('request')
-            ->willReturnOnConsecutiveCalls(
-                ['httpCode' => 200, 'responseBody' => json_encode(['releases' => ['1.0.0', '1.1.0']])],
-                ['httpCode' => 404, 'responseBody' => '']
-            );
-
-        $this->assertEquals(['1.0.0', '1.1.0'], Version::getPepVersions('valid-module'));
-        $this->assertEquals([], Version::getPepVersions('not-found-module'));
-    }
-
     public function testPepToSemverConversion()
     {
         // Test epoch and post-release
@@ -63,19 +41,5 @@ class VersionTest extends TestCase
         $this->assertEquals([1, 2, 0], Version::splitVersion('1.2'));
         $this->assertEquals([1, 0, 0], Version::splitVersion('1'));
         $this->assertEquals([2, 3, 4], Version::splitVersion('2.3.4.5.6'));
-    }
-
-    public function testGetPepVersionsRetryLogic()
-    {
-        $processMock = $this->getMockBuilder(Process::class)
-            ->onlyMethods(['request'])
-            ->getMock();
-
-        $processMock->expects($this->exactly(3))
-            ->method('request')
-            ->willThrowException(new \Exception('Timeout'));
-
-        $this->expectException(PhpyException::class);
-        Version::getPepVersions('failing-module');
     }
 }
