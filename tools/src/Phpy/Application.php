@@ -15,7 +15,6 @@ use PhpyTool\Phpy\Commands\PipModuleInstall;
 use PhpyTool\Phpy\Commands\MetadataPushCommand;
 use PhpyTool\Phpy\Commands\PythonInstall;
 use PhpyTool\Phpy\Commands\ScanCommand;
-use PhpyTool\Phpy\Commands\ScanImport;
 use PhpyTool\Phpy\Commands\ShowCommand;
 use PhpyTool\Phpy\Commands\UpdateCommand;
 use PhpyTool\Phpy\Helpers\System;
@@ -23,7 +22,7 @@ use PhpyTool\Phpy\Helpers\System;
 class Application extends \Symfony\Component\Console\Application
 {
     /** @var string  */
-    public const VERSION = '0.0.1';
+    public const VERSION = '0.1.0';
 
     /** @var string  */
     private string $logo = <<<doc
@@ -39,18 +38,22 @@ doc;
         System::setcwd(getcwd());
         parent::__construct('PHPy', static::VERSION);
         $this->addCommands([
+            // 共建资源相关
             new MetadataQueryCommand(),
             new MetadataPushCommand(),
-            new ScanCommand(),
+            // 配置相关
             new InitConfigCommand(),
+            new PipMirrorConfig(),
+            // phpy工具相关
             new InstallCommand(),
             new UpdateCommand(),
+            new ScanCommand(),
             new ShowCommand(),
+            new ClearCacheCommand(),
+            // 独立安装命令
             new PipModuleInstall(),
             new PhpyInstall(),
             new PythonInstall(),
-            new PipMirrorConfig(),
-            new ClearCacheCommand(),
         ]);
     }
 

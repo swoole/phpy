@@ -54,7 +54,7 @@ EOT
                     if (!$this->consoleIO?->ask(
                         "<info>No phpy.json in current directory, do you want to use the one at $cDir</info> [<comment>Y,n</comment>]?",
                         true,
-                        ConfirmationQuestion::class
+                        questionClass: ConfirmationQuestion::class
                     )) {
                         throw new CommandStopException("PHPy could not find a phpy.json file in $sDir");
                     }
