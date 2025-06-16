@@ -37,7 +37,7 @@ jobs:
           pwd
       - name: Build
         run: |
-          cmake .
+          cmake . -D CODE_COVERAGE=ON
           make -j $(nproc)
       - name: Run pytest tests
         run: |

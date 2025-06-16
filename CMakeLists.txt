@@ -14,6 +14,26 @@ if (NOT DEFINED PYTHON_CONFIG)
   set(PYTHON_CONFIG "python3-config")
 endif()
 
+# Code Coverage Configuration
+add_library(coverage_config INTERFACE)
+
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+if(CODE_COVERAGE)
+    message(STATUS "Open coverage")
+    # --coverage => -fprofile-arcs -ftest-coverage
+    target_compile_options(coverage_config INTERFACE
+            -O0
+            -g
+            -fprofile-update=atomic
+            --coverage
+    )
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(coverage_config INTERFACE --coverage)
+    else()
+        target_link_libraries(coverage_config INTERFACE --coverage)
+    endif()
+endif(CODE_COVERAGE)
+
 file(GLOB_RECURSE SOURCE_FILES FOLLOW_SYMLINKS src/*.cc)
 
 execute_process(COMMAND ${PHP_CONFIG} --includes
@@ -54,6 +74,10 @@ add_definitions(-DHAVE_PHP_EMBED)
 include_directories(BEFORE ${phpy_includes})
 link_directories(${phpy_link_directories})
 add_library(phpy SHARED ${SOURCE_FILES})
+
+if (CODE_COVERAGE)
+    target_link_libraries(phpy coverage_config gcov)
+endif(CODE_COVERAGE)
 
 set_target_properties(phpy PROPERTIES OUTPUT_NAME "lib/phpy")
 target_link_libraries(phpy ${phpy_libraries})
