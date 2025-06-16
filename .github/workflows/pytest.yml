@@ -37,10 +37,24 @@ jobs:
           pwd
       - name: Build
         run: |
-          cmake .
+          cmake . -D CODE_COVERAGE=ON
           make -j $(nproc)
       - name: Run pytest tests
         run: |
           sudo service redis-server start
           pip install pytest
           pytest -v tests/
+
+      - name: run coverage
+        shell: bash
+        run: sudo apt-get install lcov &&
+          sudo lcov --directory . --capture --branch-coverage --rc geninfo_unexecuted_blocks=1 --ignore-errors mismatch --output-file coverage.info &&
+          sudo lcov --remove coverage.info '/usr/*' --output-file coverage.info &&
+          sudo lcov --list coverage.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.info
+          fail_ci_if_error: true

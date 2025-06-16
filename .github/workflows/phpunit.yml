@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: |
           phpize
-          ./configure
+          ./configure --enable-code-coverage
           make -j $(nproc)
           sudo make install
           sudo sh -c "echo 'extension=phpy.so' > /etc/php/${PHP_VERSION}/cli/conf.d/90-phpy.ini"
@@ -49,3 +49,18 @@ jobs:
           sudo service redis-server start
           composer install
           composer test
+
+      - name: run coverage
+        shell: bash
+        run: sudo apt-get install lcov &&
+          sudo lcov --directory . --capture --branch-coverage --rc geninfo_unexecuted_blocks=1 --ignore-errors mismatch --output-file coverage.info &&
+          sudo lcov --remove coverage.info '/usr/*' --output-file coverage.info &&
+          sudo lcov --list coverage.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.info
+          fail_ci_if_error: true
+

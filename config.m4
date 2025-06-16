@@ -22,6 +22,11 @@ PHP_ARG_ENABLE([phpy],
     [Enable phpy support])],
   [no])
 
+PHP_ARG_ENABLE([code-coverage],
+  [whether to enable code coverage support],
+  [AS_HELP_STRING([--enable-code-coverage],
+    [Enable code coverage support])], [no], [no])
+
 AC_DEFUN([GET_PYTHON_LDFLAGS], [
   TMP_RESULT="$($PHP_PYTHON_CONFIG --embed --ldflags)"
   if test $? -eq 0; then
@@ -83,6 +88,16 @@ if test "$PHP_PHPY" != "no"; then
 
   EXTRAS_CXXFLAGS="-Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now"
   EXTRAS_CXXFLAGS="$EXTRAS_CXXFLAGS -std=c++14"
+
+  AC_MSG_CHECKING([code coverage])
+  if test "$PHP_CODE_COVERAGE" != "no"; then
+    AC_MSG_RESULT([enabled])
+    EXTRAS_CFLAGS="-fprofile-arcs -ftest-cover -fprofile-update=atomic"
+    EXTRAS_CXXFLAGS="-fprofile-arcs -ftest-coverage -fprofile-update=atomic"
+    EXTRA_LDFLAGS="--coverage"
+  else
+    AC_MSG_RESULT([disabled])
+  fi
 
   if test -f "$abs_srcdir/phpy.cc"; then
     phpy_source_dir=$abs_srcdir
