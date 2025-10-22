@@ -2,6 +2,10 @@
 
 # phpy
 
+[![PHP Tests](https://github.com/swoole/phpy/actions/workflows/phpunit.yml/badge.svg)](https://github.com/swoole/phpy/actions/workflows/phpunit.yml)
+[![Python Tests](https://github.com/swoole/phpy/actions/workflows/pytest.yml/badge.svg)](https://github.com/swoole/phpy/actions/workflows/pytest.yml)
+[![Codecov](https://codecov.io/gh/swoole/phpy/branch/main/graph/badge.svg)](https://codecov.io/gh/swoole/phpy)
+
 A library for inter-calling `Python` and `PHP`. 
 You can use Python functions and libraries in PHP, or use PHP packages in Python.
 
