@@ -122,9 +122,7 @@ ZEND_METHOD(PyCore, int) {
     Z_PARAM_ZVAL(zv)
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
-    PyObject *pv = long2long(zv);
-    phpy::php::new_object(return_value, pv);
-    Py_DECREF(pv);
+    phpy::php::new_object_no_addref(return_value, long2long(zv));
 }
 
 ZEND_METHOD(PyCore, object) {
@@ -138,7 +136,7 @@ ZEND_METHOD(PyCore, object) {
     if (zv == NULL || ZVAL_IS_NULL(zv)) {
         phpy::php::call_builtin_fn(ZEND_STRL("object"), nullptr, return_value);
     } else {
-        phpy::php::new_object(return_value, php2py_object(zv));
+        phpy::php::new_object_no_addref(return_value, php2py_object(zv));
     }
 }
 
@@ -149,9 +147,7 @@ ZEND_METHOD(PyCore, float) {
     Z_PARAM_ZVAL(zv)
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
-    PyObject *pv = PyFloat_FromDouble(zval_get_double(zv));
-    phpy::php::new_object(return_value, pv);
-    Py_DECREF(pv);
+    phpy::php::new_object_no_addref(return_value, PyFloat_FromDouble(zval_get_double(zv)));
 }
 
 ZEND_METHOD(PyCore, fn) {
@@ -281,6 +277,8 @@ PHP_MINIT_FUNCTION(phpy) {
     }
 
     php_class_init_all(INIT_FUNC_ARGS_PASSTHRU);
+    php_python_operator_init(INIT_FUNC_ARGS_PASSTHRU);
+
     return SUCCESS;
 }
 
@@ -413,8 +411,7 @@ ZEND_METHOD(PyCore, bytes) {
         pv = PyBytes_FromStringAndSize(Z_STRVAL_P(zv), Z_STRLEN_P(zv));
         zend_string_release(s);
     }
-    phpy::php::new_object(return_value, pv);
-    Py_DECREF(pv);
+    phpy::php::new_object_no_addref(return_value, pv);
 }
 
 ZEND_METHOD(PyCore, fileno) {

@@ -216,6 +216,10 @@ PyObject *new_string(PyObject *pv) {
     }
     return (PyObject *) self;
 }
+
+/**
+ * Return value: New reference.
+ */
 PyObject *new_string(zval *zv) {
     ZendString *self = PyObject_New(ZendString, &ZendStringType);
     self->string = *zv;

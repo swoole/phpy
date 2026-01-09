@@ -108,21 +108,31 @@ void object2string(PyObject *pv, zval *zv);
 void long2long(PyObject *pv, zval *zv);
 /**
  * Type conversion, PHP to Python
+ * Return value: New reference.
  */
 PyObject *php2py(zval *zv);
 /**
  * PHP to Python, Convert actual value to python object type as much as possible
+ * Return value: New reference.
  */
 PyObject *php2py_object(zval *zv);
 /**
  * Python to Python, Convert actual value to PHP scalar type as much as possible
  */
 PyObject *py2py_scalar(PyObject *pv);
-
+/**
+ * Return value: New reference.
+ */
 PyObject *array2list(zend_array *ht);
+/**
+ * Return value: New reference.
+ */
 static inline PyObject *array2list(zval *zv) {
     return array2list(Z_ARRVAL_P(zv));
 }
+/**
+ * Return value: New reference.
+ */
 PyObject *array2set(zend_array *ht);
 static inline PyObject *array2set(zval *zv) {
     return array2set(Z_ARRVAL_P(zv));
@@ -133,14 +143,27 @@ static inline PyObject *array2tuple(zval *zv) {
 }
 PyObject *resource2py(zval *zres);
 PyObject *reference2py(zval *zv);
+/**
+ * Return value: New reference.
+ */
 PyObject *array2dict(zend_array *ht);
+/**
+ * Return value: New reference.
+ */
 PyObject *string2py(zend_string *zv);
+/**
+ * Return value: New reference.
+ */
 PyObject *long2long(zval *zv);
-
+/**
+ * Return value: New reference.
+ */
 static inline PyObject *array2dict(zval *zv) {
     return array2dict(Z_ARRVAL_P(zv));
 }
-
+/**
+ * Return value: New reference.
+ */
 static inline PyObject *string2py(zval *zv) {
     return string2py(Z_STR_P(zv));
 }
@@ -185,6 +208,7 @@ int php_class_iter_init(INIT_FUNC_ARGS);
 int php_class_fn_init(INIT_FUNC_ARGS);
 int php_class_error_init(INIT_FUNC_ARGS);
 void php_class_init_all(INIT_FUNC_ARGS);
+int php_python_operator_init(INIT_FUNC_ARGS);
 
 zend_class_entry *phpy_object_get_ce();
 zend_class_entry *phpy_sequence_get_ce();
@@ -239,6 +263,11 @@ namespace php {
 void new_module(zval *zv, PyObject *pv);
 void new_object(zval *zv, PyObject *pv);
 void new_object(zval *zv, PyObject *pv, zend_class_entry *ce);
+/**
+ * This function does not increment the reference count for pv object;
+ * a new reference must be passed in, otherwise a gc error will occur.
+ */
+void new_object_no_addref(zval *zv, PyObject *pv);
 void new_dict(zval *zv, PyObject *pv);
 void new_list(zval *zv, PyObject *pv);
 void new_tuple(zval *zv, PyObject *pv);

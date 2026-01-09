@@ -26,6 +26,9 @@ zend_class_entry *PyError_ce;
 
 namespace phpy {
 namespace php {
+/**
+ * PyErr_Occurred(): Return value: Borrowed reference
+ */
 void new_error(zval *zv, PyObject *error) {
     object_init_ex(zv, PyError_ce);
     zval zerror;

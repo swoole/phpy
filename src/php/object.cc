@@ -140,6 +140,10 @@ void new_object(zval *zv, PyObject *object, zend_class_entry *ce) {
     Py_INCREF(object);
     phpy_object_get_object(zv)->object = object;
 }
+void new_object_no_addref(zval *zv, PyObject *object) {
+    object_init_ex(zv, PyObject_ce);
+    phpy_object_get_object(zv)->object = object;
+}
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS) {
     zval *zk;
 
