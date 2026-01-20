@@ -38,26 +38,6 @@ using namespace phpy::php;
 
 typedef PyObject *(*NumberProtocolFn)(PyObject *o1, PyObject *o2);
 
-static void print_error() {
-	PyObject *ptype, *pvalue, *ptraceback;
-	PyErr_Fetch(&ptype, &pvalue, &ptraceback);
-	if (pvalue == NULL) {
-		return;
-	}
-
-	PyObject* str_obj = PyObject_Repr(pvalue);
-	Py_XDECREF(ptype);
-	Py_XDECREF(ptraceback);
-	PyErr_Clear();
-
-	if (!str_obj) {
-		return;
-	}
-
-	zend_error(E_WARNING, "PyError: %s", PyUnicode_AsUTF8(str_obj));
-	Py_DECREF(str_obj);
-}
-
 static int opcode_handler_number_op(NumberProtocolFn fn, zend_execute_data *execute_data) {
     const zend_op *opline = EX(opline);
     zval *left, *right;
@@ -81,7 +61,7 @@ static int opcode_handler_number_op(NumberProtocolFn fn, zend_execute_data *exec
     // The `result` must be a new reference.
     if (result) {
         if (result == Py_None) {
-        	print_error();
+        	throw_error_if_occurred();
             Py_DECREF(result);
             ZVAL_NULL(EX_VAR(opline->result.var));
         } else {
@@ -121,7 +101,7 @@ static int opcode_handler_compare_op(int op, zend_execute_data *execute_data) {
 
     if (is_pyobj) {
         if (result == -1) {
-        	print_error();
+        	throw_error_if_occurred();
             ZVAL_NULL(EX_VAR(opline->result.var));
         } else {
             ZVAL_BOOL(EX_VAR(opline->result.var), result == 1);
@@ -259,7 +239,7 @@ static int opcode_handler_assign_op(zend_execute_data *execute_data) {
         FREE_OP_VAR(2, right);
 
         if (result == nullptr || result == Py_None) {
-			print_error();
+        	throw_error_if_occurred();
         }
         if (UNEXPECTED(RETURN_VALUE_USED(opline))) {
             ZVAL_COPY(EX_VAR(opline->result.var), left);
@@ -279,15 +259,13 @@ static int opcode_handler_bitwise_not(zend_execute_data *execute_data) {
         PyObject *obj = phpy_object_get_handle(left);
         PyObject *result = PyNumber_Invert(obj);
         if (result == Py_None) {
-        	print_error();
+        	throw_error_if_occurred();
             Py_DECREF(result);
             ZVAL_NULL(EX_VAR(opline->result.var));
         } else {
             new_object_no_addref(EX_VAR(opline->result.var), result);
         }
-        if (opline->op1_type & (IS_TMP_VAR | IS_VAR)) {
-            zval_ptr_dtor(left);
-        }
+        FREE_OP_VAR(1, left);
         EX(opline)++;
         return ZEND_USER_OPCODE_CONTINUE;
     }
