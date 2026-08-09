@@ -109,7 +109,7 @@ zend_string *py2zstr(PyObject *pv);
 void object2array(PyObject *pv, zval *zv);
 void object2string(PyObject *pv, zval *zv);
 
-void long2long(PyObject *pv, zval *zv);
+bool python_long_to_php(PyObject *pv, zval *zv);
 /**
  * Type conversion, PHP to Python
  * Return value: New reference.
@@ -121,7 +121,8 @@ PyObject *php2py(zval *zv);
  */
 PyObject *php2py_object(zval *zv);
 /**
- * Python to Python, Convert actual value to PHP scalar type as much as possible
+ * Wrap a Python container or string with PHPy's Python-facing wrapper type.
+ * Return value: New reference.
  */
 PyObject *py2py_scalar(PyObject *pv);
 /**
@@ -158,7 +159,7 @@ PyObject *string2py(zend_string *zv);
 /**
  * Return value: New reference.
  */
-PyObject *long2long(zval *zv);
+PyObject *php_number_to_python_long(zval *zv);
 /**
  * Return value: New reference.
  */

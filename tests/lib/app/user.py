@@ -76,6 +76,20 @@ def test_callback(cb):
     return cb(__name__)
 
 
+class ReentrantList(list):
+    def __init__(self, callback):
+        super().__init__(["first", "second"])
+        self.callback = callback
+
+    def __iter__(self):
+        self.callback()
+        return super().__iter__()
+
+
+def reentrant_list(callback):
+    return ReentrantList(callback)
+
+
 def lazy_square(limit):
     for x in range(1, limit + 1):
         yield x, x ** 2
