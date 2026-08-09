@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pytest
 import phpy
@@ -51,3 +52,14 @@ def test_argument_as_object():
     assert str(phpy.call('gettype', d)) == 'object'
     assert str(phpy.call('get_class', d)) == 'PyDict'
     phpy.setOptions({'argument_as_object': False})
+
+
+def test_set_options_keeps_borrowed_values_alive():
+    class Truthy:
+        pass
+
+    value = Truthy()
+    refs = sys.getrefcount(value)
+    phpy.setOptions({'return_as_object': value})
+    assert sys.getrefcount(value) == refs
+    phpy.setOptions({'return_as_object': False})

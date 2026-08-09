@@ -32,12 +32,12 @@ class PyCore
 
     }
 
-    public static function int(mixed $value): PyObject
+    public static function int(mixed $value = null): PyObject
     {
 
     }
 
-    public static function float(mixed $value): PyObject
+    public static function float(mixed $value = null): PyObject
     {
 
     }

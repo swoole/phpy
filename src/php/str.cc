@@ -59,6 +59,18 @@ ZEND_METHOD(PyStr, __construct) {
         }
         phpy_object_ctor(ZEND_THIS, pStr);
     } else {
-        phpy_object_ctor(ZEND_THIS, PyUnicode_FromStringAndSize(Z_STRVAL_P(zstr), Z_STRLEN_P(zstr)));
+        zend_string *str = zval_get_string(zstr);
+        if (UNEXPECTED(EG(exception))) {
+            return;
+        }
+        PyObject *pStr = PyUnicode_FromStringAndSize(ZSTR_VAL(str), ZSTR_LEN(str));
+        zend_string_release(str);
+        if (UNEXPECTED(pStr == NULL)) {
+            phpy_object_ctor(ZEND_THIS, Py_None);
+            Py_INCREF(Py_None);
+            phpy::php::throw_error_if_occurred();
+            return;
+        }
+        phpy_object_ctor(ZEND_THIS, pStr);
     }
 }

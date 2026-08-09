@@ -171,21 +171,18 @@ static PyObject *phpy_setOptions(PyObject *self, PyObject *args) {
     }
 
     PyObject *opt;
+    // PyDict_GetItemString() returns borrowed references owned by `options`.
     if ((opt = PyDict_GetItemString(options, "numeric_as_object"))) {
         phpy_options.numeric_as_object = Py_IsTrue(opt);
-        Py_DECREF(opt);
     }
     if ((opt = PyDict_GetItemString(options, "return_as_object"))) {
         phpy_options.return_as_object = Py_IsTrue(opt);
-        Py_DECREF(opt);
     }
     if ((opt = PyDict_GetItemString(options, "argument_as_object"))) {
         phpy_options.argument_as_object = Py_IsTrue(opt);
-        Py_DECREF(opt);
     }
     if ((opt = PyDict_GetItemString(options, "display_exception"))) {
         phpy_options.display_exception = Py_IsTrue(opt);
-        Py_DECREF(opt);
     }
     Py_RETURN_NONE;
 }

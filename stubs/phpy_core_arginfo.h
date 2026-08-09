@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 0e7198dc700f1de9b5150dd732c8ee62e736b517 */
+ * Stub hash: e0ae230f28c082510df65c75a1e5c8b5bb4124c1 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_import, 0, 1, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
@@ -10,17 +10,15 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore_eval, 0, 1, IS_MIXE
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, globals, IS_ARRAY, 1, "null")
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_int, 0, 1, PyObject, 0)
-	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0)
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_int, 0, 0, PyObject, 0)
+	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, value, IS_MIXED, 0, "null")
 ZEND_END_ARG_INFO()
 
 #define arginfo_class_PyCore_float arginfo_class_PyCore_int
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_bytes, 0, 0, PyObject, 0)
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, value, IS_MIXED, 0, "null")
-ZEND_END_ARG_INFO()
+#define arginfo_class_PyCore_bytes arginfo_class_PyCore_int
 
-#define arginfo_class_PyCore_object arginfo_class_PyCore_bytes
+#define arginfo_class_PyCore_object arginfo_class_PyCore_int
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_PyCore_fn, 0, 1, PyObject, 0)
 	ZEND_ARG_TYPE_INFO(0, cb, IS_CALLABLE, 0)
@@ -52,7 +50,6 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyCore___callStatic, 0, 2,
 	ZEND_ARG_TYPE_INFO(0, arguments, IS_ARRAY, 0)
 ZEND_END_ARG_INFO()
 
-
 ZEND_METHOD(PyCore, import);
 ZEND_METHOD(PyCore, eval);
 ZEND_METHOD(PyCore, int);
@@ -66,7 +63,6 @@ ZEND_METHOD(PyCore, fileno);
 ZEND_METHOD(PyCore, setOptions);
 ZEND_METHOD(PyCore, raise);
 ZEND_METHOD(PyCore, __callStatic);
-
 
 static const zend_function_entry class_PyCore_methods[] = {
 	ZEND_ME(PyCore, import, arginfo_class_PyCore_import, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

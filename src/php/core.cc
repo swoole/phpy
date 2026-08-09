@@ -120,14 +120,27 @@ ZEND_METHOD(PyCore, next) {
 }
 
 ZEND_METHOD(PyCore, int) {
-    zval *zv;
+    zval *zv = NULL;
 
-    ZEND_PARSE_PARAMETERS_START(1, 1)
+    ZEND_PARSE_PARAMETERS_START(0, 1)
+    Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zv)
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
     LOCK_GIL();
-    phpy::php::new_object_no_addref(return_value, long2long(zv));
+    PyObject *result;
+    if (zv == NULL) {
+        result = PyLong_FromLong(0);
+    } else {
+        PyObject *value = php2py(zv);
+        result = value == NULL ? NULL : PyNumber_Long(value);
+        Py_XDECREF(value);
+    }
+    if (UNEXPECTED(result == NULL)) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    phpy::php::new_object_no_addref(return_value, result);
 }
 
 ZEND_METHOD(PyCore, object) {
@@ -147,14 +160,27 @@ ZEND_METHOD(PyCore, object) {
 }
 
 ZEND_METHOD(PyCore, float) {
-    zval *zv;
+    zval *zv = NULL;
 
-    ZEND_PARSE_PARAMETERS_START(1, 1)
+    ZEND_PARSE_PARAMETERS_START(0, 1)
+    Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zv)
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
     LOCK_GIL();
-    phpy::php::new_object_no_addref(return_value, PyFloat_FromDouble(zval_get_double(zv)));
+    PyObject *result;
+    if (zv == NULL) {
+        result = PyFloat_FromDouble(0.0);
+    } else {
+        PyObject *value = php2py(zv);
+        result = value == NULL ? NULL : PyNumber_Float(value);
+        Py_XDECREF(value);
+    }
+    if (UNEXPECTED(result == NULL)) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    phpy::php::new_object_no_addref(return_value, result);
 }
 
 ZEND_METHOD(PyCore, fn) {

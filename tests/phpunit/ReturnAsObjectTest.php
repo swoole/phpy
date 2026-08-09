@@ -25,4 +25,12 @@ final class ReturnAsObjectTest extends PHPUnit\Framework\TestCase
         $this->assertTrue($builtins->bool(1));
         $this->assertNull($builtins->print());
     }
+
+    public function testNumericConstructorsUsePythonConversionSemantics(): void
+    {
+        $this->assertSame(42, PyCore::scalar(PyCore::int('42')));
+        $this->assertSame(0, PyCore::scalar(PyCore::int()));
+        $this->assertSame(2.5, PyCore::scalar(PyCore::float(new PyStr('2.5'))));
+        $this->assertSame(0.0, PyCore::scalar(PyCore::float()));
+    }
 }

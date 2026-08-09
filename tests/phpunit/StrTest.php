@@ -16,6 +16,12 @@ class StrTest extends TestCase
         $this->assertTrue($s2->endswith('java'));
     }
 
+    public function testConstructFromNonStringScalar(): void
+    {
+        $this->assertSame('123', (string) new PyStr(123));
+        $this->assertSame('1', (string) new PyStr(true));
+    }
+
     public function testBytes()
     {
         $os = PyCore::import('os');
