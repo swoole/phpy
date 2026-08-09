@@ -392,6 +392,7 @@ ZEND_METHOD(PyObject, count) {
 ZEND_METHOD(PyObject, offsetGet) {
     LOCK_GIL();
     auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    CHECK_ARG(pk);
     auto object = phpy_object_get_handle(ZEND_THIS);
     /**
      * PyObject_GetItem()
@@ -418,15 +419,27 @@ ZEND_METHOD(PyObject, offsetSet) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    PyObject *pv = php2py(zv);
     PyObject *pk = php2py(zk);
+    if (pk == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    ON_SCOPE_EXIT {
+        Py_DECREF(pk);
+    };
+    PyObject *pv = php2py(zv);
+    if (pv == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    ON_SCOPE_EXIT {
+        Py_DECREF(pv);
+    };
     /**
      * PyObject_SetItem()
      * Increase reference count of the value
      */
     auto value = PyObject_SetItem(object, pk, pv);
-    Py_DECREF(pv);
-    Py_DECREF(pk);
     if (value < 0) {
         phpy::php::throw_error_if_occurred();
     }

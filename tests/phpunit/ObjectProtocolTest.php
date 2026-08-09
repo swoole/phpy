@@ -91,4 +91,58 @@ final class ObjectProtocolTest extends TestCase
         foreach ($iterator as $value) {
         }
     }
+
+    public function testFailedItemConversionDoesNotCorruptContainers(): void
+    {
+        $invalidUtf8 = "\xff";
+        $list = new PyList([1]);
+        $dict = new PyDict(['key' => 1]);
+        $object = PyCore::import('app.user')->Kv('first', 'second');
+
+        $this->assertConversionFails(static fn() => $list[0] = $invalidUtf8);
+        $this->assertConversionFails(static fn() => $dict[$invalidUtf8] = 2);
+        $this->assertConversionFails(static fn() => $object[$invalidUtf8] = 2);
+
+        $this->assertSame([1], PyCore::scalar($list));
+        $this->assertSame(['key' => 1], PyCore::scalar($dict));
+        $object['valid'] = 3;
+        $this->assertSame(3, PyCore::scalar($object['valid']));
+    }
+
+    public function testFailedConstructorConversionRaisesPyError(): void
+    {
+        $invalidUtf8 = "\xff";
+
+        $this->assertConversionFails(static fn() => new PyList([$invalidUtf8]));
+        $this->assertConversionFails(static fn() => new PyDict(['value' => $invalidUtf8]));
+        $this->assertConversionFails(static fn() => new PyTuple([$invalidUtf8]));
+        $this->assertConversionFails(static fn() => new PySet([$invalidUtf8]));
+    }
+
+    public function testContainsConversionAndPythonErrorsPropagate(): void
+    {
+        $invalidUtf8 = "\xff";
+        $list = new PyList([1]);
+        $set = new PySet([1]);
+
+        $this->assertConversionFails(static fn() => $list->contains($invalidUtf8));
+        $this->assertConversionFails(static fn() => $set->contains($invalidUtf8));
+
+        try {
+            $set->contains([]);
+            $this->fail('An unhashable set member must raise PyError');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('unhashable type', $error->getMessage());
+        }
+    }
+
+    private function assertConversionFails(callable $operation): void
+    {
+        try {
+            $operation();
+            $this->fail('Invalid UTF-8 must fail conversion');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('decode', $error->getMessage());
+        }
+    }
 }

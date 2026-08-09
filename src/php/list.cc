@@ -81,6 +81,10 @@ ZEND_METHOD(PyList, __construct) {
         zend_throw_error(NULL, "PyList: unsupported type");
         return;
     }
+    if (plist == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
     phpy_object_ctor(ZEND_THIS, plist);
 }
 
@@ -113,6 +117,13 @@ ZEND_METHOD(PyList, offsetSet) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
     PyObject *pv = php2py(zv);
+    if (pv == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    ON_SCOPE_EXIT {
+        Py_DECREF(pv);
+    };
     int result;
     if (zk == NULL || ZVAL_IS_NULL(zk)) {
         result = PyList_Append(object, pv);
@@ -120,7 +131,6 @@ ZEND_METHOD(PyList, offsetSet) {
         const auto requested = static_cast<ssize_t>(zval_get_long(zk));
         ssize_t index;
         if (!normalize_index(object, requested, &index)) {
-            Py_DECREF(pv);
             zend_throw_error(NULL, "PyList: index[%ld] out of range", requested);
             return;
         }
@@ -129,7 +139,6 @@ ZEND_METHOD(PyList, offsetSet) {
         // Not increase reference count of the value
         result = PyList_SetItem(object, index, pv);
     }
-    Py_DECREF(pv);
     if (result < 0) {
         phpy::php::throw_error_if_occurred();
     }

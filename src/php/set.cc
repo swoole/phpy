@@ -59,6 +59,10 @@ ZEND_METHOD(PySet, __construct) {
         zend_throw_error(NULL, "PySet: unsupported type");
         return;
     }
+    if (pset == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
     phpy_object_ctor(ZEND_THIS, pset);
 }
 
@@ -72,5 +76,14 @@ ZEND_METHOD(PySet, contains) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
     auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    RETURN_BOOL(PySet_Contains(object, pk));
+    CHECK_ARG(pk);
+    ON_SCOPE_EXIT {
+        Py_DECREF(pk);
+    };
+    const int result = PySet_Contains(object, pk);
+    if (result < 0) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    RETURN_BOOL(result);
 }

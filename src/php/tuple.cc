@@ -82,6 +82,10 @@ ZEND_METHOD(PyTuple, __construct) {
         zend_throw_error(NULL, "PyTuple: unsupported type");
         return;
     }
+    if (ptuple == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
     phpy_object_ctor(ZEND_THIS, ptuple);
 }
 

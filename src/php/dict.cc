@@ -63,12 +63,17 @@ ZEND_METHOD(PyDict, __construct) {
         zend_throw_error(NULL, "PyDict: unsupported type");
         return;
     }
+    if (pdict == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
     phpy_object_ctor(ZEND_THIS, pdict);
 }
 
 ZEND_METHOD(PyDict, offsetGet) {
     LOCK_GIL();
     auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    CHECK_ARG(pk);
     auto object = phpy_object_get_handle(ZEND_THIS);
     ON_SCOPE_EXIT {
         Py_DECREF(pk);
@@ -92,11 +97,23 @@ ZEND_METHOD(PyDict, offsetSet) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    PyObject *pv = php2py(zv);
     PyObject *pk = php2py(zk);
+    if (pk == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    ON_SCOPE_EXIT {
+        Py_DECREF(pk);
+    };
+    PyObject *pv = php2py(zv);
+    if (pv == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    ON_SCOPE_EXIT {
+        Py_DECREF(pv);
+    };
     auto value = PyDict_SetItem(object, pk, pv);
-    Py_DECREF(pv);
-    Py_DECREF(pk);
     if (value < 0) {
         phpy::php::throw_error_if_occurred();
     }

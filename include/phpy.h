@@ -241,11 +241,6 @@ uint32_t phpy_object_iterator_index(zval *object);
     zval_ptr_dtor(retval);                                                                                             \
     return pyobj;
 
-#define CHECK_ARG(pObj)                                                                                                \
-    if (pObj == NULL) {                                                                                                \
-        RETURN_FALSE;                                                                                                  \
-    }
-
 #define STR_AND_LEN(str) str, sizeof(str) - 1
 
 #define Py_TypeName(pv) Py_TYPE(pv)->tp_name
@@ -295,6 +290,12 @@ static inline void throw_error_if_occurred() {
         phpy::php::throw_error(error);
     }
 }
+
+#define CHECK_ARG(pObj)                                                                                                \
+    if (pObj == NULL) {                                                                                                \
+        phpy::php::throw_error_if_occurred();                                                                          \
+        return;                                                                                                        \
+    }
 
 static inline bool is_typeof(zval *zv, int type) {
     return Z_TYPE_P(zv) == type;

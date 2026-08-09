@@ -48,7 +48,16 @@ ZEND_METHOD(PySequence, contains) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
     auto pv = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    RETURN_BOOL(PySequence_Contains(object, pv));
+    CHECK_ARG(pv);
+    ON_SCOPE_EXIT {
+        Py_DECREF(pv);
+    };
+    const int result = PySequence_Contains(object, pv);
+    if (result < 0) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    RETURN_BOOL(result);
 }
 
 ZEND_METHOD(PySequence, slice) {
