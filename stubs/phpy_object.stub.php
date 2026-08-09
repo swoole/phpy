@@ -25,6 +25,10 @@ class PyObject implements \ArrayAccess, \Iterator, \Countable
     {
     }
 
+    public function __unset(string $name): void
+    {
+    }
+
     public function __toString(): string
     {
 

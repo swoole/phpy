@@ -18,6 +18,10 @@ class ZendTest extends TestCase
 
     public function testCallMethodInPython()
     {
+        if (!class_exists('redis')) {
+            $this->markTestSkipped('The redis extension is not installed');
+        }
+
         $m = PyCore::import('app.user');
 
         $redis = new redis();

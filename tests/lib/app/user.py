@@ -117,3 +117,31 @@ def test_raise(fn):
         return [1, 2, 3, 4]
     except Exception as e:
         return str(e)
+
+
+class ProtocolObject:
+    def __init__(self):
+        self.name = "initial"
+        self.values = [10, 20, 30]
+
+    def greet(self, prefix, suffix="!"):
+        return f"{prefix} {self.name}{suffix}"
+
+    def __call__(self, left, right=0):
+        return left + right
+
+
+def protocol_object():
+    return ProtocolObject()
+
+
+class BrokenIterator:
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        raise RuntimeError("iterator failed")
+
+
+def broken_iterator():
+    return BrokenIterator()

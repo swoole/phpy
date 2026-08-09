@@ -52,6 +52,18 @@ static ssize_t get_key(INTERNAL_FUNCTION_PARAMETERS) {
     return (ssize_t) k;
 }
 
+static bool normalize_index(PyObject *list, ssize_t index, ssize_t *normalized) {
+    const auto size = PyList_GET_SIZE(list);
+    if (index < 0) {
+        index += size;
+    }
+    if (index < 0 || index >= size) {
+        return false;
+    }
+    *normalized = index;
+    return true;
+}
+
 ZEND_METHOD(PyList, __construct) {
     zval *zlist = NULL;
     ZEND_PARSE_PARAMETERS_START(0, 1)
@@ -76,13 +88,14 @@ ZEND_METHOD(PyList, offsetGet) {
     auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    if (PyList_Size(object) <= pk) {
+    ssize_t index;
+    if (!normalize_index(object, pk, &index)) {
         zend_throw_error(NULL, "PyList: index[%ld] out of range", pk);
         return;
     }
     // PyList_GetItem()
     // Return value: Borrowed reference
-    auto value = PyList_GetItem(object, pk);
+    auto value = PyList_GetItem(object, index);
     if (value != NULL) {
         py2php(value, return_value);
     }
@@ -104,10 +117,17 @@ ZEND_METHOD(PyList, offsetSet) {
     if (zk == NULL || ZVAL_IS_NULL(zk)) {
         result = PyList_Append(object, pv);
     } else {
+        const auto requested = static_cast<ssize_t>(zval_get_long(zk));
+        ssize_t index;
+        if (!normalize_index(object, requested, &index)) {
+            Py_DECREF(pv);
+            zend_throw_error(NULL, "PyList: index[%ld] out of range", requested);
+            return;
+        }
         Py_INCREF(pv);
         // PyList_SetItem()
         // Not increase reference count of the value
-        result = PyList_SetItem(object, zval_get_long(zk), pv);
+        result = PyList_SetItem(object, index, pv);
     }
     Py_DECREF(pv);
     if (result < 0) {
@@ -116,12 +136,25 @@ ZEND_METHOD(PyList, offsetSet) {
 }
 
 ZEND_METHOD(PyList, offsetUnset) {
-    zend_throw_error(NULL, "PyList: does not support offsetUnset");
+    auto requested = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    auto object = phpy_object_get_handle(ZEND_THIS);
+    LOCK_GIL();
+    ssize_t index;
+    if (!normalize_index(object, requested, &index)) {
+        return;
+    }
+    if (PySequence_DelItem(object, index) < 0) {
+        phpy::php::throw_error_if_occurred();
+    }
 }
 
 ZEND_METHOD(PyList, offsetExists) {
     auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    RETVAL_BOOL(PyList_Size(object) > pk);
+    ssize_t index;
+    if (!normalize_index(object, pk, &index)) {
+        RETURN_FALSE;
+    }
+    RETVAL_BOOL(!Py_IsNone(PyList_GET_ITEM(object, index)));
 }

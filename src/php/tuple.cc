@@ -52,6 +52,18 @@ static ssize_t get_key(INTERNAL_FUNCTION_PARAMETERS) {
     return (ssize_t) k;
 }
 
+static bool normalize_index(PyObject *tuple, ssize_t index, ssize_t *normalized) {
+    const auto size = PyTuple_GET_SIZE(tuple);
+    if (index < 0) {
+        index += size;
+    }
+    if (index < 0 || index >= size) {
+        return false;
+    }
+    *normalized = index;
+    return true;
+}
+
 ZEND_METHOD(PyTuple, __construct) {
     zval *ztuple;
     ZEND_PARSE_PARAMETERS_START(1, 1)
@@ -77,13 +89,14 @@ ZEND_METHOD(PyTuple, offsetGet) {
     auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    if (PyTuple_Size(object) <= pk) {
+    ssize_t index;
+    if (!normalize_index(object, pk, &index)) {
         zend_throw_error(NULL, "PyTuple: index[%ld] out of range", pk);
         return;
     }
     // PyTuple_GetItem()
     // Return value: Borrowed reference
-    auto value = PyTuple_GetItem(object, pk);
+    auto value = PyTuple_GetItem(object, index);
     if (value != NULL) {
         py2php(value, return_value);
     }
@@ -101,5 +114,9 @@ ZEND_METHOD(PyTuple, offsetExists) {
     auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    RETVAL_BOOL(pk >= 0 && PyTuple_Size(object) > pk);
+    ssize_t index;
+    if (!normalize_index(object, pk, &index)) {
+        RETURN_FALSE;
+    }
+    RETVAL_BOOL(!Py_IsNone(PyTuple_GET_ITEM(object, index)));
 }

@@ -60,7 +60,12 @@ class ObjectTest extends TestCase
     {
         $user = PyCore::import('app.user');
         $kv = $user->KvReadonly('ikey', 'skey');
-        $this->assertEquals(-1, count($kv));
+        try {
+            count($kv);
+            $this->fail('A Python object without __len__ must not return -1');
+        } catch (PyError $error) {
+            $this->assertStringContainsString("has no len()", $error->getMessage());
+        }
 
         $kvc = $user->KvCount('ikey', 'skey');
         $this->assertEquals(2, count($kvc));

@@ -67,7 +67,7 @@ ZEND_METHOD(PyDict, __construct) {
 }
 
 ZEND_METHOD(PyDict, offsetGet) {
-	LOCK_GIL();
+    LOCK_GIL();
     auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     ON_SCOPE_EXIT {
@@ -103,19 +103,33 @@ ZEND_METHOD(PyDict, offsetSet) {
 }
 
 ZEND_METHOD(PyDict, offsetUnset) {
-	LOCK_GIL();
+    LOCK_GIL();
     auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    CHECK_ARG(pk);
     auto object = phpy_object_get_handle(ZEND_THIS);
-    PyDict_DelItem(object, pk);
+    auto result = PyDict_DelItem(object, pk);
     Py_DECREF(pk);
+    if (result < 0) {
+        if (PyErr_ExceptionMatches(PyExc_KeyError)) {
+            PyErr_Clear();
+            return;
+        }
+        phpy::php::throw_error_if_occurred();
+    }
 }
 
 ZEND_METHOD(PyDict, offsetExists) {
-	LOCK_GIL();
+    LOCK_GIL();
     auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    CHECK_ARG(pk);
     auto object = phpy_object_get_handle(ZEND_THIS);
-    RETVAL_BOOL(PyDict_Contains(object, pk));
+    auto value = PyDict_GetItemWithError(object, pk);
     Py_DECREF(pk);
+    if (value == NULL && PyErr_Occurred()) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    RETVAL_BOOL(value != NULL && !Py_IsNone(value));
 }
 
 ZEND_METHOD(PyDict, key) {

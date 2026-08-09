@@ -25,7 +25,8 @@ class TupleTest extends TestCase
 
         $this->assertTrue(isset($tuple[1]));
         $this->assertFalse(isset($tuple[5]));
-        $this->assertFalse(isset($tuple[-1]));
+        $this->assertTrue(isset($tuple[-1]));
+        $this->assertEquals(12345, $tuple[-1]);
     }
 
     public function testList()
