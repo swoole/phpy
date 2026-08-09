@@ -45,6 +45,7 @@ using phpy::CallObject;
 using phpy::php::arg_1;
 using phpy::php::arg_2;
 using phpy::python::LockGuard;
+using phpy::python::OwnedPythonReference;
 
 phpy::Options phpy_options;
 
@@ -363,8 +364,12 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
 namespace phpy {
 namespace python {
 bool contains(PyObject *obj, PyObject *key) {
-    auto rs = PyObject_CallFunction(py_contains_operator, "OO", obj, key);
-    return Py_IsTrue(rs);
+    OwnedPythonReference result(PyObject_CallFunction(py_contains_operator, "OO", obj, key));
+    if (!result) {
+        phpy::php::throw_error_if_occurred();
+        return false;
+    }
+    return Py_IsTrue(result.get());
 }
 }  // namespace python
 namespace php {

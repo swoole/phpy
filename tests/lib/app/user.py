@@ -167,6 +167,26 @@ def protocol_object():
     return ProtocolObject()
 
 
+class OperatorProtocol:
+    def __init__(self, truthy=False):
+        self.truthy = truthy
+
+    def __bool__(self):
+        return self.truthy
+
+    def __neg__(self):
+        return "neg"
+
+    def __pos__(self):
+        return "pos"
+
+    def __rsub__(self, left):
+        return f"rsub:{left}"
+
+    def __add__(self, other):
+        return None
+
+
 class BrokenIterator:
     def __iter__(self):
         return self
@@ -177,6 +197,15 @@ class BrokenIterator:
 
 def broken_iterator():
     return BrokenIterator()
+
+
+class BrokenLengthList(list):
+    def __len__(self):
+        raise RuntimeError("length failed")
+
+
+def broken_length_list():
+    return BrokenLengthList([1, 2, 3])
 
 
 def raise_runtime_error():

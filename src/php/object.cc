@@ -140,6 +140,29 @@ static void phpy_object_free_object(zend_object *object) {
     zend_object_std_dtor(&object_object->std);
 }
 
+static zend_result phpy_object_cast_object(zend_object *object, zval *result, int type) {
+    if (type != _IS_BOOL) {
+        return zend_std_cast_object_tostring(object, result, type);
+    }
+
+    PyObject *value = phpy_object_get_handle(object);
+    if (UNEXPECTED(value == nullptr)) {
+        zend_throw_error(nullptr, "PyObject is not initialized");
+        ZVAL_FALSE(result);
+        return FAILURE;
+    }
+
+    LOCK_GIL();
+    const int truth = PyObject_IsTrue(value);
+    if (UNEXPECTED(truth < 0)) {
+        phpy::php::throw_error_if_occurred();
+        ZVAL_FALSE(result);
+        return FAILURE;
+    }
+    ZVAL_BOOL(result, truth);
+    return SUCCESS;
+}
+
 namespace phpy {
 namespace php {
 void new_object(zval *zv, PyObject *object) {
@@ -210,6 +233,7 @@ int php_class_object_init(INIT_FUNC_ARGS) {
     memcpy(&object_handlers, &std_object_handlers, sizeof(zend_object_handlers));
     object_handlers.offset = XtOffsetOf(Object, std);
     object_handlers.free_obj = phpy_object_free_object;
+    object_handlers.cast_object = phpy_object_cast_object;
 
     return SUCCESS;
 }

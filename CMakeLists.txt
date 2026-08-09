@@ -79,5 +79,8 @@ if (CODE_COVERAGE)
     target_link_libraries(phpy coverage_config gcov)
 endif(CODE_COVERAGE)
 
-set_target_properties(phpy PROPERTIES OUTPUT_NAME "lib/phpy")
+set_target_properties(phpy PROPERTIES
+    OUTPUT_NAME "phpy"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib"
+)
 target_link_libraries(phpy ${phpy_libraries})

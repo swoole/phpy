@@ -417,6 +417,44 @@ class StrObject {
     }
 };
 namespace python {
+/** Owns one new CPython reference and releases it on every exit path. */
+class OwnedPythonReference {
+  public:
+    explicit OwnedPythonReference(PyObject *value = nullptr) : value_(value) {}
+    OwnedPythonReference(const OwnedPythonReference &) = delete;
+    OwnedPythonReference &operator=(const OwnedPythonReference &) = delete;
+    OwnedPythonReference(OwnedPythonReference &&other) noexcept : value_(other.release()) {}
+
+    OwnedPythonReference &operator=(OwnedPythonReference &&other) noexcept {
+        if (this != &other) {
+            Py_XDECREF(value_);
+            value_ = other.release();
+        }
+        return *this;
+    }
+
+    ~OwnedPythonReference() {
+        Py_XDECREF(value_);
+    }
+
+    PyObject *get() const {
+        return value_;
+    }
+
+    explicit operator bool() const {
+        return value_ != nullptr;
+    }
+
+    PyObject *release() {
+        PyObject *value = value_;
+        value_ = nullptr;
+        return value;
+    }
+
+  private:
+    PyObject *value_;
+};
+
 PyObject *new_array(zval *zv);
 PyObject *new_array(PyObject *pv);
 PyObject *new_string(zval *zv);

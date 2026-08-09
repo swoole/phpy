@@ -27,6 +27,7 @@ END_EXTERN_C()
 
 using phpy::CallObject;
 using phpy::StrObject;
+using phpy::python::OwnedPythonReference;
 
 const int var_dump_level = 3;
 
@@ -93,44 +94,6 @@ class ConversionRecursionGuard {
   private:
     std::vector<T *> &active_;
     bool entered_;
-};
-
-/** Owns one new CPython reference and releases it on every exit path. */
-class OwnedPythonReference {
-  public:
-    explicit OwnedPythonReference(PyObject *value = nullptr) : value_(value) {}
-    OwnedPythonReference(const OwnedPythonReference &) = delete;
-    OwnedPythonReference &operator=(const OwnedPythonReference &) = delete;
-    OwnedPythonReference(OwnedPythonReference &&other) noexcept : value_(other.release()) {}
-
-    OwnedPythonReference &operator=(OwnedPythonReference &&other) noexcept {
-        if (this != &other) {
-            Py_XDECREF(value_);
-            value_ = other.release();
-        }
-        return *this;
-    }
-
-    ~OwnedPythonReference() {
-        Py_XDECREF(value_);
-    }
-
-    PyObject *get() const {
-        return value_;
-    }
-
-    explicit operator bool() const {
-        return value_ != nullptr;
-    }
-
-    PyObject *release() {
-        PyObject *value = value_;
-        value_ = nullptr;
-        return value;
-    }
-
-  private:
-    PyObject *value_;
 };
 
 enum class PythonToPhpPolicy {

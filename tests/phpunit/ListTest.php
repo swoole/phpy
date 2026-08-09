@@ -5,6 +5,15 @@ use PHPUnit\Framework\TestCase;
 
 class ListTest extends TestCase
 {
+    public function testCountPropagatesPythonLengthError(): void
+    {
+        $list = PyCore::import('app.user')->broken_length_list();
+
+        $this->expectException(\PyError::class);
+        $this->expectExceptionMessage('length failed');
+        $list->count();
+    }
+
     public function testSliceReleasesTheReturnedPythonReference(): void
     {
         PyCore::setOptions(['return_as_object' => false]);
