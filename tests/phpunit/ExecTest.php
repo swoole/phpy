@@ -65,4 +65,10 @@ PYCODE;
             $this->assertTrue(true);
         }
     }
+
+    public function testEvalRejectsInvalidGlobalsWithoutCrashing(): void
+    {
+        $this->expectException(PyError::class);
+        PyCore::eval('value = 1', ['invalid' => "\xff"]);
+    }
 }

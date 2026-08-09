@@ -100,6 +100,35 @@ class CoreTest extends TestCase
         $this->assertEquals(PyCore::scalar(PyCore::range(3)), range(0, 2));
     }
 
+    public function testDynamicBuiltinNamesShareOneFunctionCacheEntry(): void
+    {
+        $builtins = PyCore::import('builtins');
+        $sys = PyCore::import('sys');
+        $len = $builtins->len;
+
+        // Keep every dynamically allocated method name alive so pointer-based
+        // cache keys cannot accidentally reuse the same allocation address.
+        $names = [];
+        $before = $sys->getrefcount($len);
+        for ($i = 0; $i < 20; $i++) {
+            $names[] = substr("len:$i", 0, 3);
+            $name = $names[$i];
+            $this->assertSame(3, PyCore::{$name}([1, 2, 3]));
+        }
+
+        $this->assertLessThanOrEqual($before + 1, $sys->getrefcount($len));
+    }
+
+    public function testCallingNonCallableBuiltinRaisesPyError(): void
+    {
+        try {
+            PyCore::__debug__();
+            $this->fail('Calling a non-callable builtin must fail');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('not callable', $error->getMessage());
+        }
+    }
+
     public function testObject()
     {
         $o = PyCore::object("hello world");

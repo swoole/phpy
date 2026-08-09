@@ -139,6 +139,7 @@ final class ObjectProtocolTest extends TestCase
         $sentinel = $module->next_sentinel;
         $iterator = $module->repeated_sentinel(20);
         $before = PyCore::scalar($sys->getrefcount($sentinel));
+        $iteratorBefore = PyCore::scalar($sys->getrefcount($iterator));
 
         for ($i = 0; $i < 20; $i++) {
             $value = PyCore::next($iterator);
@@ -146,6 +147,7 @@ final class ObjectProtocolTest extends TestCase
         }
 
         $this->assertSame($before, PyCore::scalar($sys->getrefcount($sentinel)));
+        $this->assertSame($iteratorBefore, PyCore::scalar($sys->getrefcount($iterator)));
         $this->assertNull(PyCore::next($iterator));
     }
 

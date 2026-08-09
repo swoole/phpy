@@ -16,4 +16,9 @@ class BytesTest extends TestCase
         $rs = $b64->b64encode($bytes);
         $this->assertTrue($rs->__eq__(PyCore::bytes(base64_encode($data))));
     }
+
+    public function testBytesConvertsNonStringScalarSafely(): void
+    {
+        $this->assertSame('12345', (string) PyCore::bytes(12345));
+    }
 }

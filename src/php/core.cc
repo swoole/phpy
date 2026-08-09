@@ -35,8 +35,8 @@ static zend_class_entry *PyCore_ce;
 static PyObject *module_builtins = nullptr;
 static PyObject *module_phpy = nullptr;
 static PyObject *module_operator = nullptr;
-static std::unordered_map<const char *, PyObject *> builtin_functions;
-static std::unordered_map<const char *, PyObject *> operator_functions;
+static std::unordered_map<std::string, PyObject *> builtin_functions;
+static std::unordered_map<std::string, PyObject *> operator_functions;
 static std::unordered_map<PyObject *, PyObjectDtor> zend_objects;
 static PyObject *py_contains_operator;
 static long eval_code_id = 0;
@@ -85,16 +85,24 @@ ZEND_METHOD(PyCore, eval) {
         phpy::php::throw_error_if_occurred();
         RETURN_FALSE;
     }
+    ON_SCOPE_EXIT {
+        Py_DECREF(module);
+    };
 
     // Borrowed reference
     PyObject *globals = PyModule_GetDict(module);
 
     if (!phpy::php::is_null(zglobal_params)) {
         auto pglobal_params = array2dict(zglobal_params);
+        if (pglobal_params == NULL) {
+            phpy::php::throw_error_if_occurred();
+            RETURN_FALSE;
+        }
+        ON_SCOPE_EXIT {
+            Py_DECREF(pglobal_params);
+        };
         auto status = PyDict_Merge(globals, pglobal_params, 0);
-        Py_DECREF(pglobal_params);
         if (status != 0) {
-            Py_DECREF(module);
             phpy::php::throw_error_if_occurred();
             RETURN_FALSE;
         }
@@ -108,13 +116,15 @@ ZEND_METHOD(PyCore, eval) {
         phpy::php::new_module(return_value, module);
         Py_DECREF(result);
     }
-    Py_DECREF(module);
 }
 
 ZEND_METHOD(PyCore, next) {
 	LOCK_GIL();
     auto iter = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_iter_get_ce());
     CHECK_ARG(iter);
+    ON_SCOPE_EXIT {
+        Py_DECREF(iter);
+    };
     auto next = PyIter_Next(iter);
     if (next == NULL) {
         phpy::php::throw_error_if_occurred();
@@ -367,15 +377,22 @@ bool del_object(PyObject *pv) {
 }
 
 void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *return_value) {
-    auto fn_iter = builtin_functions.find(name);
+    std::string cache_key(name, l_name);
+    auto fn_iter = builtin_functions.find(cache_key);
     PyObject *fn;
     if (fn_iter == builtin_functions.end()) {
         fn = PyObject_GetAttrString(module_builtins, name);
-        if (!fn || !PyCallable_Check(fn)) {
+        if (fn == NULL) {
             phpy::php::throw_error_if_occurred();
             return;
         }
-        builtin_functions[name] = fn;
+        if (!PyCallable_Check(fn)) {
+            PyErr_Format(PyExc_TypeError, "'%.200s' object is not callable", Py_TypeName(fn));
+            Py_DECREF(fn);
+            phpy::php::throw_error_if_occurred();
+            return;
+        }
+        builtin_functions.emplace(std::move(cache_key), fn);
     } else {
         fn = fn_iter->second;
     }
@@ -385,15 +402,22 @@ void call_builtin_fn(const char *name, size_t l_name, zval *arguments, zval *ret
 }
 
 void call_operator_fn(const char *name, size_t l_name, zval *arguments, zval *return_value) {
-    auto fn_iter = operator_functions.find(name);
+    std::string cache_key(name, l_name);
+    auto fn_iter = operator_functions.find(cache_key);
     PyObject *fn;
     if (fn_iter == operator_functions.end()) {
         fn = PyObject_GetAttrString(module_operator, name);
-        if (!fn || !PyCallable_Check(fn)) {
+        if (fn == NULL) {
             phpy::php::throw_error_if_occurred();
             return;
         }
-        operator_functions[name] = fn;
+        if (!PyCallable_Check(fn)) {
+            PyErr_Format(PyExc_TypeError, "'%.200s' object is not callable", Py_TypeName(fn));
+            Py_DECREF(fn);
+            phpy::php::throw_error_if_occurred();
+            return;
+        }
+        operator_functions.emplace(std::move(cache_key), fn);
     } else {
         fn = fn_iter->second;
     }
@@ -457,8 +481,16 @@ ZEND_METHOD(PyCore, bytes) {
         pv = PyBytes_FromObject(pyobj);
     } else {
         auto s = zval_get_string(zv);
-        pv = PyBytes_FromStringAndSize(Z_STRVAL_P(zv), Z_STRLEN_P(zv));
+        if (UNEXPECTED(EG(exception) != NULL)) {
+            zend_string_release(s);
+            return;
+        }
+        pv = PyBytes_FromStringAndSize(ZSTR_VAL(s), ZSTR_LEN(s));
         zend_string_release(s);
+    }
+    if (UNEXPECTED(pv == NULL)) {
+        phpy::php::throw_error_if_occurred();
+        return;
     }
     phpy::php::new_object_no_addref(return_value, pv);
 }
