@@ -191,6 +191,9 @@ ZEND_METHOD(PyCore, setOptions) {
     if ((opt = phpy::php::array_get(options, ZEND_STRL("numeric_as_object")))) {
         phpy_options.numeric_as_object = zend_is_true(opt);
     }
+    if ((opt = phpy::php::array_get(options, ZEND_STRL("return_as_object")))) {
+        phpy_options.return_as_object = zend_is_true(opt);
+    }
     if ((opt = phpy::php::array_get(options, ZEND_STRL("argument_as_object")))) {
         phpy_options.argument_as_object = zend_is_true(opt);
     }

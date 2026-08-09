@@ -456,6 +456,7 @@ class LockGuard {
 }  // namespace python
 struct Options {
     bool numeric_as_object;
+    bool return_as_object;
     bool argument_as_object;
     bool display_exception;
 };

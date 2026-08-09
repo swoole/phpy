@@ -73,7 +73,7 @@ static void dict2array(PyObject *pv, zval *zv);
  * Reference: https://github.com/pygame/pygame/blob/main/src_c/key.c
  */
 static void py2php_object_impl(PyObject *pv, zval *zv) {
-    if (py2php_base_type(pv, zv)) {
+    if (!phpy_options.return_as_object && py2php_base_type(pv, zv)) {
         return;
     }
     if (PyUnicode_CheckExact(pv)) {

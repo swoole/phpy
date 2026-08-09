@@ -175,6 +175,10 @@ static PyObject *phpy_setOptions(PyObject *self, PyObject *args) {
         phpy_options.numeric_as_object = Py_IsTrue(opt);
         Py_DECREF(opt);
     }
+    if ((opt = PyDict_GetItemString(options, "return_as_object"))) {
+        phpy_options.return_as_object = Py_IsTrue(opt);
+        Py_DECREF(opt);
+    }
     if ((opt = PyDict_GetItemString(options, "argument_as_object"))) {
         phpy_options.argument_as_object = Py_IsTrue(opt);
         Py_DECREF(opt);
