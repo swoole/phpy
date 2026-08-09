@@ -140,7 +140,13 @@ static void phpy_object_free_object(zend_object *object) {
     zend_object_std_dtor(&object_object->std);
 }
 
-static zend_result phpy_object_cast_object(zend_object *object, zval *result, int type) {
+// zend_object_cast_t returned int in older supported PHP releases and
+// zend_result in newer ones. Derive the exact ABI type from Zend instead of
+// forcing either signature or casting an incompatible function pointer.
+using ObjectCastResult = decltype(zend_std_cast_object_tostring(
+    static_cast<zend_object *>(nullptr), static_cast<zval *>(nullptr), 0));
+
+static ObjectCastResult phpy_object_cast_object(zend_object *object, zval *result, int type) {
     if (type != _IS_BOOL) {
         return zend_std_cast_object_tostring(object, result, type);
     }

@@ -340,12 +340,6 @@ PHP_MINIT_FUNCTION(phpy) {
 }
 
 PHP_MSHUTDOWN_FUNCTION(phpy) {
-    if (module_phpy) {
-        Py_DECREF(module_phpy);
-    }
-    if (module_builtins) {
-        Py_DECREF(module_builtins);
-    }
     for (auto kv : builtin_functions) {
         Py_DECREF(kv.second);
     }
@@ -355,7 +349,13 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
         Py_DECREF(kv.second);
     }
     operator_functions.clear();
-    Py_DECREF(py_contains_operator);
+
+    // Release cached attributes before their owning modules. Py_CLEAR also
+    // makes shutdown robust when initialization stopped partway through.
+    Py_CLEAR(py_contains_operator);
+    Py_CLEAR(module_operator);
+    Py_CLEAR(module_builtins);
+    Py_CLEAR(module_phpy);
 
     Py_Finalize();
     return SUCCESS;
