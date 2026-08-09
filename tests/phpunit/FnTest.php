@@ -26,6 +26,46 @@ class FnTest extends TestCase
         $this->assertEquals($rs, $uuid);
     }
 
+    public function testPythonKeywordArgumentsReachPhpCallable(): void
+    {
+        $module = PyCore::import('app.user');
+        $result = $module->test_callback_kwargs(
+            static fn (string $left, int $right): string => "$left:$right"
+        );
+
+        $this->assertSame('left:7', $result);
+    }
+
+    public function testPythonKeywordArgumentsReachInvokablePhpObject(): void
+    {
+        $module = PyCore::import('app.user');
+        $callback = new class {
+            public function __invoke(string $left, int $right): string
+            {
+                return "$left:$right";
+            }
+        };
+
+        $this->assertSame('left:7', $module->test_callback_kwargs($callback));
+    }
+
+    public function testCallbackArgumentConversionFailureDoesNotInvokePhp(): void
+    {
+        $module = PyCore::import('app.user');
+        $called = false;
+
+        try {
+            $module->test_callback_recursive_arg(function () use (&$called): void {
+                $called = true;
+            });
+            $this->fail('Recursive Python callback arguments must fail conversion');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('recursive Python container', (string) $error->getPrevious());
+        }
+
+        $this->assertFalse($called);
+    }
+
     public function testObjectInvoke()
     {
         $m = PyCore::import('app.user');

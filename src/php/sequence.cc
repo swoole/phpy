@@ -70,5 +70,15 @@ ZEND_METHOD(PySequence, slice) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    py2php(PySequence_GetSlice(object, v1, v2), return_value);
+    // PySequence_GetSlice() returns a new reference. The Zend wrapper keeps
+    // its own reference, so release the original ownership after wrapping.
+    PyObject *slice = PySequence_GetSlice(object, v1, v2);
+    if (slice == NULL) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    ON_SCOPE_EXIT {
+        Py_DECREF(slice);
+    };
+    py2php(slice, return_value);
 }

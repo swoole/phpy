@@ -71,4 +71,16 @@ PYCODE;
         $this->expectException(PyError::class);
         PyCore::eval('value = 1', ['invalid' => "\xff"]);
     }
+
+    public function testScalarRejectsUnencodablePythonUnicodeWithoutCrashing(): void
+    {
+        $this->expectException(PyError::class);
+        PyCore::eval("import phpy\nvalue = phpy.scalar('\\ud800')");
+    }
+
+    public function testObjectRejectsUnencodablePythonClassNameWithoutCrashing(): void
+    {
+        $this->expectException(PyError::class);
+        PyCore::eval("import phpy\nvalue = phpy.Object('\\ud800')");
+    }
 }

@@ -78,6 +78,9 @@ static PyObject *Array_getitem(ZendArray *self, PyObject *key) {
         result = phpy::php::array_get(&self->array, PyLong_AsLong(key));
     } else {
         phpy::StrObject dkey(key);
+        if (!dkey) {
+            return NULL;
+        }
         result = phpy::php::array_get(&self->array, dkey.val(), dkey.len());
     }
     if (!result) {
@@ -100,6 +103,9 @@ static bool Array_delitem(ZendArray *self, PyObject *key) {
         result = zend_hash_index_del(Z_ARR(self->array), PyLong_AsLong(key));
     } else {
         phpy::StrObject dkey(key);
+        if (!dkey) {
+            return false;
+        }
         result = zend_hash_str_del(Z_ARR(self->array), dkey.val(), dkey.len());
     }
     return result == SUCCESS;
@@ -117,6 +123,10 @@ static int Array_setitem(ZendArray *self, PyObject *key, PyObject *value) {
         result = zend_hash_index_update(Z_ARR(self->array), PyLong_AsLong(key), &rv);
     } else {
         phpy::StrObject dkey(key);
+        if (!dkey) {
+            zval_ptr_dtor(&rv);
+            return -1;
+        }
         result = zend_hash_str_update(Z_ARR(self->array), dkey.val(), dkey.len(), &rv);
     }
     return result == NULL ? -1 : 0;

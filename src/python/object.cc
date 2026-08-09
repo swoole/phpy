@@ -58,6 +58,9 @@ static int Object_init(ZendObject *self, PyObject *args, PyObject *kwds) {
     }
 
     zend_string *_class_name = py2zstr(name);
+    if (_class_name == NULL) {
+        return -1;
+    }
     zend_class_entry *ce = zend_lookup_class(_class_name);
     ON_SCOPE_EXIT {
         zend_string_release(_class_name);
@@ -129,11 +132,34 @@ static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds)
     Py_ssize_t argc = PyTuple_Size(args);
     zval *argv = new zval[argc];
     phpy::python::tuple2argv(argv, args, argc, 0);
-    zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv);
     ON_SCOPE_EXIT {
         phpy::python::release_argv(argc, argv);
         delete[] argv;
     };
+
+    if (EG(exception) != NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "Argument conversion failed");
+        return NULL;
+    }
+
+    zval named_args;
+    ZVAL_UNDEF(&named_args);
+    if (kwds != NULL && PyDict_Size(kwds) > 0) {
+        py2php_scalar(kwds, &named_args);
+        if (EG(exception) != NULL) {
+            PyErr_SetString(PyExc_RuntimeError, "Keyword argument conversion failed");
+            zval_ptr_dtor(&named_args);
+            return NULL;
+        }
+    }
+    ON_SCOPE_EXIT {
+        if (!Z_ISUNDEF(named_args)) {
+            zval_ptr_dtor(&named_args);
+        }
+    };
+
+    HashTable *named_params = Z_TYPE(named_args) == IS_ARRAY ? Z_ARRVAL(named_args) : nullptr;
+    zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv, named_params);
     if (result == FAILURE) {
         PyErr_Format(PyExc_TypeError, "'%s' zend_object is not callable", ZSTR_VAL(Z_OBJCE(self->object)->name));
         return NULL;

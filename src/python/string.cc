@@ -196,24 +196,38 @@ namespace phpy {
 namespace python {
 PyObject *new_string(PyObject *pv) {
     ZendString *self = PyObject_New(ZendString, &ZendStringType);
+    if (self == NULL) {
+        return NULL;
+    }
+    ZVAL_UNDEF(&self->string);
     if (PyByteArray_Check(pv)) {
         ZVAL_STRINGL(&self->string, PyByteArray_AS_STRING(pv), PyByteArray_GET_SIZE(pv));
     } else if (PyBytes_Check(pv)) {
         ZVAL_STRINGL(&self->string, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
     } else if (PyUnicode_Check(pv)) {
-        ZVAL_STR(&self->string, py2zstr(pv));
+        zend_string *value = py2zstr(pv);
+        if (value == NULL) {
+            Py_DECREF(self);
+            return NULL;
+        }
+        ZVAL_STR(&self->string, value);
     } else {
         auto value = PyObject_Str(pv);
-        if (value != NULL) {
-            Py_ssize_t sl;
-            const char *sv = PyUnicode_AsUTF8AndSize(value, &sl);
-            ZVAL_STRINGL(&self->string, sv, sl);
-            Py_DECREF(value);
-        } else {
-            PyErr_Print();
-            zend_throw_error(NULL, "PyObject<%s> has no attribute '__str__'", Py_TypeName(pv));
+        if (value == NULL) {
+            Py_DECREF(self);
+            return NULL;
         }
+        Py_ssize_t sl;
+        const char *sv = PyUnicode_AsUTF8AndSize(value, &sl);
+        if (sv == NULL) {
+            Py_DECREF(value);
+            Py_DECREF(self);
+            return NULL;
+        }
+        ZVAL_STRINGL(&self->string, sv, sl);
+        Py_DECREF(value);
     }
+    phpy::php::add_object((PyObject *) self, String_dtor);
     return (PyObject *) self;
 }
 
@@ -222,15 +236,22 @@ PyObject *new_string(PyObject *pv) {
  */
 PyObject *new_string(zval *zv) {
     ZendString *self = PyObject_New(ZendString, &ZendStringType);
+    if (self == NULL) {
+        return NULL;
+    }
     self->string = *zv;
     phpy::php::add_object((PyObject *) self, String_dtor);
     zval_add_ref(&self->string);
     return (PyObject *) self;
 }
 PyObject *new_string(size_t len) {
-    zval nv;
-    Z_STR(nv) = zend_string_alloc(len, 0);
-    return new_string(&nv);
+    ZendString *self = PyObject_New(ZendString, &ZendStringType);
+    if (self == NULL) {
+        return NULL;
+    }
+    ZVAL_STR(&self->string, zend_string_alloc(len, 0));
+    phpy::php::add_object((PyObject *) self, String_dtor);
+    return (PyObject *) self;
 }
 }  // namespace python
 }  // namespace phpy

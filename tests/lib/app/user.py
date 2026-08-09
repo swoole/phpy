@@ -76,6 +76,38 @@ def test_callback(cb):
     return cb(__name__)
 
 
+def test_callback_kwargs(cb):
+    return cb("left", right=7)
+
+
+def test_callback_recursive_arg(cb):
+    value = []
+    value.append(value)
+    return cb(1, value, 3)
+
+
+class UnencodableString:
+    def __str__(self):
+        return '\ud800'
+
+
+class UnencodableError(Exception):
+    def __str__(self):
+        return '\ud800'
+
+
+def unencodable_string():
+    return UnencodableString()
+
+
+def unencodable_key_dict():
+    return {UnencodableString(): 1}
+
+
+def raise_unencodable_error():
+    raise UnencodableError()
+
+
 class ReentrantList(list):
     def __init__(self, callback):
         super().__init__(["first", "second"])

@@ -362,10 +362,15 @@ static inline bool is_empty_array(zval *zv) {
  * Return value: New reference.
  */
 static inline zend_result call_fn(
-    zval *object, zval *function_name, zval *retval_ptr, uint32_t param_count, zval *params) {
+    zval *object,
+    zval *function_name,
+    zval *retval_ptr,
+    uint32_t param_count,
+    zval *params,
+    HashTable *named_params = nullptr) {
     zend_result result = FAILURE;
     zend_try {
-        result = call_user_function(NULL, object, function_name, retval_ptr, param_count, params);
+        result = call_user_function_named(NULL, object, function_name, retval_ptr, param_count, params, named_params);
     }
     zend_end_try();
     if (EG(exception) != NULL) {
@@ -391,8 +396,8 @@ struct CallObject {
 class StrObject {
   private:
     PyObject *str_ = nullptr;
-    ssize_t len_;
-    const char *val_;
+    ssize_t len_ = 0;
+    const char *val_ = nullptr;
 
   public:
     StrObject(PyObject *pv);
@@ -401,10 +406,13 @@ class StrObject {
             Py_DECREF(str_);
         }
     }
-    const char *val() {
+    explicit operator bool() const {
+        return val_ != nullptr;
+    }
+    const char *val() const {
         return val_;
     }
-    ssize_t len() {
+    ssize_t len() const {
         return len_;
     }
 };

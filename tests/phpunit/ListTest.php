@@ -5,6 +5,22 @@ use PHPUnit\Framework\TestCase;
 
 class ListTest extends TestCase
 {
+    public function testSliceReleasesTheReturnedPythonReference(): void
+    {
+        PyCore::setOptions(['return_as_object' => false]);
+        $sys = PyCore::import('sys');
+        $sentinel = PyCore::object();
+        $list = new PyList([$sentinel]);
+        $before = $sys->getrefcount($sentinel);
+
+        for ($i = 0; $i < 20; $i++) {
+            $slice = $list->slice(0, 1);
+            unset($slice);
+        }
+
+        $this->assertSame($before, $sys->getrefcount($sentinel));
+    }
+
     public function testList()
     {
         $list = new PyList();

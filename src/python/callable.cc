@@ -78,8 +78,30 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
         delete[] argv;
     };
 
+    if (EG(exception) != NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "Argument conversion failed");
+        return NULL;
+    }
+
+    zval named_args;
+    ZVAL_UNDEF(&named_args);
+    if (kwds != NULL && PyDict_Size(kwds) > 0) {
+        py2php_scalar(kwds, &named_args);
+        if (EG(exception) != NULL) {
+            PyErr_SetString(PyExc_RuntimeError, "Keyword argument conversion failed");
+            zval_ptr_dtor(&named_args);
+            return NULL;
+        }
+    }
+    ON_SCOPE_EXIT {
+        if (!Z_ISUNDEF(named_args)) {
+            zval_ptr_dtor(&named_args);
+        }
+    };
+
     zval retval;
-    zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv);
+    HashTable *named_params = Z_TYPE(named_args) == IS_ARRAY ? Z_ARRVAL(named_args) : nullptr;
+    zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv, named_params);
     if (result == FAILURE) {
         if (EG(exception) && phpy_options.display_exception) {
             zend_exception_error(EG(exception), E_ERROR);

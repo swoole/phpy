@@ -612,6 +612,14 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
             return false;
         }
         StrObject key(next);
+        if (!key) {
+            zval_ptr_dtor(&item);
+            Py_DECREF(next);
+            Py_DECREF(iter);
+            zval_ptr_dtor(zv);
+            ZVAL_UNDEF(zv);
+            return false;
+        }
         add_assoc_zval_ex(zv, key.val(), key.len(), &item);
         Py_DECREF(next);
     }
@@ -872,6 +880,9 @@ bool CallObject::parse_args(zval *array) {
 StrObject::StrObject(PyObject *pv) {
     if (!PyUnicode_Check(pv)) {
         pv = str_ = PyObject_Str(pv);
+        if (pv == nullptr) {
+            return;
+        }
     }
     val_ = phpy::python::string2utf8(pv, &len_);
 }
@@ -920,12 +931,25 @@ void string2zval(PyObject *pv, zval *zv) {
         ZVAL_STRINGL(zv, sval, len);
         return;
     }
+    if (PyErr_Occurred()) {
+        ZVAL_EMPTY_STRING(zv);
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
     auto value = PyObject_Str(pv);
     if (value != NULL) {
         const char *sv = PyUnicode_AsUTF8AndSize(value, &len);
-        ZVAL_STRINGL(zv, sv, len);
+        if (sv != NULL) {
+            ZVAL_STRINGL(zv, sv, len);
+        } else {
+            ZVAL_EMPTY_STRING(zv);
+        }
         Py_DECREF(value);
+        if (sv == NULL) {
+            phpy::php::throw_error_if_occurred();
+        }
     } else {
+        ZVAL_EMPTY_STRING(zv);
         phpy::php::throw_error_if_occurred();
     }
 }

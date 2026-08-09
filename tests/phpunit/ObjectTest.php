@@ -5,6 +5,31 @@ use PHPUnit\Framework\TestCase;
 
 class ObjectTest extends TestCase
 {
+    public function testUnencodablePythonStringRepresentationFailsCleanly(): void
+    {
+        $module = PyCore::import('app.user');
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('surrogates not allowed');
+        (string) $module->unencodable_string();
+    }
+
+    public function testUnencodablePythonExceptionMessageFailsCleanly(): void
+    {
+        $module = PyCore::import('app.user');
+
+        try {
+            $module->raise_unencodable_error();
+            $this->fail('The Python exception must cross the PHP boundary');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('UnencodableError', (string) $error->type);
+        }
+
+        // Formatting the previous exception must not leave a stale CPython
+        // error indicator that poisons the next bridge call.
+        $this->assertSame(1, PyCore::scalar(PyCore::int(1)));
+    }
+
     protected function assertForKwargs($inst)
     {
         $today = date('Y-m-d');

@@ -52,10 +52,13 @@ void new_error(zval *zv, PyObject *error) {
         zend_update_property(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("value"), &zvalue);
         zval_ptr_dtor(&zvalue);
 
-        PyObject *pstr = PyObject_Str(pvalue);
-        if (pstr) {
-            phpy::StrObject msg(pstr);
+        phpy::StrObject msg(pvalue);
+        if (msg) {
             zend_update_property_stringl(PyError_ce, Z_OBJ_P(zv), STR_AND_LEN("message"), msg.val(), msg.len());
+        } else {
+            // Message formatting is best-effort. The original Python error
+            // objects are retained on PyError even if __str__ is not UTF-8.
+            PyErr_Clear();
         }
     }
     if (ptype) {

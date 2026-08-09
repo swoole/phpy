@@ -37,6 +37,15 @@ final class ConversionBoundaryTest extends PHPUnit\Framework\TestCase
         PyCore::scalar($recursive);
     }
 
+    public function testUnencodablePythonDictionaryKeyFailsCleanly(): void
+    {
+        $module = PyCore::import('app.user');
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('surrogates not allowed');
+        PyCore::scalar($module->unencodable_key_dict());
+    }
+
     public function testNestedCallbackCannotChangeOuterConversionPolicy(): void
     {
         $module = PyCore::import('app.user');
