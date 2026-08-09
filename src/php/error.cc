@@ -38,6 +38,14 @@ void new_error(zval *zv, PyObject *error) {
 
     PyObject *ptype, *pvalue, *ptraceback;
     PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+    // PyErr_Fetch() transfers ownership of all three references to the
+    // caller. The Zend wrapper properties retain their own references, so the
+    // fetched ownership must always be released before returning.
+    ON_SCOPE_EXIT {
+        Py_XDECREF(ptype);
+        Py_XDECREF(pvalue);
+        Py_XDECREF(ptraceback);
+    };
     if (pvalue) {
         zval zvalue;
         new_object(&zvalue, pvalue);

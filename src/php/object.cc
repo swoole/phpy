@@ -252,14 +252,18 @@ ZEND_METHOD(PyObject, __call) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
     auto fn = PyObject_GetAttrString(object, name);
-    if (!fn || !PyCallable_Check(fn)) {
-        Py_XDECREF(fn);
+    if (fn == NULL) {
         phpy::php::throw_error_if_occurred();
         return;
     }
     ON_SCOPE_EXIT {
         Py_DECREF(fn);
     };
+    if (!PyCallable_Check(fn)) {
+        PyErr_Format(PyExc_TypeError, "'%.200s' object is not callable", Py_TypeName(fn));
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
     CallObject caller(fn, return_value, arguments);
     caller.call();
 }
@@ -340,7 +344,13 @@ ZEND_METHOD(PyObject, __invoke) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    if (!object || !PyCallable_Check(object)) {
+    if (object == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "PyObject is not initialized");
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    if (!PyCallable_Check(object)) {
+        PyErr_Format(PyExc_TypeError, "'%.200s' object is not callable", Py_TypeName(object));
         phpy::php::throw_error_if_occurred();
         return;
     }

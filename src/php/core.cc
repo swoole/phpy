@@ -60,6 +60,9 @@ ZEND_METHOD(PyCore, import) {
     if (m == NULL) {
         phpy::php::throw_error_if_occurred();
     } else {
+        ON_SCOPE_EXIT {
+            Py_DECREF(m);
+        };
         phpy::php::new_module(return_value, m);
     }
 }
@@ -114,8 +117,12 @@ ZEND_METHOD(PyCore, next) {
     CHECK_ARG(iter);
     auto next = PyIter_Next(iter);
     if (next == NULL) {
+        phpy::php::throw_error_if_occurred();
         return;
     }
+    ON_SCOPE_EXIT {
+        Py_DECREF(next);
+    };
     py2php(next, return_value);
 }
 

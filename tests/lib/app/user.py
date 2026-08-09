@@ -145,3 +145,15 @@ class BrokenIterator:
 
 def broken_iterator():
     return BrokenIterator()
+
+
+def raise_runtime_error():
+    raise RuntimeError("reference audit")
+
+
+next_sentinel = object()
+
+
+def repeated_sentinel(count):
+    for _ in range(count):
+        yield next_sentinel
