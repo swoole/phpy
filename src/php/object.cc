@@ -362,6 +362,20 @@ ZEND_METHOD(PyObject, __toString) {
     phpy::python::string2zval(phpy_object_get_handle(ZEND_THIS), return_value);
 }
 
+ZEND_METHOD(PyObject, toArray) {
+    ZEND_PARSE_PARAMETERS_NONE();
+
+    LOCK_GIL();
+    py2php_array(phpy_object_get_handle(ZEND_THIS), return_value);
+}
+
+ZEND_METHOD(PyObject, toValue) {
+    ZEND_PARSE_PARAMETERS_NONE();
+
+    LOCK_GIL();
+    py2php_scalar(phpy_object_get_handle(ZEND_THIS), return_value);
+}
+
 ZEND_METHOD(PyObject, __invoke) {
     int argc = 0;
     zval *argv = NULL;

@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 2dd11ca8f3b28e3ae12727ab4a6529539ebea515 */
+ * Stub hash: c3e9bb62436d5ee95dbe26c12635749ca53076d1 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_PyObject___construct, 0, 0, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, value, IS_MIXED, 0, "null")
@@ -26,6 +26,12 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject___toString, 0, 0, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_toArray, 0, 0, IS_ARRAY, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_toValue, 0, 0, IS_MIXED, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject___invoke, 0, 0, IS_MIXED, 0)
 	ZEND_ARG_VARIADIC_TYPE_INFO(0, arguments, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
@@ -47,8 +53,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_offsetExists, 0, 
 	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_key, 0, 0, IS_MIXED, 0)
-ZEND_END_ARG_INFO()
+#define arginfo_class_PyObject_key arginfo_class_PyObject_toValue
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_next, 0, 0, IS_VOID, 0)
 ZEND_END_ARG_INFO()
@@ -58,7 +63,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_valid, 0, 0, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 
-#define arginfo_class_PyObject_current arginfo_class_PyObject_key
+#define arginfo_class_PyObject_current arginfo_class_PyObject_toValue
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_PyObject_count, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -69,6 +74,8 @@ ZEND_METHOD(PyObject, __get);
 ZEND_METHOD(PyObject, __set);
 ZEND_METHOD(PyObject, __unset);
 ZEND_METHOD(PyObject, __toString);
+ZEND_METHOD(PyObject, toArray);
+ZEND_METHOD(PyObject, toValue);
 ZEND_METHOD(PyObject, __invoke);
 ZEND_METHOD(PyObject, offsetGet);
 ZEND_METHOD(PyObject, offsetSet);
@@ -88,6 +95,8 @@ static const zend_function_entry class_PyObject_methods[] = {
 	ZEND_ME(PyObject, __set, arginfo_class_PyObject___set, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, __unset, arginfo_class_PyObject___unset, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, __toString, arginfo_class_PyObject___toString, ZEND_ACC_PUBLIC)
+	ZEND_ME(PyObject, toArray, arginfo_class_PyObject_toArray, ZEND_ACC_PUBLIC)
+	ZEND_ME(PyObject, toValue, arginfo_class_PyObject_toValue, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, __invoke, arginfo_class_PyObject___invoke, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, offsetGet, arginfo_class_PyObject_offsetGet, ZEND_ACC_PUBLIC)
 	ZEND_ME(PyObject, offsetSet, arginfo_class_PyObject_offsetSet, ZEND_ACC_PUBLIC)

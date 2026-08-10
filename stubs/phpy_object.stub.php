@@ -34,6 +34,14 @@ class PyObject implements \ArrayAccess, \Iterator, \Countable
 
     }
 
+    public function toArray(): array
+    {
+    }
+
+    public function toValue(): mixed
+    {
+    }
+
     public function __invoke(mixed ...$arguments): mixed
     {
 

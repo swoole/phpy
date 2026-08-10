@@ -212,6 +212,22 @@ void py2php_scalar(PyObject *pv, zval *zv) {
     }
 }
 
+void py2php_array(PyObject *pv, zval *zv) {
+    if (!PyList_Check(pv) && !PyTuple_Check(pv) && !PySet_Check(pv) && !PyDict_Check(pv) && !PyIter_Check(pv)) {
+        array_init(zv);
+        return;
+    }
+
+    PythonToPhpConverter converter(PythonToPhpPolicy::ConvertContainers);
+    if (!converter.convertContainer(pv, zv)) {
+        if (!Z_ISUNDEF_P(zv)) {
+            zval_ptr_dtor(zv);
+        }
+        ZVAL_EMPTY_ARRAY(zv);
+        phpy::php::throw_error_if_occurred();
+    }
+}
+
 /**
  * Increase reference count of the value
  */

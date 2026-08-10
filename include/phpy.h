@@ -105,6 +105,8 @@ void py2php(PyObject *pv, zval *zv);
  * Convert to PHP scalar types as much as possible
  */
 void py2php_scalar(PyObject *pv, zval *zv);
+/** Convert supported Python containers or iterators to a PHP array. */
+void py2php_array(PyObject *pv, zval *zv);
 zend_string *py2zstr(PyObject *pv);
 void object2array(PyObject *pv, zval *zv);
 void object2string(PyObject *pv, zval *zv);
