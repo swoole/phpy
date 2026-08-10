@@ -214,7 +214,7 @@ void py2php_scalar(PyObject *pv, zval *zv) {
 
 void py2php_array(PyObject *pv, zval *zv) {
     if (!PyList_Check(pv) && !PyTuple_Check(pv) && !PySet_Check(pv) && !PyDict_Check(pv) && !PyIter_Check(pv)) {
-        array_init(zv);
+        ZVAL_EMPTY_ARRAY(zv);
         return;
     }
 

@@ -98,6 +98,10 @@ static PyObject *Array_get(ZendArray *self, PyObject *args) {
 }
 
 static bool Array_delitem(ZendArray *self, PyObject *key) {
+    if (UNEXPECTED(zend_hash_num_elements(Z_ARR(self->array)) == 0)) {
+        return false;
+    }
+    SEPARATE_ARRAY(&self->array);
     zend_result result;
     if (PyLong_Check(key)) {
         result = zend_hash_index_del(Z_ARR(self->array), PyLong_AsLong(key));
@@ -118,6 +122,7 @@ static int Array_setitem(ZendArray *self, PyObject *key, PyObject *value) {
     }
     zval rv;
     py2php(value, &rv);
+    SEPARATE_ARRAY(&self->array);
     zval *result;
     if (PyLong_Check(key)) {
         result = zend_hash_index_update(Z_ARR(self->array), PyLong_AsLong(key), &rv);
@@ -152,6 +157,7 @@ static PyObject *Array_append(ZendArray *self, PyObject *args) {
     }
     zval rv;
     py2php(value, &rv);
+    SEPARATE_ARRAY(&self->array);
     if (add_next_index_zval(&self->array, &rv) == SUCCESS) {
         Py_RETURN_TRUE;
     } else {

@@ -2,6 +2,15 @@ import pytest
 import phpy
 
 
+def test_empty_array_remains_writable():
+    array = phpy.Array()
+    assert array.count() == 0
+    assert array.append("first")
+    array["name"] = "phpy"
+    assert array[0] == "first"
+    assert array["name"] == "phpy"
+
+
 def test_index_array():
     s = phpy.Array([1, 3, 5, 2023, 7, 9])
     assert phpy.call('array_search', 2023, s) == 3

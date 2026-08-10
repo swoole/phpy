@@ -26,6 +26,10 @@ final class ObjectConversionMethodTest extends TestCase
 
     public function testToArrayConvertsSupportedContainers(): void
     {
+        $this->assertSame([], (new PyList())->toArray());
+        $this->assertSame([], (new PyTuple([]))->toArray());
+        $this->assertSame([], (new PySet([]))->toArray());
+        $this->assertSame([], (new PyDict())->toArray());
         $this->assertSame([1, 2, 3], (new PyList([1, 2, 3]))->toArray());
         $this->assertSame([1, 2, 3], (new PyTuple([1, 2, 3]))->toArray());
         $this->assertSame(['name' => 'phpy'], (new PyDict(['name' => 'phpy']))->toArray());
@@ -37,6 +41,7 @@ final class ObjectConversionMethodTest extends TestCase
 
     public function testToArrayConsumesPythonIterator(): void
     {
+        $this->assertSame([], PyCore::iter(new PyList())->toArray());
         $iterator = PyCore::iter(new PyList([1, 2, 3]));
 
         $this->assertSame([1, 2, 3], $iterator->toArray());
