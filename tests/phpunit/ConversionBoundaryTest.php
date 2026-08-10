@@ -57,4 +57,30 @@ final class ConversionBoundaryTest extends PHPUnit\Framework\TestCase
 
         $this->assertSame(['first', 'second'], PyCore::scalar($value));
     }
+
+    public function testFailedContainerConversionsReleaseCompletedElements(): void
+    {
+        PyCore::setOptions(['return_as_object' => false]);
+        $sys = PyCore::import('sys');
+        $sentinel = PyCore::object();
+        $before = $sys->getrefcount($sentinel);
+
+        for ($i = 0; $i < 20; $i++) {
+            foreach ([PyList::class, PyTuple::class, PySet::class] as $class) {
+                try {
+                    new $class([$sentinel, "\xff"]);
+                    $this->fail("$class conversion must fail");
+                } catch (PyError) {
+                }
+            }
+
+            try {
+                new PyDict(['sentinel' => $sentinel, 'invalid' => "\xff"]);
+                $this->fail('PyDict conversion must fail');
+            } catch (PyError) {
+            }
+        }
+
+        $this->assertSame($before, $sys->getrefcount($sentinel));
+    }
 }

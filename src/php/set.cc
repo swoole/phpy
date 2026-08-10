@@ -25,6 +25,7 @@ zend_class_entry *PySet_ce;
 
 using phpy::php::arg_1;
 using phpy::python::LockGuard;
+using phpy::python::OwnedPythonReference;
 
 int php_class_set_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
@@ -75,12 +76,9 @@ ZEND_METHOD(PySet, count) {
 ZEND_METHOD(PySet, contains) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    CHECK_ARG(pk);
-    ON_SCOPE_EXIT {
-        Py_DECREF(pk);
-    };
-    const int result = PySet_Contains(object, pk);
+    OwnedPythonReference key(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU));
+    CHECK_ARG(key.get());
+    const int result = PySet_Contains(object, key.get());
     if (result < 0) {
         phpy::php::throw_error_if_occurred();
         return;

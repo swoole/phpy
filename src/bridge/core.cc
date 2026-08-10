@@ -265,17 +265,15 @@ bool python_long_to_php(PyObject *pv, zval *zv) {
         ZVAL_LONG(zv, lval);
     } else {
         ssize_t len;
-        auto s = PyObject_Str(pv);
-        if (s == nullptr) {
+        OwnedPythonReference str(PyObject_Str(pv));
+        if (!str) {
             return false;
         }
-        const char *sval = phpy::python::string2utf8(s, &len);
+        const char *sval = phpy::python::string2utf8(str.get(), &len);
         if (sval == nullptr) {
-            Py_DECREF(s);
             return false;
         }
         ZVAL_STRINGL(zv, sval, len);
-        Py_DECREF(s);
     }
     return true;
 }
@@ -351,23 +349,19 @@ PyObject *PhpToPythonConverter::convertArrayToList(zend_array *ht) {
         return NULL;
     }
 
-    PyObject *list = PyList_New(0);
-    if (list == NULL) {
+    OwnedPythonReference list(PyList_New(0));
+    if (!list) {
         return NULL;
     }
     zval *current;
     ZEND_HASH_FOREACH_VAL(ht, current) {
-        PyObject *elem = convert(current);
-        if (elem == NULL || PyList_Append(list, elem) < 0) {
-            Py_XDECREF(elem);
-            Py_DECREF(list);
+        OwnedPythonReference elem(convert(current));
+        if (!elem || PyList_Append(list.get(), elem.get()) < 0) {
             return NULL;
         }
-        // PyList_Append retains its own reference.
-        Py_DECREF(elem);
     }
     ZEND_HASH_FOREACH_END();
-    return list;
+    return list.release();
 }
 
 /**
@@ -396,23 +390,22 @@ PyObject *PhpToPythonConverter::convertArrayToTuple(zend_array *ht) {
     }
 
     zval *current;
-    PyObject *tuple = PyTuple_New(phpy::php::array_count(ht));
-    if (tuple == NULL) {
+    OwnedPythonReference tuple(PyTuple_New(phpy::php::array_count(ht)));
+    if (!tuple) {
         return NULL;
     }
     Py_ssize_t index = 0;
     ZEND_HASH_FOREACH_VAL(ht, current) {
-        PyObject *elem = convert(current);
-        if (elem == NULL) {
-            Py_DECREF(tuple);
+        OwnedPythonReference elem(convert(current));
+        if (!elem) {
             return NULL;
         }
         // The tuple is newly allocated and the index is known to be valid.
         // PyTuple_SET_ITEM steals the new element reference.
-        PyTuple_SET_ITEM(tuple, index++, elem);
+        PyTuple_SET_ITEM(tuple.get(), index++, elem.release());
     }
     ZEND_HASH_FOREACH_END();
-    return tuple;
+    return tuple.release();
 }
 
 /**
@@ -433,21 +426,18 @@ PyObject *PhpToPythonConverter::convertArrayToSet(zend_array *ht) {
     }
 
     zval *current;
-    PyObject *pset = PySet_New(0);
-    if (pset == NULL) {
+    OwnedPythonReference pset(PySet_New(0));
+    if (!pset) {
         return NULL;
     }
     ZEND_HASH_FOREACH_VAL(ht, current) {
-        PyObject *elem = convert(current);
-        if (elem == NULL || PySet_Add(pset, elem) < 0) {
-            Py_XDECREF(elem);
-            Py_DECREF(pset);
+        OwnedPythonReference elem(convert(current));
+        if (!elem || PySet_Add(pset.get(), elem.get()) < 0) {
             return NULL;
         }
-        Py_DECREF(elem);
     }
     ZEND_HASH_FOREACH_END();
-    return pset;
+    return pset.release();
 }
 
 bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
@@ -459,28 +449,24 @@ bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
         return false;
     }
 
-    PyObject *iter = PyObject_GetIter(pv);
-    if (iter == NULL) {
+    OwnedPythonReference iter(PyObject_GetIter(pv));
+    if (!iter) {
         return false;
     }
     array_init(zv);
     while (true) {
-        PyObject *next = PyIter_Next(iter);
+        OwnedPythonReference next(PyIter_Next(iter.get()));
         if (!next) {
             break;
         }
         zval item;
-        if (!convert(next, &item)) {
-            Py_DECREF(next);
-            Py_DECREF(iter);
+        if (!convert(next.get(), &item)) {
             zval_ptr_dtor(zv);
             ZVAL_UNDEF(zv);
             return false;
         }
         add_next_index_zval(zv, &item);
-        Py_DECREF(next);
     }
-    Py_DECREF(iter);
     if (PyErr_Occurred()) {
         zval_ptr_dtor(zv);
         ZVAL_UNDEF(zv);
@@ -504,33 +490,24 @@ PyObject *PhpToPythonConverter::convertArrayToDict(zend_array *ht) {
     uint32_t index;
     zend_string *key;
     zval *value;
-    PyObject *dict = PyDict_New();
-    if (dict == NULL) {
+    OwnedPythonReference dict(PyDict_New());
+    if (!dict) {
         return NULL;
     }
     ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, value) {
-        PyObject *dk;
+        OwnedPythonReference dict_key;
         if (key) {
-            dk = PyUnicode_FromStringAndSize(ZSTR_VAL(key), ZSTR_LEN(key));
+            dict_key.reset(PyUnicode_FromStringAndSize(ZSTR_VAL(key), ZSTR_LEN(key)));
         } else {
-            dk = PyLong_FromLong(index);
+            dict_key.reset(PyLong_FromLong(index));
         }
-        PyObject *elem = convert(value);
-        if (dk == NULL || elem == NULL || PyDict_SetItem(dict, dk, elem) < 0) {
-            Py_XDECREF(elem);
-            Py_XDECREF(dk);
-            Py_DECREF(dict);
+        OwnedPythonReference elem(convert(value));
+        if (!dict_key || !elem || PyDict_SetItem(dict.get(), dict_key.get(), elem.get()) < 0) {
             return NULL;
         }
-        /**
-         * PyDict_SetItem()
-         * Increase reference count of the key and value
-         */
-        Py_DECREF(elem);
-        Py_DECREF(dk);
     }
     ZEND_HASH_FOREACH_END();
-    return dict;
+    return dict.release();
 }
 
 PyObject *array2dict(zend_array *ht) {
@@ -547,8 +524,8 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
         return false;
     }
 
-    PyObject *iter = PyObject_GetIter(pv);
-    if (iter == NULL) {
+    OwnedPythonReference iter(PyObject_GetIter(pv));
+    if (!iter) {
         return false;
     }
     array_init(zv);
@@ -557,7 +534,7 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
          * PyIter_Next()
          * Return value: New reference
          */
-        PyObject *next = PyIter_Next(iter);
+        OwnedPythonReference next(PyIter_Next(iter.get()));
         if (!next) {
             break;
         }
@@ -565,28 +542,22 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
          * PyDict_GetItem()
          * Return value: Borrowed reference
          */
-        auto value = PyDict_GetItem(pv, next);
+        auto value = PyDict_GetItem(pv, next.get());
         zval item;
         if (value == NULL || !convert(value, &item)) {
-            Py_DECREF(next);
-            Py_DECREF(iter);
             zval_ptr_dtor(zv);
             ZVAL_UNDEF(zv);
             return false;
         }
-        StrObject key(next);
+        StrObject key(next.get());
         if (!key) {
             zval_ptr_dtor(&item);
-            Py_DECREF(next);
-            Py_DECREF(iter);
             zval_ptr_dtor(zv);
             ZVAL_UNDEF(zv);
             return false;
         }
         add_assoc_zval_ex(zv, key.val(), key.len(), &item);
-        Py_DECREF(next);
     }
-    Py_DECREF(iter);
     if (PyErr_Occurred()) {
         zval_ptr_dtor(zv);
         ZVAL_UNDEF(zv);
@@ -694,16 +665,14 @@ void debug_dump(uint32_t i, zval *item) {
 
 void debug_dump(uint32_t i, PyObject *pv) {
     ssize_t len;
-    PyObject *str = PyObject_Str(pv);
-    PyObject *repr = PyObject_Repr(pv);
+    OwnedPythonReference str(PyObject_Str(pv));
+    OwnedPythonReference repr(PyObject_Repr(pv));
     printf("[%d] type=%s, str=%s, repr=%s, ptr=%p\n",
            i,
            Py_TypeName(pv),
-           phpy::python::string2utf8(str, &len),
-           phpy::python::string2utf8(repr, &len),
+           phpy::python::string2utf8(str.get(), &len),
+           phpy::python::string2utf8(repr.get(), &len),
            pv);
-    Py_DECREF(str);
-    Py_DECREF(repr);
 }
 
 void var_dump(zval *var) {
@@ -899,15 +868,14 @@ void string2zval(PyObject *pv, zval *zv) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    auto value = PyObject_Str(pv);
-    if (value != NULL) {
-        const char *sv = PyUnicode_AsUTF8AndSize(value, &len);
+    OwnedPythonReference value(PyObject_Str(pv));
+    if (value) {
+        const char *sv = PyUnicode_AsUTF8AndSize(value.get(), &len);
         if (sv != NULL) {
             ZVAL_STRINGL(zv, sv, len);
         } else {
             ZVAL_EMPTY_STRING(zv);
         }
-        Py_DECREF(value);
         if (sv == NULL) {
             phpy::php::throw_error_if_occurred();
         }

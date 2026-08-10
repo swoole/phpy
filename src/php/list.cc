@@ -25,6 +25,7 @@ zend_class_entry *PyList_ce;
 
 using phpy::php::arg_1;
 using phpy::python::LockGuard;
+using phpy::python::OwnedPythonReference;
 
 int php_class_list_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
@@ -116,17 +117,14 @@ ZEND_METHOD(PyList, offsetSet) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    PyObject *pv = php2py(zv);
-    if (pv == NULL) {
+    OwnedPythonReference value(php2py(zv));
+    if (!value) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    ON_SCOPE_EXIT {
-        Py_DECREF(pv);
-    };
     int result;
     if (zk == NULL || ZVAL_IS_NULL(zk)) {
-        result = PyList_Append(object, pv);
+        result = PyList_Append(object, value.get());
     } else {
         const auto requested = static_cast<ssize_t>(zval_get_long(zk));
         ssize_t index;
@@ -134,10 +132,10 @@ ZEND_METHOD(PyList, offsetSet) {
             zend_throw_error(NULL, "PyList: index[%ld] out of range", requested);
             return;
         }
-        Py_INCREF(pv);
+        Py_INCREF(value.get());
         // PyList_SetItem()
         // Not increase reference count of the value
-        result = PyList_SetItem(object, index, pv);
+        result = PyList_SetItem(object, index, value.get());
     }
     if (result < 0) {
         phpy::php::throw_error_if_occurred();

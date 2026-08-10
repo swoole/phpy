@@ -427,28 +427,33 @@ class OwnedPythonReference {
 
     OwnedPythonReference &operator=(OwnedPythonReference &&other) noexcept {
         if (this != &other) {
-            Py_XDECREF(value_);
-            value_ = other.release();
+            reset(other.release());
         }
         return *this;
     }
 
     ~OwnedPythonReference() {
-        Py_XDECREF(value_);
+        reset();
     }
 
-    PyObject *get() const {
+    PyObject *get() const noexcept {
         return value_;
     }
 
-    explicit operator bool() const {
+    explicit operator bool() const noexcept {
         return value_ != nullptr;
     }
 
-    PyObject *release() {
+    PyObject *release() noexcept {
         PyObject *value = value_;
         value_ = nullptr;
         return value;
+    }
+
+    /** Replaces the owned reference with another new reference. */
+    void reset(PyObject *value = nullptr) noexcept {
+        Py_XDECREF(value_);
+        value_ = value;
     }
 
   private:
