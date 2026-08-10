@@ -25,6 +25,7 @@ zend_class_entry *PySequence_ce;
 
 using phpy::php::arg_1;
 using phpy::python::LockGuard;
+using phpy::python::OwnedPythonReference;
 
 int php_class_sequence_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
@@ -47,12 +48,9 @@ ZEND_METHOD(PySequence, count) {
 ZEND_METHOD(PySequence, contains) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    auto pv = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    CHECK_ARG(pv);
-    ON_SCOPE_EXIT {
-        Py_DECREF(pv);
-    };
-    const int result = PySequence_Contains(object, pv);
+    OwnedPythonReference value(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU));
+    CHECK_ARG(value.get());
+    const int result = PySequence_Contains(object, value.get());
     if (result < 0) {
         phpy::php::throw_error_if_occurred();
         return;
@@ -72,13 +70,10 @@ ZEND_METHOD(PySequence, slice) {
     LOCK_GIL();
     // PySequence_GetSlice() returns a new reference. The Zend wrapper keeps
     // its own reference, so release the original ownership after wrapping.
-    PyObject *slice = PySequence_GetSlice(object, v1, v2);
-    if (slice == NULL) {
+    OwnedPythonReference slice(PySequence_GetSlice(object, v1, v2));
+    if (!slice) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    ON_SCOPE_EXIT {
-        Py_DECREF(slice);
-    };
-    py2php(slice, return_value);
+    py2php(slice.get(), return_value);
 }

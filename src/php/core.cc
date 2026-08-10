@@ -57,14 +57,11 @@ ZEND_METHOD(PyCore, import) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     LOCK_GIL();
-    PyObject *m = PyImport_ImportModule(module);
-    if (m == NULL) {
+    OwnedPythonReference imported_module(PyImport_ImportModule(module));
+    if (!imported_module) {
         phpy::php::throw_error_if_occurred();
     } else {
-        ON_SCOPE_EXIT {
-            Py_DECREF(m);
-        };
-        phpy::php::new_module(return_value, m);
+        phpy::php::new_module(return_value, imported_module.get());
     }
 }
 
@@ -81,60 +78,47 @@ ZEND_METHOD(PyCore, eval) {
 
     std::string module_name = "eval_code_" + std::to_string(eval_code_id++);
     LOCK_GIL();
-    PyObject *module = PyModule_New(module_name.c_str());
-    if (module == NULL) {
+    OwnedPythonReference module(PyModule_New(module_name.c_str()));
+    if (!module) {
         phpy::php::throw_error_if_occurred();
         RETURN_FALSE;
     }
-    ON_SCOPE_EXIT {
-        Py_DECREF(module);
-    };
 
     // Borrowed reference
-    PyObject *globals = PyModule_GetDict(module);
+    PyObject *globals = PyModule_GetDict(module.get());
 
     if (!phpy::php::is_null(zglobal_params)) {
-        auto pglobal_params = array2dict(zglobal_params);
-        if (pglobal_params == NULL) {
+        OwnedPythonReference global_params(array2dict(zglobal_params));
+        if (!global_params) {
             phpy::php::throw_error_if_occurred();
             RETURN_FALSE;
         }
-        ON_SCOPE_EXIT {
-            Py_DECREF(pglobal_params);
-        };
-        auto status = PyDict_Merge(globals, pglobal_params, 0);
+        auto status = PyDict_Merge(globals, global_params.get(), 0);
         if (status != 0) {
             phpy::php::throw_error_if_occurred();
             RETURN_FALSE;
         }
     }
 
-    PyObject *result = PyRun_StringFlags(input_code, Py_file_input, globals, NULL, NULL);
-    if (result == NULL) {
+    OwnedPythonReference result(PyRun_StringFlags(input_code, Py_file_input, globals, NULL, NULL));
+    if (!result) {
         phpy::php::throw_error_if_occurred();
         RETVAL_FALSE;
     } else {
-        phpy::php::new_module(return_value, module);
-        Py_DECREF(result);
+        phpy::php::new_module(return_value, module.get());
     }
 }
 
 ZEND_METHOD(PyCore, next) {
 	LOCK_GIL();
-    auto iter = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_iter_get_ce());
-    CHECK_ARG(iter);
-    ON_SCOPE_EXIT {
-        Py_DECREF(iter);
-    };
-    auto next = PyIter_Next(iter);
-    if (next == NULL) {
+    OwnedPythonReference iter(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_iter_get_ce()));
+    CHECK_ARG(iter.get());
+    OwnedPythonReference next(PyIter_Next(iter.get()));
+    if (!next) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    ON_SCOPE_EXIT {
-        Py_DECREF(next);
-    };
-    py2php(next, return_value);
+    py2php(next.get(), return_value);
 }
 
 ZEND_METHOD(PyCore, int) {
@@ -146,19 +130,18 @@ ZEND_METHOD(PyCore, int) {
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
     LOCK_GIL();
-    PyObject *result;
+    OwnedPythonReference result;
     if (zv == NULL) {
-        result = PyLong_FromLong(0);
+        result.reset(PyLong_FromLong(0));
     } else {
-        PyObject *value = php2py(zv);
-        result = value == NULL ? NULL : PyNumber_Long(value);
-        Py_XDECREF(value);
+        OwnedPythonReference value(php2py(zv));
+        result.reset(value ? PyNumber_Long(value.get()) : NULL);
     }
-    if (UNEXPECTED(result == NULL)) {
+    if (UNEXPECTED(!result)) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    phpy::php::new_object_no_addref(return_value, result);
+    phpy::php::new_object_no_addref(return_value, result.release());
 }
 
 ZEND_METHOD(PyCore, object) {
@@ -186,19 +169,18 @@ ZEND_METHOD(PyCore, float) {
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
     LOCK_GIL();
-    PyObject *result;
+    OwnedPythonReference result;
     if (zv == NULL) {
-        result = PyFloat_FromDouble(0.0);
+        result.reset(PyFloat_FromDouble(0.0));
     } else {
-        PyObject *value = php2py(zv);
-        result = value == NULL ? NULL : PyNumber_Float(value);
-        Py_XDECREF(value);
+        OwnedPythonReference value(php2py(zv));
+        result.reset(value ? PyNumber_Float(value.get()) : NULL);
     }
-    if (UNEXPECTED(result == NULL)) {
+    if (UNEXPECTED(!result)) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    phpy::php::new_object_no_addref(return_value, result);
+    phpy::php::new_object_no_addref(return_value, result.release());
 }
 
 ZEND_METHOD(PyCore, fn) {
@@ -209,18 +191,20 @@ ZEND_METHOD(PyCore, fn) {
     ZEND_PARSE_PARAMETERS_END_EX(return );
 
     LOCK_GIL();
-    PyObject *pv = phpy::python::new_callable(zv);
-    phpy::php::new_fn(return_value, pv);
-    Py_DECREF(pv);
+    OwnedPythonReference callable(phpy::python::new_callable(zv));
+    if (!callable) {
+        phpy::php::throw_error_if_occurred();
+        return;
+    }
+    phpy::php::new_fn(return_value, callable.get());
 }
 
 ZEND_METHOD(PyCore, scalar) {
     LOCK_GIL();
-    auto pyobj = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce());
-    CHECK_ARG(pyobj);
+    OwnedPythonReference pyobj(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_object_get_ce()));
+    CHECK_ARG(pyobj.get());
 
-    py2php_scalar(pyobj, return_value);
-    Py_DECREF(pyobj);
+    py2php_scalar(pyobj.get(), return_value);
 }
 
 ZEND_METHOD(PyCore, setOptions) {

@@ -72,13 +72,10 @@ ZEND_METHOD(PyDict, __construct) {
 
 ZEND_METHOD(PyDict, offsetGet) {
     LOCK_GIL();
-    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    CHECK_ARG(pk);
+    phpy::python::OwnedPythonReference key(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU));
+    CHECK_ARG(key.get());
     auto object = phpy_object_get_handle(ZEND_THIS);
-    ON_SCOPE_EXIT {
-        Py_DECREF(pk);
-    };
-    auto value = PyDict_GetItem(object, pk);
+    auto value = PyDict_GetItem(object, key.get());
     if (value == NULL) {
         phpy::php::throw_error_if_occurred();
         return;
@@ -97,35 +94,28 @@ ZEND_METHOD(PyDict, offsetSet) {
 
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    PyObject *pk = php2py(zk);
-    if (pk == NULL) {
+    phpy::python::OwnedPythonReference key(php2py(zk));
+    if (!key) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    ON_SCOPE_EXIT {
-        Py_DECREF(pk);
-    };
-    PyObject *pv = php2py(zv);
-    if (pv == NULL) {
+    phpy::python::OwnedPythonReference value(php2py(zv));
+    if (!value) {
         phpy::php::throw_error_if_occurred();
         return;
     }
-    ON_SCOPE_EXIT {
-        Py_DECREF(pv);
-    };
-    auto value = PyDict_SetItem(object, pk, pv);
-    if (value < 0) {
+    auto result = PyDict_SetItem(object, key.get(), value.get());
+    if (result < 0) {
         phpy::php::throw_error_if_occurred();
     }
 }
 
 ZEND_METHOD(PyDict, offsetUnset) {
     LOCK_GIL();
-    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    CHECK_ARG(pk);
+    phpy::python::OwnedPythonReference key(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU));
+    CHECK_ARG(key.get());
     auto object = phpy_object_get_handle(ZEND_THIS);
-    auto result = PyDict_DelItem(object, pk);
-    Py_DECREF(pk);
+    auto result = PyDict_DelItem(object, key.get());
     if (result < 0) {
         if (PyErr_ExceptionMatches(PyExc_KeyError)) {
             PyErr_Clear();
@@ -137,11 +127,10 @@ ZEND_METHOD(PyDict, offsetUnset) {
 
 ZEND_METHOD(PyDict, offsetExists) {
     LOCK_GIL();
-    auto pk = arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-    CHECK_ARG(pk);
+    phpy::python::OwnedPythonReference key(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU));
+    CHECK_ARG(key.get());
     auto object = phpy_object_get_handle(ZEND_THIS);
-    auto value = PyDict_GetItemWithError(object, pk);
-    Py_DECREF(pk);
+    auto value = PyDict_GetItemWithError(object, key.get());
     if (value == NULL && PyErr_Occurred()) {
         phpy::php::throw_error_if_occurred();
         return;
