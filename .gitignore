@@ -27,6 +27,7 @@ __phpy_proxy__
 /vendor
 /venv
 /.pytest_cache
+/*.egg-info/
 /config.h
 /config.h.in
 /config.log

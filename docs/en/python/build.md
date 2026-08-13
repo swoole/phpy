@@ -27,8 +27,33 @@ Specify the path to the `python-config` command, default is relative path, for e
 cmake . -D PYTHON_CONFIG=/usr/local/bin/python3-config
 ```
 
-## Build
+## Build with pip
+
+`pyproject.toml` and `setup.py` provide the standard Python package build
+entrypoint. `PHP_CONFIG` may be used to select a PHP build that includes the
+embed SAPI:
+
 ```shell
+PHP_CONFIG=/usr/local/php/bin/php-config python -m pip install .
+```
+
+For development, use an editable installation:
+
+```shell
+PHP_CONFIG=/usr/local/php/bin/php-config python -m pip install -e .
+```
+
+## Build with CMake
+
+```shell
+cmake -S . -B build
+cmake --build build -j 4
+```
+
+The legacy in-tree form remains available:
+
+```shell
+cmake .
 make -j 4
 ```
 

@@ -25,8 +25,32 @@ cmake . -D PHP_CONFIG=/usr/local/php/bin/php-config
 cmake . -D PYTHON_CONFIG=/usr/local/bin/python3-config
 ```
 
-## 构建
+## 使用 pip 构建
+
+项目提供标准的 `pyproject.toml` 和 `setup.py` 构建入口。可通过
+`PHP_CONFIG` 选择启用了 embed SAPI 的 PHP：
+
 ```shell
+PHP_CONFIG=/usr/local/php/bin/php-config python -m pip install .
+```
+
+开发环境可使用 editable 安装：
+
+```shell
+PHP_CONFIG=/usr/local/php/bin/php-config python -m pip install -e .
+```
+
+## 使用 CMake 构建
+
+```shell
+cmake -S . -B build
+cmake --build build -j 4
+```
+
+也可以继续使用原有的源码目录内构建方式：
+
+```shell
+cmake .
 make -j 4
 ```
 
