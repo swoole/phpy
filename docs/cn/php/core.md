@@ -13,7 +13,7 @@ $os = PyCore::import('os');
 
 ```php
 $module = PyCore::import($moduleName);
-$class = $m->$className;
+$class = $module->$className;
 ```
 
 `Python` 底层会缓存已加载过的模块，当第二次加载时会自动返回缓存中的模块，不会重复加载。因此在 `PHP-FPM/Apache` 
@@ -31,8 +31,6 @@ $class = $m->$className;
 - `PyCore::str()` 将对象转为字符串
 - `PyCore::repr()` 
 - `PyCore::type()` 获取对象的类型
-- `PyCore::locals()` 获取当前空间内容的所有局部变量
-- `PyCore::globals()` 获取所有全局变量
 - `PyCore::hash()` 获取 Hash 值
 - `PyCore::hasattr()` 检测对象是否存在某个属性
 - `PyCore::id()` 获取对象的内部编号
@@ -45,7 +43,6 @@ $class = $m->$className;
 - `PyCore::dict()` 构造一个字典对象
 - `PyCore::set()` 构造一个集合对象
 - `PyCore::range()` 构造一个范围序列
-- `PyCore::scalar($pyobj)` 将 `PyObject` 对象转为 `PHP` 的标量类型，例如 `PyStr` 将转为 `PHP 字符串`，`Dict/Tuple/Set/List` 将转为 `Array`
 - `PyCore::fileno($fp)` 获取 `PHP Stream` 资源的文件描述符，请注意仅支持 `tcp/udp/unix` 类型的资源
 
 > `PyCore` 实现了 `__callStatic()` 魔术方法，对于 `PyCore` 静态方法调用会自动调用 `Python` 的 `builtins` 模块对应的方法 ，

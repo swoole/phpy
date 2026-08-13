@@ -29,7 +29,7 @@ phpy.call('test', arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 - `arg1`, `arg2`, and `arg3` will be converted to integers, floats, and booleans in `PHP`, copying the values directly.
 
 - `arg4`, `arg5`, and `arg6` will directly pass references to `PHP`, producing no memory copy.
-- `arg6`, `arg7`, and `arg8` will be traversed, deeply copied in memory, and converted into `PHP`’s `array` and `string`.
+- `arg7`, `arg8`, and `arg9` will be traversed, deeply copied in memory, and converted into `PHP`’s `array` and `string`.
 
 ## Return Values
 

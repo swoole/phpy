@@ -48,13 +48,12 @@ Set the path of the `python-config` executable. This option takes precedence ove
 /opt/anaconda3/bin/python3.11-config
 (base) htf@swoole-12:~/workspace/python-php$ python3.11-config
 Usage: /opt/anaconda3/bin/python3.11-config --prefix|--exec-prefix|--includes|--libs|--cflags|--ldflags|--extension-suffix|--help|--abiflags|--configdir|--embed
-(base) htf@swoole-12:~/workspace/python-php$ ./configure --wi--with-gnu-ld: This option indicates that the GNU linker should be used.
---with-libdir=: This option is used to specify the directory where the libraries are located.
---without-PACKAGE: This option is used to specify that a particular package should not be included.
---with-PACKAGE: This option is used to specify that a particular package should be included.
---with-php-config=: This option is used to specify the location of the PHP configuration script.
---with-pic: This option is used to enable position-independent code generation.
---with-python-config: This option is used to specify the location of the Python configuration script.
---with-python-dir: This option is used to specify the directory where the Python libraries are located.
---with-python-version: This option is used to specify the version of Python to use.
---with-tags=: This option is used to specify additional tags.
+(base) htf@swoole-12:~/workspace/python-php$ ./configure --wi
+--with-gnu-ld          --with-libdir=         --without-PACKAGE      --with-PACKAGE         --with-php-config=     --with-pic             --with-python-config   --with-python-dir      --with-python-version  --with-tags=
+(base) htf@swoole-12:~/workspace/python-php$ ./configure --with-python-config=python3.11-config
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for a sed that does not truncate output... /bin/sed
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+```

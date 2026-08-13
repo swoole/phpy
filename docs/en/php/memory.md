@@ -29,7 +29,7 @@ $user->test($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9);
 - `$arg1`, `$arg2`, and `$arg3` will be converted to integers, floating point, and boolean in `Python`, copying the values directly.
 
 - `$arg4`, `$arg5`, and `$arg6` will directly pass references to `Python`, resulting in no memory copies.
-- `$arg6`, `$arg7`, and `$arg8` will be traversed and deeply copied in memory, converting to `Python`'s `list`, `dict`, and `str`.
+- `$arg7`, `$arg8`, and `$arg9` will be traversed and deeply copied in memory, converting to `Python`'s `dict`, `str`, and `list`.
 
 ## Return Values
 

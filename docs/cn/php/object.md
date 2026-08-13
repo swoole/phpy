@@ -16,7 +16,7 @@
 
 ```
 PyObject -> PyModule
-         -> PySequenece -> PyList
+         -> PySequence -> PyList
                         -> PyTuple
          -> PySet
          -> PyStr
@@ -75,8 +75,8 @@ $info = $Info('Rango', 2023);
 ```py
 from app.user import Info
 
-// 创建一个 Info 对象
-info = Info('Rango', 2023);
+# 创建一个 Info 对象
+info = Info('Rango', 2023)
 ```
 
 ## 命名参数
@@ -123,37 +123,19 @@ function kwargs(...$kwargs) {
 可将命名参数传递给另外函数。
 
 ## 切片语法
-支持切片语法，使用`PyCore::slice($a, $b, $c = null)` 构建切片对象，作为数组的`Key`传递给对象即可。
 
-### 实例：
+序列类型 `PyList` 与 `PyTuple`（均继承自 `PySequence`）提供 `slice(int $start, int $end)` 方法用于截取子序列：
+
 ```php
-$s = new PyStr("Python Programming")
+$list = new PyList([10, 20, 30, 40, 50]);
 
-# 获取前三个字符
-# Python: print(s[0:3])
-PyCore::print($s[PyCore::slice(0, 3)]);  # 输出: "Pyt"
-
-# 获取从索引 7 到索引 12 的字符
-# Python: print(s[7:12])  # 输出: "Progr"
-PyCore::print($s[PyCore::slice(7, 12)]);  # 输出: "Progr"
-
-# 获取整个字符串
-# Python: print(s[:])  # 输出: "Python Programming"
-PyCore::print($s[PyCore::slice()]);  # 输出: "Python Programming
-
-# 使用步长
-# Python: print(s[::2])  # 输出: "Pto rgamn"（每两个字符取一个）
-PyCore::print($s[PyCore::slice(null, null, 2)]);  # 输出: "Pto rgamn"
-
-# 反向切片
-# Python: print(s[::-1])  # 输出: "gnimmargorP nohtyP"（字符串反转）
-PyCore::print($s[PyCore::slice(null, null, -1)]);  # 输出: "gnimmargorP nohtyP"
-
-# 获取最后一个字符
-# Python: print(s[-1])  # 输出: "g"
-PyCore::print($s[PyCore::slice(-1)]);  # 输出: "g"
-
-# 获取倒数第三个到倒数第一个字符
-# Python: print(s[-3:-1])  # 输出: "mi"
-PyCore::print($s[PyCore::slice(-3, -1)]);  # 输出: "mi"
+// 截取索引区间 [1, 3) 的元素
+$sub = $list->slice(1, 3);
+PyCore::print($sub);        // [20, 30]
 ```
+
+注意：
+
+- `slice($start, $end)` 只接受起点、终点两个整数参数，**不支持步长（step）**；
+- 该方法是 `PySequence` 的方法，因此适用于 `PyList` 与 `PyTuple`；
+- `[]` 下标操作符只接受整数索引。将切片对象作为下标（如 `$s[PyCore::slice(0, 3)]`）在本版本**不支持**，且 `PyStr` 也无法通过下标进行切片。如需子串，可先将字符串转为字符 `PyList`，或通过 `PyCore::eval()` 调用 Python 字符串方法。

@@ -28,7 +28,7 @@ phpy.call('test', arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
 
 - `arg1`、`arg2`、`arg3` 将转为 `PHP` 中的整型、浮点型、布尔型，直接复制数值
 - `arg4`、`arg5`、`arg6` 将直接传递引用到 `PHP` 中，不会产生内存拷贝
-- `arg6`、`arg7`、`arg8` 将遍历、深度内存拷贝，并转为 `PHP` 的 `array`、`string`
+- `arg7`、`arg8`、`arg9` 将遍历、深度内存拷贝，并转为 `PHP` 的 `array`、`string`
 
 ## 返回值
 - 整型、布尔型、浮点型、空值（`None` 和 `null`）将转为 `Python` 的原生类型

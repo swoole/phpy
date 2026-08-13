@@ -14,12 +14,12 @@ All class methods, parameters, and return values are defined in the files in the
 ## Inheritance
 ```
 PyObject -> PyModule
--> PySequenece -> PyList
--> PyTuple
--> PySet
--> PyStr
--> PyDict
--> PyType
+         -> PySequence -> PyList
+                      -> PyTuple
+         -> PySet
+         -> PyStr
+         -> PyDict
+         -> PyType
 ```
 
 ## __get($name)
@@ -120,3 +120,21 @@ function kwargs(...$kwargs) {
 ```
 
 It is possible to forward the named parameters to another function.
+
+## Slice Syntax
+
+The sequence types `PyList` and `PyTuple` (both extend `PySequence`) provide a `slice(int $start, int $end)` method to extract a sub-sequence:
+
+```php
+$list = new PyList([10, 20, 30, 40, 50]);
+
+// Extract elements in the index range [1, 3)
+$sub = $list->slice(1, 3);
+PyCore::print($sub);        // [20, 30]
+```
+
+Notes:
+
+- `slice($start, $end)` accepts only two integer arguments for the start and end positions. **Step (stride) is not supported.**
+- It is a method of `PySequence`, so it applies to `PyList` and `PyTuple`.
+- The `[]` subscript operator only accepts an integer index. Passing a slice object as the key (e.g. `$s[PyCore::slice(0, 3)]`) is **not supported** in this build, and `PyStr` cannot be sliced through the subscript operator. If you need a substring, convert the string to a character `PyList` first, or use a Python string method via `PyCore::eval()`.

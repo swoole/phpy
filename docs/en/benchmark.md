@@ -68,7 +68,7 @@ print(f"dict get: {elapsed_time_get:.6f} seconds")
 ```php
 <?php
 
-```ini_set('memory_limit', '2G');
+ini_set('memory_limit', '2G');
 $dict = [];
 const COUNT = 10000000;
 

@@ -21,7 +21,7 @@ s1 += "hello"
 # 追加 bytes
 s1 += b"world"
 # 追加另外一个 phpy.String
-s1 += phpy.String(", php is the best program language")
+s1 += phpy.String(", php is the best programming language")
 ```
 
 ## 包含

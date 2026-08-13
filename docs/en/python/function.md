@@ -28,7 +28,7 @@ phpy.eval("var_dump(get_loaded_extensions());")
 It can be an extension function or a user-defined function. The first parameter is the name of the function, which must be a string. Other parameters will be passed as arguments to the called `PHP` function.
 
 - If a parameter is of reference type, you can use `phpy.Reference()` to wrap it.
-- Supports calling static methods of a class, for example: `phpy.call("Test::main"))`
+- Supports calling static methods of a class, for example: `phpy.call("Test::main")`
 
 ```python
 print(phpy.call("file_get_contents", "/tmp/file.txt"))

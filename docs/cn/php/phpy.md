@@ -79,10 +79,10 @@ composer require swoole/phpy
 ./vendor/bin/phpy install
 ```
 - `install`命令会根据当前项目及`vendor`中引入的所有`composer`包的`phpy.json`配置信息进行安装，安装内容如下：
-  - 编译构建依赖，详见[BuildToolsInstaller.php](../../../tools/src/Phpy/Installer/BuildToolsInstaller.php)
-  - 编译安装`Python`环境，详见[PythonInstaller.php](../../../tools/src/Phpy/Installer/PythonInstaller.php)
-  - 编译安装`phpy`拓展，详见[PhpyInstaller.php](../../../tools/src/Phpy/Installer/PhpyInstaller.php)
-  - 安装`Python`模块，详见[ModuleInstaller.php](../../../tools/src/Phpy/Installer/ModuleInstaller.php)
+  - 编译构建依赖，详见[BuildToolsInstaller.php](../../../tools/src/Phpy/Installers/BuildToolsInstaller.php)
+  - 编译安装`Python`环境，详见[PythonInstaller.php](../../../tools/src/Phpy/Installers/PythonInstaller.php)
+  - 编译安装`phpy`拓展，详见[PhpyInstaller.php](../../../tools/src/Phpy/Installers/PhpyInstaller.php)
+  - 安装`Python`模块，详见[ModuleInstaller.php](../../../tools/src/Phpy/Installers/ModuleInstaller.php)
 - `install`命令会在项目路径下创建`phpy.lock`文件，用于记录安装信息，下次安装时，如果`phpy.lock`文件存在，则不会重复安装。
 - `install`命令默认使用`Python-venv`环境，会在项目路径下创建`py-vendor`目录，用于存储`Python`环境及模块。
 - `install`命令会在项目路径下创建如下文件，**以下文件建议加入项目`.gitignore`文件**：

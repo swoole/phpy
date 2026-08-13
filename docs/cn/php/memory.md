@@ -26,7 +26,7 @@ $user->test($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9);
 
 - `$arg1`、`$arg2`、`$arg3` 将转为 `Python` 中的整型、浮点型、布尔型，直接复制数值
 - `$arg4`、`$arg5`、`$arg6` 将直接传递引用到 `Python` 中，不会产生内存拷贝
-- `$arg6`、`$arg7`、`$arg8` 将遍历、深度内存拷贝，并转为 `Python` 的 `list`、 `dict`、`str`
+- `$arg7`、`$arg8`、`$arg9` 将遍历、深度内存拷贝，并转为 `Python` 的 `dict`、`str`、`list`
 
 ## 返回值
 - 整型、布尔型、浮点型、空值（`None` 和 `null`）将转为 `PHP` 的原生类型
