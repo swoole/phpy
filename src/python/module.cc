@@ -146,7 +146,7 @@ static PyObject *phpy_globals(PyObject *self, PyObject *args) {
 static PyObject *phpy_eval(PyObject *self, PyObject *args) {
     const char *script = 0;
     size_t l_script;
-    int exit_status;
+    int exit_status = 0;
     char program_name[] = "phpy";
     if (!PyArg_ParseTuple(args, "s#", &script, &l_script)) {
         PyErr_SetString(PyExc_TypeError, "must supply at least 1 parameter.");

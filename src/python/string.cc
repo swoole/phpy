@@ -77,13 +77,18 @@ static PyObject *String_iadd(ZendString *self, PyObject *o2) {
         PyErr_Format(PyExc_TypeError, "can not concat '%s' to zend_string", Py_TypeName(o2));
         return NULL;
     }
-    zend_string *new_zstr = zend_string_extend(Z_STR(self->string), s1_len + s2_len, 0);
+    if (UNEXPECTED((size_t) s2_len > ZSTR_MAX_LEN - s1_len)) {
+        return PyErr_NoMemory();
+    }
+    const size_t result_len = s1_len + (size_t) s2_len;
+    zend_string *new_zstr = zend_string_extend(Z_STR(self->string), result_len, 0);
     if (!new_zstr) {
         PyErr_SetString(PyExc_MemoryError, "memory alloc fail");
         return NULL;
     }
     Z_STR(self->string) = new_zstr;
     memcpy(Z_STRVAL(self->string) + s1_len, s2, s2_len);
+    Z_STRVAL(self->string)[result_len] = '\0';
     Py_INCREF(self);
     return (PyObject *) self;
 }
@@ -97,14 +102,22 @@ static PyObject *String_add(ZendString *self, PyObject *o2) {
         PyErr_Format(PyExc_TypeError, "can not concat '%s' to zend_string", Py_TypeName(o2));
         return NULL;
     }
-    ZendString *new_str = (ZendString *) phpy::python::new_string(s1_len + (size_t) s2_len);
+    if (UNEXPECTED((size_t) s2_len > ZSTR_MAX_LEN - s1_len)) {
+        return PyErr_NoMemory();
+    }
+    const size_t result_len = s1_len + (size_t) s2_len;
+    ZendString *new_str = (ZendString *) phpy::python::new_string(result_len);
+    if (UNEXPECTED(new_str == NULL)) {
+        return NULL;
+    }
     memcpy(Z_STRVAL(new_str->string), s1, s1_len);
     memcpy(Z_STRVAL(new_str->string) + s1_len, s2, s2_len);
+    Z_STRVAL(new_str->string)[result_len] = '\0';
     return (PyObject *) new_str;
 }
 
 static PyObject *String_compare(PyObject *o1, PyObject *o2, int op) {
-    if (op != Py_EQ) {
+    if (op != Py_EQ && op != Py_NE) {
         Py_RETURN_NOTIMPLEMENTED;
     }
     zval *z1 = zend_string_cast(o1);
@@ -113,7 +126,8 @@ static PyObject *String_compare(PyObject *o1, PyObject *o2, int op) {
     if (val == NULL) {
         Py_RETURN_NOTIMPLEMENTED;
     }
-    if (len == (Py_ssize_t) Z_STRLEN_P(z1) && memcmp(Z_STRVAL_P(z1), val, len) == 0) {
+    const bool equal = len == (Py_ssize_t) Z_STRLEN_P(z1) && memcmp(Z_STRVAL_P(z1), val, len) == 0;
+    if (equal == (op == Py_EQ)) {
         Py_RETURN_TRUE;
     } else {
         Py_RETURN_FALSE;
@@ -250,6 +264,7 @@ PyObject *new_string(size_t len) {
         return NULL;
     }
     ZVAL_STR(&self->string, zend_string_alloc(len, 0));
+    Z_STRVAL(self->string)[len] = '\0';
     phpy::php::add_object((PyObject *) self, String_dtor);
     return (PyObject *) self;
 }
