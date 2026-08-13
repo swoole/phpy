@@ -166,6 +166,35 @@ class CoreTest extends TestCase
         $this->assertGreaterThan(1024, $port);
     }
 
+    public function testFilenoRejectsStreamsWithoutFileDescriptor(): void
+    {
+        // Streams that cannot be cast to a raw file descriptor (filtered
+        // streams, data:// wrappers) fall back to a stdio FILE* via
+        // fopencookie; that FILE* has no real fd, so fileno() is -1 and
+        // PyCore::fileno() must reject the stream.
+        $tmp = tempnam(sys_get_temp_dir(), 'phpy');
+        try {
+            $fp = fopen($tmp, 'r+');
+            stream_filter_append($fp, 'string.toupper');
+            try {
+                PyCore::fileno($fp);
+                $this->fail('A filtered stream must be rejected');
+            } catch (Exception $e) {
+                $this->assertStringContainsString('Invalid file descriptor', $e->getMessage());
+            }
+            fclose($fp);
+
+            try {
+                PyCore::fileno(fopen('data://text/plain,hello', 'r'));
+                $this->fail('A data:// stream must be rejected');
+            } catch (Exception $e) {
+                $this->assertStringContainsString('Invalid file descriptor', $e->getMessage());
+            }
+        } finally {
+            @unlink($tmp);
+        }
+    }
+
     public function testNumericAsObject()
     {
         PyCore::setOptions(['numeric_as_object' => true]);

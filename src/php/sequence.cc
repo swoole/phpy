@@ -39,12 +39,6 @@ zend_class_entry *phpy_sequence_get_ce() {
     return PySequence_ce;
 }
 
-ZEND_METHOD(PySequence, count) {
-    auto object = phpy_object_get_handle(ZEND_THIS);
-    LOCK_GIL();
-    RETURN_LONG(PySequence_Size(object));
-}
-
 ZEND_METHOD(PySequence, contains) {
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
