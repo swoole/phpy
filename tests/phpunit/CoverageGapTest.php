@@ -164,6 +164,58 @@ class CoverageGapTest extends TestCase
         $this->assertSame([1, 2, 3], $collected);
     }
 
+    public function testPyObjectMethodsCoverTheGenericObjectProtocol(): void
+    {
+        $module = PyCore::import('app.user');
+        $object = $module->protocol_object();
+
+        $this->assertSame('initial', (string) $object->__get('name'));
+        $object->__set('name', 'changed');
+        $this->assertSame('hello changed!', (string) $object->__call('greet', ['hello']));
+        $this->assertSame(7, $object->__invoke(3, right: 4));
+        $object->__unset('name');
+
+        $values = $object->__get('values');
+        $this->assertSame(10, $values->offsetGet(0));
+        $values->offsetSet(1, 25);
+        $this->assertTrue($values->offsetExists(1));
+        $values->offsetUnset(2);
+        $this->assertSame([10, 25], $values->toArray());
+        $this->assertSame([10, 25], $values->toValue());
+        $this->assertSame(2, $values->count());
+        $this->assertSame('[10, 25]', (string) $values);
+        $this->assertTrue((bool) $values);
+    }
+
+    public function testPyObjectIteratorMethodsCanBeCalledDirectly(): void
+    {
+        $iterator = PyCore::iter(['first', 'second']);
+
+        $iterator->rewind();
+        $this->assertTrue($iterator->valid());
+        $this->assertSame(0, $iterator->key());
+        $this->assertSame('first', (string) $iterator->current());
+
+        $iterator->next();
+        $this->assertTrue($iterator->valid());
+        $this->assertSame(1, $iterator->key());
+        $this->assertSame('second', (string) $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->current());
+    }
+
+    public function testPyObjectConstructorAndBooleanCast(): void
+    {
+        $zero = new PyObject(0);
+        $value = new PyObject(42);
+
+        $this->assertFalse((bool) $zero);
+        $this->assertTrue((bool) $value);
+        $this->assertSame(42, $value->toValue());
+    }
+
     public function testObjectCountIsCountable(): void
     {
         $list = new PyList([1, 2, 3, 4]);

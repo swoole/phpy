@@ -17,7 +17,6 @@
 
 #include "phpy.h"
 
-#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
@@ -40,7 +39,6 @@ static long eval_code_id = 0;
 
 using phpy::CallObject;
 using phpy::php::arg_1;
-using phpy::php::arg_2;
 using phpy::python::LockGuard;
 using phpy::python::OwnedPythonReference;
 

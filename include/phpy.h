@@ -349,8 +349,6 @@ static inline zval *object_get(zval *zo, const char *name, size_t l_name) {
 
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS);
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
-std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS);
-std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 
 static inline uint32_t array_count(zend_array *ht) {
     return zend_array_count(ht);

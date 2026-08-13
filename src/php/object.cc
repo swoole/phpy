@@ -17,8 +17,6 @@
 
 #include "phpy.h"
 #include "zend_interfaces.h"
-#include <tuple>
-
 BEGIN_EXTERN_C()
 #include "stubs/phpy_object_arginfo.h"
 END_EXTERN_C()
@@ -51,14 +49,6 @@ PyObject *phpy_object_get_handle(zend_object *object) {
 
 PyObject *phpy_object_get_handle(zval *zobject) {
     return phpy_object_get_object(zobject)->object;
-}
-
-PyObject *phpy_object_get_iterator(zend_object *object) {
-    return phpy_object_get_object(object)->iterator;
-}
-
-PyObject *phpy_object_get_iterator(zval *object) {
-    return phpy_object_get_object(object)->iterator;
 }
 
 void phpy_object_iterator_reset(zval *object) {
@@ -200,27 +190,6 @@ PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce) {
     ZEND_PARSE_PARAMETERS_END_EX(return NULL);
 
     return php2py(zk);
-}
-static std::tuple<PyObject *, PyObject *> arg_2_empty = {NULL, NULL};
-std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS) {
-    zval *arg0, *arg1;
-
-    ZEND_PARSE_PARAMETERS_START(2, 2)
-    Z_PARAM_ZVAL(arg0)
-    Z_PARAM_ZVAL(arg1)
-    ZEND_PARSE_PARAMETERS_END_EX(return arg_2_empty);
-
-    return std::make_tuple(php2py(arg0), php2py(arg1));
-}
-std::tuple<PyObject *, PyObject *> arg_2(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce) {
-    zval *arg0, *arg1;
-
-    ZEND_PARSE_PARAMETERS_START(2, 2)
-    Z_PARAM_OBJECT_OF_CLASS(arg0, ce)
-    Z_PARAM_OBJECT_OF_CLASS(arg1, ce)
-    ZEND_PARSE_PARAMETERS_END_EX(return arg_2_empty);
-
-    return std::make_tuple(php2py(arg0), php2py(arg1));
 }
 }  // namespace php
 }  // namespace phpy
