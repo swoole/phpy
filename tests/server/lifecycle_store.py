@@ -1,4 +1,4 @@
-"""Process-global storage used by the PHP-FPM request lifecycle test."""
+"""Process-global storage used by the PHP server lifecycle test."""
 
 import gc
 

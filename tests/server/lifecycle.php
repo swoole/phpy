@@ -19,7 +19,7 @@ if ($phase === 'retain') {
         new PyObject($stream),
     )->toArray();
 
-    $arrayValue = $store->create_request_array();
+    $arrayValue = PyCore::scalar($store->create_request_array());
     echo json_encode([
         'phase' => 'retain',
         'pid' => getmypid(),
