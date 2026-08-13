@@ -481,8 +481,6 @@ const char *string2char_ptr(PyObject *pv, ssize_t *len);
 void string2zval(PyObject *pv, zval *zv);
 void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);
-bool contains(PyObject *obj, PyObject *key);
-
 class LockGuard {
   public:
     LockGuard() : state_(PyGILState_Ensure()), released_(false) {}
