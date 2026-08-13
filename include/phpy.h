@@ -38,6 +38,7 @@
 #include <main/php_variables.h>
 #include <main/php_ini.h>
 #include <zend_ini.h>
+#include <zend_interfaces.h>
 
 #include "phpy_api.h"
 
@@ -200,6 +201,7 @@ bool py_module_class_init(PyObject *m);
 bool py_module_reference_init(PyObject *m);
 bool py_module_callable_init(PyObject *m);
 bool py_module_array_init(PyObject *m);
+bool py_module_iterator_init(PyObject *m);
 
 PyObject *py_module_create(bool py_module);
 
@@ -473,6 +475,7 @@ PyObject *new_object(zval *zv);
 PyObject *new_resource(zval *zv);
 PyObject *new_reference(zval *zv);
 PyObject *new_callable(zval *zv);
+PyObject *new_iterator(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
 const char *string2char_ptr(PyObject *pv, ssize_t *len);
 void string2zval(PyObject *pv, zval *zv);

@@ -211,6 +211,8 @@ PyObject *new_object(zval *zv) {
         PyObject *obj = phpy_object_get_handle(zv);
         Py_INCREF(obj);
         return obj;
+    } else if (instanceof_function(Z_OBJCE_P(zv), zend_ce_traversable)) {
+        return new_iterator(zv);
     } else {
         ZendObject *obj = PyObject_New(ZendObject, &ZendObjectType);
         obj->object = *zv;

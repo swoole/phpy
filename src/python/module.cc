@@ -247,6 +247,7 @@ PyObject *py_module_create(bool py_module) {
         py_module_class_init,
         py_module_resource_init,
         py_module_callable_init,
+        py_module_iterator_init,
 #ifdef HAVE_PHP_EMBED
         py_module_php_init,
 #endif
