@@ -74,6 +74,7 @@ add_definitions(-DHAVE_PHP_EMBED)
 include_directories(BEFORE ${phpy_includes})
 link_directories(${phpy_link_directories})
 add_library(phpy SHARED ${SOURCE_FILES})
+target_compile_definitions(phpy PRIVATE PHPY_EXPORTS)
 
 if (CODE_COVERAGE)
     target_link_libraries(phpy coverage_config gcov)

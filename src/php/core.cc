@@ -56,13 +56,7 @@ ZEND_METHOD(PyCore, import) {
     Z_PARAM_STRING(module, l_module)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    LOCK_GIL();
-    OwnedPythonReference imported_module(PyImport_ImportModule(module));
-    if (!imported_module) {
-        phpy::php::throw_error_if_occurred();
-    } else {
-        phpy::php::new_module(return_value, imported_module.get());
-    }
+    phpy_import_module(module, l_module, return_value);
 }
 
 ZEND_METHOD(PyCore, eval) {
@@ -110,7 +104,7 @@ ZEND_METHOD(PyCore, eval) {
 }
 
 ZEND_METHOD(PyCore, next) {
-	LOCK_GIL();
+    LOCK_GIL();
     OwnedPythonReference iter(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU, phpy_iter_get_ce()));
     CHECK_ARG(iter.get());
     OwnedPythonReference next(PyIter_Next(iter.get()));
@@ -127,7 +121,7 @@ ZEND_METHOD(PyCore, int) {
     ZEND_PARSE_PARAMETERS_START(0, 1)
     Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zv)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
     OwnedPythonReference result;
@@ -150,7 +144,7 @@ ZEND_METHOD(PyCore, object) {
     ZEND_PARSE_PARAMETERS_START(0, 1)
     Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zv)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
     if (zv == NULL || ZVAL_IS_NULL(zv)) {
@@ -166,7 +160,7 @@ ZEND_METHOD(PyCore, float) {
     ZEND_PARSE_PARAMETERS_START(0, 1)
     Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zv)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
     OwnedPythonReference result;
@@ -188,7 +182,7 @@ ZEND_METHOD(PyCore, fn) {
 
     ZEND_PARSE_PARAMETERS_START(1, 1)
     Z_PARAM_ZVAL(zv)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
     OwnedPythonReference callable(phpy::python::new_callable(zv));
@@ -212,7 +206,7 @@ ZEND_METHOD(PyCore, setOptions) {
 
     ZEND_PARSE_PARAMETERS_START(1, 1)
     Z_PARAM_ARRAY(options)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     zval *opt;
 
@@ -430,13 +424,6 @@ PHP_RSHUTDOWN_FUNCTION(phpy) {
     return SUCCESS;
 }
 
-BEGIN_EXTERN_C()
-const char *phpy_get_python_version(void) {
-	LOCK_GIL();
-    return Py_GetVersion();
-}
-END_EXTERN_C()
-
 ZEND_METHOD(PyCore, __callStatic) {
     char *name;
     size_t l_name;
@@ -457,7 +444,7 @@ ZEND_METHOD(PyCore, bytes) {
     ZEND_PARSE_PARAMETERS_START(0, 1)
     Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zv)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
     PyObject *pv;
@@ -546,7 +533,7 @@ ZEND_METHOD(PyCore, raise) {
     Z_PARAM_OBJECT_OF_CLASS(ztype, phpy_object_get_ce())
     Z_PARAM_OPTIONAL
     Z_PARAM_ZVAL(zvalue)
-    ZEND_PARSE_PARAMETERS_END_EX(return );
+    ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
     if (zvalue) {

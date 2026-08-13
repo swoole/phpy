@@ -39,6 +39,8 @@
 #include <main/php_ini.h>
 #include <zend_ini.h>
 
+#include "phpy_api.h"
+
 #include <iostream>
 
 #define __SCOPEGUARD_CONCATENATE_IMPL(s1, s2) s1##s2

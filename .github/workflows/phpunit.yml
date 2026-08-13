@@ -38,6 +38,7 @@ jobs:
           phpize
           ./configure --enable-code-coverage
           make -j $(nproc)
+          cc -std=gnu11 -D_GNU_SOURCE -fsyntax-only tests/api_header.c -I. $(php-config --includes)
           sudo make install
           sudo sh -c "echo 'extension=phpy.so' > /etc/php/${PHP_VERSION}/cli/conf.d/90-phpy.ini"
           php --ri phpy
@@ -64,4 +65,3 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.info
           fail_ci_if_error: true
-

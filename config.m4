@@ -92,7 +92,7 @@ if test "$PHP_PHPY" != "no"; then
   AC_DEFINE(HAVE_PHPY, 1, [ Have phpy support ])
 
   EXTRAS_CXXFLAGS="-Wall -Wno-unused-function -Wno-deprecated -Wno-deprecated-declarations -z now"
-  EXTRAS_CXXFLAGS="$EXTRAS_CXXFLAGS -std=c++14"
+  EXTRAS_CXXFLAGS="$EXTRAS_CXXFLAGS -std=c++14 -DPHPY_EXPORTS"
 
   AC_MSG_CHECKING([code coverage])
   if test "$PHP_CODE_COVERAGE" != "no"; then
@@ -122,6 +122,7 @@ if test "$PHP_PHPY" != "no"; then
   phpy_source_files="phpy.cc $phpy_source_files"
 
   PHP_NEW_EXTENSION(phpy, $phpy_source_files , $ext_shared,, $EXTRAS_CXXFLAGS, cxx)
+  PHP_INSTALL_HEADERS([ext/phpy], [phpy_api.h])
 
   dnl AC_MSG_RESULT([$ext_builddir])
 

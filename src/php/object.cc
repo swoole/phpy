@@ -143,8 +143,8 @@ static void phpy_object_free_object(zend_object *object) {
 // zend_object_cast_t returned int in older supported PHP releases and
 // zend_result in newer ones. Derive the exact ABI type from Zend instead of
 // forcing either signature or casting an incompatible function pointer.
-using ObjectCastResult = decltype(zend_std_cast_object_tostring(
-    static_cast<zend_object *>(nullptr), static_cast<zval *>(nullptr), 0));
+using ObjectCastResult =
+    decltype(zend_std_cast_object_tostring(static_cast<zend_object *>(nullptr), static_cast<zval *>(nullptr), 0));
 
 static ObjectCastResult phpy_object_cast_object(zend_object *object, zval *result, int type) {
     if (type != _IS_BOOL) {
@@ -306,15 +306,7 @@ ZEND_METHOD(PyObject, __get) {
     Z_PARAM_STRING(name, l_name)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    auto object = phpy_object_get_handle(ZEND_THIS);
-    LOCK_GIL();
-    auto value = PyObject_GetAttrString(object, name);
-    if (value != NULL) {
-        py2php(value, return_value);
-        Py_DECREF(value);
-    } else {
-        phpy::php::throw_error_if_occurred();
-    }
+    phpy_get_attr(ZEND_THIS, name, l_name, return_value);
 }
 
 ZEND_METHOD(PyObject, __set) {
@@ -365,15 +357,13 @@ ZEND_METHOD(PyObject, __toString) {
 ZEND_METHOD(PyObject, toArray) {
     ZEND_PARSE_PARAMETERS_NONE();
 
-    LOCK_GIL();
-    py2php_array(phpy_object_get_handle(ZEND_THIS), return_value);
+    phpy_to_array(ZEND_THIS, return_value);
 }
 
 ZEND_METHOD(PyObject, toValue) {
     ZEND_PARSE_PARAMETERS_NONE();
 
-    LOCK_GIL();
-    py2php_scalar(phpy_object_get_handle(ZEND_THIS), return_value);
+    phpy_to_value(ZEND_THIS, return_value);
 }
 
 ZEND_METHOD(PyObject, __invoke) {
