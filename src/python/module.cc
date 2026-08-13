@@ -18,6 +18,33 @@
 #include "phpy.h"
 #include "zend_exceptions.h"
 
+/**
+ * Transfer a pending PHP exception to Python and release its Zend ownership.
+ */
+static bool phpy_translate_exception() {
+    zend_object *exception = EG(exception);
+    if (exception == nullptr) {
+        return false;
+    }
+
+    zval rv;
+    ZVAL_UNDEF(&rv);
+    zval *value = zend_read_property(exception->ce, exception, ZEND_STRL("message"), true, &rv);
+    zend_string *message = value == nullptr ? nullptr : zval_get_string(value);
+
+    if (message != nullptr) {
+        PyErr_Format(PyExc_RuntimeError, "%s: %s", ZSTR_VAL(exception->ce->name), ZSTR_VAL(message));
+        zend_string_release(message);
+    } else {
+        PyErr_Format(PyExc_RuntimeError, "PHP exception: %s", ZSTR_VAL(exception->ce->name));
+    }
+    if (value == &rv) {
+        zval_ptr_dtor(&rv);
+    }
+    zend_clear_exception();
+    return true;
+}
+
 static PyObject *phpy_call(PyObject *self, PyObject *args) {
     Py_ssize_t TupleSize = PyTuple_Size(args);
     if (!TupleSize) {
@@ -159,6 +186,9 @@ static PyObject *phpy_eval(PyObject *self, PyObject *args) {
         exit_status = EG(exit_status);
     }
     zend_end_try();
+    if (phpy_translate_exception()) {
+        return NULL;
+    }
 
     return PyLong_FromLong(exit_status);
 }
