@@ -35,10 +35,10 @@ jobs:
           python -V
           ls -al
           pwd
-      - name: Build and install Python module
+      - name: Build
         run: |
-          CXXFLAGS="-O0 -g -fprofile-update=atomic --coverage" LDFLAGS="--coverage" \
-            pip install --no-build-isolation -e .
+          cmake . -D CODE_COVERAGE=ON
+          make -j $(nproc)
       - name: Run pytest tests
         run: |
           sudo service redis-server start
