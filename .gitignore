@@ -61,3 +61,4 @@ config.sub
 /py-vendor
 /requirements.txt
 /phpy.lock
+/coverage_php.info

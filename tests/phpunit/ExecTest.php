@@ -72,6 +72,18 @@ PYCODE;
         PyCore::eval('value = 1', ['invalid' => "\xff"]);
     }
 
+    public function testEvalMergesGlobalsIntoModuleNamespace(): void
+    {
+        // A valid globals array reaches the PyDict_Merge(globals, global_params, 0)
+        // branch in PyCore::eval (src/php/core.cc); the merged names are visible
+        // to the evaluated code.
+        $module = PyCore::eval('result = seed * 2', ['seed' => 21]);
+        $this->assertSame(42, $module->result);
+
+        $module = PyCore::eval('text = greeting + " " + who', ['greeting' => 'hello', 'who' => 'world']);
+        $this->assertSame('hello world', (string) $module->text);
+    }
+
     public function testScalarRejectsUnencodablePythonUnicodeWithoutCrashing(): void
     {
         $this->expectException(PyError::class);
