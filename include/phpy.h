@@ -370,10 +370,32 @@ static inline zend_result call_fn(
     zval *retval_ptr,
     uint32_t param_count,
     zval *params,
-    HashTable *named_params = nullptr) {
+    HashTable *named_params = nullptr,
+    zend_fcall_info_cache *cache = nullptr) {
+    if (cache == nullptr) {
+        zend_result result = FAILURE;
+        zend_try {
+            result = call_user_function_named(NULL, object, function_name, retval_ptr, param_count, params, named_params);
+        }
+        zend_end_try();
+        if (EG(exception) != NULL) {
+            return FAILURE;
+        }
+        return result;
+    }
+
+    zend_fcall_info fci;
+    fci.size = sizeof(fci);
+    fci.object = object == nullptr ? nullptr : Z_OBJ_P(object);
+    ZVAL_COPY_VALUE(&fci.function_name, function_name);
+    fci.retval = retval_ptr;
+    fci.param_count = param_count;
+    fci.params = params;
+    fci.named_params = named_params;
+
     zend_result result = FAILURE;
     zend_try {
-        result = call_user_function_named(NULL, object, function_name, retval_ptr, param_count, params, named_params);
+        result = zend_call_function(&fci, cache);
     }
     zend_end_try();
     if (EG(exception) != NULL) {

@@ -16,6 +16,12 @@ def test_php_closure_called_with_keyword_args():
     assert cb(a=3, b=7) == 37
 
 
+def test_php_closure_can_be_called_repeatedly():
+    cb = phpy.call('phpy_kw_closure')
+    for i in range(10_000):
+        assert cb(i, 1) == i * 10 + 1
+
+
 def test_php_traversable_iterated_from_python():
     it = phpy.call('phpy_test_iter')
     assert type(it).__name__ == 'zend_iterator'

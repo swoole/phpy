@@ -27,6 +27,8 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
 struct ZendCallable {
     PyObject_HEAD
     zval callable;
+    zend_fcall_info_cache cache;
+    bool cacheable;
 };
 
 static PyTypeObject ZendCallableType = { PyVarObject_HEAD_INIT(NULL, 0) };
@@ -35,8 +37,28 @@ static PyTypeObject ZendCallableType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 static void Callable_dtor(PyObject *pv) {
     ZendCallable *self = (ZendCallable *) pv;
+    zend_release_fcall_info_cache(&self->cache);
+    self->cache = {};
     zval_ptr_dtor(&self->callable);
     ZVAL_NULL(&self->callable);
+}
+
+static bool Callable_is_cacheable(const zval *callable) {
+    if (UNEXPECTED(Z_ISREF_P(callable))) {
+        return false;
+    }
+    if (Z_TYPE_P(callable) != IS_ARRAY) {
+        return true;
+    }
+
+    // Callable arrays are immutable after their zval is copied unless one of
+    // their two components is a reference. In that case PHP code may change
+    // the target without replacing this wrapper's array, so it must continue
+    // through Zend's dynamic callable resolution path.
+    HashTable *values = Z_ARRVAL_P(callable);
+    zval *target = zend_hash_index_find(values, 0);
+    zval *method = zend_hash_index_find(values, 1);
+    return target != nullptr && method != nullptr && !Z_ISREF_P(target) && !Z_ISREF_P(method);
 }
 
 namespace phpy {
@@ -45,6 +67,8 @@ PyObject *new_callable(zval *zv) {
     ZendCallable *cb = PyObject_New(ZendCallable, &ZendCallableType);
     cb->callable = *zv;
     zval_add_ref(&cb->callable);
+    cb->cache = {};
+    cb->cacheable = Callable_is_cacheable(&cb->callable);
     phpy::php::add_object((PyObject *) cb, Callable_dtor);
     return (PyObject *) cb;
 }
@@ -62,8 +86,7 @@ bool ZendCallable_Check(PyObject *pv) {
 
 static void Callable_dealloc(ZendCallable *self) {
     if (phpy::php::del_object((PyObject *) self)) {
-        zval_ptr_dtor(&self->callable);
-        ZVAL_NULL(&self->callable);
+        Callable_dtor((PyObject *) self);
     }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
@@ -101,7 +124,8 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
 
     zval retval;
     HashTable *named_params = Z_TYPE(named_args) == IS_ARRAY ? Z_ARRVAL(named_args) : nullptr;
-    zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv, named_params);
+    zend_fcall_info_cache *cache = self->cacheable ? &self->cache : nullptr;
+    zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv, named_params, cache);
     if (result == FAILURE) {
         if (EG(exception) && phpy_options.display_exception) {
             zend_exception_error(EG(exception), E_ERROR);

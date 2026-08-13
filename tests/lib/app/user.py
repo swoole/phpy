@@ -79,6 +79,13 @@ def test_callback(cb):
     return cb(__name__)
 
 
+def repeat_callback(cb, count):
+    result = None
+    for i in range(count):
+        result = cb(i)
+    return result
+
+
 def test_callback_kwargs(cb):
     return cb("left", right=7)
 

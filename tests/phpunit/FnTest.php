@@ -120,4 +120,53 @@ class FnTest extends TestCase
         $rs = $m->test_callback($fn);
         $this->assertEquals($rs, $uuid);
     }
+
+    public function testCallableCacheSupportsRepeatedClosureCalls(): void
+    {
+        $module = PyCore::import('app.user');
+        $callback = new PyFn(static fn (int $value): int => $value + 1);
+
+        $this->assertSame(10_000, $module->repeat_callback($callback, 10_000));
+    }
+
+    public function testMagicCallTrampolineIsResolvedForEveryCall(): void
+    {
+        $module = PyCore::import('app.user');
+        $target = new class {
+            public int $calls = 0;
+
+            public function __call(string $name, array $arguments): int
+            {
+                $this->calls++;
+                return $arguments[0] + 1;
+            }
+        };
+
+        $callback = new PyFn([$target, 'missingMethod']);
+        $this->assertSame(1_000, $module->repeat_callback($callback, 1_000));
+        $this->assertSame(1_000, $target->calls);
+    }
+
+    public function testCallableArrayContainingReferenceIsNotCached(): void
+    {
+        $module = PyCore::import('app.user');
+        $target = new class {
+            public function first(int $value): int
+            {
+                return $value + 1;
+            }
+
+            public function second(int $value): int
+            {
+                return $value + 2;
+            }
+        };
+        $method = 'first';
+        $callable = [$target, &$method];
+        $callback = new PyFn($callable);
+
+        $this->assertSame(1, $module->repeat_callback($callback, 1));
+        $method = 'second';
+        $this->assertSame(2, $module->repeat_callback($callback, 1));
+    }
 }

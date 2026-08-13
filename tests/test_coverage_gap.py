@@ -353,6 +353,17 @@ def test_module_preserved_as_object():
         phpy.setOptions({"argument_as_object": False})
 
 
+def test_set_preserved_as_object():
+    # PySet_CheckExact branch of PythonToPhpConverter::convertPreservingObjects:
+    # with argument_as_object enabled, a Python set argument is wrapped as a
+    # phpy PySet (new_set) when it crosses back into PHP.
+    phpy.setOptions({"argument_as_object": True})
+    try:
+        assert phpy.call("phpy_type_name", {1, 2, 3}) == "PySet"
+    finally:
+        phpy.setOptions({"argument_as_object": False})
+
+
 def test_scalar_float_with_numeric_as_object():
     # convertRecursively's PyFloat_Check branch: with numeric_as_object
     # enabled, try_convert_python_base_value skips the float, so it is
