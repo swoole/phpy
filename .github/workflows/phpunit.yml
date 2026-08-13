@@ -39,8 +39,13 @@ jobs:
           ./configure --enable-code-coverage
           make -j $(nproc)
           cc -std=gnu11 -D_GNU_SOURCE -fsyntax-only tests/api_header.c -I. $(php-config --includes)
+          c++ -std=c++14 -D_GNU_SOURCE -shared -fPIC \
+            tests/phpy_test/phpy_test.cc \
+            -I. -Iinclude $(php-config --includes) $(python3-config --includes) \
+            -o modules/phpy_test.so
           sudo make install
           sudo sh -c "echo 'extension=phpy.so' > /etc/php/${PHP_VERSION}/cli/conf.d/90-phpy.ini"
+          sudo sh -c "echo 'extension=$(pwd)/modules/phpy_test.so' > /etc/php/${PHP_VERSION}/cli/conf.d/91-phpy-test.ini"
           php --ri phpy
       - name: Run phpunit tests
         env:
