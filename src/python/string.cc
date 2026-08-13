@@ -146,17 +146,18 @@ static PyObject *String_at(ZendString *self, Py_ssize_t offset) {
     return PyLong_FromUnsignedLong((unsigned long) Z_STRVAL_P(&self->string)[offset]);
 }
 
-static PyObject *String_contains(ZendString *self, PyObject *o2) {
+static int String_contains(ZendString *self, PyObject *o2) {
     ssize_t len;
     const char *val = phpy::python::string2char_ptr(o2, &len);
     if (val == NULL) {
-        Py_RETURN_NOTIMPLEMENTED;
+        PyErr_Format(PyExc_TypeError, "zend_string membership test expects str/bytes, got %s",
+                     Py_TypeName(o2));
+        return -1;
     }
     if (php_memnstr(Z_STRVAL(self->string), val, len, Z_STRVAL(self->string) + Z_STRLEN(self->string))) {
-        Py_RETURN_TRUE;
-    } else {
-        Py_RETURN_FALSE;
+        return 1;
     }
+    return 0;
 }
 
 static void String_destroy(ZendString *self) {
