@@ -48,6 +48,23 @@ final class PhpyTest extends TestCase
         $this->assertSame([1, 2, 3], $list->toArray());
     }
 
+    public function testNativeApiDefensivelyUnwrapsIndirectInputs(): void
+    {
+        $module = PyCore::import('app.user');
+        $result = phpy_test_native_indirect_inputs(
+            $module->protocol_object(),
+            $module->protocol_object(),
+            PyCore::int(42),
+            PyCore::list([1, 2, 3]),
+        );
+
+        $this->assertSame('hello initial?', (string) $result['member']);
+        $this->assertSame(7, $result['call']);
+        $this->assertSame([1, 2, 3], $result['constructed']->toArray());
+        $this->assertSame(42, $result['scalar']);
+        $this->assertSame([1, 2, 3], $result['list']);
+    }
+
     public function testBridgeCoreHelpers(): void
     {
         $this->assertGreaterThan(0, phpy_test_bridge_mode());

@@ -35,6 +35,7 @@ zend_result guard_native_call(zval *result, Function &&function) noexcept {
 }
 
 PyObject *checked_object(const zval *object) {
+	ZVAL_DEINDIRECT(object);
     if (UNEXPECTED(object == nullptr || !phpy::php::is_pyobject(const_cast<zval *>(object)))) {
         zend_type_error("phpy native bridge expects a PyObject");
         return nullptr;
@@ -169,6 +170,7 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
                                     zval *result) {
     return guard_native_call(result, [&] {
         LOCK_GIL();
+        ZVAL_DEINDIRECT(argument);
         const bool null_argument = !has_argument || argument == nullptr || Z_TYPE_P(argument) == IS_NULL;
         PyObject *value = nullptr;
 

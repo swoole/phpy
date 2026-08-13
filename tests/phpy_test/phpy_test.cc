@@ -99,6 +99,110 @@ PHP_FUNCTION(phpy_test_native_construct) {
                    return_value);
 }
 
+PHP_FUNCTION(phpy_test_native_indirect_inputs) {
+    zval *member_object;
+    zval *callable;
+    zval *scalar;
+    zval *list;
+
+    ZEND_PARSE_PARAMETERS_START(4, 4)
+    Z_PARAM_OBJECT(member_object)
+    Z_PARAM_OBJECT(callable)
+    Z_PARAM_OBJECT(scalar)
+    Z_PARAM_OBJECT(list)
+    ZEND_PARSE_PARAMETERS_END();
+
+    const phpy_native_api_v1 *api = native_api();
+    if (api == nullptr) {
+        RETURN_THROWS();
+    }
+
+    zval indirect_member_object;
+    zval indirect_callable;
+    zval indirect_scalar;
+    zval indirect_list;
+    ZVAL_INDIRECT(&indirect_member_object, member_object);
+    ZVAL_INDIRECT(&indirect_callable, callable);
+    ZVAL_INDIRECT(&indirect_scalar, scalar);
+    ZVAL_INDIRECT(&indirect_list, list);
+
+    zval prefix;
+    zval suffix;
+    ZVAL_STRING(&prefix, "hello");
+    ZVAL_STRING(&suffix, "?");
+    zend_array *named_args = zend_new_array(1);
+    Z_TRY_ADDREF(suffix);
+    zend_hash_str_add_new(named_args, ZEND_STRL("suffix"), &suffix);
+
+    zval member_result;
+    ZVAL_UNDEF(&member_result);
+    api->call_member(&indirect_member_object,
+                     ZEND_STRL("greet"),
+                     1,
+                     &prefix,
+                     named_args,
+                     &member_result);
+    zend_array_release(named_args);
+    zval_ptr_dtor(&prefix);
+    zval_ptr_dtor(&suffix);
+    if (UNEXPECTED(EG(exception) != nullptr)) {
+        zval_ptr_dtor(&member_result);
+        RETURN_THROWS();
+    }
+
+    zval call_args[2];
+    ZVAL_LONG(&call_args[0], 3);
+    ZVAL_LONG(&call_args[1], 4);
+    zval call_result;
+    ZVAL_UNDEF(&call_result);
+    api->call(&indirect_callable, 2, call_args, nullptr, &call_result);
+    if (UNEXPECTED(EG(exception) != nullptr)) {
+        zval_ptr_dtor(&member_result);
+        zval_ptr_dtor(&call_result);
+        RETURN_THROWS();
+    }
+
+    zval source;
+    zval indirect_source;
+    array_init(&source);
+    add_next_index_long(&source, 1);
+    add_next_index_long(&source, 2);
+    add_next_index_long(&source, 3);
+    ZVAL_INDIRECT(&indirect_source, &source);
+    zval construct_result;
+    ZVAL_UNDEF(&construct_result);
+    api->construct(PHPY_NATIVE_CONSTRUCT_LIST, &indirect_source, true, &construct_result);
+    zval_ptr_dtor(&source);
+    if (UNEXPECTED(EG(exception) != nullptr)) {
+        zval_ptr_dtor(&member_result);
+        zval_ptr_dtor(&call_result);
+        zval_ptr_dtor(&construct_result);
+        RETURN_THROWS();
+    }
+
+    zval scalar_result;
+    zval list_result;
+    ZVAL_UNDEF(&scalar_result);
+    ZVAL_UNDEF(&list_result);
+    api->to_value(&indirect_scalar, &scalar_result);
+    api->to_array(&indirect_list, &list_result);
+    if (UNEXPECTED(EG(exception) != nullptr)) {
+        zval_ptr_dtor(&member_result);
+        zval_ptr_dtor(&call_result);
+        zval_ptr_dtor(&construct_result);
+        zval_ptr_dtor(&scalar_result);
+        zval_ptr_dtor(&list_result);
+        RETURN_THROWS();
+    }
+
+    array_init(return_value);
+    add_assoc_zval(return_value, "member", &member_result);
+    add_assoc_zval(return_value, "call", &call_result);
+    add_assoc_zval(return_value, "constructed", &construct_result);
+    add_assoc_zval(return_value, "scalar", &scalar_result);
+    add_assoc_zval(return_value, "list", &list_result);
+}
+
 PHP_FUNCTION(phpy_test_bridge_mode) {
     ZEND_PARSE_PARAMETERS_NONE();
     RETURN_LONG(phpy_get_mode());
@@ -197,6 +301,13 @@ ZEND_ARG_TYPE_INFO(0, constructor, IS_LONG, 0)
 ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, argument, IS_MIXED, 0, "null")
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_native_indirect_inputs, 0, 4, IS_ARRAY, 0)
+ZEND_ARG_TYPE_INFO(0, memberObject, IS_OBJECT, 0)
+ZEND_ARG_TYPE_INFO(0, callable, IS_OBJECT, 0)
+ZEND_ARG_TYPE_INFO(0, scalar, IS_OBJECT, 0)
+ZEND_ARG_TYPE_INFO(0, list, IS_OBJECT, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_bridge_mode, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
@@ -227,6 +338,7 @@ static const zend_function_entry phpy_test_functions[] = {
     PHP_FE(phpy_test_native_call, arginfo_phpy_test_native_call)
     PHP_FE(phpy_test_native_configure_runtime, arginfo_phpy_test_native_configure_runtime)
     PHP_FE(phpy_test_native_construct, arginfo_phpy_test_native_construct)
+    PHP_FE(phpy_test_native_indirect_inputs, arginfo_phpy_test_native_indirect_inputs)
     PHP_FE(phpy_test_bridge_mode, arginfo_phpy_test_bridge_mode)
     PHP_FE(phpy_test_bridge_number_to_long, arginfo_phpy_test_bridge_number_to_long)
     PHP_FE(phpy_test_bridge_env_equals, arginfo_phpy_test_bridge_env_equals)
