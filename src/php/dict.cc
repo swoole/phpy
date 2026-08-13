@@ -75,7 +75,7 @@ ZEND_METHOD(PyDict, offsetGet) {
     phpy::python::OwnedPythonReference key(arg_1(INTERNAL_FUNCTION_PARAM_PASSTHRU));
     CHECK_ARG(key.get());
     auto object = phpy_object_get_handle(ZEND_THIS);
-    auto value = PyDict_GetItem(object, key.get());
+    auto value = PyDict_GetItemWithError(object, key.get());
     if (value == NULL) {
         phpy::php::throw_error_if_occurred();
         return;

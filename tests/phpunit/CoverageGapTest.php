@@ -7,6 +7,10 @@ use PHPUnit\Framework\TestCase;
  * Focused tests for PHP-mode code paths that the existing suite did not exercise,
  * to raise C/C++ line and branch coverage (gcov).
  */
+final class CoverageGapSequence extends PySequence
+{
+}
+
 class CoverageGapTest extends TestCase
 {
     public function testPyStrConstructFromPyObject(): void
@@ -56,11 +60,98 @@ class CoverageGapTest extends TestCase
         $this->assertSame(1, $dict->count());
     }
 
+    public function testDictReadPropagatesUnhashableKeyError(): void
+    {
+        $dict = new PyDict(['present' => 1]);
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('unhashable type');
+        $dict[new PyList()];
+    }
+
+    public function testDictExistsAndUnsetPropagateUnhashableKeyErrors(): void
+    {
+        $dict = new PyDict(['present' => 1]);
+
+        foreach ([
+            static fn() => isset($dict[new PyList()]),
+            static function () use ($dict): void {
+                unset($dict[new PyList()]);
+            },
+        ] as $operation) {
+            try {
+                $operation();
+                $this->fail('An unhashable dictionary key must raise PyError');
+            } catch (PyError $error) {
+                $this->assertStringContainsString('unhashable type', $error->getMessage());
+            }
+        }
+
+        $this->assertSame(1, $dict['present']);
+    }
+
+    public function testSequenceCountPropagatesPythonLengthError(): void
+    {
+        $object = PyCore::import('app.user')->broken_length_list();
+        $sequence = new CoverageGapSequence($object);
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('length failed');
+        $sequence->count();
+    }
+
     public function testListOffsetUnset(): void
     {
         $list = new PyList([10, 20, 30]);
         unset($list[1]);
         $this->assertSame([10, 30], $list->toArray());
+    }
+
+    public function testListAndTupleBoundaryErrors(): void
+    {
+        $list = new PyList([10]);
+        foreach ([-2, 1] as $index) {
+            try {
+                $list[$index];
+                $this->fail("Reading list index $index must fail");
+            } catch (Error $error) {
+                $this->assertStringContainsString('out of range', $error->getMessage());
+            }
+
+            try {
+                $list[$index] = 20;
+                $this->fail("Writing list index $index must fail");
+            } catch (Error $error) {
+                $this->assertStringContainsString('out of range', $error->getMessage());
+            }
+        }
+
+        $tuple = new PyTuple([10]);
+        try {
+            $tuple[0] = 20;
+            $this->fail('A tuple must reject item writes');
+        } catch (Error $error) {
+            $this->assertStringContainsString('does not support offsetSet', $error->getMessage());
+        }
+
+        try {
+            unset($tuple[0]);
+            $this->fail('A tuple must reject item deletion');
+        } catch (Error $error) {
+            $this->assertStringContainsString('does not support offsetUnset', $error->getMessage());
+        }
+    }
+
+    public function testContainerConstructorsRejectUnsupportedTypes(): void
+    {
+        foreach ([PyList::class, PyTuple::class, PyDict::class, PySet::class] as $class) {
+            try {
+                new $class(42);
+                $this->fail("$class must reject unsupported constructor input");
+            } catch (Error $error) {
+                $this->assertStringContainsString('unsupported type', $error->getMessage());
+            }
+        }
     }
 
     public function testIterationUsesIteratorProtocol(): void
