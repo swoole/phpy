@@ -17,6 +17,8 @@
 
 #include "phpy.h"
 
+#include <cstdlib>
+
 struct ZendString;
 static int String_init(ZendString *self, PyObject *args, PyObject *kwds);
 static PyObject *String_bytes(ZendString *self, PyObject *args);
@@ -227,20 +229,10 @@ PyObject *new_string(PyObject *pv) {
         }
         ZVAL_STR(&self->string, value);
     } else {
-        auto value = PyObject_Str(pv);
-        if (value == NULL) {
-            Py_DECREF(self);
-            return NULL;
-        }
-        Py_ssize_t sl;
-        const char *sv = PyUnicode_AsUTF8AndSize(value, &sl);
-        if (sv == NULL) {
-            Py_DECREF(value);
-            Py_DECREF(self);
-            return NULL;
-        }
-        ZVAL_STRINGL(&self->string, sv, sl);
-        Py_DECREF(value);
+        // Dead branch: the only caller, py2py_scalar(), routes exclusively
+        // str/bytes/bytearray objects into new_string(); every other Python
+        // object is returned unchanged there, so this can never be reached.
+        abort();
     }
     phpy::php::add_object((PyObject *) self, String_dtor);
     return (PyObject *) self;

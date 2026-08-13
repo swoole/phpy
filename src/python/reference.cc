@@ -20,13 +20,13 @@
 struct ZendReference;
 static int Reference_init(ZendReference *self, PyObject *args, PyObject *kwds);
 static PyObject *Reference_get(ZendReference *self, PyObject *args);
+static void Reference_dtor(PyObject *pv);
 static void Reference_destroy(ZendReference *self);
 
 // clang-format off
 struct ZendReference {
     PyObject_HEAD
     zval reference;
-    zval value;
 };
 
 static PyMethodDef Reference_methods[] = {
@@ -39,8 +39,10 @@ static PyTypeObject ZendReferenceType = { PyVarObject_HEAD_INIT(NULL, 0) };
 // clang-format on
 
 static int Reference_init(ZendReference *self, PyObject *args, PyObject *kwds) {
-    ZVAL_NEW_REF(&self->reference, &self->value);
-    ZVAL_NULL(Z_REFVAL(self->reference));
+    zval value;
+    ZVAL_NULL(&value);
+    ZVAL_NEW_REF(&self->reference, &value);
+    phpy::php::add_object((PyObject *) self, Reference_dtor);
     return 0;
 }
 
@@ -96,9 +98,16 @@ zval *zend_reference_cast(PyObject *pv) {
 namespace phpy {
 namespace python {
 PyObject *new_reference(zval *zv) {
-    auto pyobj = php2py(Z_REFVAL_P(zv));
-    phpy::php::add_object((PyObject *) pyobj, Reference_dtor);
-    return pyobj;
+    // Never retain the zval pointer itself: it may refer to a temporary call
+    // result or a stack slot. Both zvals must instead share the refcounted
+    // zend_reference container, which preserves PHP alias semantics safely.
+    if (UNEXPECTED(!Z_ISREF_P(zv))) {
+        ZVAL_MAKE_REF(zv);
+    }
+    ZendReference *reference = PyObject_New(ZendReference, &ZendReferenceType);
+    ZVAL_COPY(&reference->reference, zv);
+    phpy::php::add_object((PyObject *) reference, Reference_dtor);
+    return (PyObject *) reference;
 }
 }  // namespace python
 }  // namespace phpy

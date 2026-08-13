@@ -151,6 +151,32 @@ PHP_FUNCTION(phpy_test_bridge_dump_helpers) {
     debug_print_refcnt("phpy-test", python_value.get());
 }
 
+PHP_FUNCTION(phpy_test_new_reference) {
+    zval *value;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_ZVAL(value)
+    ZEND_PARSE_PARAMETERS_END();
+
+    LOCK_GIL();
+    PyObject *reference = phpy::python::new_reference(value);
+    phpy::php::new_object_no_addref(return_value, reference);
+}
+
+PHP_FUNCTION(phpy_test_reference_is_same) {
+    zval *object;
+    zval *value;
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+    Z_PARAM_OBJECT_OF_CLASS(object, phpy_object_get_ce())
+    Z_PARAM_ZVAL(value)
+    ZEND_PARSE_PARAMETERS_END();
+
+    PyObject *handle = phpy_object_get_handle(object);
+    if (UNEXPECTED(!ZendReference_Check(handle) || !Z_ISREF_P(value))) {
+        RETURN_FALSE;
+    }
+    RETURN_BOOL(Z_REF_P(zend_reference_cast(handle)) == Z_REF_P(value));
+}
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_native_call_member, 0, 2, IS_MIXED, 0)
 ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_ARG_TYPE_INFO(0, name, IS_STRING, 0)
@@ -187,6 +213,15 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_bridge_dump_helpers, 0
 ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_phpy_test_new_reference, 0, 1, PyObject, 0)
+ZEND_ARG_INFO(1, value)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_reference_is_same, 0, 2, _IS_BOOL, 0)
+ZEND_ARG_OBJ_INFO(0, object, PyObject, 0)
+ZEND_ARG_INFO(1, value)
+ZEND_END_ARG_INFO()
+
 static const zend_function_entry phpy_test_functions[] = {
     PHP_FE(phpy_test_native_call_member, arginfo_phpy_test_native_call_member)
     PHP_FE(phpy_test_native_call, arginfo_phpy_test_native_call)
@@ -196,6 +231,8 @@ static const zend_function_entry phpy_test_functions[] = {
     PHP_FE(phpy_test_bridge_number_to_long, arginfo_phpy_test_bridge_number_to_long)
     PHP_FE(phpy_test_bridge_env_equals, arginfo_phpy_test_bridge_env_equals)
     PHP_FE(phpy_test_bridge_dump_helpers, arginfo_phpy_test_bridge_dump_helpers)
+    PHP_FE(phpy_test_new_reference, arginfo_phpy_test_new_reference)
+    PHP_FE(phpy_test_reference_is_same, arginfo_phpy_test_reference_is_same)
     PHP_FE_END
 };
 

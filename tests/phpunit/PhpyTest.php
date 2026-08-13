@@ -69,4 +69,23 @@ final class PhpyTest extends TestCase
         phpy_test_bridge_dump_helpers(['value' => 42]);
         $this->addToAssertionCount(1);
     }
+
+    public function testNewReferenceSharesTheOriginalZendReference(): void
+    {
+        $value = 42;
+        $reference = phpy_test_new_reference($value);
+
+        $this->assertTrue(phpy_test_reference_is_same($reference, $value));
+        $this->assertSame(42, $reference->get());
+
+        $value = 99;
+        $this->assertSame(99, $reference->get());
+        $this->assertTrue(phpy_test_reference_is_same($reference, $value));
+
+        unset($reference);
+        gc_collect_cycles();
+        $this->assertSame(99, $value);
+        $value = 100;
+        $this->assertSame(100, $value);
+    }
 }

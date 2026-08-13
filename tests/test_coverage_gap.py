@@ -25,8 +25,20 @@ function &phpy_ref() {
     static $x = 42;
     return $x;
 }
+function phpy_ref_set($value) {
+    $x =& phpy_ref();
+    $x = $value;
+}
+function phpy_ref_same(&$value) {
+    $x =& phpy_ref();
+    return \ReflectionReference::fromArrayElement([&$x, &$value], 0)->getId()
+        === \ReflectionReference::fromArrayElement([&$x, &$value], 1)->getId();
+}
 function phpy_obj() {
     return new PhpyKw();
+}
+function phpy_call_typed_closure(Closure $fn, $a, $b) {
+    return $fn($a, $b);
 }
 class PhpyBadCtor {
     public function __construct() {
@@ -100,14 +112,43 @@ def test_array_dtor_on_gc():
 # --------------------------------------------------------------------------
 
 def test_reference_from_php():
-    # A PHP reference returned to Python is auto-dereferenced by new_reference.
+    # The Python carrier shares the original zend_reference rather than a
+    # snapshot of its current value.
     r = phpy.call("phpy_ref")
-    assert r == 42
+    assert type(r) is phpy.Reference
+    assert r.get() == 42
+    phpy.call("phpy_ref_set", 99)
+    assert r.get() == 99
+    assert phpy.call("phpy_ref_same", r) is True
+
+    del r
+    gc.collect()
+    assert phpy.call("phpy_ref").get() == 99
 
 
 def test_reference_local():
     r = phpy.Reference()
     assert r.get() is None
+
+
+def test_reference_dtor_releases_zval():
+    # Reference_dtor runs when a ZendReference wrapper is garbage-collected,
+    # freeing the copied zend_reference zval. Creating and dropping many
+    # wrappers must not crash, and the PHP-side static reference must stay
+    # usable afterwards (its container is shared, not stolen).
+    phpy.call("phpy_ref_set", 42)
+    for _ in range(5):
+        r = phpy.call("phpy_ref")
+        assert r.get() == 42
+        del r
+        gc.collect()
+    assert phpy.call("phpy_ref").get() == 42
+
+    local = phpy.Reference()
+    assert local.get() is None
+    del local
+    gc.collect()
+    assert phpy.call("phpy_ref").get() == 42
 
 
 # --------------------------------------------------------------------------
@@ -298,3 +339,11 @@ def test_closure_positional_and_keyword():
     cb = phpy.call("phpy_kw_closure")
     assert cb(3, 7) == 37
     assert cb(a=3, b=7) == 37
+
+
+def test_closure_passed_back_to_php_closure_hint():
+    # A ZendCallable (PHP closure wrapped in Python) passed back into PHP is
+    # restored to the original PHP closure via zend_callable_cast, so a
+    # function with a Closure type hint accepts it.
+    cb = phpy.call("phpy_kw_closure")
+    assert phpy.call("phpy_call_typed_closure", cb, 3, 7) == 37

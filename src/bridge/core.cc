@@ -330,6 +330,10 @@ static bool try_convert_python_base_value(PyObject *pv, zval *zv) {
         ZVAL_COPY(zv, zend_string_cast(pv));
     } else if (ZendArray_Check(pv)) {
         ZVAL_COPY(zv, zend_array_cast(pv));
+    } else if (ZendCallable_Check(pv)) {
+        // A ZendCallable wraps a PHP closure/callable; hand the original zval
+        // back so PHP functions with a Closure type hint accept it.
+        ZVAL_COPY(zv, zend_callable_cast(pv));
     } else {
         return false;
     }
