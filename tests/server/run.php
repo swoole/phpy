@@ -92,7 +92,9 @@ try {
         || ($second['released'] ?? null) !== 6
         || ($second['fresh'] ?? null) !== 3
         || !array_key_exists('expiredArrayValue', $second)
-        || $second['expiredArrayValue'] !== null) {
+        || $second['expiredArrayValue'] !== null
+        || ($second['classes']['internal_object'] ?? null) !== 'zend_object'
+        || !str_contains($second['classes']['user_error'] ?? '', 'life cycle has ended')) {
         fail('unexpected lifecycle response: ' . json_encode([$first, $second]));
     }
     echo "Cross-request lifecycle test passed (server {$first['pid']})\n";

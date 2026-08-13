@@ -21,4 +21,14 @@ class ModuleTest extends TestCase
         $o = $m->User($name);
         $this->assertEquals($o->getName(), $name);
     }
+
+    public function testSubmoduleFromSysModulesIsPreservedAsPyModule(): void
+    {
+        // A Python submodule fetched through a dict element crosses
+        // PythonToPhpConverter::convertPreservingObjects() and hits the
+        // PyModule_CheckExact branch, producing a PyModule PHP object.
+        $os = PyCore::import('sys')->modules['os'];
+        $this->assertInstanceOf(PyModule::class, $os);
+        $this->assertSame('os', (string) $os->__name__);
+    }
 }

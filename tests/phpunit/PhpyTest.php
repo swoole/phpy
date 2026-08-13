@@ -53,6 +53,9 @@ final class PhpyTest extends TestCase
         $this->assertGreaterThan(0, phpy_test_bridge_mode());
         $this->assertSame(42, phpy_test_bridge_number_to_long(42));
         $this->assertSame(3, phpy_test_bridge_number_to_long(3.9));
+        // Non-numeric scalars take the zval_get_string() + string2py() branch.
+        $this->assertSame('42', phpy_test_bridge_number_to_long('42'));
+        $this->assertSame('1', phpy_test_bridge_number_to_long(true));
 
         putenv('PHPY_BRIDGE_TEST=enabled');
         try {

@@ -40,6 +40,18 @@ function phpy_obj() {
 function phpy_call_typed_closure(Closure $fn, $a, $b) {
     return $fn($a, $b);
 }
+function phpy_get_sys_module() {
+    return PyCore::import('sys');
+}
+function phpy_module_name($m) {
+    return (string) $m->__name__;
+}
+function phpy_is_float($v) {
+    return is_float($v) ? 1 : 0;
+}
+function phpy_type_name($v) {
+    return is_object($v) ? get_class($v) : gettype($v);
+}
 class PhpyBadCtor {
     public function __construct() {
         throw new Exception("ctor boom");
@@ -193,6 +205,17 @@ def test_string_bytes_and_inplace_concat():
     assert str(s2) == "abc"
 
 
+def test_string_bytearray_operands():
+    # bytearray operands exercise the PyByteArray_Check branch of
+    # string2char_ptr (concat, in-place concat, and membership).
+    assert str(phpy.String("hi") + bytearray(b" there")) == "hi there"
+    s = phpy.String("a")
+    s += bytearray(b"b")
+    assert str(s) == "ab"
+    assert (b"b" in s) is True
+    assert (b"z" in s) is False
+
+
 def test_string_contains():
     s = phpy.String("hello world")
     assert ("world" in s) is True
@@ -315,6 +338,38 @@ def test_object_invokable():
     assert str(o("a", "b")) == "a-b"
     # Object_invoke with keyword args exercises the named_params path in call_fn.
     assert str(o(a="x", b="y")) == "x-y"
+
+
+def test_module_preserved_as_object():
+    # PyModule_CheckExact branch of PythonToPhpConverter::convertPreservingObjects:
+    # with argument_as_object enabled, a Python module argument is wrapped as a
+    # phpy PyModule (new_module) when it crosses back into PHP.
+    module = phpy.call("phpy_get_sys_module")
+    assert type(module).__name__ == "module"
+    phpy.setOptions({"argument_as_object": True})
+    try:
+        assert str(phpy.call("phpy_module_name", module)) == "sys"
+    finally:
+        phpy.setOptions({"argument_as_object": False})
+
+
+def test_scalar_float_with_numeric_as_object():
+    # convertRecursively's PyFloat_Check branch: with numeric_as_object
+    # enabled, try_convert_python_base_value skips the float, so it is
+    # converted to a PHP double here instead.
+    phpy.setOptions({"numeric_as_object": True})
+    try:
+        assert phpy.call("phpy_is_float", 3.5) == 1
+    finally:
+        phpy.setOptions({"numeric_as_object": False})
+
+
+def test_arbitrary_object_arg_wrapped_as_pyobject():
+    # convertRecursively's else branch: an arbitrary Python object (a module)
+    # passed with the default argument_as_object=false is wrapped as a
+    # PyObject via new_object.
+    module = phpy.call("phpy_get_sys_module")
+    assert phpy.call("phpy_type_name", module) == "PyObject"
 
 
 # --------------------------------------------------------------------------

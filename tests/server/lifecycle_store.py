@@ -5,6 +5,8 @@ import gc
 
 retained = []
 retained_array = None
+internal_class = None
+user_class = None
 
 
 def retain(*values):
@@ -36,3 +38,25 @@ def read_expired_array():
     retained_array = None
     gc.collect()
     return value
+
+
+def retain_classes():
+    global internal_class, user_class
+    import phpy
+    internal_class = phpy.Class("stdClass")
+    user_class = phpy.Class("RequestScopedClass")
+    return [type(internal_class).__name__, type(user_class).__name__]
+
+
+def inspect_classes():
+    internal_object = internal_class.new()
+    try:
+        user_class.new()
+    except RuntimeError as error:
+        user_error = str(error)
+    else:
+        user_error = None
+    return {
+        "internal_object": type(internal_object).__name__,
+        "user_error": user_error,
+    }

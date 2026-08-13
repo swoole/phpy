@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+class RequestScopedClass
+{
+}
+
 header('Content-Type: application/json');
 
 $module = PyCore::import('sys');
@@ -21,16 +25,19 @@ if ($phase === 'retain') {
     )->toArray();
 
     $arrayValue = PyCore::scalar($store->create_request_array());
+    $classTypes = $store->retain_classes()->toArray();
     echo json_encode([
         'phase' => 'retain',
         'pid' => getmypid(),
         'types' => $types,
         'arrayValue' => $arrayValue,
+        'classTypes' => $classTypes,
     ], JSON_THROW_ON_ERROR);
     return;
 }
 
 if ($phase === 'release') {
+    $classes = $store->inspect_classes()->toArray();
     $expiredArrayValue = $store->read_expired_array();
     $released = $store->release();
     $fresh = PyCore::import('builtins')->len([1, 2, 3]);
@@ -41,6 +48,7 @@ if ($phase === 'release') {
         'released' => $released,
         'fresh' => $fresh,
         'expiredArrayValue' => $expiredArrayValue,
+        'classes' => $classes,
     ], JSON_THROW_ON_ERROR);
     return;
 }

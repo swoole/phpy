@@ -86,12 +86,17 @@ static int Class_init(ZendClass *self, PyObject *args, PyObject *kwds) {
     }
     zend_string_release(_class_name);
     self->ce = ce;
-    phpy::php::add_object((PyObject *) self, Class_dtor);
+    // Internal classes are registered during MINIT and their class entries
+    // remain valid for the whole process. User classes may belong only to the
+    // current request, so invalidate only those carriers during RSHUTDOWN.
+    if (ce->type == ZEND_USER_CLASS) {
+        phpy::php::add_object((PyObject *) self, Class_dtor);
+    }
     return 0;
 }
 
 static PyObject *Class_new(ZendClass *self, PyObject *args) {
-    if (self->ce == NULL) {
+    if (UNEXPECTED(self->ce == NULL)) {
         PyErr_SetString(PyExc_RuntimeError, "not initialized or life cycle has ended");
         return NULL;
     }
@@ -106,7 +111,7 @@ static void Class_dealloc(ZendClass *self) {
 }
 
 static PyObject *Class_get(ZendClass *self, PyObject *args) {
-    if (self->ce == NULL) {
+    if (UNEXPECTED(self->ce == NULL)) {
         PyErr_SetString(PyExc_RuntimeError, "not initialized or life cycle has ended");
         return NULL;
     }
@@ -126,11 +131,14 @@ static PyObject *Class_get(ZendClass *self, PyObject *args) {
     }
     zend_end_try();
 
-    RETURN_PYOBJ(retval);
+    // zend_read_static_property() returns a borrowed zval. php2py_object()
+    // acquires the ownership needed by the Python wrapper; the property itself
+    // must never be destroyed here.
+    return php2py_object(retval);
 }
 
 static PyObject *Class_set(ZendClass *self, PyObject *args) {
-    if (self->ce == NULL) {
+    if (UNEXPECTED(self->ce == NULL)) {
         PyErr_SetString(PyExc_RuntimeError, "not initialized or life cycle has ended");
         return NULL;
     }
@@ -143,6 +151,13 @@ static PyObject *Class_set(ZendClass *self, PyObject *args) {
 
     zval rv;
     py2php(value, &rv);
+    if (UNEXPECTED(EG(exception) != nullptr)) {
+        zval_ptr_dtor(&rv);
+        return NULL;
+    }
+    ON_SCOPE_EXIT {
+        zval_ptr_dtor(&rv);
+    };
 
     if (zend_update_static_property(self->ce, name, l_name, &rv) == SUCCESS) {
         Py_INCREF(Py_True);

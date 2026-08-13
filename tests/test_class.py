@@ -16,6 +16,25 @@ def test_static_property_not_exists():
     assert c.get("name_not_exists") is None
 
 
+def test_static_property_get_keeps_borrowed_value_alive():
+    c = phpy.Class('PhpyObject')
+
+    first = c.get("items")
+    second = c.get("items")
+    assert first.collect() == {"stable": 42}
+    assert second.collect() == {"stable": 42}
+    assert phpy.call("count", c.get("items")) == 1
+
+
+def test_static_property_set_transfers_a_safe_value():
+    c = phpy.Class('PhpyObject')
+    value = phpy.Array({"updated": [1, 2, 3]})
+
+    assert c.set("items", value) is True
+    del value
+    assert c.get("items").collect()["updated"] == [1, 2, 3]
+
+
 def test_class_ctor():
     c = phpy.Class('TestClass')
     uuid = phpy.call('uniqid')
