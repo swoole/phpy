@@ -52,6 +52,10 @@ static PyTypeObject ZendArrayType = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 // clang-format on
 
+static zend_always_inline bool Array_is_expired(const ZendArray *self) {
+    return UNEXPECTED(Z_TYPE(self->array) != IS_ARRAY);
+}
+
 static void Array_dtor(PyObject *pv) {
     ZendArray *self = (ZendArray *) pv;
     zval_ptr_dtor(&self->array);
@@ -73,6 +77,9 @@ static int Array_init(ZendArray *self, PyObject *args, PyObject *kwds) {
 }
 
 static PyObject *Array_getitem(ZendArray *self, PyObject *key) {
+    if (Array_is_expired(self)) {
+        Py_RETURN_NONE;
+    }
     zval *result;
     if (PyLong_Check(key)) {
         result = phpy::php::array_get(&self->array, PyLong_AsLong(key));
@@ -98,6 +105,9 @@ static PyObject *Array_get(ZendArray *self, PyObject *args) {
 }
 
 static bool Array_delitem(ZendArray *self, PyObject *key) {
+    if (Array_is_expired(self)) {
+        return false;
+    }
     if (UNEXPECTED(zend_hash_num_elements(Z_ARR(self->array)) == 0)) {
         return false;
     }
@@ -116,6 +126,10 @@ static bool Array_delitem(ZendArray *self, PyObject *key) {
 }
 
 static int Array_setitem(ZendArray *self, PyObject *key, PyObject *value) {
+    if (Array_is_expired(self)) {
+        PyErr_SetString(PyExc_RuntimeError, "zend_array has expired");
+        return -1;
+    }
     // value be set to NULL to delete an item
     if (value == NULL) {
         return Array_delitem(self, key) ? 0 : -1;
@@ -155,6 +169,9 @@ static PyObject *Array_append(ZendArray *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "O", &value)) {
         return NULL;
     }
+    if (Array_is_expired(self)) {
+        Py_RETURN_FALSE;
+    }
     zval rv;
     py2php(value, &rv);
     SEPARATE_ARRAY(&self->array);
@@ -178,14 +195,23 @@ static PyObject *Array_unset(ZendArray *self, PyObject *args) {
 }
 
 static PyObject *Array_count(ZendArray *self) {
+    if (Array_is_expired(self)) {
+        return PyLong_FromLong(0);
+    }
     return PyLong_FromLong(phpy::php::array_count(&self->array));
 }
 
 static Py_ssize_t Array_len(ZendArray *self) {
+    if (Array_is_expired(self)) {
+        return 0;
+    }
     return phpy::php::array_count(&self->array);
 }
 
 static PyObject *Array_collect(ZendArray *self) {
+    if (Array_is_expired(self)) {
+        Py_RETURN_NONE;
+    }
     if (zend_array_is_list(Z_ARRVAL(self->array))) {
         return array2list(Z_ARRVAL(self->array));
     } else {
@@ -194,6 +220,9 @@ static PyObject *Array_collect(ZendArray *self) {
 }
 
 static PyObject *Array_is_list(ZendArray *self) {
+    if (Array_is_expired(self)) {
+        Py_RETURN_FALSE;
+    }
     if (zend_array_is_list(Z_ARRVAL(self->array))) {
         Py_RETURN_TRUE;
     } else {
@@ -202,12 +231,19 @@ static PyObject *Array_is_list(ZendArray *self) {
 }
 
 static PyObject *Array_iter(ZendArray *self) {
+    if (Array_is_expired(self)) {
+        Py_INCREF(self);
+        return (PyObject *) self;
+    }
     zend_hash_internal_pointer_reset_ex(Z_ARRVAL(self->array), &self->pos);
     Py_INCREF(self);
     return (PyObject *) self;
 }
 
 static PyObject *Array_next(ZendArray *self) {
+    if (Array_is_expired(self)) {
+        return NULL;
+    }
     int keytype;
     zend_string *sval;
     zend_ulong lval = 0;

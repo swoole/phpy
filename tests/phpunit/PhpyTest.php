@@ -28,6 +28,26 @@ final class PhpyTest extends TestCase
         $this->assertSame(7, phpy_test_native_call($callable, 3, right: 4));
     }
 
+    public function testNativeRuntimeConfigurationCanBeChangedAndRestored(): void
+    {
+        try {
+            $this->assertTrue(phpy_test_native_configure_runtime(true));
+            $this->assertInstanceOf(PyObject::class, PyCore::import('builtins')->len([1, 2]));
+        } finally {
+            phpy_test_native_configure_runtime(false);
+        }
+
+        $this->assertSame(2, PyCore::import('builtins')->len([1, 2]));
+    }
+
+    public function testNativeConstructorCreatesPhpPyObjects(): void
+    {
+        $list = phpy_test_native_construct(0, [1, 2, 3]);
+
+        $this->assertInstanceOf(PyList::class, $list);
+        $this->assertSame([1, 2, 3], $list->toArray());
+    }
+
     public function testBridgeCoreHelpers(): void
     {
         $this->assertGreaterThan(0, phpy_test_bridge_mode());

@@ -61,6 +61,7 @@ static void Resource_destroy(ZendResource *self) {
     if (phpy::php::del_object((PyObject *) self)) {
         Resource_dtor((PyObject *) self);
     }
+    Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
 bool py_module_resource_init(PyObject *m) {

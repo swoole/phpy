@@ -224,7 +224,6 @@ int php_python_operator_init(INIT_FUNC_ARGS);
 zend_class_entry *phpy_object_get_ce();
 zend_class_entry *phpy_sequence_get_ce();
 zend_class_entry *phpy_iter_get_ce();
-zend_class_entry *phpy_dict_get_ce();
 
 void phpy_object_ctor(zval *zobject, PyObject *object);
 /**

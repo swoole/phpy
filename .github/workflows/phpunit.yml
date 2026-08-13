@@ -57,6 +57,12 @@ jobs:
           composer install
           composer test
 
+      - name: Run PHP-FPM cross-request lifecycle test
+        if: matrix.php == '8.4'
+        run: |
+          sudo apt install -y php8.4-fpm libfcgi-bin
+          PHP_FPM_BINARY=/usr/sbin/php-fpm8.4 php tests/fpm/run.php modules/phpy.so
+
       - name: run coverage
         shell: bash
         run: sudo apt-get install lcov &&

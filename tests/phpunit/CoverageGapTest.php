@@ -187,6 +187,19 @@ class CoverageGapTest extends TestCase
         $this->assertTrue((bool) $values);
     }
 
+    public function testGenericPyObjectOffsetUnset(): void
+    {
+        $object = PyCore::import('app.user')->Kv('first', 'second');
+
+        $this->assertTrue($object->offsetExists('first'));
+        $object->offsetUnset('first');
+        $this->assertFalse($object->offsetExists('first'));
+
+        // Python KeyError follows PHP unset semantics and is ignored.
+        $object->offsetUnset('missing');
+        $this->addToAssertionCount(1);
+    }
+
     public function testPyObjectIteratorMethodsCanBeCalledDirectly(): void
     {
         $iterator = PyCore::iter(['first', 'second']);

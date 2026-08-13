@@ -34,6 +34,9 @@ class Kv(KvReadonly):
     def __setitem__(self, key, value):
         self.d[key] = value
 
+    def __delitem__(self, key):
+        del self.d[key]
+
 
 class KvCount(KvReadonly):
     def __len__(self):

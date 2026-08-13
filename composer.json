@@ -38,6 +38,7 @@
     },
     "scripts": {
         "test": "phpunit --bootstrap tests/bootstrap.php -c phpunit.xml --colors=always",
+        "test-fpm": "php tests/fpm/run.php modules/phpy.so",
         "cs-fix": "php-cs-fixer fix $1",
         "analyse": "phpstan analyse --memory-limit 512M -l 5 -c phpstan.neon",
         "rector": "rector process --clear-cache"

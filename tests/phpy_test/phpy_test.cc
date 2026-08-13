@@ -65,6 +65,40 @@ PHP_FUNCTION(phpy_test_native_call) {
               return_value);
 }
 
+PHP_FUNCTION(phpy_test_native_configure_runtime) {
+    bool return_as_object;
+
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_BOOL(return_as_object)
+    ZEND_PARSE_PARAMETERS_END();
+
+    const phpy_native_api_v1 *api = native_api();
+    if (api == nullptr) {
+        RETURN_THROWS();
+    }
+    RETURN_BOOL(api->configure_runtime(return_as_object) == SUCCESS);
+}
+
+PHP_FUNCTION(phpy_test_native_construct) {
+    zend_long constructor;
+    zval *argument = nullptr;
+
+    ZEND_PARSE_PARAMETERS_START(1, 2)
+    Z_PARAM_LONG(constructor)
+    Z_PARAM_OPTIONAL
+    Z_PARAM_ZVAL(argument)
+    ZEND_PARSE_PARAMETERS_END();
+
+    const phpy_native_api_v1 *api = native_api();
+    if (api == nullptr) {
+        RETURN_THROWS();
+    }
+    api->construct(static_cast<phpy_native_constructor>(constructor),
+                   argument,
+                   argument != nullptr,
+                   return_value);
+}
+
 PHP_FUNCTION(phpy_test_bridge_mode) {
     ZEND_PARSE_PARAMETERS_NONE();
     RETURN_LONG(phpy_get_mode());
@@ -128,6 +162,15 @@ ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
 ZEND_ARG_VARIADIC_TYPE_INFO(0, arguments, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_native_configure_runtime, 0, 1, _IS_BOOL, 0)
+ZEND_ARG_TYPE_INFO(0, returnAsObject, _IS_BOOL, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_native_construct, 0, 1, IS_OBJECT, 0)
+ZEND_ARG_TYPE_INFO(0, constructor, IS_LONG, 0)
+ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, argument, IS_MIXED, 0, "null")
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_phpy_test_bridge_mode, 0, 0, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 
@@ -147,6 +190,8 @@ ZEND_END_ARG_INFO()
 static const zend_function_entry phpy_test_functions[] = {
     PHP_FE(phpy_test_native_call_member, arginfo_phpy_test_native_call_member)
     PHP_FE(phpy_test_native_call, arginfo_phpy_test_native_call)
+    PHP_FE(phpy_test_native_configure_runtime, arginfo_phpy_test_native_configure_runtime)
+    PHP_FE(phpy_test_native_construct, arginfo_phpy_test_native_construct)
     PHP_FE(phpy_test_bridge_mode, arginfo_phpy_test_bridge_mode)
     PHP_FE(phpy_test_bridge_number_to_long, arginfo_phpy_test_bridge_number_to_long)
     PHP_FE(phpy_test_bridge_env_equals, arginfo_phpy_test_bridge_env_equals)

@@ -325,7 +325,7 @@ static bool try_convert_python_base_value(PyObject *pv, zval *zv) {
     } else if (ZendReference_Check(pv)) {
         ZVAL_COPY(zv, zend_reference_cast(pv));
     } else if (ZendResource_Check(pv)) {
-        ZVAL_COPY(zv, zend_reference_cast(pv));
+        ZVAL_COPY(zv, zend_resource_cast(pv));
     } else if (ZendString_Check(pv)) {
         ZVAL_COPY(zv, zend_string_cast(pv));
     } else if (ZendArray_Check(pv)) {
