@@ -10,6 +10,7 @@ PHP Extensions
 * [Compile and Install](php/build.md)
 * [Core Language](php/core.md)
 * [Built-in Types](php/object.md)
+* [Operator Overloading](php/operator.md)
 * [Exception Handling](php/exception.md)
 * [Integer Numbers](php/int.md)
 * [Callback Functions](php/fn.md)
