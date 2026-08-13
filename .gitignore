@@ -9,6 +9,9 @@
 *.lo
 *.o
 *.loT
+*.gcov
+*.gcda
+*.gcno
 /.log
 /.runtime
 /.venv
