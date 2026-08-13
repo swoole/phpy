@@ -64,12 +64,12 @@ void phpy_object_iterator_reset(zval *object) {
     oo->index = 0;
     // Return value: New reference
     oo->iterator = PyObject_GetIter(oo->object);
-    if (oo->iterator == NULL) {
+    if (UNEXPECTED(oo->iterator == NULL)) {
         phpy::php::throw_error_if_occurred();
     } else {
         // Return value: New reference
         oo->current = PyIter_Next(oo->iterator);
-        if (oo->current == NULL && PyErr_Occurred()) {
+        if (UNEXPECTED(oo->current == NULL && PyErr_Occurred())) {
             phpy::php::throw_error_if_occurred();
         }
     }
@@ -77,7 +77,7 @@ void phpy_object_iterator_reset(zval *object) {
 
 PyObject *phpy_object_iterator_next(zval *object) {
     auto oo = phpy_object_get_object(object);
-    if (oo->iterator == NULL) {
+    if (UNEXPECTED(oo->iterator == NULL)) {
         return NULL;
     }
     // Return value: New reference
@@ -87,7 +87,7 @@ PyObject *phpy_object_iterator_next(zval *object) {
     }
     oo->current = PyIter_Next(oo->iterator);
     oo->index++;
-    if (oo->current == NULL && PyErr_Occurred()) {
+    if (UNEXPECTED(oo->current == NULL && PyErr_Occurred())) {
         phpy::php::throw_error_if_occurred();
     }
     return oo->current;

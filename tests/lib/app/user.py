@@ -202,6 +202,57 @@ def broken_iterator():
     return BrokenIterator()
 
 
+class IterMethodRaises:
+    def __iter__(self):
+        raise RuntimeError("iter creation failed")
+
+
+def iter_method_raises():
+    return IterMethodRaises()
+
+
+class IterReturnsNonIterator:
+    def __iter__(self):
+        return []
+
+
+def iter_returns_non_iterator():
+    return IterReturnsNonIterator()
+
+
+class LaterBrokenIterator:
+    def __init__(self):
+        self.index = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index == 0:
+            self.index += 1
+            return "first"
+        raise RuntimeError("later iterator failure")
+
+
+def later_broken_iterator():
+    return LaterBrokenIterator()
+
+
+class RewindThenFail:
+    def __init__(self):
+        self.rewinds = 0
+
+    def __iter__(self):
+        self.rewinds += 1
+        if self.rewinds == 1:
+            return iter(["retained current"])
+        raise RuntimeError("second rewind failed")
+
+
+def rewind_then_fail():
+    return RewindThenFail()
+
+
 class BrokenLengthList(list):
     def __len__(self):
         raise RuntimeError("length failed")

@@ -123,6 +123,96 @@ final class ObjectProtocolTest extends TestCase
         }
     }
 
+    public function testRewindRejectsNonIterableObject(): void
+    {
+        $object = PyCore::import('builtins')->object();
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('not iterable');
+        $object->rewind();
+    }
+
+    public function testRewindPropagatesIterMethodException(): void
+    {
+        $object = PyCore::import('app.user')->iter_method_raises();
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('iter creation failed');
+        $object->rewind();
+    }
+
+    public function testRewindRejectsNonIteratorReturnedByIter(): void
+    {
+        $object = PyCore::import('app.user')->iter_returns_non_iterator();
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('non-iterator');
+        $object->rewind();
+    }
+
+    public function testLaterIteratorFailureClearsCurrentState(): void
+    {
+        $iterator = PyCore::import('app.user')->later_broken_iterator();
+        $iterator->rewind();
+        $this->assertTrue($iterator->valid());
+        $this->assertSame('first', (string) $iterator->current());
+
+        try {
+            $iterator->next();
+            $this->fail('The second Python iterator step must fail');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('later iterator failure', $error->getMessage());
+        }
+
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->current());
+        $this->assertSame(1, $iterator->key());
+        $this->assertSame(3, PyCore::import('builtins')->len([1, 2, 3]));
+    }
+
+    public function testFailedSecondRewindClearsPreviousIteratorState(): void
+    {
+        $iterator = PyCore::import('app.user')->rewind_then_fail();
+        $iterator->rewind();
+        $this->assertTrue($iterator->valid());
+        $this->assertSame('retained current', (string) $iterator->current());
+
+        try {
+            $iterator->rewind();
+            $this->fail('The second rewind must fail');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('second rewind failed', $error->getMessage());
+        }
+
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->current());
+        $this->assertSame(0, $iterator->key());
+        $this->assertSame(3, PyCore::import('builtins')->len([1, 2, 3]));
+    }
+
+    public function testIteratorMethodsBeforeRewindAndAfterExhaustion(): void
+    {
+        $iterator = PyCore::import('builtins')->iter(['only']);
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->current());
+        $this->assertSame(0, $iterator->key());
+
+        $iterator->rewind();
+        $this->assertTrue($iterator->valid());
+        $this->assertSame('only', (string) $iterator->current());
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->current());
+        $this->assertSame(1, $iterator->key());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
+        $this->assertNull($iterator->current());
+        $this->assertSame(2, $iterator->key());
+    }
+
     public function testPyCoreNextPropagatesIteratorFailure(): void
     {
         $iterator = PyCore::import('app.user')->broken_iterator();

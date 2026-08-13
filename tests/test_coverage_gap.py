@@ -25,6 +25,14 @@ function &phpy_ref() {
     static $x = 42;
     return $x;
 }
+function phpy_obj() {
+    return new PhpyKw();
+}
+class PhpyBadCtor {
+    public function __construct() {
+        throw new Exception("ctor boom");
+    }
+}
 """
 phpy.eval(_INIT)
 phpy.include("./tests/lib/bridge_helpers.php")
@@ -185,6 +193,50 @@ def test_scalar_roundtrip():
 def test_set_options():
     assert phpy.setOptions({"numeric_as_object": True}) is None
     assert phpy.setOptions({"return_as_object": False}) is None
+    # argument_as_object / display_exception branches in phpy_setOptions
+    assert phpy.setOptions({"argument_as_object": True}) is None
+    assert phpy.setOptions({"display_exception": True}) is None
+    assert phpy.setOptions({"argument_as_object": False, "display_exception": False}) is None
+
+
+def test_globals_and_eval_bad_args():
+    # PyArg_ParseTuple failure branches in phpy_globals / phpy_eval
+    with pytest.raises(TypeError):
+        phpy.globals(123)
+    with pytest.raises(TypeError):
+        phpy.eval(123)
+
+
+def test_scalar_container_arrays():
+    # py2py_scalar routes dict/set/list/tuple through new_array(PyObject*),
+    # exercising the Python-object overload in array.cc.
+    for value in ([1, 2, 3], {"a": 1}, (1, 2), {1, 2}):
+        assert type(phpy.scalar(value)) is phpy.Array
+
+
+def test_scalar_bytes_and_bytearray():
+    # py2py_scalar routes bytes/bytearray through new_string(PyObject*),
+    # covering the PyBytes_Check / PyByteArray_Check branches in string.cc.
+    assert str(phpy.scalar(b"abc")) == "abc"
+    assert str(phpy.scalar(bytearray(b"xy"))) == "xy"
+
+
+def test_object_passed_back_to_php():
+    # Passing a phpy.Object back into PHP exercises zend_object_cast in
+    # try_convert_python_base_value (object.cc / core.cc).
+    o = phpy.Object("PhpyKw")
+    assert str(phpy.call("get_class", o)) == "PhpyKw"
+    # A PHP function returning a plain object hits the generic branch of
+    # new_object(zval*) (neither closure, phpy-object, nor traversable).
+    wrapped = phpy.call("phpy_obj")
+    assert type(wrapped) is phpy.Object
+    assert wrapped.call("add", 3, 7) == 37
+
+
+def test_object_bad_constructor():
+    # object_create() reports a failing PHP constructor as a TypeError.
+    with pytest.raises(TypeError):
+        phpy.Object("PhpyBadCtor")
 
 
 def test_call_internal():

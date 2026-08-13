@@ -89,7 +89,7 @@ try {
         fail('requests were not handled by the same server process');
     }
     if (($first['arrayValue'] ?? null) !== 'request value'
-        || ($second['released'] ?? null) !== 5
+        || ($second['released'] ?? null) !== 6
         || ($second['fresh'] ?? null) !== 3
         || !array_key_exists('expiredArrayValue', $second)
         || $second['expiredArrayValue'] !== null) {
@@ -97,7 +97,11 @@ try {
     }
     echo "Cross-request lifecycle test passed (server {$first['pid']})\n";
 } finally {
-    proc_terminate($process);
+    // SIGINT (2, not the SIGTERM default): the built-in server exits
+    // gracefully, running PHP shutdown and flushing gcov data, so the
+    // request-shutdown dtor cleanup (phpy's crash-prevention for Python
+    // objects that outlive the PHP request) is reflected in the report.
+    proc_terminate($process, 2);
     proc_close($process);
     @unlink($log);
     @rmdir($temporary);

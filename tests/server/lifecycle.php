@@ -17,6 +17,7 @@ if ($phase === 'retain') {
         new PyObject(static fn(int $value): int => $value + 1),
         new PyObject((object) ['value' => 42]),
         new PyObject($stream),
+        new PyObject(new ArrayIterator([1, 2])),
     )->toArray();
 
     $arrayValue = PyCore::scalar($store->create_request_array());
