@@ -5,6 +5,7 @@ namespace phpunit;
 
 use PHPUnit\Framework\TestCase;
 use PyCore;
+use PyError;
 use PyStr;
 
 class OperatorTest extends TestCase
@@ -112,6 +113,39 @@ class OperatorTest extends TestCase
         $this->assertArrayValues($arr2, 13, 27);
         $arr2 |= 9;
         $this->assertArrayValues($arr2, 13, 27);
+    }
+
+    public function testAssignmentOperatorRejectsUnencodableRightOperand(): void
+    {
+        // A right operand that cannot be converted to a Python object (invalid
+        // UTF-8) makes php2py() fail; opcode_handler_assign_op must surface the
+        // Python error instead of crashing.
+        $py = PyCore::int(5);
+        try {
+            $py += "\xff";
+            $this->fail('An unencodable right operand must raise PyError');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('utf-8', $error->getMessage());
+        }
+
+        // A compound assignment whose result is consumed exercises the
+        // RETURN_VALUE_USED path of the failure branch.
+        $py = PyCore::int(5);
+        try {
+            $result = ($py += "\xff");
+            $this->fail('An unencodable right operand must raise PyError');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('utf-8', $error->getMessage());
+        }
+
+        // An array with an unencodable key also fails during php2py().
+        $py = PyCore::int(5);
+        try {
+            $py += ["\xff" => 1];
+            $this->fail('An array with an unencodable key must raise PyError');
+        } catch (PyError $error) {
+            $this->assertStringContainsString('utf-8', $error->getMessage());
+        }
     }
 
     public function testComparisonOperator()

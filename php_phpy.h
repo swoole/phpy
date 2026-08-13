@@ -6,7 +6,7 @@
 extern zend_module_entry phpy_module_entry;
 # define phpext_phpy_ptr &phpy_module_entry
 
-# define PHP_PHPY_VERSION "1.0.11"
+# define PHP_PHPY_VERSION "1.1.0"
 
 #include "phpy_api.h"
 

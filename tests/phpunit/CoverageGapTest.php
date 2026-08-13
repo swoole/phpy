@@ -200,6 +200,43 @@ class CoverageGapTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    public function testGenericObjectOffsetExistsSwallowsKeyAndIndexErrors(): void
+    {
+        // A generic PyObject (not PyDict/PyList) whose __getitem__ raises
+        // KeyError/IndexError must make isset() return false, following PHP's
+        // isset() semantics instead of propagating the Python error.
+        $module = PyCore::eval(<<<'PY'
+class KV:
+    def __init__(self, data):
+        self.data = data
+
+    def __getitem__(self, k):
+        if k not in self.data:
+            raise KeyError(k)
+        return self.data[k]
+
+    def __delitem__(self, k):
+        if k not in self.data:
+            raise IndexError(k)
+        del self.data[k]
+
+kv = KV({'a': 1, 'b': 2})
+PY);
+        $object = $module->kv;
+        $this->assertInstanceOf(PyObject::class, $object);
+
+        // KeyError path -> isset() returns false.
+        $this->assertFalse(isset($object['missing']));
+        // IndexError path -> isset() returns false.
+        $this->assertFalse(isset($object[99]));
+        // A present key still reads through __getitem__.
+        $this->assertTrue(isset($object['a']));
+
+        // offsetUnset also swallows an IndexError for a missing index.
+        unset($object[99]);
+        $this->addToAssertionCount(1);
+    }
+
     public function testPyObjectIteratorMethodsCanBeCalledDirectly(): void
     {
         $iterator = PyCore::iter(['first', 'second']);
