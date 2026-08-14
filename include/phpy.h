@@ -229,11 +229,11 @@ void phpy_object_ctor(zval *zobject, PyObject *object);
 /**
  * Return value: Borrowed reference.
  */
-PyObject *phpy_object_get_handle(zval *zobject);
+PyObject *phpy_object_get_handle(const zval *zobject);
 /**
  * Return value: Borrowed reference.
  */
-PyObject *phpy_object_get_handle(zend_object *object);
+PyObject *phpy_object_get_handle(const zend_object *object);
 
 void phpy_object_iterator_reset(zval *object);
 PyObject *phpy_object_iterator_next(zval *object);
@@ -302,27 +302,27 @@ static inline void throw_error_if_occurred() {
         return;                                                                                                        \
     }
 
-static inline bool is_typeof(zval *zv, int type) {
+static inline bool is_typeof(const zval *zv, int type) {
     return Z_TYPE_P(zv) == type;
 }
 
-static inline bool is_null(zval *zv) {
+static inline bool is_null(const zval *zv) {
     return zv == NULL || ZVAL_IS_NULL(zv);
 }
 
-static inline bool is_array(zval *zv) {
+static inline bool is_array(const zval *zv) {
     return is_typeof(zv, IS_ARRAY);
 }
 
-static inline bool is_string(zval *zv) {
+static inline bool is_string(const zval *zv) {
     return is_typeof(zv, IS_STRING);
 }
 
-static inline bool is_object(zval *zv) {
+static inline bool is_object(const zval *zv) {
     return is_typeof(zv, IS_OBJECT);
 }
 
-static inline bool is_pyobject(zval *zv) {
+static inline bool is_pyobject(const zval *zv) {
     return is_object(zv) && instanceof_function(Z_OBJCE_P(zv), phpy_object_get_ce());
 }
 
@@ -353,11 +353,11 @@ static inline uint32_t array_count(zend_array *ht) {
     return zend_array_count(ht);
 }
 
-static inline uint32_t array_count(zval *zv) {
+static inline uint32_t array_count(const zval *zv) {
     return zend_array_count(Z_ARRVAL_P(zv));
 }
 
-static inline bool is_empty_array(zval *zv) {
+static inline bool is_empty_array(const zval *zv) {
     return Z_TYPE_P(zv) == IS_ARRAY && array_count(zv) == 0;
 }
 

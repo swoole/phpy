@@ -16,6 +16,13 @@ using phpy::python::OwnedPythonReference;
 
 namespace {
 
+static zend_always_inline const zval *unwrap_indirect(const zval *value) {
+    if (EXPECTED(value != nullptr)) {
+        ZVAL_DEINDIRECT(value);
+    }
+    return value;
+}
+
 zend_result fail_if_exception() {
     return EG(exception) == nullptr ? SUCCESS : FAILURE;
 }
@@ -35,12 +42,12 @@ zend_result guard_native_call(zval *result, Function &&function) noexcept {
 }
 
 PyObject *checked_object(const zval *object) {
-	ZVAL_DEINDIRECT(object);
-    if (UNEXPECTED(object == nullptr || !phpy::php::is_pyobject(const_cast<zval *>(object)))) {
+    object = unwrap_indirect(object);
+    if (UNEXPECTED(object == nullptr || !phpy::php::is_pyobject(object))) {
         zend_type_error("phpy native bridge expects a PyObject");
         return nullptr;
     }
-    PyObject *handle = phpy_object_get_handle(const_cast<zval *>(object));
+    PyObject *handle = phpy_object_get_handle(object);
     if (UNEXPECTED(handle == nullptr)) {
         zend_throw_error(nullptr, "PyObject is not initialized");
     }
@@ -170,13 +177,13 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
                                     zval *result) {
     return guard_native_call(result, [&] {
         LOCK_GIL();
-        ZVAL_DEINDIRECT(argument);
+        argument = unwrap_indirect(argument);
         const bool null_argument = !has_argument || argument == nullptr || Z_TYPE_P(argument) == IS_NULL;
         PyObject *value = nullptr;
 
         switch (constructor) {
         case PHPY_NATIVE_CONSTRUCT_LIST:
-            if (null_argument || phpy::php::is_empty_array(const_cast<zval *>(argument))) {
+            if (null_argument || phpy::php::is_empty_array(argument)) {
                 value = PyList_New(0);
             } else if (phpy::php::is_array(const_cast<zval *>(argument))) {
                 value = array2list(const_cast<zval *>(argument));
@@ -189,7 +196,7 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
             }
             break;
         case PHPY_NATIVE_CONSTRUCT_DICT:
-            if (null_argument || phpy::php::is_empty_array(const_cast<zval *>(argument))) {
+            if (null_argument || phpy::php::is_empty_array(argument)) {
                 value = PyDict_New();
             } else if (phpy::php::is_array(const_cast<zval *>(argument))) {
                 value = array2dict(const_cast<zval *>(argument));
@@ -204,12 +211,12 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
         case PHPY_NATIVE_CONSTRUCT_TUPLE:
             if (!has_argument) {
                 zend_argument_count_error("PyTuple::__construct() expects exactly 1 argument, 0 given");
-            } else if (null_argument || phpy::php::is_empty_array(const_cast<zval *>(argument))) {
+            } else if (null_argument || phpy::php::is_empty_array(argument)) {
                 value = PyTuple_New(0);
-            } else if (phpy::php::is_array(const_cast<zval *>(argument))) {
+            } else if (phpy::php::is_array(argument)) {
                 value = array2tuple(const_cast<zval *>(argument));
-            } else if (phpy::php::is_pyobject(const_cast<zval *>(argument))) {
-                value = PySequence_Tuple(phpy_object_get_handle(const_cast<zval *>(argument)));
+            } else if (phpy::php::is_pyobject(argument)) {
+                value = PySequence_Tuple(phpy_object_get_handle(argument));
             } else {
                 zend_throw_error(nullptr, "PyTuple: unsupported type");
             }
@@ -219,9 +226,9 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
             }
             break;
         case PHPY_NATIVE_CONSTRUCT_SET:
-            if (null_argument || phpy::php::is_empty_array(const_cast<zval *>(argument))) {
+            if (null_argument || phpy::php::is_empty_array(argument)) {
                 value = PySet_New(nullptr);
-            } else if (phpy::php::is_array(const_cast<zval *>(argument))) {
+            } else if (phpy::php::is_array(argument)) {
                 value = array2set(const_cast<zval *>(argument));
             } else {
                 zend_throw_error(nullptr, "PySet: unsupported type");
@@ -232,8 +239,8 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
             }
             break;
         case PHPY_NATIVE_CONSTRUCT_STR:
-            if (has_argument && argument != nullptr && phpy::php::is_pyobject(const_cast<zval *>(argument))) {
-                value = PyUnicode_FromObject(phpy_object_get_handle(const_cast<zval *>(argument)));
+            if (has_argument && argument != nullptr && phpy::php::is_pyobject(argument)) {
+                value = PyUnicode_FromObject(phpy_object_get_handle(argument));
             } else if (has_argument && argument != nullptr) {
                 zend_string *string = zval_get_string(const_cast<zval *>(argument));
                 if (UNEXPECTED(EG(exception) != nullptr)) {
@@ -280,10 +287,10 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
         case PHPY_NATIVE_CONSTRUCT_BYTES:
             if (null_argument) {
                 value = PyBytes_FromStringAndSize("", 0);
-            } else if (phpy::php::is_string(const_cast<zval *>(argument))) {
+            } else if (phpy::php::is_string(argument)) {
                 value = PyBytes_FromStringAndSize(Z_STRVAL_P(argument), Z_STRLEN_P(argument));
-            } else if (phpy::php::is_pyobject(const_cast<zval *>(argument))) {
-                value = PyBytes_FromObject(phpy_object_get_handle(const_cast<zval *>(argument)));
+            } else if (phpy::php::is_pyobject(argument)) {
+                value = PyBytes_FromObject(phpy_object_get_handle(argument));
             } else {
                 zend_string *string = zval_get_string(const_cast<zval *>(argument));
                 if (UNEXPECTED(EG(exception) != nullptr)) {

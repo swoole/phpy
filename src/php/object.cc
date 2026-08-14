@@ -35,19 +35,19 @@ struct Object {
     zend_object std;
 };
 
-static zend_always_inline Object *phpy_object_get_object(zend_object *object) {
+static zend_always_inline Object *phpy_object_get_object(const zend_object *object) {
     return (Object *) ((char *) object - object_handlers.offset);
 }
 
-static zend_always_inline Object *phpy_object_get_object(zval *zobject) {
+static zend_always_inline Object *phpy_object_get_object(const zval *zobject) {
     return (Object *) ((char *) Z_OBJ_P(zobject) - object_handlers.offset);
 }
 
-PyObject *phpy_object_get_handle(zend_object *object) {
+PyObject *phpy_object_get_handle(const zend_object *object) {
     return phpy_object_get_object(object)->object;
 }
 
-PyObject *phpy_object_get_handle(zval *zobject) {
+PyObject *phpy_object_get_handle(const zval *zobject) {
     return phpy_object_get_object(zobject)->object;
 }
 
