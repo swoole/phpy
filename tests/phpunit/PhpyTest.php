@@ -35,9 +35,13 @@ final class PhpyTest extends TestCase
         // surface as a PyError instead of corrupting the interpreter.
         $module = PyCore::eval(<<<'PY'
 import ctypes
-lib = ctypes.PyDLL("libpython3.10.so.1.0")
+# pythonapi points at the libpython already loaded into this process,
+# so it works regardless of the installed Python version / library name.
+lib = ctypes.pythonapi
 lib.PyErr_SetString.argtypes = [ctypes.py_object, ctypes.c_char_p]
+lib.PyErr_SetString.restype = None
 lib.PyErr_Clear.argtypes = []
+lib.PyErr_Clear.restype = None
 
 def inject():
     lib.PyErr_SetString(ValueError, b"pending")
