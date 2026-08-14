@@ -327,6 +327,56 @@ static inline bool is_pyobject(const zval *zv) {
 }
 
 /**
+ * Parse the single integer index argument shared by the sequence offset*
+ * methods (PyList / PyTuple).
+ */
+static inline ssize_t get_key(INTERNAL_FUNCTION_PARAMETERS) {
+    zend_long k;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_LONG(k)
+    ZEND_PARSE_PARAMETERS_END_EX(return 0);
+    return (ssize_t) k;
+}
+
+/**
+ * Normalize a possibly negative index against `size`; returns false when the
+ * index is out of range.
+ */
+static inline bool normalize_index(PyObject *object, ssize_t size, ssize_t index, ssize_t *normalized) {
+    if (index < 0) {
+        index += size;
+    }
+    if (index < 0 || index >= size) {
+        return false;
+    }
+    *normalized = index;
+    return true;
+}
+
+/**
+ * Shared PyList/PyTuple offsetGet body. `get_size`/`get_item` must be the
+ * container-specific accessors (e.g. PyList_GET_SIZE / PyList_GetItem); the
+ * latter returns a borrowed reference. The caller holds the GIL.
+ */
+template <typename GetSize, typename GetItem>
+static void sequence_offset_get(PyObject *object,
+                                ssize_t index,
+                                const char *class_name,
+                                GetSize get_size,
+                                GetItem get_item,
+                                zval *return_value) {
+    ssize_t normalized;
+    if (!normalize_index(object, get_size(object), index, &normalized)) {
+        zend_throw_error(NULL, "%s: index[%ld] out of range", class_name, index);
+        return;
+    }
+    PyObject *value = get_item(object, normalized);
+    if (value != NULL) {
+        py2php(value, return_value);
+    }
+}
+
+/**
  * Return value: Borrowed reference.
  */
 static inline zval *array_get(zval *zv, long index) {

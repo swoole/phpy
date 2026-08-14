@@ -42,28 +42,6 @@ void new_tuple(zval *zv, PyObject *list) {
 }  // namespace php
 }  // namespace phpy
 
-static ssize_t get_key(INTERNAL_FUNCTION_PARAMETERS) {
-    zend_long k;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-    Z_PARAM_LONG(k)
-    ZEND_PARSE_PARAMETERS_END_EX(return 0);
-
-    return (ssize_t) k;
-}
-
-static bool normalize_index(PyObject *tuple, ssize_t index, ssize_t *normalized) {
-    const auto size = PyTuple_GET_SIZE(tuple);
-    if (index < 0) {
-        index += size;
-    }
-    if (index < 0 || index >= size) {
-        return false;
-    }
-    *normalized = index;
-    return true;
-}
-
 ZEND_METHOD(PyTuple, __construct) {
     zval *ztuple;
     ZEND_PARSE_PARAMETERS_START(1, 1)
@@ -90,20 +68,11 @@ ZEND_METHOD(PyTuple, __construct) {
 }
 
 ZEND_METHOD(PyTuple, offsetGet) {
-    auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    auto pk = phpy::php::get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    ssize_t index;
-    if (!normalize_index(object, pk, &index)) {
-        zend_throw_error(NULL, "PyTuple: index[%ld] out of range", pk);
-        return;
-    }
-    // PyTuple_GetItem()
-    // Return value: Borrowed reference
-    auto value = PyTuple_GetItem(object, index);
-    if (value != NULL) {
-        py2php(value, return_value);
-    }
+    phpy::php::sequence_offset_get(
+        object, pk, "PyTuple", [](PyObject *o) { return PyTuple_GET_SIZE(o); }, PyTuple_GetItem, return_value);
 }
 
 ZEND_METHOD(PyTuple, offsetSet) {
@@ -115,11 +84,11 @@ ZEND_METHOD(PyTuple, offsetUnset) {
 }
 
 ZEND_METHOD(PyTuple, offsetExists) {
-    auto pk = get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+    auto pk = phpy::php::get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
     ssize_t index;
-    if (!normalize_index(object, pk, &index)) {
+    if (!phpy::php::normalize_index(object, PyTuple_GET_SIZE(object), pk, &index)) {
         RETURN_FALSE;
     }
     RETVAL_BOOL(!Py_IsNone(PyTuple_GET_ITEM(object, index)));
