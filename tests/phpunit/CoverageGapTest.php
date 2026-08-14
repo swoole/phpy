@@ -349,4 +349,33 @@ PY);
         $this->expectExceptionMessage('recursive Python container');
         $module->l->toArray();
     }
+
+    public function testRecursiveDictToArrayRaisesPyError(): void
+    {
+        // A dict whose value refers back to itself fails the nested
+        // conversion, hitting convertDictionary's element-failure branch.
+        $module = PyCore::eval('d = {}; d["self"] = d');
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('recursive Python container');
+        $module->d->toArray();
+    }
+
+    public function testIteratorRaisingDuringToArrayRaisesPyError(): void
+    {
+        // An iterator whose __next__ raises sets a Python error during
+        // conversion, hitting convertIterable's PyErr_Occurred branch.
+        $module = PyCore::eval(
+            'class BadIter:' . "\n"
+            . '    def __init__(self): self.n = 0' . "\n"
+            . '    def __iter__(self): return self' . "\n"
+            . '    def __next__(self):' . "\n"
+            . '        if self.n == 1: raise ValueError("iter boom")' . "\n"
+            . '        self.n += 1' . "\n"
+            . '        return self.n' . "\n"
+            . 'bi = BadIter()' . "\n"
+        );
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('iter boom');
+        $module->bi->toArray();
+    }
 }

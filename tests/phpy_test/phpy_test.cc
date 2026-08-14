@@ -205,7 +205,7 @@ PHP_FUNCTION(phpy_test_native_indirect_inputs) {
 
 PHP_FUNCTION(phpy_test_bridge_mode) {
     ZEND_PARSE_PARAMETERS_NONE();
-    RETURN_LONG(phpy_get_mode());
+    RETURN_LONG(static_cast<zend_long>(phpy_get_init_mode()));
 }
 
 PHP_FUNCTION(phpy_test_bridge_number_to_long) {

@@ -138,9 +138,7 @@ static PyObject *Class_set(ZendClass *self, PyObject *args) {
     }
 
     zval rv;
-    py2php(value, &rv);
-    if (UNEXPECTED(EG(exception) != nullptr)) {
-        zval_ptr_dtor(&rv);
+    if (UNEXPECTED(!py2php(value, &rv))) {
         return NULL;
     }
     ON_SCOPE_EXIT {

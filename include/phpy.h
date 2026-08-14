@@ -86,13 +86,14 @@ inline ScopeGuard<Fun> operator+(ScopeGuardOnExit, Fun &&fn) {
 
 #define ON_SCOPE_EXIT auto __SCOPEGUARD_CONCATENATE(ext_exitBlock_, __LINE__) = detail::ScopeGuardOnExit() + [&]()
 
-enum {
-    PHPY_PHP_EXTENSION = 1,
-    PHPY_PYTHON_MODULE = 2,
+enum class PhpyInitMode {
+    Uninitialized,
+    PhpExtension,
+    PythonModule,
 };
 
-int phpy_init(int mode);
-int phpy_get_mode(void);
+int phpy_init(PhpyInitMode mode);
+PhpyInitMode phpy_get_init_mode(void);
 
 zval *zend_string_cast(PyObject *pv);
 zval *zend_reference_cast(PyObject *pv);
@@ -103,13 +104,13 @@ zval *zend_array_cast(PyObject *pv);
 /**
  * Type conversion, Python to PHP
  */
-void py2php(PyObject *pv, zval *zv);
+bool py2php(PyObject *pv, zval *zv);
 /**
  * Convert to PHP scalar types as much as possible
  */
-void py2php_scalar(PyObject *pv, zval *zv);
+bool py2php_scalar(PyObject *pv, zval *zv);
 /** Convert supported Python containers or iterators to a PHP array. */
-void py2php_array(PyObject *pv, zval *zv);
+bool py2php_array(PyObject *pv, zval *zv);
 zend_string *py2zstr(PyObject *pv);
 bool object2array(PyObject *pv, zval *zv);
 void object2string(PyObject *pv, zval *zv);
@@ -617,7 +618,7 @@ PyObject *new_iterator(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
 const char *string2char_ptr(PyObject *pv, ssize_t *len);
 void string2zval(PyObject *pv, zval *zv);
-void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
+bool tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin = 1);
 void release_argv(uint32_t argc, zval *argv);
 class LockGuard {
   public:

@@ -256,7 +256,7 @@ PyMODINIT_FUNC php_init_python_module(void) {
 }
 
 PHP_MINIT_FUNCTION(phpy) {
-    if (phpy_init(PHPY_PHP_EXTENSION) < 0) {
+    if (phpy_init(PhpyInitMode::PhpExtension) < 0) {
         zend_error(E_ERROR, "Error: phpy has been initialized");
         return FAILURE;
     }

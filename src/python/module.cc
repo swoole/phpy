@@ -62,12 +62,19 @@ static PyObject *phpy_call(PyObject *self, PyObject *args) {
 
     uint32_t argc = TupleSize - 1;
     zval *argv = new zval[argc];
-
-    phpy::python::tuple2argv(argv, args, TupleSize);
+    if (UNEXPECTED(!phpy::python::tuple2argv(argv, args, TupleSize))) {
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
+        return NULL;
+    }
 
     zval retval;
     zval zfn;
-    py2php_scalar(fn, &zfn);
+    if (UNEXPECTED(!py2php_scalar(fn, &zfn))) {
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
+        return NULL;
+    }
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
         phpy::python::release_argv(argc, argv);
@@ -255,7 +262,7 @@ static bool py_module_php_init(PyObject *m) {
 
 #include <sapi/embed/php_embed.h>
 PyMODINIT_FUNC PyInit_phpy(void) {
-    if (phpy_init(PHPY_PYTHON_MODULE) < 0) {
+    if (phpy_init(PhpyInitMode::PythonModule) < 0) {
         PyErr_SetString(PyExc_SystemError, "Error: phpy has been initialized");
         return NULL;
     }

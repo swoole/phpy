@@ -1,8 +1,37 @@
+import subprocess
+import sys
+
 import pytest
 
 import phpy
 
 phpy.include("./tests/lib/bridge_helpers.php")
+
+
+def test_recursive_argument_conversion_does_not_bailout_python_process():
+    code = r'''
+import phpy
+
+recursive = []
+recursive.append(recursive)
+
+try:
+    phpy.call("strlen", recursive)
+except ValueError as error:
+    assert "recursive Python container" in str(error)
+else:
+    raise AssertionError("recursive conversion must fail")
+
+assert phpy.call("strlen", "alive") == 5
+'''
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=".",
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_php_closure_called_from_python():

@@ -137,7 +137,9 @@ static int Array_setitem(ZendArray *self, PyObject *key, PyObject *value) {
         return Array_delitem(self, key) ? 0 : -1;
     }
     zval rv;
-    py2php(value, &rv);
+    if (UNEXPECTED(!py2php(value, &rv))) {
+        return -1;
+    }
     SEPARATE_ARRAY(&self->array);
     zval *result;
     if (PyLong_Check(key)) {
@@ -175,7 +177,9 @@ static PyObject *Array_append(ZendArray *self, PyObject *args) {
         Py_RETURN_FALSE;
     }
     zval rv;
-    py2php(value, &rv);
+    if (UNEXPECTED(!py2php(value, &rv))) {
+        return NULL;
+    }
     SEPARATE_ARRAY(&self->array);
     if (add_next_index_zval(&self->array, &rv) == SUCCESS) {
         Py_RETURN_TRUE;

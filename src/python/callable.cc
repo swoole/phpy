@@ -92,24 +92,20 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     Py_ssize_t TupleSize = PyTuple_Size(args);
     uint32_t argc = TupleSize;
     zval *argv = new zval[argc];
-    phpy::python::tuple2argv(argv, args, TupleSize, 0);
+    const bool args_converted = phpy::python::tuple2argv(argv, args, TupleSize, 0);
     ON_SCOPE_EXIT {
         phpy::python::release_argv(argc, argv);
         delete[] argv;
     };
 
-    if (EG(exception) != NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "Argument conversion failed");
+    if (UNEXPECTED(!args_converted)) {
         return NULL;
     }
 
     zval named_args;
     ZVAL_UNDEF(&named_args);
     if (kwds != NULL && PyDict_Size(kwds) > 0) {
-        py2php_scalar(kwds, &named_args);
-        if (EG(exception) != NULL) {
-            PyErr_SetString(PyExc_RuntimeError, "Keyword argument conversion failed");
-            zval_ptr_dtor(&named_args);
+        if (UNEXPECTED(!py2php_scalar(kwds, &named_args))) {
             return NULL;
         }
     }

@@ -104,11 +104,19 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
 
     uint32_t argc = TupleSize - 1;
     zval *argv = new zval[argc];
-    phpy::python::tuple2argv(argv, args, TupleSize);
+    if (UNEXPECTED(!phpy::python::tuple2argv(argv, args, TupleSize))) {
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
+        return NULL;
+    }
 
     zval retval;
     zval zfn;
-    py2php_scalar(fn, &zfn);
+    if (UNEXPECTED(!py2php_scalar(fn, &zfn))) {
+        phpy::python::release_argv(argc, argv);
+        delete[] argv;
+        return NULL;
+    }
     zend_result result = phpy::php::call_fn(&self->object, &zfn, &retval, argc, argv);
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
@@ -128,24 +136,20 @@ static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds)
     zval retval;
     Py_ssize_t argc = PyTuple_Size(args);
     zval *argv = new zval[argc];
-    phpy::python::tuple2argv(argv, args, argc, 0);
+    const bool args_converted = phpy::python::tuple2argv(argv, args, argc, 0);
     ON_SCOPE_EXIT {
         phpy::python::release_argv(argc, argv);
         delete[] argv;
     };
 
-    if (EG(exception) != NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "Argument conversion failed");
+    if (UNEXPECTED(!args_converted)) {
         return NULL;
     }
 
     zval named_args;
     ZVAL_UNDEF(&named_args);
     if (kwds != NULL && PyDict_Size(kwds) > 0) {
-        py2php_scalar(kwds, &named_args);
-        if (EG(exception) != NULL) {
-            PyErr_SetString(PyExc_RuntimeError, "Keyword argument conversion failed");
-            zval_ptr_dtor(&named_args);
+        if (UNEXPECTED(!py2php_scalar(kwds, &named_args))) {
             return NULL;
         }
     }
@@ -182,7 +186,9 @@ static PyObject *Object_set(ZendObject *self, PyObject *args) {
     }
 
     zval rv;
-    py2php(value, &rv);
+    if (UNEXPECTED(!py2php(value, &rv))) {
+        return NULL;
+    }
     zend_update_property(Z_OBJCE(self->object), Z_OBJ(self->object), name, l_name, &rv);
     zval_ptr_dtor(&rv);
 
@@ -238,7 +244,12 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
         zval zfn;
         ZVAL_STRINGL(&zfn, CTOR_NAME, sizeof(CTOR_NAME) - 1);
         zval *argv = new zval[argc];
-        phpy::python::tuple2argv(argv, args, argc + begin, begin);
+        if (UNEXPECTED(!phpy::python::tuple2argv(argv, args, argc + begin, begin))) {
+            phpy::python::release_argv(argc, argv);
+            delete[] argv;
+            zval_ptr_dtor(&zfn);
+            return NULL;
+        }
         zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
         ON_SCOPE_EXIT {
             zval_ptr_dtor(&zfn);

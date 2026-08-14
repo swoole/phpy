@@ -31,10 +31,10 @@ using phpy::python::OwnedPythonReference;
 
 const int var_dump_level = 3;
 
-static int init_mode = 0;
+static PhpyInitMode init_mode = PhpyInitMode::Uninitialized;
 
-int phpy_init(int mode) {
-    if (UNEXPECTED(init_mode > 0)) {
+int phpy_init(PhpyInitMode mode) {
+    if (UNEXPECTED(mode == PhpyInitMode::Uninitialized || init_mode != PhpyInitMode::Uninitialized)) {
         return -1;
     } else {
         init_mode = mode;
@@ -42,7 +42,7 @@ int phpy_init(int mode) {
     }
 }
 
-int phpy_get_mode(void) {
+PhpyInitMode phpy_get_init_mode(void) {
     return init_mode;
 }
 
@@ -210,18 +210,32 @@ bool PythonToPhpConverter::convert(PyObject *value, zval *result) {
                                                            : convertPreservingObjects(value, result);
 }
 
-void py2php_scalar(PyObject *pv, zval *zv) {
-    PythonToPhpConverter converter(PythonToPhpPolicy::ConvertContainers);
-    if (UNEXPECTED(!converter.convert(pv, zv))) {
-        ZVAL_NULL(zv);
-        phpy::php::throw_error_if_occurred();
+static zend_always_inline bool handle_python_conversion_failure(zval *result) {
+    ZVAL_NULL(result);
+    if (phpy_get_init_mode() == PhpyInitMode::PhpExtension) {
+        if (PyErr_Occurred()) {
+            phpy::php::throw_error_if_occurred();
+        } else {
+            zend_throw_error(nullptr, "Python to PHP conversion failed");
+        }
+    } else if (!PyErr_Occurred()) {
+        PyErr_SetString(PyExc_SystemError, "Python to PHP conversion failed without setting an exception");
     }
+    return false;
 }
 
-void py2php_array(PyObject *pv, zval *zv) {
+bool py2php_scalar(PyObject *pv, zval *zv) {
+    PythonToPhpConverter converter(PythonToPhpPolicy::ConvertContainers);
+    if (UNEXPECTED(!converter.convert(pv, zv))) {
+        return handle_python_conversion_failure(zv);
+    }
+    return true;
+}
+
+bool py2php_array(PyObject *pv, zval *zv) {
     if (!PyList_Check(pv) && !PyTuple_Check(pv) && !PySet_Check(pv) && !PyDict_Check(pv) && !PyIter_Check(pv)) {
         ZVAL_EMPTY_ARRAY(zv);
-        return;
+        return true;
     }
 
     PythonToPhpConverter converter(PythonToPhpPolicy::ConvertContainers);
@@ -229,20 +243,20 @@ void py2php_array(PyObject *pv, zval *zv) {
         if (UNEXPECTED(!Z_ISUNDEF_P(zv))) {
             zval_ptr_dtor(zv);
         }
-        ZVAL_EMPTY_ARRAY(zv);
-        phpy::php::throw_error_if_occurred();
+        return handle_python_conversion_failure(zv);
     }
+    return true;
 }
 
 /**
  * Increase reference count of the value
  */
-void py2php(PyObject *pv, zval *zv) {
+bool py2php(PyObject *pv, zval *zv) {
     PythonToPhpConverter converter(PythonToPhpPolicy::PreserveObjects);
     if (UNEXPECTED(!converter.convert(pv, zv))) {
-        ZVAL_NULL(zv);
-        phpy::php::throw_error_if_occurred();
+        return handle_python_conversion_failure(zv);
     }
+    return true;
 }
 
 PyObject *py2py_scalar(PyObject *pv) {
@@ -902,29 +916,34 @@ void string2zval(PyObject *pv, zval *zv) {
     }
 }
 
-void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
+bool tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
     Py_ssize_t i;
+    for (i = begin; i < size; i++) {
+        ZVAL_UNDEF(&argv[i - begin]);
+    }
     for (i = begin; i < size; i++) {
         // PyTuple_GetItem()
         // Return value: Borrowed reference
         PyObject *arg = PyTuple_GetItem(args, i);
         if (UNEXPECTED(arg == NULL)) {
             PyErr_SetString(PyExc_TypeError, "wrong parameter");
-            break;
+            return false;
         }
         zval item;
-        if (phpy_options.argument_as_object) {
-            py2php(arg, &item);
-        } else {
-            py2php_scalar(arg, &item);
+        const bool converted = phpy_options.argument_as_object ? py2php(arg, &item) : py2php_scalar(arg, &item);
+        if (UNEXPECTED(!converted)) {
+            return false;
         }
         argv[i - begin] = item;
     }
+    return true;
 }
 
 void release_argv(uint32_t argc, zval *argv) {
     for (uint32_t i = 0; i < argc; i++) {
-        zval_ptr_dtor(&argv[i]);
+        if (!Z_ISUNDEF(argv[i])) {
+            zval_ptr_dtor(&argv[i]);
+        }
     }
 }
 }  // namespace python

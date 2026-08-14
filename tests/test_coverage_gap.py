@@ -413,3 +413,49 @@ def test_closure_passed_back_to_php_closure_hint():
     # function with a Closure type hint accepts it.
     cb = phpy.call("phpy_kw_closure")
     assert phpy.call("phpy_call_typed_closure", cb, 3, 7) == 37
+
+
+def test_array_rejects_iterable_raising_during_iteration():
+    # An iterator whose __next__ raises mid-iteration sets a Python error, so
+    # convertIterable's PyErr_Occurred branch calls discard_result().
+    class BadIter:
+        def __init__(self):
+            self.n = 0
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if self.n == 1:
+                raise ValueError("iter boom")
+            self.n += 1
+            return self.n
+
+    with pytest.raises(ValueError, match="iter boom"):
+        phpy.Array(BadIter())
+
+
+def test_array_rejects_dict_raising_during_iteration():
+    # A dict subclass whose iterator raises after the first key sets a Python
+    # error, hitting convertDictionary's PyErr_Occurred branch.
+    class D(dict):
+        def __iter__(self):
+            yield "a"
+            raise ValueError("dict iter boom")
+
+    with pytest.raises(ValueError, match="dict iter boom"):
+        phpy.Array(D({"a": 1}))
+
+
+def test_array_rejects_key_with_failing_string_conversion():
+    # A dict key whose __str__ raises makes StrObject fail, hitting the
+    # zval_ptr_dtor(&item) + discard_result() branch of convertDictionary.
+    class BadKey:
+        def __hash__(self):
+            return 1
+
+        def __str__(self):
+            raise ValueError("bad str")
+
+    with pytest.raises(ValueError, match="bad str"):
+        phpy.Array({BadKey(): "v"})
