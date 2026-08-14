@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -24,9 +25,17 @@ else:
 
 assert phpy.call("strlen", "alive") == 5
 '''
+    # The subprocess is a fresh interpreter and does not inherit the sys.path
+    # entries added by tests/__init__.py. Re-export the repo "lib" directory
+    # (which contains the compiled phpy module) through PYTHONPATH.
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(
+        filter(None, [os.path.abspath("lib"), env.get("PYTHONPATH", "")])
+    )
     result = subprocess.run(
         [sys.executable, "-c", code],
         cwd=".",
+        env=env,
         capture_output=True,
         text=True,
         check=False,
