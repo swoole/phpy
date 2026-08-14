@@ -250,7 +250,7 @@ PyObject *py2py_scalar(PyObject *pv) {
     return pv;
 }
 
-void object2array(PyObject *pv, zval *zv) {
+bool object2array(PyObject *pv, zval *zv) {
     ZVAL_UNDEF(zv);
     PythonToPhpConverter converter(PythonToPhpPolicy::PreserveObjects);
     if (!converter.convertContainer(pv, zv)) {
@@ -258,8 +258,12 @@ void object2array(PyObject *pv, zval *zv) {
             zval_ptr_dtor(zv);
         }
         ZVAL_NULL(zv);
-        phpy::php::throw_error_if_occurred();
+        // This helper is called from Python type constructors. Keep PyErr set
+        // so tp_init can return -1; converting it to a PHP exception here may
+        // trigger a Zend bailout without an active bailout frame.
+        return false;
     }
+    return true;
 }
 
 zend_string *py2zstr(PyObject *pv) {

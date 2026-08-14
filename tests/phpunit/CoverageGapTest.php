@@ -339,4 +339,14 @@ PY);
         $this->expectException(PyError::class);
         PyCore::float(new PyList([1, 2]));
     }
+
+    public function testRecursiveContainerToArrayRaisesPyError(): void
+    {
+        // A self-referencing Python container defeats py2php_array's recursion
+        // guard, entering the convertContainer() failure branch.
+        $module = PyCore::eval('l = []; l.append(l)');
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('recursive Python container');
+        $module->l->toArray();
+    }
 }

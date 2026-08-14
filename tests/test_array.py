@@ -2,6 +2,24 @@ import pytest
 import phpy
 
 
+def test_array_constructor_rejects_non_iterable_without_bailout():
+    with pytest.raises(TypeError, match="not iterable"):
+        phpy.Array(123)
+
+    # A conversion failure must not corrupt the embedded PHP runtime.
+    assert phpy.call("strlen", "alive") == 5
+
+
+def test_array_constructor_preserves_recursive_nested_container():
+    recursive = []
+    recursive.append(recursive)
+
+    array = phpy.Array(recursive)
+    assert array.count() == 1
+    assert array[0] is recursive
+    assert array[0][0] is recursive
+
+
 def test_empty_array_remains_writable():
     array = phpy.Array()
     assert array.count() == 0

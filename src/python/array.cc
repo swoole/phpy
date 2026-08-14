@@ -68,7 +68,9 @@ static int Array_init(ZendArray *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
     if (pv) {
-        object2array(pv, &self->array);
+        if (!object2array(pv, &self->array)) {
+            return -1;
+        }
     } else {
         array_init(&self->array);
     }
@@ -321,7 +323,13 @@ PyObject *new_array(const zval *zv) {
 }
 PyObject *new_array(PyObject *pv) {
     ZendArray *self = PyObject_New(ZendArray, &ZendArrayType);
-    object2array(pv, &self->array);
+    if (self == nullptr) {
+        return nullptr;
+    }
+    if (!object2array(pv, &self->array)) {
+        Py_DECREF(self);
+        return nullptr;
+    }
     phpy::php::add_object((PyObject *) self, Array_dtor);
     return (PyObject *) self;
 }
