@@ -28,6 +28,28 @@ final class PhpyTest extends TestCase
         $this->assertSame(7, phpy_test_native_call($callable, 3, right: 4));
     }
 
+    public function testNativeCallPropagatesPendingPythonError(): void
+    {
+        // A Python callable that sets an exception but still returns a value
+        // makes py2php() fail in CallObject::call; the pending error must
+        // surface as a PyError instead of corrupting the interpreter.
+        $module = PyCore::eval(<<<'PY'
+import ctypes
+lib = ctypes.PyDLL("libpython3.10.so.1.0")
+lib.PyErr_SetString.argtypes = [ctypes.py_object, ctypes.c_char_p]
+lib.PyErr_Clear.argtypes = []
+
+def inject():
+    lib.PyErr_SetString(ValueError, b"pending")
+    return 42
+PY);
+        $callable = $module->inject;
+
+        $this->expectException(PyError::class);
+        $this->expectExceptionMessage('pending');
+        phpy_test_native_call($callable);
+    }
+
     public function testNativeRuntimeConfigurationCanBeChangedAndRestored(): void
     {
         try {
