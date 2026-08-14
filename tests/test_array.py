@@ -14,6 +14,9 @@ def test_array_constructor_preserves_recursive_nested_container():
     recursive = []
     recursive.append(recursive)
 
+    # phpy.Array uses PreserveObjects: only the top-level container becomes a
+    # Zend array. Its nested list remains the original Python object, so this
+    # cycle is preserved rather than recursively converted.
     array = phpy.Array(recursive)
     assert array.count() == 1
     assert array[0] is recursive

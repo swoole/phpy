@@ -64,7 +64,6 @@ OwnedPythonReference get_attribute(PyObject *object, const char *name, size_t na
 
 }  // namespace
 
-
 PHPY_API const char *phpy_get_python_version(void) {
     LOCK_GIL();
     return Py_GetVersion();

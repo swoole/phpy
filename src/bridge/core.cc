@@ -65,7 +65,7 @@ class ConversionRecursionGuard {
                              T *value,
                              const char *recursive_message,
                              const char *depth_message)
-    : active_(active), entered_(false) {
+        : active_(active), entered_(false) {
         if (std::find(active_.begin(), active_.end(), value) != active_.end()) {
             PyErr_SetString(PyExc_ValueError, recursive_message);
             return;
@@ -366,9 +366,9 @@ class PhpToPythonConverter {
 
 PyObject *PhpToPythonConverter::convertArrayToList(zend_array *ht) {
     ConversionRecursionGuard<zend_array> guard(active_arrays_,
-                                                ht,
-                                                "recursive PHP array cannot be converted to Python",
-                                                "PHP array nesting exceeds the conversion limit");
+                                               ht,
+                                               "recursive PHP array cannot be converted to Python",
+                                               "PHP array nesting exceeds the conversion limit");
     if (!guard) {
         return NULL;
     }
@@ -406,9 +406,9 @@ PyObject *array2tuple(zend_array *ht) {
 
 PyObject *PhpToPythonConverter::convertArrayToTuple(zend_array *ht) {
     ConversionRecursionGuard<zend_array> guard(active_arrays_,
-                                                ht,
-                                                "recursive PHP array cannot be converted to Python",
-                                                "PHP array nesting exceeds the conversion limit");
+                                               ht,
+                                               "recursive PHP array cannot be converted to Python",
+                                               "PHP array nesting exceeds the conversion limit");
     if (!guard) {
         return NULL;
     }
@@ -442,9 +442,9 @@ PyObject *array2set(zend_array *ht) {
 
 PyObject *PhpToPythonConverter::convertArrayToSet(zend_array *ht) {
     ConversionRecursionGuard<zend_array> guard(active_arrays_,
-                                                ht,
-                                                "recursive PHP array cannot be converted to Python",
-                                                "PHP array nesting exceeds the conversion limit");
+                                               ht,
+                                               "recursive PHP array cannot be converted to Python",
+                                               "PHP array nesting exceeds the conversion limit");
     if (!guard) {
         return NULL;
     }
@@ -466,9 +466,9 @@ PyObject *PhpToPythonConverter::convertArrayToSet(zend_array *ht) {
 
 bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
     ConversionRecursionGuard<PyObject> guard(active_containers_,
-                                              pv,
-                                              "recursive Python container cannot be converted to PHP",
-                                              "Python container nesting exceeds the conversion limit");
+                                             pv,
+                                             "recursive Python container cannot be converted to PHP",
+                                             "Python container nesting exceeds the conversion limit");
     if (!guard) {
         return false;
     }
@@ -504,9 +504,9 @@ bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
  */
 PyObject *PhpToPythonConverter::convertArrayToDict(zend_array *ht) {
     ConversionRecursionGuard<zend_array> guard(active_arrays_,
-                                                ht,
-                                                "recursive PHP array cannot be converted to Python",
-                                                "PHP array nesting exceeds the conversion limit");
+                                               ht,
+                                               "recursive PHP array cannot be converted to Python",
+                                               "PHP array nesting exceeds the conversion limit");
     if (!guard) {
         return NULL;
     }
@@ -541,9 +541,9 @@ PyObject *array2dict(zend_array *ht) {
 
 bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
     ConversionRecursionGuard<PyObject> guard(active_containers_,
-                                              pv,
-                                              "recursive Python container cannot be converted to PHP",
-                                              "Python container nesting exceeds the conversion limit");
+                                             pv,
+                                             "recursive Python container cannot be converted to PHP",
+                                             "Python container nesting exceeds the conversion limit");
     if (!guard) {
         return false;
     }
@@ -743,17 +743,16 @@ void CallObject::call() {
     } else {
         args = args == nullptr ? PyTuple_New(0) : args;
         if (args == nullptr) {
-            phpy::php::throw_error_if_occurred();
-            RETVAL_NULL();
-            return;
+            goto _fail;
         }
         value = OwnedPythonReference(PyObject_Call(fn, args, kwargs));
     }
     if (value) {
         py2php(value.get(), return_value);
     } else {
+    _fail:
         phpy::php::throw_error_if_occurred();
-        RETVAL_NULL();
+        RETURN_NULL();
     }
 }
 
