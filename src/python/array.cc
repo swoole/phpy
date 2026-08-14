@@ -266,11 +266,7 @@ static PyObject *Array_next(ZendArray *self) {
 }
 
 static void Array_destroy(ZendArray *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        zval_ptr_dtor(&self->array);
-        ZVAL_NULL(&self->array);
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::python::destroy_wrapper(self, Array_dtor);
 }
 
 bool py_module_array_init(PyObject *m) {
@@ -291,16 +287,7 @@ bool py_module_array_init(PyObject *m) {
     ZendArrayType.tp_iter = (getiterfunc) Array_iter;
     ZendArrayType.tp_iternext = (iternextfunc) Array_next;
 
-    if (PyType_Ready(&ZendArrayType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendArrayType);
-    if (PyModule_AddObject(m, "Array", (PyObject *) &ZendArrayType) < 0) {
-        Py_DECREF(&ZendArrayType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendArrayType, "Array");
 }
 
 bool ZendArray_Check(PyObject *pv) {

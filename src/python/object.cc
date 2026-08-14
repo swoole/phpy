@@ -84,10 +84,7 @@ static void Object_dtor(PyObject *pv) {
 }
 
 static void Object_destroy(ZendObject *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        Object_dtor((PyObject *) self);
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::python::destroy_wrapper(self, Object_dtor);
 }
 
 static PyObject *Object_call(ZendObject *self, PyObject *args) {
@@ -269,14 +266,5 @@ bool py_module_object_init(PyObject *m) {
     ZendObjectType.tp_init = (initproc) Object_init;
     ZendObjectType.tp_new = PyType_GenericNew;
 
-    if (PyType_Ready(&ZendObjectType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendObjectType);
-    if (PyModule_AddObject(m, "Object", (PyObject *) &ZendObjectType) < 0) {
-        Py_DECREF(&ZendObjectType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendObjectType, "Object");
 }

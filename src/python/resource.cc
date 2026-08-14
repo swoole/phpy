@@ -58,10 +58,7 @@ bool ZendResource_Check(PyObject *pv) {
 }
 
 static void Resource_destroy(ZendResource *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        Resource_dtor((PyObject *) self);
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::python::destroy_wrapper(self, Resource_dtor);
 }
 
 bool py_module_resource_init(PyObject *m) {
@@ -73,14 +70,5 @@ bool py_module_resource_init(PyObject *m) {
     ZendResourceType.tp_doc = PyDoc_STR("zend_resource");
     ZendResourceType.tp_new = PyType_GenericNew;
 
-    if (PyType_Ready(&ZendResourceType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendResourceType);
-    if (PyModule_AddObject(m, "Resource", (PyObject *) &ZendResourceType) < 0) {
-        Py_DECREF(&ZendResourceType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendResourceType, "Resource");
 }

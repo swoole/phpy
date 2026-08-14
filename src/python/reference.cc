@@ -57,10 +57,7 @@ static PyObject *Reference_get(ZendReference *self, PyObject *args) {
 }
 
 static void Reference_destroy(ZendReference *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        Reference_dtor((PyObject *) self);
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::python::destroy_wrapper(self, Reference_dtor);
 }
 
 bool py_module_reference_init(PyObject *m) {
@@ -74,16 +71,7 @@ bool py_module_reference_init(PyObject *m) {
     ZendReferenceType.tp_init = (initproc) Reference_init;
     ZendReferenceType.tp_new = PyType_GenericNew;
 
-    if (PyType_Ready(&ZendReferenceType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendReferenceType);
-    if (PyModule_AddObject(m, "Reference", (PyObject *) &ZendReferenceType) < 0) {
-        Py_DECREF(&ZendReferenceType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendReferenceType, "Reference");
 }
 
 bool ZendReference_Check(PyObject *pv) {

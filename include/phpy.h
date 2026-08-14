@@ -442,6 +442,36 @@ class StrObject {
     }
 };
 namespace python {
+/**
+ * Shared tp_dealloc boilerplate for the zend_* wrapper types: run the
+ * registered dtor exactly once (either at PHP request shutdown or when the
+ * Python object is collected, whichever happens first), then free the object.
+ */
+template <typename T, typename Dtor>
+static void destroy_wrapper(T *self, Dtor dtor) {
+    if (phpy::php::del_object((PyObject *) self)) {
+        dtor((PyObject *) self);
+    }
+    Py_TYPE(self)->tp_free((PyObject *) self);
+}
+
+/**
+ * Register a Python heap type into the module, covering the boilerplate that
+ * every py_module_*_init repeats: PyType_Ready, INCREF, PyModule_AddObject.
+ */
+inline bool register_python_type(PyObject *m, PyTypeObject *type, const char *name) {
+    if (PyType_Ready(type) < 0) {
+        return false;
+    }
+    Py_INCREF(type);
+    if (PyModule_AddObject(m, name, (PyObject *) type) < 0) {
+        Py_DECREF(type);
+        Py_DECREF(m);
+        return false;
+    }
+    return true;
+}
+
 /** Owns one new CPython reference and releases it on every exit path. */
 class OwnedPythonReference {
   public:

@@ -20,7 +20,7 @@
 #include "ext/standard/basic_functions.h"
 
 struct ZendCallable;
-static void Callable_dealloc(ZendCallable *self);
+static void Callable_destroy(ZendCallable *self);
 static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwds);
 
 // clang-format off
@@ -84,11 +84,8 @@ bool ZendCallable_Check(PyObject *pv) {
     return Py_IS_TYPE(pv, &ZendCallableType);
 }
 
-static void Callable_dealloc(ZendCallable *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        Callable_dtor((PyObject *) self);
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+static void Callable_destroy(ZendCallable *self) {
+    phpy::python::destroy_wrapper(self, Callable_dtor);
 }
 
 static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwds) {
@@ -144,20 +141,11 @@ bool py_module_callable_init(PyObject *m) {
     ZendCallableType.tp_name = "zend_callable";
     ZendCallableType.tp_basicsize = sizeof(ZendCallable);
     ZendCallableType.tp_itemsize = 0;
-    ZendCallableType.tp_dealloc = (destructor) Callable_dealloc;
+    ZendCallableType.tp_dealloc = (destructor) Callable_destroy;
     ZendCallableType.tp_call = (ternaryfunc) Callable_call;
     ZendCallableType.tp_flags = Py_TPFLAGS_DEFAULT;
     ZendCallableType.tp_doc = PyDoc_STR("zend_callable");
     ZendCallableType.tp_new = PyType_GenericNew;
 
-    if (PyType_Ready(&ZendCallableType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendCallableType);
-    if (PyModule_AddObject(m, "Callable", (PyObject *) &ZendCallableType) < 0) {
-        Py_DECREF(&ZendCallableType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendCallableType, "Callable");
 }

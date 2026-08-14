@@ -163,9 +163,7 @@ static int String_contains(ZendString *self, PyObject *o2) {
 }
 
 static void String_destroy(ZendString *self) {
-    zval_ptr_dtor(&self->string);
-    Py_TYPE(self)->tp_free((PyObject *) self);
-    phpy::php::del_object((PyObject *) self);
+    phpy::python::destroy_wrapper(self, String_dtor);
 }
 
 bool py_module_string_init(PyObject *m) {
@@ -188,16 +186,7 @@ bool py_module_string_init(PyObject *m) {
     ZendStringType.tp_init = (initproc) String_init;
     ZendStringType.tp_new = PyType_GenericNew;
 
-    if (PyType_Ready(&ZendStringType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendStringType);
-    if (PyModule_AddObject(m, "String", (PyObject *) &ZendStringType) < 0) {
-        Py_DECREF(&ZendStringType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendStringType, "String");
 }
 
 bool ZendString_Check(PyObject *pv) {

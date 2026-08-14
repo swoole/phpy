@@ -57,10 +57,7 @@ static void Iterator_dtor(PyObject *object) {
 }
 
 static void Iterator_destroy(ZendIterator *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        Iterator_dtor((PyObject *) self);
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::python::destroy_wrapper(self, Iterator_dtor);
 }
 
 static PyObject *Iterator_iter(ZendIterator *self) {
@@ -169,13 +166,5 @@ bool py_module_iterator_init(PyObject *m) {
     ZendIteratorType.tp_iter = (getiterfunc) Iterator_iter;
     ZendIteratorType.tp_iternext = (iternextfunc) Iterator_next;
 
-    if (PyType_Ready(&ZendIteratorType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendIteratorType);
-    if (PyModule_AddObject(m, "Iterator", (PyObject *) &ZendIteratorType) < 0) {
-        Py_DECREF(&ZendIteratorType);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendIteratorType, "Iterator");
 }

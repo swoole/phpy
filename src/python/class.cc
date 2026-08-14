@@ -52,16 +52,7 @@ bool py_module_class_init(PyObject *m) {
     ZendClassType.tp_init = (initproc) Class_init;
     ZendClassType.tp_new = PyType_GenericNew;
 
-    if (PyType_Ready(&ZendClassType) < 0) {
-        return false;
-    }
-    Py_INCREF(&ZendClassType);
-    if (PyModule_AddObject(m, "Class", (PyObject *) &ZendClassType) < 0) {
-        Py_DECREF(&ZendClassType);
-        Py_DECREF(m);
-        return false;
-    }
-    return true;
+    return phpy::python::register_python_type(m, &ZendClassType, "Class");
 }
 
 static void Class_dtor(PyObject *pv) {
@@ -104,10 +95,7 @@ static PyObject *Class_new(ZendClass *self, PyObject *args) {
 }
 
 static void Class_dealloc(ZendClass *self) {
-    if (phpy::php::del_object((PyObject *) self)) {
-        self->ce = NULL;
-    }
-    Py_TYPE(self)->tp_free((PyObject *) self);
+    phpy::python::destroy_wrapper(self, Class_dtor);
 }
 
 static PyObject *Class_get(ZendClass *self, PyObject *args) {
