@@ -34,7 +34,7 @@ const int var_dump_level = 3;
 static int init_mode = 0;
 
 int phpy_init(int mode) {
-    if (init_mode > 0) {
+    if (UNEXPECTED(init_mode > 0)) {
         return -1;
     } else {
         init_mode = mode;
@@ -66,11 +66,11 @@ class ConversionRecursionGuard {
                              const char *recursive_message,
                              const char *depth_message)
         : active_(active), entered_(false) {
-        if (std::find(active_.begin(), active_.end(), value) != active_.end()) {
+        if (UNEXPECTED(std::find(active_.begin(), active_.end(), value) != active_.end())) {
             PyErr_SetString(PyExc_ValueError, recursive_message);
             return;
         }
-        if (active_.size() >= kMaxConversionDepth) {
+        if (UNEXPECTED(active_.size() >= kMaxConversionDepth)) {
             PyErr_SetString(PyExc_RecursionError, depth_message);
             return;
         }
@@ -82,7 +82,7 @@ class ConversionRecursionGuard {
     ConversionRecursionGuard &operator=(const ConversionRecursionGuard &) = delete;
 
     ~ConversionRecursionGuard() {
-        if (entered_) {
+        if (EXPECTED(entered_)) {
             active_.pop_back();
         }
     }
@@ -175,7 +175,7 @@ bool PythonToPhpConverter::convertRecursively(PyObject *pv, zval *zv) {
         ZVAL_STRINGL(zv, PyBytes_AS_STRING(pv), PyBytes_GET_SIZE(pv));
     } else if (PyUnicode_Check(pv)) {
         zend_string *value = py2zstr(pv);
-        if (value == nullptr) {
+        if (UNEXPECTED(value == nullptr)) {
             return false;
         }
         ZVAL_STR(zv, value);
@@ -206,7 +206,7 @@ bool PythonToPhpConverter::convert(PyObject *value, zval *result) {
 
 void py2php_scalar(PyObject *pv, zval *zv) {
     PythonToPhpConverter converter(PythonToPhpPolicy::ConvertContainers);
-    if (!converter.convert(pv, zv)) {
+    if (UNEXPECTED(!converter.convert(pv, zv))) {
         ZVAL_NULL(zv);
         phpy::php::throw_error_if_occurred();
     }
@@ -219,8 +219,8 @@ void py2php_array(PyObject *pv, zval *zv) {
     }
 
     PythonToPhpConverter converter(PythonToPhpPolicy::ConvertContainers);
-    if (!converter.convertContainer(pv, zv)) {
-        if (!Z_ISUNDEF_P(zv)) {
+    if (UNEXPECTED(!converter.convertContainer(pv, zv))) {
+        if (UNEXPECTED(!Z_ISUNDEF_P(zv))) {
             zval_ptr_dtor(zv);
         }
         ZVAL_EMPTY_ARRAY(zv);
@@ -233,7 +233,7 @@ void py2php_array(PyObject *pv, zval *zv) {
  */
 void py2php(PyObject *pv, zval *zv) {
     PythonToPhpConverter converter(PythonToPhpPolicy::PreserveObjects);
-    if (!converter.convert(pv, zv)) {
+    if (UNEXPECTED(!converter.convert(pv, zv))) {
         ZVAL_NULL(zv);
         phpy::php::throw_error_if_occurred();
     }
@@ -253,8 +253,8 @@ PyObject *py2py_scalar(PyObject *pv) {
 bool object2array(PyObject *pv, zval *zv) {
     ZVAL_UNDEF(zv);
     PythonToPhpConverter converter(PythonToPhpPolicy::PreserveObjects);
-    if (!converter.convertContainer(pv, zv)) {
-        if (!Z_ISUNDEF_P(zv)) {
+    if (UNEXPECTED(!converter.convertContainer(pv, zv))) {
+        if (UNEXPECTED(!Z_ISUNDEF_P(zv))) {
             zval_ptr_dtor(zv);
         }
         ZVAL_NULL(zv);
@@ -269,7 +269,7 @@ bool object2array(PyObject *pv, zval *zv) {
 zend_string *py2zstr(PyObject *pv) {
     Py_ssize_t sl;
     const char *sv = PyUnicode_AsUTF8AndSize(pv, &sl);
-    if (sv == nullptr) {
+    if (UNEXPECTED(sv == nullptr)) {
         return nullptr;
     }
     return zend_string_init(sv, sl, 0);
@@ -279,18 +279,18 @@ bool python_long_to_php(PyObject *pv, zval *zv) {
     int overflow;
     auto lval = PyLong_AsLongAndOverflow(pv, &overflow);
     if (overflow == 0) {
-        if (lval == -1 && PyErr_Occurred()) {
+        if (UNEXPECTED(lval == -1 && PyErr_Occurred())) {
             return false;
         }
         ZVAL_LONG(zv, lval);
     } else {
         ssize_t len;
         OwnedPythonReference str(PyObject_Str(pv));
-        if (!str) {
+        if (UNEXPECTED(!str)) {
             return false;
         }
         const char *sval = phpy::python::string2utf8(str.get(), &len);
-        if (sval == nullptr) {
+        if (UNEXPECTED(sval == nullptr)) {
             return false;
         }
         ZVAL_STRINGL(zv, sval, len);
@@ -369,18 +369,18 @@ PyObject *PhpToPythonConverter::convertArrayToList(zend_array *ht) {
                                                ht,
                                                "recursive PHP array cannot be converted to Python",
                                                "PHP array nesting exceeds the conversion limit");
-    if (!guard) {
+    if (UNEXPECTED(!guard)) {
         return NULL;
     }
 
     OwnedPythonReference list(PyList_New(0));
-    if (!list) {
+    if (UNEXPECTED(!list)) {
         return NULL;
     }
     zval *current;
     ZEND_HASH_FOREACH_VAL(ht, current) {
         OwnedPythonReference elem(convert(current));
-        if (!elem || PyList_Append(list.get(), elem.get()) < 0) {
+        if (UNEXPECTED(!elem || PyList_Append(list.get(), elem.get()) < 0)) {
             return NULL;
         }
     }
@@ -409,19 +409,19 @@ PyObject *PhpToPythonConverter::convertArrayToTuple(zend_array *ht) {
                                                ht,
                                                "recursive PHP array cannot be converted to Python",
                                                "PHP array nesting exceeds the conversion limit");
-    if (!guard) {
+    if (UNEXPECTED(!guard)) {
         return NULL;
     }
 
     zval *current;
     OwnedPythonReference tuple(PyTuple_New(phpy::php::array_count(ht)));
-    if (!tuple) {
+    if (UNEXPECTED(!tuple)) {
         return NULL;
     }
     Py_ssize_t index = 0;
     ZEND_HASH_FOREACH_VAL(ht, current) {
         OwnedPythonReference elem(convert(current));
-        if (!elem) {
+        if (UNEXPECTED(!elem)) {
             return NULL;
         }
         // The tuple is newly allocated and the index is known to be valid.
@@ -445,18 +445,18 @@ PyObject *PhpToPythonConverter::convertArrayToSet(zend_array *ht) {
                                                ht,
                                                "recursive PHP array cannot be converted to Python",
                                                "PHP array nesting exceeds the conversion limit");
-    if (!guard) {
+    if (UNEXPECTED(!guard)) {
         return NULL;
     }
 
     zval *current;
     OwnedPythonReference pset(PySet_New(0));
-    if (!pset) {
+    if (UNEXPECTED(!pset)) {
         return NULL;
     }
     ZEND_HASH_FOREACH_VAL(ht, current) {
         OwnedPythonReference elem(convert(current));
-        if (!elem || PySet_Add(pset.get(), elem.get()) < 0) {
+        if (UNEXPECTED(!elem || PySet_Add(pset.get(), elem.get()) < 0)) {
             return NULL;
         }
     }
@@ -469,12 +469,12 @@ bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
                                              pv,
                                              "recursive Python container cannot be converted to PHP",
                                              "Python container nesting exceeds the conversion limit");
-    if (!guard) {
+    if (UNEXPECTED(!guard)) {
         return false;
     }
 
     OwnedPythonReference iter(PyObject_GetIter(pv));
-    if (!iter) {
+    if (UNEXPECTED(!iter)) {
         return false;
     }
     array_init(zv);
@@ -484,14 +484,14 @@ bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
             break;
         }
         zval item;
-        if (!convert(next.get(), &item)) {
+        if (UNEXPECTED(!convert(next.get(), &item))) {
             zval_ptr_dtor(zv);
             ZVAL_UNDEF(zv);
             return false;
         }
         add_next_index_zval(zv, &item);
     }
-    if (PyErr_Occurred()) {
+    if (UNEXPECTED(PyErr_Occurred())) {
         zval_ptr_dtor(zv);
         ZVAL_UNDEF(zv);
         return false;
@@ -507,7 +507,7 @@ PyObject *PhpToPythonConverter::convertArrayToDict(zend_array *ht) {
                                                ht,
                                                "recursive PHP array cannot be converted to Python",
                                                "PHP array nesting exceeds the conversion limit");
-    if (!guard) {
+    if (UNEXPECTED(!guard)) {
         return NULL;
     }
 
@@ -515,7 +515,7 @@ PyObject *PhpToPythonConverter::convertArrayToDict(zend_array *ht) {
     zend_string *key;
     zval *value;
     OwnedPythonReference dict(PyDict_New());
-    if (!dict) {
+    if (UNEXPECTED(!dict)) {
         return NULL;
     }
     ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, value) {
@@ -526,7 +526,7 @@ PyObject *PhpToPythonConverter::convertArrayToDict(zend_array *ht) {
             dict_key.reset(PyLong_FromLong(index));
         }
         OwnedPythonReference elem(convert(value));
-        if (!dict_key || !elem || PyDict_SetItem(dict.get(), dict_key.get(), elem.get()) < 0) {
+        if (UNEXPECTED(!dict_key || !elem || PyDict_SetItem(dict.get(), dict_key.get(), elem.get()) < 0)) {
             return NULL;
         }
     }
@@ -544,12 +544,12 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
                                              pv,
                                              "recursive Python container cannot be converted to PHP",
                                              "Python container nesting exceeds the conversion limit");
-    if (!guard) {
+    if (UNEXPECTED(!guard)) {
         return false;
     }
 
     OwnedPythonReference iter(PyObject_GetIter(pv));
-    if (!iter) {
+    if (UNEXPECTED(!iter)) {
         return false;
     }
     array_init(zv);
@@ -568,13 +568,13 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
          */
         auto value = PyDict_GetItem(pv, next.get());
         zval item;
-        if (value == NULL || !convert(value, &item)) {
+        if (UNEXPECTED(value == NULL || !convert(value, &item))) {
             zval_ptr_dtor(zv);
             ZVAL_UNDEF(zv);
             return false;
         }
         StrObject key(next.get());
-        if (!key) {
+        if (UNEXPECTED(!key)) {
             zval_ptr_dtor(&item);
             zval_ptr_dtor(zv);
             ZVAL_UNDEF(zv);
@@ -582,7 +582,7 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
         }
         add_assoc_zval_ex(zv, key.val(), key.len(), &item);
     }
-    if (PyErr_Occurred()) {
+    if (UNEXPECTED(PyErr_Occurred())) {
         zval_ptr_dtor(zv);
         ZVAL_UNDEF(zv);
         return false;
@@ -642,7 +642,7 @@ PyObject *PhpToPythonConverter::convert(zval *zv) {
     if (pv != NULL) {
         return pv;
     }
-    if (PyErr_Occurred()) {
+    if (UNEXPECTED(PyErr_Occurred())) {
         return NULL;
     }
     switch (Z_TYPE_P(zv)) {
@@ -669,7 +669,7 @@ PyObject *php2py_object(zval *zv) {
     if (pv != NULL) {
         return pv;
     }
-    if (PyErr_Occurred()) {
+    if (UNEXPECTED(PyErr_Occurred())) {
         return NULL;
     }
     switch (Z_TYPE_P(zv)) {
@@ -732,22 +732,20 @@ CallObject::CallObject(PyObject *_fn, zval *_return_value, zval *_argv) {
 }
 
 void CallObject::call() {
-    if (!args_ready) {
-        phpy::php::throw_error_if_occurred();
-        RETVAL_NULL();
-        return;
+    if (UNEXPECTED(!args_ready)) {
+        goto _fail;
     }
     OwnedPythonReference value;
     if (argc == 0 && kwargs == nullptr) {
         value = OwnedPythonReference(PyObject_CallNoArgs(fn));
     } else {
         args = args == nullptr ? PyTuple_New(0) : args;
-        if (args == nullptr) {
+        if (UNEXPECTED(args == nullptr)) {
             goto _fail;
         }
         value = OwnedPythonReference(PyObject_Call(fn, args, kwargs));
     }
-    if (value) {
+    if (EXPECTED(value)) {
         py2php(value.get(), return_value);
     } else {
     _fail:
@@ -775,12 +773,12 @@ bool CallObject::parse_args(uint32_t _argc, zval *_argv) {
         return true;
     }
     args = PyTuple_New(argc);
-    if (args == nullptr) {
+    if (UNEXPECTED(args == nullptr)) {
         return false;
     }
     for (uint32_t i = 0; i < argc; i++) {
         OwnedPythonReference elem(php2py(&_argv[i]));
-        if (!elem) {
+        if (UNEXPECTED(!elem)) {
             return false;
         }
         // The tuple is new and i is in range. PyTuple_SET_ITEM steals elem.
@@ -796,7 +794,7 @@ bool CallObject::parse_args(zval *array) {
     }
 
     OwnedPythonReference arg_list(PyList_New(0));
-    if (!arg_list) {
+    if (UNEXPECTED(!arg_list)) {
         return false;
     }
     zval *current;
@@ -805,22 +803,22 @@ bool CallObject::parse_args(zval *array) {
 
     ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(array), num_key, string_key, current) {
         OwnedPythonReference elem(php2py(current));
-        if (!elem) {
+        if (UNEXPECTED(!elem)) {
             return false;
         }
         if (!string_key) {
-            if (PyList_Append(arg_list.get(), elem.get()) < 0) {
+            if (UNEXPECTED(PyList_Append(arg_list.get(), elem.get()) < 0)) {
                 return false;
             }
         } else {
             if (kwargs == nullptr) {
                 kwargs = PyDict_New();
-                if (kwargs == nullptr) {
+                if (UNEXPECTED(kwargs == nullptr)) {
                     return false;
                 }
             }
             OwnedPythonReference key(string2py(string_key));
-            if (!key || PyDict_SetItem(kwargs, key.get(), elem.get()) < 0) {
+            if (UNEXPECTED(!key || PyDict_SetItem(kwargs, key.get(), elem.get()) < 0)) {
                 return false;
             }
         }
@@ -835,7 +833,7 @@ bool CallObject::parse_args(zval *array) {
 StrObject::StrObject(PyObject *pv) {
     if (!PyUnicode_Check(pv)) {
         pv = str_ = PyObject_Str(pv);
-        if (pv == nullptr) {
+        if (UNEXPECTED(pv == nullptr)) {
             return;
         }
     }
@@ -886,15 +884,15 @@ void string2zval(PyObject *pv, zval *zv) {
         ZVAL_STRINGL(zv, sval, len);
         return;
     }
-    if (PyErr_Occurred()) {
+    if (UNEXPECTED(PyErr_Occurred())) {
         ZVAL_EMPTY_STRING(zv);
         phpy::php::throw_error_if_occurred();
         return;
     }
     OwnedPythonReference value(PyObject_Str(pv));
-    if (value) {
+    if (EXPECTED(value)) {
         const char *sv = PyUnicode_AsUTF8AndSize(value.get(), &len);
-        if (sv != NULL) {
+        if (EXPECTED(sv != NULL)) {
             ZVAL_STRINGL(zv, sv, len);
         } else {
             ZVAL_EMPTY_STRING(zv);
@@ -914,7 +912,7 @@ void tuple2argv(zval *argv, PyObject *args, ssize_t size, int begin) {
         // PyTuple_GetItem()
         // Return value: Borrowed reference
         PyObject *arg = PyTuple_GetItem(args, i);
-        if (arg == NULL) {
+        if (UNEXPECTED(arg == NULL)) {
             PyErr_SetString(PyExc_TypeError, "wrong parameter");
             break;
         }
