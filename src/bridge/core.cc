@@ -49,6 +49,12 @@ int phpy_get_mode(void) {
 static bool try_convert_python_base_value(PyObject *pv, zval *zv);
 static PyObject *try_convert_php_base_value(zval *zv);
 
+static zend_always_inline bool discard_result(zval *result) {
+	zval_ptr_dtor(result);
+	ZVAL_UNDEF(result);
+	return false;
+}
+
 constexpr size_t kMaxConversionDepth = 128;
 
 /**
@@ -485,16 +491,12 @@ bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
         }
         zval item;
         if (UNEXPECTED(!convert(next.get(), &item))) {
-            zval_ptr_dtor(zv);
-            ZVAL_UNDEF(zv);
-            return false;
+            return discard_result(zv);
         }
         add_next_index_zval(zv, &item);
     }
     if (UNEXPECTED(PyErr_Occurred())) {
-        zval_ptr_dtor(zv);
-        ZVAL_UNDEF(zv);
-        return false;
+    	return discard_result(zv);
     }
     return true;
 }
@@ -569,23 +571,17 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
         auto value = PyDict_GetItem(pv, next.get());
         zval item;
         if (UNEXPECTED(value == NULL || !convert(value, &item))) {
-            zval_ptr_dtor(zv);
-            ZVAL_UNDEF(zv);
-            return false;
+            return discard_result(zv);
         }
         StrObject key(next.get());
         if (UNEXPECTED(!key)) {
             zval_ptr_dtor(&item);
-            zval_ptr_dtor(zv);
-            ZVAL_UNDEF(zv);
-            return false;
+            return discard_result(zv);
         }
         add_assoc_zval_ex(zv, key.val(), key.len(), &item);
     }
     if (UNEXPECTED(PyErr_Occurred())) {
-        zval_ptr_dtor(zv);
-        ZVAL_UNDEF(zv);
-        return false;
+    	return discard_result(zv);
     }
     return true;
 }
@@ -733,7 +729,9 @@ CallObject::CallObject(PyObject *_fn, zval *_return_value, zval *_argv) {
 
 void CallObject::call() {
     if (UNEXPECTED(!args_ready)) {
-        goto _fail;
+    _fail:
+        phpy::php::throw_error_if_occurred();
+        RETURN_NULL();
     }
     OwnedPythonReference value;
     if (argc == 0 && kwargs == nullptr) {
@@ -748,9 +746,7 @@ void CallObject::call() {
     if (EXPECTED(value)) {
         py2php(value.get(), return_value);
     } else {
-    _fail:
-        phpy::php::throw_error_if_occurred();
-        RETURN_NULL();
+        goto _fail;
     }
 }
 
