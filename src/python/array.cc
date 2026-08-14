@@ -312,7 +312,7 @@ zval *zend_array_cast(PyObject *pv) {
 
 namespace phpy {
 namespace python {
-PyObject *new_array(zval *zv) {
+PyObject *new_array(const zval *zv) {
     ZendArray *self = PyObject_New(ZendArray, &ZendArrayType);
     self->array = *zv;
     phpy::php::add_object((PyObject *) self, Array_dtor);

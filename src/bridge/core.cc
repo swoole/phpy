@@ -762,7 +762,7 @@ CallObject::~CallObject() {
     }
 }
 
-PyObject *string2py(zend_string *zstr) {
+PyObject *string2py(const zend_string *zstr) {
     return PyUnicode_FromStringAndSize(ZSTR_VAL(zstr), ZSTR_LEN(zstr));
 }
 

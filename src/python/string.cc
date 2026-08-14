@@ -241,7 +241,7 @@ PyObject *new_string(PyObject *pv) {
 /**
  * Return value: New reference.
  */
-PyObject *new_string(zval *zv) {
+PyObject *new_string(const zval *zv) {
     ZendString *self = PyObject_New(ZendString, &ZendStringType);
     if (self == NULL) {
         return NULL;

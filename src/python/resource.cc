@@ -38,7 +38,7 @@ static void Resource_dtor(PyObject *pv) {
 
 namespace phpy {
 namespace python {
-PyObject *new_resource(zval *zv) {
+PyObject *new_resource(const zval *zv) {
     ZendResource *pyobj = PyObject_New(ZendResource, &ZendResourceType);
     pyobj->resource = *zv;
     phpy::php::add_object((PyObject *) pyobj, Resource_dtor);

@@ -93,16 +93,16 @@ PyObject *phpy_object_iterator_next(zval *object) {
     return oo->current;
 }
 
-bool phpy_object_iterator_valid(zval *object) {
+bool phpy_object_iterator_valid(const zval *object) {
     auto oo = phpy_object_get_object(object);
     return oo->current != NULL;
 }
 
-PyObject *phpy_object_iterator_current(zval *object) {
+PyObject *phpy_object_iterator_current(const zval *object) {
     return phpy_object_get_object(object)->current;
 }
 
-uint32_t phpy_object_iterator_index(zval *object) {
+uint32_t phpy_object_iterator_index(const zval *object) {
     return phpy_object_get_object(object)->index;
 }
 

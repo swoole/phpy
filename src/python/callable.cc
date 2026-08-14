@@ -63,7 +63,7 @@ static bool Callable_is_cacheable(const zval *callable) {
 
 namespace phpy {
 namespace python {
-PyObject *new_callable(zval *zv) {
+PyObject *new_callable(const zval *zv) {
     ZendCallable *cb = PyObject_New(ZendCallable, &ZendCallableType);
     cb->callable = *zv;
     zval_add_ref(&cb->callable);

@@ -160,7 +160,7 @@ PyObject *array2dict(zend_array *ht);
 /**
  * Return value: New reference.
  */
-PyObject *string2py(zend_string *zv);
+PyObject *string2py(const zend_string *zv);
 /**
  * Return value: New reference.
  */
@@ -174,7 +174,7 @@ static inline PyObject *array2dict(zval *zv) {
 /**
  * Return value: New reference.
  */
-static inline PyObject *string2py(zval *zv) {
+static inline PyObject *string2py(const zval *zv) {
     return string2py(Z_STR_P(zv));
 }
 
@@ -237,9 +237,9 @@ PyObject *phpy_object_get_handle(const zend_object *object);
 
 void phpy_object_iterator_reset(zval *object);
 PyObject *phpy_object_iterator_next(zval *object);
-PyObject *phpy_object_iterator_current(zval *object);
-bool phpy_object_iterator_valid(zval *object);
-uint32_t phpy_object_iterator_index(zval *object);
+PyObject *phpy_object_iterator_current(const zval *object);
+bool phpy_object_iterator_valid(const zval *object);
+uint32_t phpy_object_iterator_index(const zval *object);
 
 #define RETURN_PYOBJ(retval)                                                                                           \
     PyObject *pyobj = php2py_object(retval);                                                                           \
@@ -485,15 +485,15 @@ class OwnedPythonReference {
     PyObject *value_;
 };
 
-PyObject *new_array(zval *zv);
+PyObject *new_array(const zval *zv);
 PyObject *new_array(PyObject *pv);
-PyObject *new_string(zval *zv);
+PyObject *new_string(const zval *zv);
 PyObject *new_string(size_t len);
 PyObject *new_string(PyObject *pv);
 PyObject *new_object(zval *zv);
-PyObject *new_resource(zval *zv);
+PyObject *new_resource(const zval *zv);
 PyObject *new_reference(zval *zv);
-PyObject *new_callable(zval *zv);
+PyObject *new_callable(const zval *zv);
 PyObject *new_iterator(zval *zv);
 const char *string2utf8(PyObject *pv, ssize_t *len);
 const char *string2char_ptr(PyObject *pv, ssize_t *len);
