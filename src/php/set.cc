@@ -24,14 +24,12 @@ END_EXTERN_C()
 zend_class_entry *PySet_ce;
 
 using phpy::php::arg_1;
+using phpy::php::construct_container;
 using phpy::python::LockGuard;
 using phpy::python::OwnedPythonReference;
 
 int php_class_set_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PySet", class_PySet_methods);
-    PySet_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PySet_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PySet_ce = phpy::php::register_internal_class("PySet", class_PySet_methods, phpy_object_get_ce());
     return SUCCESS;
 }
 
@@ -50,16 +48,9 @@ ZEND_METHOD(PySet, __construct) {
     Z_PARAM_ZVAL(zset)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    PyObject *pset;
     LOCK_GIL();
-    if (phpy::php::is_null(zset) || phpy::php::is_empty_array(zset)) {
-        pset = PySet_New(0);
-    } else if (phpy::php::is_array(zset)) {
-        pset = array2set(zset);
-    } else {
-        zend_throw_error(NULL, "PySet: unsupported type");
-        return;
-    }
+    PyObject *pset = construct_container(
+        zset, "PySet", []() { return PySet_New(nullptr); }, [](zval *arg) { return array2set(arg); });
     if (pset == NULL) {
         phpy::php::throw_error_if_occurred();
         return;

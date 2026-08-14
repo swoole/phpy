@@ -24,10 +24,7 @@ END_EXTERN_C()
 zend_class_entry *PyDict_ce;
 
 int php_class_dict_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyDict", class_PyDict_methods);
-    PyDict_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PyDict_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyDict_ce = phpy::php::register_internal_class("PyDict", class_PyDict_methods, phpy_object_get_ce());
     return SUCCESS;
 }
 
@@ -40,6 +37,7 @@ void new_dict(zval *zv, PyObject *dict) {
 }  // namespace phpy
 
 using phpy::php::arg_1;
+using phpy::php::construct_container;
 using phpy::python::LockGuard;
 
 ZEND_METHOD(PyDict, __construct) {
@@ -49,16 +47,9 @@ ZEND_METHOD(PyDict, __construct) {
     Z_PARAM_ZVAL(zdict)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    PyObject *pdict;
     LOCK_GIL();
-    if (phpy::php::is_null(zdict) || phpy::php::is_empty_array(zdict)) {
-        pdict = PyDict_New();
-    } else if (phpy::php::is_array(zdict)) {
-        pdict = array2dict(zdict);
-    } else {
-        zend_throw_error(NULL, "PyDict: unsupported type");
-        return;
-    }
+    PyObject *pdict =
+        construct_container(zdict, "PyDict", []() { return PyDict_New(); }, [](zval *arg) { return array2dict(arg); });
     if (pdict == NULL) {
         phpy::php::throw_error_if_occurred();
         return;

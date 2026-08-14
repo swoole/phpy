@@ -24,13 +24,12 @@ END_EXTERN_C()
 zend_class_entry *PyTuple_ce;
 
 using phpy::php::arg_1;
+using phpy::php::construct_container;
+using phpy::php::sequence_offset_get;
 using phpy::python::LockGuard;
 
 int php_class_tuple_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyTuple", class_PyTuple_methods);
-    PyTuple_ce = zend_register_internal_class_ex(&ce, phpy_sequence_get_ce());
-    PyTuple_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyTuple_ce = phpy::php::register_internal_class("PyTuple", class_PyTuple_methods, phpy_sequence_get_ce());
     return SUCCESS;
 }
 
@@ -48,17 +47,13 @@ ZEND_METHOD(PyTuple, __construct) {
     Z_PARAM_ZVAL(ztuple)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
-    PyObject *ptuple;
     LOCK_GIL();
-    if (phpy::php::is_null(ztuple) || phpy::php::is_empty_array(ztuple)) {
-        ptuple = PyTuple_New(0);
-    } else if (phpy::php::is_array(ztuple)) {
-        ptuple = array2tuple(ztuple);
-    } else if (phpy::php::is_pyobject(ztuple)) {
+    PyObject *ptuple;
+    if (phpy::php::is_pyobject(ztuple)) {
         ptuple = PySequence_Tuple(phpy_object_get_handle(ztuple));
     } else {
-        zend_throw_error(NULL, "PyTuple: unsupported type");
-        return;
+        ptuple = construct_container(
+            ztuple, "PyTuple", []() { return PyTuple_New(0); }, [](zval *arg) { return array2tuple(arg); });
     }
     if (ptuple == NULL) {
         phpy::php::throw_error_if_occurred();
@@ -71,7 +66,7 @@ ZEND_METHOD(PyTuple, offsetGet) {
     auto pk = phpy::php::get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    phpy::php::sequence_offset_get(
+    sequence_offset_get(
         object, pk, "PyTuple", [](PyObject *o) { return PyTuple_GET_SIZE(o); }, PyTuple_GetItem, return_value);
 }
 

@@ -33,10 +33,7 @@ void new_fn(zval *zv, PyObject *fn) {
 }  // namespace phpy
 
 int php_class_fn_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyFn", class_PyFn_methods);
-    PyFn_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PyFn_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyFn_ce = phpy::php::register_internal_class("PyFn", class_PyFn_methods, phpy_object_get_ce());
 
     return SUCCESS;
 }

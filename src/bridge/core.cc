@@ -50,9 +50,9 @@ static bool try_convert_python_base_value(PyObject *pv, zval *zv);
 static PyObject *try_convert_php_base_value(zval *zv);
 
 static zend_always_inline bool discard_result(zval *result) {
-	zval_ptr_dtor(result);
-	ZVAL_UNDEF(result);
-	return false;
+    zval_ptr_dtor(result);
+    ZVAL_UNDEF(result);
+    return false;
 }
 
 constexpr size_t kMaxConversionDepth = 128;
@@ -496,7 +496,7 @@ bool PythonToPhpConverter::convertIterable(PyObject *pv, zval *zv) {
         add_next_index_zval(zv, &item);
     }
     if (UNEXPECTED(PyErr_Occurred())) {
-    	return discard_result(zv);
+        return discard_result(zv);
     }
     return true;
 }
@@ -581,7 +581,7 @@ bool PythonToPhpConverter::convertDictionary(PyObject *pv, zval *zv) {
         add_assoc_zval_ex(zv, key.val(), key.len(), &item);
     }
     if (UNEXPECTED(PyErr_Occurred())) {
-    	return discard_result(zv);
+        return discard_result(zv);
     }
     return true;
 }

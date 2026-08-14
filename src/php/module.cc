@@ -32,10 +32,7 @@ void new_module(zval *zv, PyObject *module) {
 }  // namespace phpy
 
 int php_class_module_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyModule", class_PyModule_methods);
-    PyModule_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PyModule_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyModule_ce = phpy::php::register_internal_class("PyModule", class_PyModule_methods, phpy_object_get_ce());
 
     return SUCCESS;
 }

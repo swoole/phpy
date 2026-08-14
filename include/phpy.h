@@ -314,6 +314,10 @@ static inline bool is_array(const zval *zv) {
     return is_typeof(zv, IS_ARRAY);
 }
 
+static inline bool is_empty_array(const zval *zv) {
+    return is_typeof(zv, IS_ARRAY) && zend_hash_num_elements(Z_ARRVAL_P(zv)) == 0;
+}
+
 static inline bool is_string(const zval *zv) {
     return is_typeof(zv, IS_STRING);
 }
@@ -377,6 +381,39 @@ static void sequence_offset_get(PyObject *object,
 }
 
 /**
+ * Shared PyList/PyDict/PySet/PyTuple constructor conversion: a null or empty
+ * argument builds an empty container, a PHP array is converted through
+ * `from_array` (array2list / array2dict / ...), anything else raises an
+ * "unsupported type" error.
+ */
+template <typename MakeEmpty, typename FromArray>
+static inline PyObject *construct_container(zval *arg, const char *name, MakeEmpty make_empty, FromArray from_array) {
+    if (phpy::php::is_null(arg) || phpy::php::is_empty_array(arg)) {
+        return make_empty();
+    }
+    if (phpy::php::is_array(arg)) {
+        return from_array(arg);
+    }
+    zend_throw_error(NULL, "%s: unsupported type", name);
+    return nullptr;
+}
+
+/**
+ * Shared php_class_*_init registration for the leaf Py* classes: registers
+ * the internal class and applies the common final / no-dynamic-properties /
+ * not-serializable flags.
+ */
+static inline zend_class_entry *register_internal_class(const char *name,
+                                                        const zend_function_entry *methods,
+                                                        zend_class_entry *parent) {
+    zend_class_entry ce;
+    INIT_CLASS_ENTRY(ce, name, methods);
+    zend_class_entry *registered = zend_register_internal_class_ex(&ce, parent);
+    registered->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    return registered;
+}
+
+/**
  * Return value: Borrowed reference.
  */
 static inline zval *array_get(zval *zv, long index) {
@@ -407,14 +444,9 @@ static inline uint32_t array_count(const zval *zv) {
     return zend_array_count(Z_ARRVAL_P(zv));
 }
 
-static inline bool is_empty_array(const zval *zv) {
-    return Z_TYPE_P(zv) == IS_ARRAY && array_count(zv) == 0;
-}
-
 /**
  * Return value: New reference.
- */
-static inline zend_result call_fn(
+ */static inline zend_result call_fn(
     zval *object,
     zval *function_name,
     zval *retval_ptr,

@@ -24,14 +24,13 @@ END_EXTERN_C()
 zend_class_entry *PyList_ce;
 
 using phpy::php::arg_1;
+using phpy::php::construct_container;
+using phpy::php::sequence_offset_get;
 using phpy::python::LockGuard;
 using phpy::python::OwnedPythonReference;
 
 int php_class_list_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyList", class_PyList_methods);
-    PyList_ce = zend_register_internal_class_ex(&ce, phpy_sequence_get_ce());
-    PyList_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyList_ce = phpy::php::register_internal_class("PyList", class_PyList_methods, phpy_sequence_get_ce());
     return SUCCESS;
 }
 
@@ -51,15 +50,8 @@ ZEND_METHOD(PyList, __construct) {
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     LOCK_GIL();
-    PyObject *plist;
-    if (phpy::php::is_null(zlist) || phpy::php::is_empty_array(zlist)) {
-        plist = PyList_New(0);
-    } else if (phpy::php::is_array(zlist)) {
-        plist = array2list(zlist);
-    } else {
-        zend_throw_error(NULL, "PyList: unsupported type");
-        return;
-    }
+    PyObject *plist =
+        construct_container(zlist, "PyList", []() { return PyList_New(0); }, [](zval *arg) { return array2list(arg); });
     if (plist == NULL) {
         phpy::php::throw_error_if_occurred();
         return;
@@ -71,7 +63,7 @@ ZEND_METHOD(PyList, offsetGet) {
     auto pk = phpy::php::get_key(INTERNAL_FUNCTION_PARAM_PASSTHRU);
     auto object = phpy_object_get_handle(ZEND_THIS);
     LOCK_GIL();
-    phpy::php::sequence_offset_get(
+    sequence_offset_get(
         object, pk, "PyList", [](PyObject *o) { return PyList_GET_SIZE(o); }, PyList_GetItem, return_value);
 }
 

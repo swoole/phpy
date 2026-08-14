@@ -84,10 +84,7 @@ void throw_error(PyObject *error) {
 }  // namespace phpy
 
 int php_class_error_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyError", class_PyError_methods);
-    PyError_ce = zend_register_internal_class_ex(&ce, zend_ce_exception);
-    PyError_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyError_ce = phpy::php::register_internal_class("PyError", class_PyError_methods, zend_ce_exception);
 
     zend_declare_property_null(PyError_ce, STR_AND_LEN("error"), ZEND_ACC_PUBLIC);
     zend_declare_property_null(PyError_ce, STR_AND_LEN("type"), ZEND_ACC_PUBLIC);

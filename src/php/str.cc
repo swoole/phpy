@@ -33,10 +33,7 @@ void new_str(zval *zv, PyObject *str) {
 }  // namespace phpy
 
 int php_class_str_init(INIT_FUNC_ARGS) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "PyStr", class_PyStr_methods);
-    PyStr_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PyStr_ce->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PyStr_ce = phpy::php::register_internal_class("PyStr", class_PyStr_methods, phpy_object_get_ce());
 
     return SUCCESS;
 }
