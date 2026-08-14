@@ -402,12 +402,19 @@ static inline PyObject *construct_container(zval *arg, const char *name, MakeEmp
  * Shared php_class_*_init registration for the leaf Py* classes: registers
  * the internal class and applies the common final / no-dynamic-properties /
  * not-serializable flags.
+ *
+ * INIT_CLASS_ENTRY() is avoided on purpose: PHP < 8.3 computes the class-name
+ * length with sizeof(name) - 1, which only works for string literals. Building
+ * the entry manually with strlen() keeps this helper valid on every supported
+ * PHP version.
  */
 static inline zend_class_entry *register_internal_class(const char *name,
                                                         const zend_function_entry *methods,
                                                         zend_class_entry *parent) {
     zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, name, methods);
+    memset(&ce, 0, sizeof(zend_class_entry));
+    ce.name = zend_string_init_interned(name, strlen(name), 1);
+    ce.info.internal.builtin_functions = methods;
     zend_class_entry *registered = zend_register_internal_class_ex(&ce, parent);
     registered->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
     return registered;
