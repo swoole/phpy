@@ -2,6 +2,21 @@
 
 `phpy` 拦截了 PHP 的运算符 `opcode`，使 `PyObject` 能够直接复用 `Python` 的数值与比较协议（`PyNumber_*` / `PyObject_RichCompareBool`）。只要运算符两侧有一侧是 `PyObject`，另一侧会通过 `php2py` 自动转换为 `Python` 对象（如 `PHP` 数组 → `PyList`，`int`/`float`/`string`/`bool` → 对应的 `Python` 类型）。
 
+## 配置
+
+操作符重载默认开启。由于 Zend user opcode handler 可能限制 Opcache JIT 对相应 opcode 的优化，不需要这项语法糖的应用可以在 `php.ini` 中关闭：
+
+```ini
+phpy.enable_operator_overloading=0
+```
+
+这是 `PHP_INI_SYSTEM` 配置，只能在 PHP 启动时设置，不能通过 `ini_set()` 或 `PyCore::setOptions()` 动态修改；修改后需要重启 PHP 进程。关闭后 phpy 不会注册任何操作符 opcode handler，其他 phpy API 仍然可用。需要执行 Python 运算时可显式调用 Python 的 `operator` 模块：
+
+```php
+$operator = PyCore::import('operator');
+$result = $operator->add($left, $right);
+```
+
 ## 算术与位运算
 
 | PHP 运算符 | 对应 Python 协议 | 说明 |

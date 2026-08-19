@@ -17,6 +17,10 @@
 
 #include "phpy.h"
 
+PHP_INI_BEGIN()
+PHP_INI_ENTRY("phpy.enable_operator_overloading", "1", PHP_INI_SYSTEM, nullptr)
+PHP_INI_END()
+
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
@@ -292,8 +296,11 @@ PHP_MINIT_FUNCTION(phpy) {
         return FAILURE;
     }
 
+    REGISTER_INI_ENTRIES();
     php_class_init_all(INIT_FUNC_ARGS_PASSTHRU);
-    php_python_operator_init(INIT_FUNC_ARGS_PASSTHRU);
+    if (INI_BOOL("phpy.enable_operator_overloading")) {
+        php_python_operator_init(INIT_FUNC_ARGS_PASSTHRU);
+    }
 
     return SUCCESS;
 }
@@ -310,6 +317,7 @@ PHP_MSHUTDOWN_FUNCTION(phpy) {
     Py_CLEAR(module_phpy);
 
     Py_Finalize();
+    UNREGISTER_INI_ENTRIES();
     return SUCCESS;
 }
 

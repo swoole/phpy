@@ -2,6 +2,21 @@
 
 `phpy` intercepts PHP's operator opcodes so that `PyObject` can directly reuse Python's number and comparison protocols (`PyNumber_*` / `PyObject_RichCompareBool`). As long as one side of the operator is a `PyObject`, the other side is automatically converted to a Python object via `php2py` (e.g. a PHP array → `PyList`, `int`/`float`/`string`/`bool` → the corresponding Python type).
 
+## Configuration
+
+Operator overloading is enabled by default. Because Zend user opcode handlers may restrict Opcache JIT optimization of the corresponding opcodes, applications that do not need this syntax sugar can disable it in `php.ini`:
+
+```ini
+phpy.enable_operator_overloading=0
+```
+
+This is a `PHP_INI_SYSTEM` setting. It can only be selected when PHP starts and cannot be changed with `ini_set()` or `PyCore::setOptions()`; restart the PHP process after changing it. When disabled, phpy does not register any operator opcode handlers, while all other phpy APIs remain available. Python operations can still be invoked explicitly through Python's `operator` module:
+
+```php
+$operator = PyCore::import('operator');
+$result = $operator->add($left, $right);
+```
+
 ## Arithmetic and bitwise operators
 
 | PHP operator | Python protocol | Notes |

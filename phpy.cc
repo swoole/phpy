@@ -34,6 +34,7 @@ PHP_MINFO_FUNCTION(phpy)
     php_info_print_table_row(2, "Extension Version", PHP_PHPY_VERSION);
     php_info_print_table_row(2, "Python Version", phpy_get_python_version());
     php_info_print_table_end();
+    DISPLAY_INI_ENTRIES();
 }
 /* }}} */
 
