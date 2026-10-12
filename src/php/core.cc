@@ -146,7 +146,7 @@ ZEND_METHOD(PyCore, object) {
     ZEND_PARSE_PARAMETERS_END_EX(return);
 
     LOCK_GIL();
-    if (zv == NULL || ZVAL_IS_NULL(zv)) {
+    if (zv == NULL || Z_ISNULL_P(zv)) {
         phpy::php::call_builtin_fn(ZEND_STRL("object"), nullptr, return_value);
     } else {
         phpy::php::new_object_no_addref(return_value, php2py_object(zv));
@@ -298,7 +298,11 @@ PHP_MINIT_FUNCTION(phpy) {
 
     REGISTER_INI_ENTRIES();
     php_class_init_all(INIT_FUNC_ARGS_PASSTHRU);
+#if PHP_VERSION_ID < 80600
     if (INI_BOOL("phpy.enable_operator_overloading")) {
+#else
+    if (zend_ini_bool_literal("phpy.enable_operator_overloading")) {
+#endif
         php_python_operator_init(INIT_FUNC_ARGS_PASSTHRU);
     }
 

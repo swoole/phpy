@@ -84,7 +84,7 @@ ZEND_METHOD(PyList, offsetSet) {
         return;
     }
     int result;
-    if (zk == NULL || ZVAL_IS_NULL(zk)) {
+    if (zk == NULL || Z_ISNULL_P(zk)) {
         result = PyList_Append(object, value.get());
     } else {
         const auto requested = static_cast<ssize_t>(zval_get_long(zk));

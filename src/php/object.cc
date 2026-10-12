@@ -206,7 +206,7 @@ int php_class_object_init(INIT_FUNC_ARGS) {
     PyObject_ce->create_object = phpy_object_create_object;
 
     memcpy(&object_handlers, &std_object_handlers, sizeof(zend_object_handlers));
-    object_handlers.offset = XtOffsetOf(Object, std);
+    object_handlers.offset = offsetof(Object, std);
     object_handlers.free_obj = phpy_object_free_object;
     object_handlers.cast_object = phpy_object_cast_object;
 

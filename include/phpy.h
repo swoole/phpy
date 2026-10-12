@@ -308,7 +308,7 @@ static inline bool is_typeof(const zval *zv, int type) {
 }
 
 static inline bool is_null(const zval *zv) {
-    return zv == NULL || ZVAL_IS_NULL(zv);
+    return zv == NULL || Z_ISNULL_P(zv);
 }
 
 static inline bool is_array(const zval *zv) {
