@@ -41,6 +41,7 @@
 #include <zend_interfaces.h>
 
 #include "phpy_api.h"
+#include "phpy_zend_compat.h"
 
 #include <iostream>
 
@@ -417,7 +418,8 @@ static inline zend_class_entry *register_internal_class(const char *name,
     ce.name = zend_string_init_interned(name, strlen(name), 1);
     ce.info.internal.builtin_functions = methods;
     zend_class_entry *registered = zend_register_internal_class_ex(&ce, parent);
-    registered->ce_flags |= ZEND_ACC_FINAL | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    registered->ce_flags |= ZEND_ACC_FINAL;
+    zend_compat::restrict_class(registered);
     return registered;
 }
 
@@ -438,7 +440,7 @@ static inline zval *array_get(zval *zv, const char *key, size_t l_key) {
  */
 static inline zval *object_get(zval *zo, const char *name, size_t l_name) {
     static zval rv;
-    return zend_read_property(Z_OBJCE_P(zo), Z_OBJ_P(zo), name, l_name, 0, &rv);
+    return zend_compat::read_property(Z_OBJCE_P(zo), zo, name, l_name, 0, &rv);
 }
 
 PyObject *arg_1(INTERNAL_FUNCTION_PARAMETERS);
@@ -454,7 +456,8 @@ static inline uint32_t array_count(const zval *zv) {
 
 /**
  * Return value: New reference.
- */static inline zend_result call_fn(
+ */
+static inline phpy_zend_result call_fn(
     zval *object,
     zval *function_name,
     zval *retval_ptr,
@@ -462,10 +465,20 @@ static inline uint32_t array_count(const zval *zv) {
     zval *params,
     HashTable *named_params = nullptr,
     zend_fcall_info_cache *cache = nullptr) {
+#if PHP_VERSION_ID < 80000
+    if (named_params != nullptr && zend_hash_num_elements(named_params) != 0) {
+        zend_throw_error(nullptr, "Calling PHP functions with named arguments requires PHP 8");
+        return FAILURE;
+    }
+#endif
     if (cache == nullptr) {
-        zend_result result = FAILURE;
+        phpy_zend_result result = FAILURE;
         zend_try {
+#if PHP_VERSION_ID < 80000
+            result = call_user_function(NULL, object, function_name, retval_ptr, param_count, params);
+#else
             result = call_user_function_named(NULL, object, function_name, retval_ptr, param_count, params, named_params);
+#endif
         }
         zend_end_try();
         if (EG(exception) != NULL) {
@@ -481,9 +494,13 @@ static inline uint32_t array_count(const zval *zv) {
     fci.retval = retval_ptr;
     fci.param_count = param_count;
     fci.params = params;
+#if PHP_VERSION_ID < 80000
+    fci.no_separation = 1;
+#else
     fci.named_params = named_params;
+#endif
 
-    zend_result result = FAILURE;
+    phpy_zend_result result = FAILURE;
     zend_try {
         result = zend_call_function(&fci, cache);
     }

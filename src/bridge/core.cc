@@ -609,7 +609,7 @@ bool PythonToPhpConverter::convertContainer(PyObject *value, zval *result) {
  */
 PyObject *PhpToPythonConverter::convertArray(zval *zv) {
     zend_array *ht = Z_ARRVAL_P(zv);
-    if (zend_array_is_list(ht)) {
+    if (phpy::zend_compat::array_is_list(ht)) {
         return convertArrayToList(ht);
     } else {
         return convertArrayToDict(ht);
@@ -853,6 +853,17 @@ StrObject::StrObject(PyObject *pv) {
 namespace phpy {
 namespace php {
 bool env_equals(const char *name, size_t nlen, const char *val, size_t vlen) {
+#if PHP_VERSION_ID < 80000
+    zend_string *key = zend_string_init(name, nlen, 0);
+    char *sapi_value = sapi_getenv(ZSTR_VAL(key), nlen);
+    const char *value = sapi_value ? sapi_value : getenv(ZSTR_VAL(key));
+    bool matches = value && strlen(value) == vlen && strncasecmp(value, val, vlen) == 0;
+    if (sapi_value) {
+        efree(sapi_value);
+    }
+    zend_string_release(key);
+    return matches;
+#else
     zend_string *res = php_getenv(name, nlen);
     if (res) {
         bool result = ZSTR_LEN(res) == vlen && strncasecmp(ZSTR_VAL(res), val, vlen) == 0;
@@ -860,6 +871,7 @@ bool env_equals(const char *name, size_t nlen, const char *val, size_t vlen) {
         return result;
     }
     return false;
+#endif
 }
 }  // namespace php
 namespace python {

@@ -118,7 +118,7 @@ static PyObject *Callable_call(ZendCallable *self, PyObject *args, PyObject *kwd
     zval retval;
     HashTable *named_params = Z_TYPE(named_args) == IS_ARRAY ? Z_ARRVAL(named_args) : nullptr;
     zend_fcall_info_cache *cache = self->cacheable ? &self->cache : nullptr;
-    zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv, named_params, cache);
+    phpy_zend_result result = phpy::php::call_fn(NULL, &self->callable, &retval, argc, argv, named_params, cache);
     if (result == FAILURE) {
         if (EG(exception) && phpy_options.display_exception) {
             zend_exception_error(EG(exception), E_ERROR);

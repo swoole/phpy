@@ -32,7 +32,7 @@ static bool Iterator_translate_exception() {
 
     zval rv;
     ZVAL_UNDEF(&rv);
-    zval *value = zend_read_property(exception->ce, exception, ZEND_STRL("message"), true, &rv);
+    zval *value = phpy::zend_compat::read_exception_message(exception, &rv);
     zend_string *message = value == nullptr ? nullptr : zval_get_string(value);
 
     if (message != nullptr) {

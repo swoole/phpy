@@ -14,7 +14,8 @@ You can use Python functions and libraries in PHP, or use PHP packages in Python
 - See documents: [docs/en/README.md](docs/en/README.md)
 - Supports `Linux`/`Windows`/`macOS`
 - **Not support Python `threading` or `async-io` features**
-- Require `PHP 8.1` or later version
+- The native extension supports PHP 7.4 and PHP 8.1+. The Composer package requires PHP 8.1+.
+- Calling PHP callbacks with named arguments from Python requires PHP 8.
 
 ## py2php
 [py2php](https://swoole.com/py2php/) is online utility that will auto-translate python code into PHP code.

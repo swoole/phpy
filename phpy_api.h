@@ -5,6 +5,12 @@
 
 #include <main/php.h>
 
+#if PHP_VERSION_ID < 80000
+typedef int phpy_zend_result;
+#else
+typedef zend_result phpy_zend_result;
+#endif
+
 /* Public symbol visibility for phpy's C ABI. */
 #ifndef PHPY_API
 #ifdef PHP_WIN32
@@ -43,43 +49,43 @@ typedef struct phpy_native_api_v1 {
     uint32_t abi_version;
     size_t struct_size;
 
-    zend_result (*configure_runtime)(zend_bool return_as_object);
-    zend_result (*import_module)(const char *name, size_t name_length, zval *result);
-    zend_result (*call_member)(const zval *object,
-                               const char *name,
-                               size_t name_length,
-                               uint32_t argc,
-                               zval *argv,
-                               zend_array *named_args,
-                               zval *result);
-    zend_result (*get_attr)(const zval *object, const char *name, size_t name_length, zval *result);
-    zend_result (*to_value)(const zval *object, zval *result);
-    zend_result (*to_array)(const zval *object, zval *result);
-    zend_result (*construct)(phpy_native_constructor constructor,
-                             const zval *argument,
-                             zend_bool has_argument,
-                             zval *result);
-    zend_result (*call)(const zval *object, uint32_t argc, zval *argv, zend_array *named_args, zval *result);
+    phpy_zend_result (*configure_runtime)(zend_bool return_as_object);
+    phpy_zend_result (*import_module)(const char *name, size_t name_length, zval *result);
+    phpy_zend_result (*call_member)(const zval *object,
+                                    const char *name,
+                                    size_t name_length,
+                                    uint32_t argc,
+                                    zval *argv,
+                                    zend_array *named_args,
+                                    zval *result);
+    phpy_zend_result (*get_attr)(const zval *object, const char *name, size_t name_length, zval *result);
+    phpy_zend_result (*to_value)(const zval *object, zval *result);
+    phpy_zend_result (*to_array)(const zval *object, zval *result);
+    phpy_zend_result (*construct)(phpy_native_constructor constructor,
+                                  const zval *argument,
+                                  zend_bool has_argument,
+                                  zval *result);
+    phpy_zend_result (*call)(const zval *object, uint32_t argc, zval *argv, zend_array *named_args, zval *result);
 } phpy_native_api_v1;
 
 BEGIN_EXTERN_C()
 PHPY_API const char *phpy_get_python_version(void);
-PHPY_API zend_result phpy_configure_runtime(zend_bool return_as_object);
-PHPY_API zend_result phpy_import_module(const char *name, size_t name_length, zval *result);
-PHPY_API zend_result phpy_call_member(const zval *object,
-                                      const char *name,
-                                      size_t name_length,
-                                      uint32_t argc,
-                                      zval *argv,
-                                      zend_array *named_args,
-                                      zval *result);
-PHPY_API zend_result phpy_get_attr(const zval *object, const char *name, size_t name_length, zval *result);
-PHPY_API zend_result phpy_to_value(const zval *object, zval *result);
-PHPY_API zend_result phpy_to_array(const zval *object, zval *result);
-PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
-                                    const zval *argument,
-                                    zend_bool has_argument,
-                                    zval *result);
-PHPY_API zend_result phpy_call(const zval *object, uint32_t argc, zval *argv, zend_array *named_args, zval *result);
+PHPY_API phpy_zend_result phpy_configure_runtime(zend_bool return_as_object);
+PHPY_API phpy_zend_result phpy_import_module(const char *name, size_t name_length, zval *result);
+PHPY_API phpy_zend_result phpy_call_member(const zval *object,
+                                           const char *name,
+                                           size_t name_length,
+                                           uint32_t argc,
+                                           zval *argv,
+                                           zend_array *named_args,
+                                           zval *result);
+PHPY_API phpy_zend_result phpy_get_attr(const zval *object, const char *name, size_t name_length, zval *result);
+PHPY_API phpy_zend_result phpy_to_value(const zval *object, zval *result);
+PHPY_API phpy_zend_result phpy_to_array(const zval *object, zval *result);
+PHPY_API phpy_zend_result phpy_construct(phpy_native_constructor constructor,
+                                         const zval *argument,
+                                         zend_bool has_argument,
+                                         zval *result);
+PHPY_API phpy_zend_result phpy_call(const zval *object, uint32_t argc, zval *argv, zend_array *named_args, zval *result);
 PHPY_API const phpy_native_api_v1 *phpy_get_native_api(uint32_t requested_abi);
 END_EXTERN_C()

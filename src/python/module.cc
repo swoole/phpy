@@ -29,7 +29,7 @@ static bool phpy_translate_exception() {
 
     zval rv;
     ZVAL_UNDEF(&rv);
-    zval *value = zend_read_property(exception->ce, exception, ZEND_STRL("message"), true, &rv);
+    zval *value = phpy::zend_compat::read_exception_message(exception, &rv);
     zend_string *message = value == nullptr ? nullptr : zval_get_string(value);
 
     if (message != nullptr) {
@@ -80,7 +80,7 @@ static PyObject *phpy_call(PyObject *self, PyObject *args) {
         phpy::python::release_argv(argc, argv);
         delete[] argv;
     };
-    zend_result result = phpy::php::call_fn(NULL, &zfn, &retval, argc, argv);
+    phpy_zend_result result = phpy::php::call_fn(NULL, &zfn, &retval, argc, argv);
 
     if (result == FAILURE) {
         PyErr_Format(PyExc_NameError, "Function '%s' call failed", Z_STRVAL(zfn));
