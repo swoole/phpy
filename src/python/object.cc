@@ -162,7 +162,9 @@ static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds)
     HashTable *named_params = Z_TYPE(named_args) == IS_ARRAY ? Z_ARRVAL(named_args) : nullptr;
     phpy_zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv, named_params);
     if (result == FAILURE) {
-        PyErr_Format(PyExc_TypeError, "'%s' zend_object is not callable", ZSTR_VAL(Z_OBJCE(self->object)->name));
+        if (!PyErr_Occurred()) {
+            PyErr_Format(PyExc_TypeError, "'%s' zend_object is not callable", ZSTR_VAL(Z_OBJCE(self->object)->name));
+        }
         return NULL;
     }
     RETURN_PYOBJ(&retval);

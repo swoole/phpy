@@ -454,6 +454,16 @@ static inline uint32_t array_count(const zval *zv) {
     return zend_array_count(Z_ARRVAL_P(zv));
 }
 
+#if PHP_VERSION_ID < 80000
+phpy_zend_result call_fn_with_named_args(zval *object,
+                                         zval *function_name,
+                                         zval *retval,
+                                         uint32_t param_count,
+                                         zval *params,
+                                         HashTable *named_params,
+                                         zend_fcall_info_cache *cache);
+#endif
+
 /**
  * Return value: New reference.
  */
@@ -467,8 +477,7 @@ static inline phpy_zend_result call_fn(
     zend_fcall_info_cache *cache = nullptr) {
 #if PHP_VERSION_ID < 80000
     if (named_params != nullptr && zend_hash_num_elements(named_params) != 0) {
-        zend_throw_error(nullptr, "Calling PHP functions with named arguments requires PHP 8");
-        return FAILURE;
+        return call_fn_with_named_args(object, function_name, retval_ptr, param_count, params, named_params, cache);
     }
 #endif
     if (cache == nullptr) {

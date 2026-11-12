@@ -15,7 +15,7 @@ You can use Python functions and libraries in PHP, or use PHP packages in Python
 - Supports `Linux`/`Windows`/`macOS`
 - **Not support Python `threading` or `async-io` features**
 - The native extension supports PHP 7.4 and PHP 8.1+. The Composer package requires PHP 8.1+.
-- Calling PHP callbacks with named arguments from Python requires PHP 8.
+- PHP 7.4 supports named arguments for PHP callbacks with declared parameters. It can fill skipped defaults for user-defined callbacks. For internal PHP functions on 7.4, explicitly provide any earlier optional arguments. PHP 8 is required to preserve extra named arguments in variadic callbacks.
 
 ## py2php
 [py2php](https://swoole.com/py2php/) is online utility that will auto-translate python code into PHP code.
