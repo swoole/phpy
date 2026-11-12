@@ -609,7 +609,7 @@ bool PythonToPhpConverter::convertContainer(PyObject *value, zval *result) {
  */
 PyObject *PhpToPythonConverter::convertArray(zval *zv) {
     zend_array *ht = Z_ARRVAL_P(zv);
-    if (zend_array_is_list(ht)) {
+    if (phpy::zend_compat::array_is_list(ht)) {
         return convertArrayToList(ht);
     } else {
         return convertArrayToDict(ht);
@@ -852,7 +852,160 @@ StrObject::StrObject(PyObject *pv) {
 
 namespace phpy {
 namespace php {
+#if PHP_VERSION_ID < 80000
+static bool fill_named_arg_defaults(const zend_function *function, zval *args, uint32_t count) {
+    uint32_t missing = 0;
+    for (uint32_t i = 0; i < count; ++i) {
+        missing += Z_ISUNDEF(args[i]);
+    }
+    if (missing == 0) {
+        return true;
+    }
+
+    if (function->type == ZEND_USER_FUNCTION) {
+        // The parameter receive opcodes hold the same defaults used by Zend on entry.
+        const auto &op_array = function->op_array;
+        for (uint32_t i = 0; i < op_array.last; ++i) {
+            const zend_op *op = &op_array.opcodes[i];
+            if (op->opcode != ZEND_RECV_INIT || op->op1.num > count) {
+                continue;
+            }
+
+            zval *arg = &args[op->op1.num - 1];
+            if (!Z_ISUNDEF_P(arg)) {
+                continue;
+            }
+            ZVAL_COPY(arg, RT_CONSTANT(op, op->op2));
+            if (Z_TYPE_P(arg) == IS_CONSTANT_AST && zval_update_constant_ex(arg, function->common.scope) == FAILURE) {
+                return false;
+            }
+            if (ARG_SHOULD_BE_SENT_BY_REF(function, op->op1.num)) {
+                ZVAL_NEW_REF(arg, arg);
+            }
+            if (--missing == 0) {
+                return true;
+            }
+        }
+    }
+
+    for (uint32_t i = 0; i < count; ++i) {
+        if (Z_ISUNDEF(args[i])) {
+            PyErr_Format(PyExc_TypeError, "Cannot fill default for PHP callback parameter %u on PHP 7.4", i + 1);
+            return false;
+        }
+    }
+    return true;
+}
+
+phpy_zend_result call_fn_with_named_args(zval *object,
+                                         zval *function_name,
+                                         zval *retval,
+                                         uint32_t param_count,
+                                         zval *params,
+                                         HashTable *named_params,
+                                         zend_fcall_info_cache *cache) {
+    zend_fcall_info_cache local_cache{};
+    ON_SCOPE_EXIT {
+        zend_release_fcall_info_cache(&local_cache);
+    };
+
+    if (!cache || !cache->function_handler) {
+        zend_bool callable = false;
+        zend_try {
+            callable = zend_is_callable_ex(function_name, object ? Z_OBJ_P(object) : nullptr,
+                                           IS_CALLABLE_CHECK_SILENT, nullptr, &local_cache, nullptr);
+        }
+        zend_end_try();
+        if (!callable || EG(exception)) {
+            PyErr_SetString(PyExc_TypeError, "Invalid PHP callback");
+            return FAILURE;
+        }
+        cache = &local_cache;
+    }
+
+    zend_function *function = cache->function_handler;
+    if ((function->type != ZEND_USER_FUNCTION && function->type != ZEND_INTERNAL_FUNCTION) ||
+        (function->common.fn_flags & ZEND_ACC_CALL_VIA_TRAMPOLINE)) {
+        PyErr_SetString(PyExc_TypeError, "PHP 7.4 named arguments require a callback with declared parameters");
+        return FAILURE;
+    }
+
+    std::vector<zval> bound(std::max(param_count, function->common.num_args));
+    ON_SCOPE_EXIT {
+        for (auto &arg : bound) {
+            zval_ptr_dtor(&arg);
+        }
+    };
+    for (uint32_t i = 0; i < param_count; ++i) {
+        ZVAL_COPY(&bound[i], &params[i]);
+    }
+
+    uint32_t count = param_count;
+    zend_string *name;
+    zval *value;
+    ZEND_HASH_FOREACH_STR_KEY_VAL(named_params, name, value) {
+        if (!name) {
+            PyErr_SetString(PyExc_TypeError, "PHP callback argument names must be strings");
+            return FAILURE;
+        }
+        uint32_t index = 0;
+        for (; index < function->common.num_args; ++index) {
+            if (function->type == ZEND_INTERNAL_FUNCTION) {
+                const auto &arg = function->internal_function.arg_info[index];
+                if (arg.name && ZSTR_LEN(name) == strlen(arg.name) &&
+                    memcmp(ZSTR_VAL(name), arg.name, ZSTR_LEN(name)) == 0) {
+                    break;
+                }
+            } else {
+                const auto &arg = function->common.arg_info[index];
+                if (arg.name && zend_string_equals(name, arg.name)) {
+                    break;
+                }
+            }
+        }
+        if (index == function->common.num_args) {
+            PyErr_Format(PyExc_TypeError, "Unknown PHP callback parameter $%s", ZSTR_VAL(name));
+            return FAILURE;
+        }
+        if (!Z_ISUNDEF(bound[index])) {
+            PyErr_Format(PyExc_TypeError, "PHP callback parameter $%s was supplied more than once", ZSTR_VAL(name));
+            return FAILURE;
+        }
+        ZVAL_COPY(&bound[index], value);
+        count = std::max(count, index + 1);
+    } ZEND_HASH_FOREACH_END();
+
+    for (uint32_t i = 0; i < function->common.required_num_args; ++i) {
+        if (Z_ISUNDEF(bound[i])) {
+            PyErr_Format(PyExc_TypeError, "Missing required PHP callback parameter %u", i + 1);
+            return FAILURE;
+        }
+    }
+
+    bool defaults_ready = false;
+    zend_try {
+        defaults_ready = fill_named_arg_defaults(function, bound.data(), count);
+    }
+    zend_end_try();
+    if (!defaults_ready) {
+        return FAILURE;
+    }
+    return call_fn(object, function_name, retval, count, bound.data(), nullptr, cache);
+}
+#endif
+
 bool env_equals(const char *name, size_t nlen, const char *val, size_t vlen) {
+#if PHP_VERSION_ID < 80000
+    zend_string *key = zend_string_init(name, nlen, 0);
+    char *sapi_value = sapi_getenv(ZSTR_VAL(key), nlen);
+    const char *value = sapi_value ? sapi_value : getenv(ZSTR_VAL(key));
+    bool matches = value && strlen(value) == vlen && strncasecmp(value, val, vlen) == 0;
+    if (sapi_value) {
+        efree(sapi_value);
+    }
+    zend_string_release(key);
+    return matches;
+#else
     zend_string *res = php_getenv(name, nlen);
     if (res) {
         bool result = ZSTR_LEN(res) == vlen && strncasecmp(ZSTR_VAL(res), val, vlen) == 0;
@@ -860,6 +1013,7 @@ bool env_equals(const char *name, size_t nlen, const char *val, size_t vlen) {
         return result;
     }
     return false;
+#endif
 }
 }  // namespace php
 namespace python {

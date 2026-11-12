@@ -114,7 +114,7 @@ static bool Array_delitem(ZendArray *self, PyObject *key) {
         return false;
     }
     SEPARATE_ARRAY(&self->array);
-    zend_result result;
+    phpy_zend_result result;
     if (PyLong_Check(key)) {
         result = zend_hash_index_del(Z_ARR(self->array), PyLong_AsLong(key));
     } else {
@@ -218,7 +218,7 @@ static PyObject *Array_collect(ZendArray *self) {
     if (Array_is_expired(self)) {
         Py_RETURN_NONE;
     }
-    if (zend_array_is_list(Z_ARRVAL(self->array))) {
+    if (phpy::zend_compat::array_is_list(Z_ARRVAL(self->array))) {
         return array2list(Z_ARRVAL(self->array));
     } else {
         return array2dict(Z_ARRVAL(self->array));
@@ -229,7 +229,7 @@ static PyObject *Array_is_list(ZendArray *self) {
     if (Array_is_expired(self)) {
         Py_RETURN_FALSE;
     }
-    if (zend_array_is_list(Z_ARRVAL(self->array))) {
+    if (phpy::zend_compat::array_is_list(Z_ARRVAL(self->array))) {
         Py_RETURN_TRUE;
     } else {
         Py_RETURN_FALSE;

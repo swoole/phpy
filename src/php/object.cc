@@ -130,13 +130,16 @@ static void phpy_object_free_object(zend_object *object) {
     zend_object_std_dtor(&object_object->std);
 }
 
-// zend_object_cast_t returned int in older supported PHP releases and
-// zend_result in newer ones. Derive the exact ABI type from Zend instead of
-// forcing either signature or casting an incompatible function pointer.
-using ObjectCastResult =
-    decltype(zend_std_cast_object_tostring(static_cast<zend_object *>(nullptr), static_cast<zval *>(nullptr), 0));
+#if PHP_VERSION_ID < 80000
+using CastObject = zval;
+#else
+using CastObject = zend_object;
+#endif
 
-static ObjectCastResult phpy_object_cast_object(zend_object *object, zval *result, int type) {
+using ObjectCastResult =
+    decltype(zend_std_cast_object_tostring(static_cast<CastObject *>(nullptr), static_cast<zval *>(nullptr), 0));
+
+static ObjectCastResult phpy_object_cast_object(CastObject *object, zval *result, int type) {
     if (type != _IS_BOOL) {
         return zend_std_cast_object_tostring(object, result, type);
     }
@@ -200,7 +203,7 @@ int php_class_object_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "PyObject", class_PyObject_methods);
     PyObject_ce = zend_register_internal_class_ex(&ce, NULL);
-    PyObject_ce->ce_flags |= ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    phpy::zend_compat::restrict_class(PyObject_ce);
     zend_class_implements(PyObject_ce, 3, zend_ce_iterator, zend_ce_arrayaccess, zend_ce_countable);
 
     PyObject_ce->create_object = phpy_object_create_object;
@@ -338,11 +341,15 @@ ZEND_METHOD(PyObject, toValue) {
 ZEND_METHOD(PyObject, __invoke) {
     int argc = 0;
     zval *argv = NULL;
-    HashTable *kwargs;
+    HashTable *kwargs = nullptr;
 
     ZEND_PARSE_PARAMETERS_START(0, -1)
     Z_PARAM_OPTIONAL
+#if PHP_VERSION_ID < 80000
+    Z_PARAM_VARIADIC('*', argv, argc)
+#else
     Z_PARAM_VARIADIC_WITH_NAMED(argv, argc, kwargs)
+#endif
     ZEND_PARSE_PARAMETERS_END();
 
     auto object = phpy_object_get_handle(ZEND_THIS);

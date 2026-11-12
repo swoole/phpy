@@ -1,0 +1,31 @@
+name: PHP 7.4 compatibility
+
+on: [push, pull_request]
+
+jobs:
+  php74:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python development headers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-dev
+      - name: Set up PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+      - name: Build phpy for PHP 7.4
+        run: |
+          phpize
+          ./configure --enable-phpy --with-php-config="$(command -v php-config)"
+          make -j "$(nproc)"
+          cc -std=gnu11 -D_GNU_SOURCE -fsyntax-only -I. $(php-config --includes) tests/api_header.c
+      - name: Run phpy compatibility tests
+        env:
+          NO_INTERACTION: '1'
+          REPORT_EXIT_STATUS: '1'
+        run: |
+          php -n -d "extension=$PWD/modules/phpy.so" --ri phpy
+          make test TESTS=tests/phpt

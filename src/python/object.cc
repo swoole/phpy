@@ -117,7 +117,7 @@ static PyObject *Object_call(ZendObject *self, PyObject *args) {
         delete[] argv;
         return NULL;
     }
-    zend_result result = phpy::php::call_fn(&self->object, &zfn, &retval, argc, argv);
+    phpy_zend_result result = phpy::php::call_fn(&self->object, &zfn, &retval, argc, argv);
     ON_SCOPE_EXIT {
         zval_ptr_dtor(&zfn);
         phpy::python::release_argv(argc, argv);
@@ -160,9 +160,11 @@ static PyObject *Object_invoke(ZendObject *self, PyObject *args, PyObject *kwds)
     };
 
     HashTable *named_params = Z_TYPE(named_args) == IS_ARRAY ? Z_ARRVAL(named_args) : nullptr;
-    zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv, named_params);
+    phpy_zend_result result = phpy::php::call_fn(NULL, &self->object, &retval, argc, argv, named_params);
     if (result == FAILURE) {
-        PyErr_Format(PyExc_TypeError, "'%s' zend_object is not callable", ZSTR_VAL(Z_OBJCE(self->object)->name));
+        if (!PyErr_Occurred()) {
+            PyErr_Format(PyExc_TypeError, "'%s' zend_object is not callable", ZSTR_VAL(Z_OBJCE(self->object)->name));
+        }
         return NULL;
     }
     RETURN_PYOBJ(&retval);
@@ -189,7 +191,7 @@ static PyObject *Object_set(ZendObject *self, PyObject *args) {
     if (UNEXPECTED(!py2php(value, &rv))) {
         return NULL;
     }
-    zend_update_property(Z_OBJCE(self->object), Z_OBJ(self->object), name, l_name, &rv);
+    phpy::zend_compat::update_property(Z_OBJCE(self->object), &self->object, name, l_name, &rv);
     zval_ptr_dtor(&rv);
 
     Py_INCREF(Py_None);
@@ -250,7 +252,7 @@ PyObject *object_create(PyObject *pv, zend_class_entry *ce, PyObject *args, uint
             zval_ptr_dtor(&zfn);
             return NULL;
         }
-        zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
+        phpy_zend_result result = phpy::php::call_fn(&obj->object, &zfn, &retval, argc, argv);
         ON_SCOPE_EXIT {
             zval_ptr_dtor(&zfn);
             zval_ptr_dtor(&retval);

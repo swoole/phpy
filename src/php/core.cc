@@ -66,7 +66,7 @@ ZEND_METHOD(PyCore, eval) {
     ZEND_PARSE_PARAMETERS_START(1, 2)
     Z_PARAM_STRING(input_code, l_input_code)
     Z_PARAM_OPTIONAL
-    Z_PARAM_ARRAY_OR_NULL(zglobal_params)
+    Z_PARAM_ARRAY_EX(zglobal_params, 1, 0)
     ZEND_PARSE_PARAMETERS_END_EX(RETURN_FALSE);
 
     std::string module_name = "eval_code_" + std::to_string(eval_code_id++);

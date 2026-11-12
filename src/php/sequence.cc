@@ -31,7 +31,8 @@ int php_class_sequence_init(INIT_FUNC_ARGS) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "PySequence", class_PySequence_methods);
     PySequence_ce = zend_register_internal_class_ex(&ce, phpy_object_get_ce());
-    PySequence_ce->ce_flags |= ZEND_ACC_ABSTRACT | ZEND_ACC_NO_DYNAMIC_PROPERTIES | ZEND_ACC_NOT_SERIALIZABLE;
+    PySequence_ce->ce_flags |= ZEND_ACC_ABSTRACT;
+    phpy::zend_compat::restrict_class(PySequence_ce);
     return SUCCESS;
 }
 

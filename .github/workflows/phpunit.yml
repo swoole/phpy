@@ -69,8 +69,11 @@ jobs:
           sudo lcov --list coverage.info
 
       - name: Upload coverage to Codecov
+        if: github.repository == 'swoole/phpy' || env.CODECOV_TOKEN != ''
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           files: ./coverage.info
           fail_ci_if_error: true

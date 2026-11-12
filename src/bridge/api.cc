@@ -23,12 +23,12 @@ static zend_always_inline const zval *unwrap_indirect(const zval *value) {
     return value;
 }
 
-zend_result fail_if_exception() {
+phpy_zend_result fail_if_exception() {
     return EG(exception) == nullptr ? SUCCESS : FAILURE;
 }
 
 template <typename Function>
-zend_result guard_native_call(zval *result, Function &&function) noexcept {
+phpy_zend_result guard_native_call(zval *result, Function &&function) noexcept {
     ZVAL_NULL(result);
     try {
         function();
@@ -69,12 +69,12 @@ PHPY_API const char *phpy_get_python_version(void) {
     return Py_GetVersion();
 }
 
-PHPY_API zend_result phpy_configure_runtime(zend_bool return_as_object) {
+PHPY_API phpy_zend_result phpy_configure_runtime(zend_bool return_as_object) {
     phpy_options.return_as_object = return_as_object;
     return SUCCESS;
 }
 
-PHPY_API zend_result phpy_import_module(const char *name, size_t name_length, zval *result) {
+PHPY_API phpy_zend_result phpy_import_module(const char *name, size_t name_length, zval *result) {
     return guard_native_call(result, [&] {
         LOCK_GIL();
         const std::string module_name(name, name_length);
@@ -87,13 +87,13 @@ PHPY_API zend_result phpy_import_module(const char *name, size_t name_length, zv
     });
 }
 
-PHPY_API zend_result phpy_call_member(const zval *object,
-                                      const char *name,
-                                      size_t name_length,
-                                      uint32_t argc,
-                                      zval *argv,
-                                      zend_array *named_args,
-                                      zval *result) {
+PHPY_API phpy_zend_result phpy_call_member(const zval *object,
+                                           const char *name,
+                                           size_t name_length,
+                                           uint32_t argc,
+                                           zval *argv,
+                                           zend_array *named_args,
+                                           zval *result) {
     return guard_native_call(result, [&] {
         PyObject *handle = checked_object(object);
         if (UNEXPECTED(handle == nullptr)) {
@@ -115,7 +115,7 @@ PHPY_API zend_result phpy_call_member(const zval *object,
     });
 }
 
-PHPY_API zend_result phpy_call(const zval *object, uint32_t argc, zval *argv, zend_array *named_args, zval *result) {
+PHPY_API phpy_zend_result phpy_call(const zval *object, uint32_t argc, zval *argv, zend_array *named_args, zval *result) {
     return guard_native_call(result, [&] {
         PyObject *handle = checked_object(object);
         if (UNEXPECTED(handle == nullptr)) {
@@ -132,7 +132,7 @@ PHPY_API zend_result phpy_call(const zval *object, uint32_t argc, zval *argv, ze
     });
 }
 
-PHPY_API zend_result phpy_get_attr(const zval *object, const char *name, size_t name_length, zval *result) {
+PHPY_API phpy_zend_result phpy_get_attr(const zval *object, const char *name, size_t name_length, zval *result) {
     return guard_native_call(result, [&] {
         PyObject *handle = checked_object(object);
         if (UNEXPECTED(handle == nullptr)) {
@@ -148,7 +148,7 @@ PHPY_API zend_result phpy_get_attr(const zval *object, const char *name, size_t 
     });
 }
 
-PHPY_API zend_result phpy_to_value(const zval *object, zval *result) {
+PHPY_API phpy_zend_result phpy_to_value(const zval *object, zval *result) {
     return guard_native_call(result, [&] {
         PyObject *handle = checked_object(object);
         if (UNEXPECTED(handle == nullptr)) {
@@ -159,7 +159,7 @@ PHPY_API zend_result phpy_to_value(const zval *object, zval *result) {
     });
 }
 
-PHPY_API zend_result phpy_to_array(const zval *object, zval *result) {
+PHPY_API phpy_zend_result phpy_to_array(const zval *object, zval *result) {
     return guard_native_call(result, [&] {
         PyObject *handle = checked_object(object);
         if (UNEXPECTED(handle == nullptr)) {
@@ -170,10 +170,10 @@ PHPY_API zend_result phpy_to_array(const zval *object, zval *result) {
     });
 }
 
-PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
-                                    const zval *argument,
-                                    zend_bool has_argument,
-                                    zval *result) {
+PHPY_API phpy_zend_result phpy_construct(phpy_native_constructor constructor,
+                                         const zval *argument,
+                                         zend_bool has_argument,
+                                         zval *result) {
     return guard_native_call(result, [&] {
         LOCK_GIL();
         argument = unwrap_indirect(argument);
@@ -209,7 +209,7 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
             break;
         case PHPY_NATIVE_CONSTRUCT_TUPLE:
             if (!has_argument) {
-                zend_argument_count_error("PyTuple::__construct() expects exactly 1 argument, 0 given");
+                phpy::zend_compat::argument_count_error("PyTuple::__construct() expects exactly 1 argument, 0 given");
             } else if (null_argument || phpy::php::is_empty_array(argument)) {
                 value = PyTuple_New(0);
             } else if (phpy::php::is_array(argument)) {
@@ -249,7 +249,7 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
                 value = PyUnicode_FromStringAndSize(ZSTR_VAL(string), ZSTR_LEN(string));
                 zend_string_release(string);
             } else {
-                zend_argument_count_error("PyStr::__construct() expects exactly 1 argument, 0 given");
+                phpy::zend_compat::argument_count_error("PyStr::__construct() expects exactly 1 argument, 0 given");
             }
             if (value != nullptr) {
                 new_str(result, value);
@@ -304,7 +304,7 @@ PHPY_API zend_result phpy_construct(phpy_native_constructor constructor,
             }
             break;
         default:
-            zend_value_error("Unknown phpy native constructor");
+            phpy::zend_compat::value_error("Unknown phpy native constructor");
             break;
         }
 

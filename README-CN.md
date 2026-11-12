@@ -10,7 +10,8 @@ phpy
 - 查看 [中文文档](docs/cn/README.md)  
 - 支持 `Linux`/`Windows`/`macOS` 等多种操作和平台
 - 不支持 Python 多线程、`async-io` 特性
-- 需要 `PHP 8.1` 或更高版本
+- 原生扩展支持 PHP 7.4 和 PHP 8.1 及以上版本。Composer 包要求 PHP 8.1 及以上版本。
+- PHP 7.4 支持从 Python 按名称传递 PHP 回调声明的参数，并可补齐用户定义回调中跳过的默认值。调用 PHP 7.4 内置函数时，需要显式传入前面跳过的可选参数。保留传入可变参数的额外命名参数需要 PHP 8。
 
 PHP 调用 Python
 ----
